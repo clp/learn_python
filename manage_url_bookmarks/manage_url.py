@@ -143,7 +143,6 @@ def DeleteCurrentRecord(url_dict):
     while True:
         try:
             key = int(raw_input("Enter the record number to delete: "))
-            #RM current_rec = url_dict[key]
             break  #TBD, Why is this needed when no except caught?
         except (KeyError, ValueError, UnboundLocalError):
             if key:
@@ -164,13 +163,12 @@ def DeleteCurrentRecord(url_dict):
 def UpdateCurrentRecord(url_dict):
     """Ask user for record to update.
     Show the record at the given key.
-    Ask user to confirm update; & update it if OK.
+    Ask user to enter data & confirm update; & update it if OK.
     """
     key = 0
     while True:
         try:
             key = int(raw_input("Enter the record number to update: "))
-            #RM current_rec = url_dict[key]
             break  #TBD, Why is this needed when no except caught?
         except (KeyError, ValueError, UnboundLocalError):
             if key:
@@ -195,9 +193,6 @@ def UpdateCurrentRecord(url_dict):
             url_dict[key][0] = upd_name
             url_dict[key][1] = upd_url
             url_dict[key][2] = upd_note
-            #O url_dict[key][0] = raw_input("Name: ")
-            #O url_dict[key][1] = raw_input("URL : ")
-            #O url_dict[key][2] = raw_input("Note: ")
         except KeyError:
             "Record number error, try again."
     else:
