@@ -1,0 +1,30 @@
+README
+
+manage_url - URL Bookmark Manager
+
+Build a collection of URL bookmarks that include name, URL, and
+optional notes.  Store them to a disk file, and retrieve from 
+same.
+
+When starting the program, read data from a file in the current
+dir named url_bookmarks.pickle; then show the menu.
+
+A text-driven UI menu provides these main functions.
+
+Add
+  Prompts user for a new entry: name, url, note.
+Delete
+  Delete a specific entry, based on its ID number.
+  Confirm the deletion by answering 'y' to a second prompt.
+Find
+  Find the specified word in the name or URL or note fields.
+  Show all lines that match.
+Help
+  Shows brief notes about using the program.
+Show
+  Show all entries on the screen.
+Quit
+  Press 'q' to save data and end the program.
+Update
+  Edit all fields of a specified entry.
+
