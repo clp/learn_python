@@ -30,7 +30,6 @@ On 'Quit', save data to the file, then quit.
 """
 
 import pickle
-import pprint
 import sys
 
 def PrintHelp():
@@ -133,14 +132,6 @@ def GetCommand(menu, record_id, url_dict, infile):
         else:
             print "Invalid request, not implemented: ", user_input
     return
-
-
-def ShowBookmarkData(url_dict, book_data, menu):
-    """Show some records starting at the current record.
-    Show some other data also.
-    """
-    pprint.pprint(url_dict)
-    print book_data
 
 
 def DeleteCurrentRecord(url_dict):
