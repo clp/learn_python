@@ -108,21 +108,16 @@ def GetCommand(menu, record_id, url_dict, infile):
     Ask user to enter a character, then check if it is a valid
     command, and execute it or show an error msg.
     """
-    #TBRM prompt = menu + "Enter a valid command (ADFHSQU), "\
-            #TBRM + "Ctrl+C to exit without saving > "
-    prompt = menu 
     while True:
         try:
-            user_input = raw_input(prompt)
+            user_input = raw_input(menu)
         except KeyboardInterrupt:
             print
             return
-        #DEV (valid, reason) = hw07_1.IsValidIdentifier(user_input)
-        #DEV print "%+20s -> %s" % (user_input, reason)
         if user_input == 'q' or user_input == 'Q':
             SaveDataToFile(record_id, url_dict)
             print "Saving data and quitting program."
-            sys.exit(0)  #TBD, return & quit nicer?
+            sys.exit(0)  
         elif user_input == 'a' or user_input == 'A':
             (record_id, url_dict) = AddNewEntry(record_id, url_dict)
         elif user_input == 'h' or user_input == 'H':
