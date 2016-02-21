@@ -227,21 +227,16 @@ def FindWord(url_dict):
     word = raw_input("Enter word to find in bookmark list: ")
     for key,v in url_dict.items():
         bookmark_count += 1
-        #D print "DBG, fw, v: ", v
-        #D print
         for s in v:
-            #D print "DBG, fw, s: ", s
-            #D print
             if word in s:
                 #D print "DBG, fw, hit, v: ", v
-                #D print
                 num_hits += 1
                 PrintRecord(url_dict, key)
     print "Found %d hits in %d records." % (num_hits, bookmark_count)
 
 
 def main():
-    """TBD docs for main func.
+    """Get i/p data, print the menu, & wait for user command.
     """
     record_id = 0
     infile = "url_bookmarks.pickle"
