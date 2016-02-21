@@ -7,39 +7,24 @@ TBD: For study group, project 2016_0215.
 """
 
 """
-TBD, Add Show 5-10 records on a screen cmd.
-TBD, To support Del cmd:
-    Must know the rec to delete.
-        Use record_id?
-        Specify a current_rec?
-        Top record shown on screen?
-        Find a word; first result is cur rec?
-            If no match, stay at cur rec.
-        Other?
-    go to rec #
+TBD, New features to consider for adding:
+    Specify a current record & show it.
     scroll up & down rec list & change current rec.
         next and prior record cmds?
         page up & page down list of records cmds?
         up & down arrow keys?
     hilite curr rec in a list?  Or prefix w/ '=>'?
-    delete curr record from dict.
-    Oops, then the record_id strings will have gaps.
-        If I delete rec 2, the list goes from 1 to 3.
-        No big deal.
-    Oops, on sorting by name or URL, keys will be out of order.
-        No big deal.
 """
 
 """Plan.
 Read the input file.
     If i/p file not found in current dir, create it.
-    Assign current record = first record.
-Show current record and menu on Home screen.
+        TBD, Or ask user to confirm creation.
+    TBD, Assign current record = first record.
+TBD, Show current record and menu on Home screen.
 Prompt for user command and wait.
 Interpret user command when entered.
 Perform requested action.
-    Ask user for data for Add, Find, & Update cmds.
-    Ask confirmation for Add, Delete, and Update actions.
 On 'Quit', save data to the file, then quit.
     TBD, save prior data file as a backup.
 """
