@@ -78,8 +78,6 @@ def GetFileData(infile):
 def GetMenu():
     menu = "\nPress the first letter of a command (ADFHSQU), then press Enter:\n"
     menu += "Commands: Add  Delete  Find  Help  Show  Quit  Update\n"
-    # menu += raw_input
-    # user_input = raw_input(menu, "Enter a valid command, "\
     return menu
 
 
@@ -92,7 +90,7 @@ def AddNewEntry(record_id, url_dict):
     url = raw_input("Enter the URL> ")
     note = raw_input("Optional: Enter a one-line note> ")
     record_id += 1
-    print "DBG, add, record_id: ", record_id
+    #D print "DBG, add, record_id: ", record_id
     url_dict[record_id] = [name, url, note]
     return record_id, url_dict
 
