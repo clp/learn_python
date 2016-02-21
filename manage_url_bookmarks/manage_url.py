@@ -62,20 +62,12 @@ def GetFileData(infile):
     Open an existing data file and read it.
     Create a new data file if no data file was found in current dir.
     """
-    #DEV, Handle initial start when no file exists; then empty file is made.
-    #
-    #DEV, Why does data get erased when program run the second time and quit w/o editing?
-    #
-    num_lines = 0
     data = {}
     try:
         with open(infile, 'rb') as pf:
             (record_id, data) = pickle.load(pf)
-        print "DBG, gfd, after load, data: ", data
-        if data:  #TBD, rm? Maybe needed when no data in file.
-            for line in data:
-                num_lines += 1
-        return (record_id, data, num_lines)
+        #D print "DBG, gfd, after load, data: ", data
+        return (record_id, data)
     except (EOFError, IOError):
         print "WARN, file empty or not found in current dir: ", infile
         print "  Creating an empty data file.  Use Add to fill it with bookmarks."
@@ -277,27 +269,13 @@ def main():
     record_id = 0
     infile = "url_bookmarks.pickle"
     url_dict = {}
-    num_lines = 0  #TBD, rm when record_id fixed?
 
     try:
-        (record_id, url_dict, num_lines) = GetFileData(infile)
+        (record_id, url_dict) = GetFileData(infile)
     except TypeError:
         print "WARN: No data in file?  Add bookmark records to the file to continue."
-    #TBRM record_id = num_lines  # Next record will get correct ID.
-    #TMP bookmark_sum_data = "Number of records: ", num_lines
     menu = GetMenu()
-    #TMP ShowBookmarkData(url_dict, bookmark_sum_data, menu)
-        # Show summary data, eg, number of records in file.
-        # Show first record and make it the current record.
-        # Show menu summary.
     GetCommand(menu, record_id, url_dict, infile)
-        # AddNewEntry()
-        # DeleteEntry()
-        # PrintHelp()
-        # Quit
-            # SaveDataToFile()
-        # FindWord()
-        # UpdateEntry()
 
 if __name__=='__main__':
     main()
