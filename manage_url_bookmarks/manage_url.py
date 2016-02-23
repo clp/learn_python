@@ -142,23 +142,36 @@ def GetCommand(menu, record_id, url_dict, infile):
     return
 
 
+def CheckRecord(url_dict):
+    key = 0
+    while True:
+        try:
+            key = int(raw_input("Enter the record number to use: "))
+            break  # Exit the while loop when a key is entered & no exception is caused.
+        except (KeyError, UnboundLocalError):
+            #ORG if key:
+            print "\nWARN1: Problem with this record number: ["+ str(key) + "]" 
+            return False
+        except (ValueError):
+            print "\nWARN2: Problem with your input; enter an integer."
+            return False
+    if key in url_dict:
+        PrintRecord(url_dict, key)
+        return key
+    else:
+        print "\nWARN3: Problem with this record number: ["+ str(key) + "]" 
+        return False
+
+
 def DeleteCurrentRecord(url_dict):
     """Ask user for record to delete.
     Show the record at the given key.
     Ask user to confirm delete; & delete it if OK.
     """
-    key = 0
-    while True:
-        try:
-            key = int(raw_input("Enter the record number to delete: "))
-            break  #TBD, Why is this needed when no except caught?
-        except (KeyError, ValueError, UnboundLocalError):
-            if key:
-                print "\nWARN: Problem with this record number: ["+ str(key) + "]" 
-            else:
-                print "\nWARN: Problem with this record number."
-            return
-    PrintRecord(url_dict, key)
+    key = CheckRecord(url_dict)
+    if not key:
+        return
+
     if raw_input("Press 'y' to confirm delete: ") == 'y':
         try:
             url_dict.pop(key)
@@ -173,30 +186,16 @@ def UpdateCurrentRecord(url_dict):
     Show the record at the given key.
     Ask user to enter data & confirm update; & update it if OK.
     """
-    key = 0
-    while True:
-        try:
-            key = int(raw_input("Enter the record number to update: "))
-            break  # Exit the while loop when a key is entered & no exception is caused.
-        except (KeyError, UnboundLocalError):
-            #ORG if key:
-            print "\nWARN1: Problem with this record number: ["+ str(key) + "]" 
-            return
-        except (ValueError):
-            print "\nWARN2: Problem with your input; enter an integer."
-            return
-    if key in url_dict:
-        PrintRecord(url_dict, key)
-    else:
-        print "\nWARN3: Problem with this record number: ["+ str(key) + "]" 
+    key = CheckRecord(url_dict)
+    if not key:
         return
 
-    print "\nEnter your updated data: "
+    print "\nEnter your updated bookmark: "
     upd_name = raw_input("  Name: ")
     upd_url  = raw_input("  URL : ")
     upd_note = raw_input("  Note: ")
 
-    print "\nUpdated record will be:"
+    print "\nUpdated bookmark will be:"
     print "  Name: ", upd_name
     print "  URL : ", upd_url
     print "  Note: ", upd_note
@@ -258,7 +257,7 @@ def main():
     try:
         (record_id, url_dict) = GetFileData(infile)
     except TypeError:
-        print "WARN: No data in file?  Add bookmark records to the file to continue."
+        print "WARN: No data in file?  Add bookmarks to the file to continue."
     menu = GetMenu()
     GetCommand(menu, record_id, url_dict, infile)
 
