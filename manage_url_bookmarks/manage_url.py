@@ -143,13 +143,16 @@ def GetCommand(menu, record_id, url_dict, infile):
 
 
 def CheckRecord(url_dict):
+    """Ask user for record to check.
+    Print a warning if a problem is found.
+    Otherwise, show the record at the given key and return the key.
+    """
     key = 0
     while True:
         try:
             key = int(raw_input("Enter the record number to use: "))
             break  # Exit the while loop when a key is entered & no exception is caused.
         except (KeyError, UnboundLocalError):
-            #ORG if key:
             print "\nWARN1: Problem with this record number: ["+ str(key) + "]" 
             return False
         except (ValueError):
@@ -164,8 +167,7 @@ def CheckRecord(url_dict):
 
 
 def DeleteCurrentRecord(url_dict):
-    """Ask user for record to delete.
-    Show the record at the given key.
+    """Check for a valid record at the given key.
     Ask user to confirm delete; & delete it if OK.
     """
     key = CheckRecord(url_dict)
@@ -182,8 +184,7 @@ def DeleteCurrentRecord(url_dict):
 
 
 def UpdateCurrentRecord(url_dict):
-    """Ask user for record to update.
-    Show the record at the given key.
+    """Check for a valid record at the given key.
     Ask user to enter data & confirm update; & update it if OK.
     """
     key = CheckRecord(url_dict)
