@@ -68,7 +68,7 @@ def GetFileData(infile):
         #D print "DBG, gfd, after load, data: ", data
         return (record_id, data)
     except (EOFError, IOError):
-        print "WARN, file empty or not found in current dir: ", infile
+        print "WARN: File empty or not found in current dir: ", infile
         print "  Creating an empty data file.  Use Add to fill it with bookmarks."
         open(infile, 'wb').close()
     return
@@ -124,9 +124,17 @@ def GetCommand(menu, record_id, url_dict, infile):
         elif user_input == 's' or user_input == 'S':
             ShowAllRecords(url_dict, infile)
         elif user_input == 'd' or user_input == 'D':
-            DeleteCurrentRecord(url_dict)
+            if url_dict:
+                DeleteCurrentRecord(url_dict)
+            else:
+                print "WARN: No bookmarks to delete; Add bookmarks first."
+                GetCommand(menu, record_id, url_dict, infile)
         elif user_input == 'u' or user_input == 'U':
-            UpdateCurrentRecord(url_dict)
+            if url_dict:
+                UpdateCurrentRecord(url_dict)
+            else:
+                print "WARN: No bookmarks to update; Add bookmarks first."
+                GetCommand(menu, record_id, url_dict, infile)
         elif user_input == 'f' or user_input == 'F':
             FindWord(url_dict)
         else:
@@ -146,9 +154,9 @@ def DeleteCurrentRecord(url_dict):
             break  #TBD, Why is this needed when no except caught?
         except (KeyError, ValueError, UnboundLocalError):
             if key:
-                print "\nWARN Problem with this record number: ["+ str(key) + "]" 
+                print "\nWARN: Problem with this record number: ["+ str(key) + "]" 
             else:
-                print "\nWARN Problem with this record number."
+                print "\nWARN: Problem with this record number."
             return
     PrintRecord(url_dict, key)
     if raw_input("Press 'y' to confirm delete: ") == 'y':
@@ -169,14 +177,19 @@ def UpdateCurrentRecord(url_dict):
     while True:
         try:
             key = int(raw_input("Enter the record number to update: "))
-            break  #TBD, Why is this needed when no except caught?
-        except (KeyError, ValueError, UnboundLocalError):
-            if key:
-                print "\nWARN Problem with this record number: ["+ str(key) + "]" 
-            else:
-                print "\nWARN Problem with this record number."
+            break  # Exit the while loop when a key is entered & no exception is caused.
+        except (KeyError, UnboundLocalError):
+            #ORG if key:
+            print "\nWARN1: Problem with this record number: ["+ str(key) + "]" 
             return
-    PrintRecord(url_dict, key)
+        except (ValueError):
+            print "\nWARN2: Problem with your input; enter an integer."
+            return
+    if key in url_dict:
+        PrintRecord(url_dict, key)
+    else:
+        print "\nWARN3: Problem with this record number: ["+ str(key) + "]" 
+        return
 
     print "\nEnter your updated data: "
     upd_name = raw_input("  Name: ")
