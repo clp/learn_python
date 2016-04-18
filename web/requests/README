@@ -1,0 +1,42 @@
+README
+
+This is the README for software that demonstrates the use of the
+Python Requests module to get data from a web site.
+
+search_indeed.py retrieves job listings from the indeed.com web
+site.
+
+
+Ref: http://docs.python-requests.org/en/master/
+
+  Requests: HTTP for Humans
+
+  Requests allows you to send HTTP/1.1 requests, without the
+  need for manual labor. There's no need to manually add
+  query strings to your URLs, or to form-encode your POST
+  data. Keep-alive and HTTP connection pooling are 100%
+  automatic, powered by urllib3, which is embedded within
+  Requests.
+  (From the module's documentation.)
+
+
+
+Example of using the requests module interactively in ipython.
+
+import requests
+url22 = 'http://www.indeed.com'
+resp = requests.get(url22)
+print resp
+
+url23 = 'http://www.indeed.com/jobs?q=python&l=Work+at+Home'
+resp = requests.get(url23)
+
+help(requests)
+
+resp.json
+resp.text
+resp.content
+resp.status_code
+resp.headers
+resp.cookies
+
