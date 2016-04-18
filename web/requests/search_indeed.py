@@ -23,15 +23,9 @@ url = 'http://' + site + '/jobs?q=' + query + '&l=' + location + '&limit=' + lim
 
 resp = requests.get(url)
 
-
-#D with open('./jobmap.3.out', 'r') as infile:
-    #D content = infile.read()
-#D lines = content.split("\n")
-
 lines = resp.content.split("\n")
-#D print lines[0:19]
 
-# Example Jobmap field
+# Example Jobmap field, Sun2016_0417
 # jobmap[0]= {jk:'abdd6bbcacf2a8e0',efccid: 'de7f1e9cd569189f',srcid:'02b7985ab68935b2',cmpid:'007d012feca84599',num:'0',srcname:'Springpath',cmp:'Springpath',cmpesc:'Springpath',cmplnk:'/q-Springpath-l-94063-jobs.html',loc:'Sunnyvale, CA',country:'US',zip:'',city:'Sunnyvale',title:'Entry Level Software QA Engineer',locid:'62f8f620fe0679b7',rd:'BvNCMOi6ebTuqTtC1vLQYw'};
 
 
