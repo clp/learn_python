@@ -1,0 +1,97 @@
+README
+
+Last Updated Thu2016_0421_12:00 
+
+This is the README for software that demonstrates the use of the
+indeed-python module, to get data from indeed.com using their API.
+
+
+
+# Intro
+
+This release includes two programs.
+
+  search_indeed_api.py retrieves job listings based on query
+  parameters from the indeed.com web site using its API.
+
+  get_details_indeed_api.py retrieves details about specific
+  job listings based on jobkey values from the indeed.com
+  web site using its API.
+
+
+Ref: https://github.com/indeedlabs/indeed-python
+  The github site has a README file with some example code.
+
+Ref: https://pypi.python.org/pypi/indeed
+  A client library for using the Indeed.com Jobsearch API.
+
+
+You need a Publisher Number from indeed.com to use their
+API.  See this page to create an account (it was free and
+quick for me):
+  http://www.indeed.com/publisher/
+
+
+
+# Example code.
+
+Examples of using the API to get job data interactively in ipython.
+  1.  Insert your own value for PUBLISHER_NUMBER.
+  2.  Insert valid values for jobkeys (jk1 and jk2); find the
+      keys by running the search program.
+
+
+## Example 1.  Search for keywords.
+
+from indeed import IndeedClient
+client = IndeedClient('PUBLISHER_NUMBER')
+
+params = {
+    'q' : "python entry",
+    'l' : "94063",
+    'userip' : '1.2.3.4', 
+    'useragent' : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2)"  }
+
+search_response = client.search(**params)
+
+keys_l = ['jobtitle', 'company', 'city', 'date',  'snippet', 'jobkey']
+for k in keys_l:
+    print search_response['results'][0][k]
+
+
+
+### Sample output
+
+SoftwareTest Engineer Intern
+HP
+Palo Alto
+Fri, 19 Feb 2016 12:46:19 GMT
+Scripting skills using Shell, <b>Python</b>, or Groovy. HP Software Marketing Optimization is looking for an entry-level software engineer in test intern to be part of...
+452c5af6fdd2f7cf
+
+
+
+
+## Example 2.  Get details of specific jobs.
+
+from indeed import IndeedClient
+client = IndeedClient('PUBLISHER_NUMBER')
+
+jk1 = "e8930d8d162c4b70"
+jk2 = "6bb8f41ea97bd6f8"
+job_response = client.jobs(jobkeys = (jk1, jk2))
+
+keys_l = ['jobtitle', 'company', 'city', 'date',  'snippet']
+for k in keys_l:
+    print job_response['results'][1][k]
+
+
+
+### Sample output
+
+Python Software Engineer- Server Side backend development
+Phoenix 2.0
+Palo Alto
+Wed, 09 Mar 2016 18:02:41 GMT
+A degree in Computer Science or closely related field is required. Will consider out of state with the understanding there will be no relocation assistance for this opportunity. Knowledge of relational databases, SQL, transactions, and query optimization is a big plus. You will be working on a number of projects ranging from building and scaling our semantic data platform to developing our data...
+
