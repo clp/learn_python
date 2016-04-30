@@ -1,0 +1,162 @@
+info.otl  clpoda  2016_0425
+	susie:/home/clpoda/code/python/data_sci_time_ser_bikle
+	# Time-stamp: <Fri 2016 Apr 29 10:18:09 PMPM clpoda> 
+Intro
+	Some notes about Dan Bikle's Data Science for Time Series course, Spring 2016.
+Session topics, summary notes.
+	Session 1, Histograms, scatter plots, correlation, time series calculations, linear regression.
+	Session 2, AWS, Linux, git, heroku.
+	Session 3, Vectors, SQL, Pandas, NumPy.
+	Session 4, Machine Learning, Py scikit-learn, naive bayes, linear regr, logistical regr, SVM, GBRT, Neural Nets.
+	Session 5, R language.
+	Session 6, Convolutional Nural Network with Java Script.
+	Session 7, Predictions from features from time series.
+	Session 8, Visualizations of predictions.
+	Session 9, Serve visualizations to the web.
+	Session 10, Deploy app to AWS and heroku which predicts a financial market.
+Security
+	Assume all SCAE lab machines are infected with keystroke capture & other malware.
+		Do not use any valuable passwords in the lab.
+Terms, acronyms
+	AWS, Amazon Web Services; cloud-based computing services; start with S3 and EC2.
+	correlation, tbd
+	CRUD, Create, Retrieve, Update, Delete; basic concepts to understand a system.
+	CCLUD, Create, Copy, List, Update, Delete; basic concepts to understand a system.
+	EC2, Elastic Compute Cloud, part of AWS; provides scalable virtual private servers.
+	feature, See lag, pctlag, lead, pctlead.
+	git, Distributed version control system; subcmds include init, add, commit, clone, push, pull.
+	github, Web site to store files using git; large collection of freely-avbl tools & data.
+	Hadoop, tbd
+	Heroku, Cloud-based platform-as-a-service; push a git repo to it, & it runs the code.
+	linear regression, tbd
+	numpy, tbd
+	overfitting, Too many features in the model for the available number of observations.
+	pandas, tbd
+	pctlag, A statistical feature, eg, pctlag1 is the percent change over 1 day (yesterday to today).
+	pctlagN, The percent change over N days (from N days ago to today).
+	pctlead, A statistical feature, the predicted percent change from today to tomorrow.
+	pyspy, tbd
+	S3, Simple Storage Service, part of AWS; provides web-based storage.
+	SCAE, Santa Clara Adult Education; site of the course, in lab room K1.
+	scikit-learn, tbd
+	Spark, tbd
+	SPY, Symbol for ETF based on S & P 500 index.
+	ssh, Secure shell; connect to remote computers; more secure than telnet.
+	syntax.us, One of Dan B's domains where code, notes, & data reside.
+	TA, Technical Analysis.
+	vector, A container with numbers; eg, a row of a table.
+Links, References
+	http://www.syntax.us/posts/python_preso
+		python_preso (2016_0224); setup & run for session 1.
+			vbox, linux, anaconda3, ta-lib, pyspy, herokuspy.
+	https://github.com/danbikle/
+		pyspy, herokuspy, sklearnem.
+	https://clp-hspy10.herokuapp.com/
+		Built at SCAE lab & pushed to heroku.
+	https://clp-hspy11.herokuapp.com/
+		Built at KLab & pushed to heroku.
+	https://clp-d1d2.herokuapp.com/
+		Built at SCAE lab & pushed to heroku.
+	https://clp-2-d1d2.herokuapp.com/
+		Built at KLab & pushed to heroku.
+	truefx.com, foreign exchange data, updated each minute.
+		Much more data than SPY's single closing price at end of day.
+	numpy, Search for 'cs231 numpy tutorial'	
+Concepts, ideas, algorithms
+	How much data needed by machine learning s/w?
+		Depends on number of features; rule-of-thumb:
+		For 1-2 features, need 100 observations.
+		For n>2 features, need 10**n observations.
+	Stock market data: about 252 trading days/year.
+	tbd
+Procedures
+	This section does not contain all steps of all procedures.
+		It just gives some highlights and some key steps.
+		More details are at the noted pages for each item.
+	Install and configure virtual box & VM for Ubuntu o/s.
+		tbd
+	Backup vbox VM to USB stick for using elsewhere.
+		virtualbox
+			See Oracle VM vbox manager screen.
+		Select the desired VM & power it off if it is on.
+		Main vbox mgr menu:/ file/ export appliance
+		Copy to USB stick for backup & importing elsewhere.
+	Predict SPY using pyspy.
+		From session 1, 3/5/16.
+		Note.1. See details at syntax.us, python_preso (2016_0224), they are not copied here.
+		Get pyspy s/w from github.
+			mkdir -p ~/ddata
+			cd ~
+			git clone https://github.com/danbikle/pyspy
+		Edit pyspy/bin/noon.bash (or night.bash):
+			Set range of data to retrieve, eg, 'gen_train.py 1987 2015 ...'
+			Set range of data to predict, eg, 'gen_test.py 2015 2017 ...'
+		Run pyspy/bin/noon.bash
+			Get current data about the stock or index to predict; & plot predictions.
+		Open the learn_test.png o/p file to see results.
+	Deploy s/w to heroku.com & use it.
+		From session 2, 3/12/16.
+		Note.1. See details at syntax.us, python_preso (2016_0224), they are not copied here.
+		Note.2. Running Python code on heroku might require detailed understanding of the system & tools.
+		Create acct at heroku.com.
+		Get herokuspy s/w from github.
+			cd ~
+			git clone https://github.com/danbikle/herokuspy
+		Get heroku toolbelt.
+			wget https://s3.amazonaws.com/assets.heroku.com/heroku-client/heroku-client.tgz
+		Configure ssh, postgres, django, and heroku per the python_preso page.
+		Test it by opening a web browser to localhost:5000 to see the data.
+		Deploy to heroku.
+			cd ~/herokuspy
+			~/heroku-client/bin/heroku create <h_name>
+				h_name must be unique; you may be warned if it exists already.
+			git push heroku master
+			~/heroku-client/bin/heroku run python manage.py migrate
+		See the expected web page at this URL:
+			https://<h_name>.herokuapp.com
+	Deploy s/w to AWS & use it.
+		Create acct at aws.amazon.com.
+		tbd
+	Make predictions using scikit-learn with different techniques, & compare them.
+		From session 4, 3/26/16.
+		Note.1. See details at syntax.us, sklearnem (2016_0326), they are not copied here.
+		Get sklearnem s/w from github.
+			cd ~
+			git clone https://github.com/danbikle/sklearnem 
+		Execute the demo s/w.
+			cd sklearnem
+			./runem.bash
+		See the o/p data printed to the screen after each demo is run.
+Code, Python
+	tbd
+Code, Javascript
+	tbd
+Code, Other
+	tbd
+Commands, SQL
+	\quit
+Commands, Postgres (different from SQL cmds)
+	tbd
+Infrastructure, define & setup (o/s, VM, tools, apps).
+	tbd
+Tools
+	Anaconda, Python & R languages; pkgs avbl via proprietary pkg mgr conda.
+	ipython, a fancier interpreter than what 'python' offers.
+		run /home/.../learn_test.py ...
+		run -d /home/.../learn_test.py ...
+		help()
+	Python
+	Ubuntu Linux, 64-bit, v14.04 LTS.
+		Ubuntu Unity desktop environment.
+			Click top 'Search' icon on menu bar (at left edge) to open search field.
+				Type 'terminal' then press Enter to find icons to start X Terminal w/ shell.
+				Type 'chrom' then press Enter to find icons to start Chrome or Chromium browser.
+	VirtualBox
+		Install Guest Additions to configure video & resolution properly, etc.
+			VboxMenu/ Devices/ Install Guest Adds.
+		When pointer is active inside the VM:
+			Press Right-Ctrl key at keyboard to release pointer from VM;
+			to allow mouse & keybd to talk to the host o/s.
+Misc notes
+	tbd
+
