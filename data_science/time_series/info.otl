@@ -1,6 +1,5 @@
 info.otl  clpoda  2016_0425
-	susie:/home/clpoda/code/python/data_sci_time_ser_bikle
-	# Time-stamp: <Fri 2016 Apr 29 10:18:09 PMPM clpoda> 
+	# Time-stamp: <Thu 2016 May 12 05:06:21 PMPM clpoda> 
 Intro
 	Some notes about Dan Bikle's Data Science for Time Series course, Spring 2016.
 Session topics, summary notes.
@@ -9,42 +8,62 @@ Session topics, summary notes.
 	Session 3, Vectors, SQL, Pandas, NumPy.
 	Session 4, Machine Learning, Py scikit-learn, naive bayes, linear regr, logistical regr, SVM, GBRT, Neural Nets.
 	Session 5, R language.
-	Session 6, Convolutional Nural Network with Java Script.
+	Session 6, Convolutional Neural Network with Java Script.
 	Session 7, Predictions from features from time series.
 	Session 8, Visualizations of predictions.
 	Session 9, Serve visualizations to the web.
+		Spark; Tableau; lab session.
 	Session 10, Deploy app to AWS and heroku which predicts a financial market.
 Security
 	Assume all SCAE lab machines are infected with keystroke capture & other malware.
 		Do not use any valuable passwords in the lab.
 Terms, acronyms
+	accuracy, a measurement of prediction; (number of correct predictions / total predictions).
+	array, A type in a language; a collection of items; Python has lists instead of arrays.
 	AWS, Amazon Web Services; cloud-based computing services; start with S3 and EC2.
+	classification, One type of a problem, eg, only predict if next point is up or down from prior.
 	correlation, tbd
 	CRUD, Create, Retrieve, Update, Delete; basic concepts to understand a system.
 	CCLUD, Create, Copy, List, Update, Delete; basic concepts to understand a system.
+	dataframe, tbd
+	django, tbd
+	DSTS, Data Science, Time Series.
 	EC2, Elastic Compute Cloud, part of AWS; provides scalable virtual private servers.
-	feature, See lag, pctlag, lead, pctlead.
+	effectiveness, a measurement of prediction; tbd
+	feature, tbd.  See lag, pctlag, lead, pctlead.
 	git, Distributed version control system; subcmds include init, add, commit, clone, push, pull.
 	github, Web site to store files using git; large collection of freely-avbl tools & data.
 	Hadoop, tbd
 	Heroku, Cloud-based platform-as-a-service; push a git repo to it, & it runs the code.
+	IAAS, Infrastructure as a service, eg, AWS.
+	ipython, an advanced interactive Python interpreter.
+	label, tbd, title of a column of data.
 	linear regression, tbd
+	median, tbd, the middle value of a collection, where an equal number of values are above and below it.
+		Sort by value and pick the middle.
+	neural network, tbd
+	nodejs, JS on server.
 	numpy, tbd
+	numpy array, Behaves like a math vector.
 	overfitting, Too many features in the model for the available number of observations.
+	PAAS, Platform as a service, eg, Heroku.
 	pandas, tbd
 	pctlag, A statistical feature, eg, pctlag1 is the percent change over 1 day (yesterday to today).
 	pctlagN, The percent change over N days (from N days ago to today).
 	pctlead, A statistical feature, the predicted percent change from today to tomorrow.
+	predicate, tbd
 	pyspy, tbd
+	regression, One type of a problem, eg, predict both direction & magnitude of next point.
 	S3, Simple Storage Service, part of AWS; provides web-based storage.
 	SCAE, Santa Clara Adult Education; site of the course, in lab room K1.
 	scikit-learn, tbd
 	Spark, tbd
 	SPY, Symbol for ETF based on S & P 500 index.
+	SQL, Structured Query Language, used for dbase i/f.
 	ssh, Secure shell; connect to remote computers; more secure than telnet.
 	syntax.us, One of Dan B's domains where code, notes, & data reside.
 	TA, Technical Analysis.
-	vector, A container with numbers; eg, a row of a table.
+	vector, A container filled with numbers; eg, a row of a table; can be nested.
 Links, References
 	http://www.syntax.us/posts/python_preso
 		python_preso (2016_0224); setup & run for session 1.
@@ -62,6 +81,9 @@ Links, References
 	truefx.com, foreign exchange data, updated each minute.
 		Much more data than SPY's single closing price at end of day.
 	numpy, Search for 'cs231 numpy tutorial'	
+	http://www.kdnuggets.com/2016/04/pocket-guide-data-science.html
+		Good, brief overview of some steps in a data analysis process.
+	http://www.kdnuggets.com/2016/04/datacamp-learning-python-data-analysis-data-science.html
 Concepts, ideas, algorithms
 	How much data needed by machine learning s/w?
 		Depends on number of features; rule-of-thumb:
@@ -127,8 +149,22 @@ Procedures
 			cd sklearnem
 			./runem.bash
 		See the o/p data printed to the screen after each demo is run.
+	Convert csv data to format for scikit-learn.
+		csv -> pandas() -> dataframe -> numpy() -> array -> scikit-learn().
+		csv: process w/ pandas; o/p is dataframe.
+		df:  process w/ numpy; o/p is array.
+		array: process w/ scikit-learn.
 Code, Python
 	tbd
+Code, Python and Javascript keywords
+	Python          Javascript
+	dict            object
+	  key             property
+	  value           value
+	list            array
+	print           console.log('...')
+	# comment       // comment
+	Python          Javascript
 Code, Javascript
 	tbd
 Code, Other
@@ -141,7 +177,7 @@ Infrastructure, define & setup (o/s, VM, tools, apps).
 	tbd
 Tools
 	Anaconda, Python & R languages; pkgs avbl via proprietary pkg mgr conda.
-	ipython, a fancier interpreter than what 'python' offers.
+	ipython, an interactive python interpreter that offers more than 'python'.
 		run /home/.../learn_test.py ...
 		run -d /home/.../learn_test.py ...
 		help()
@@ -157,6 +193,37 @@ Tools
 		When pointer is active inside the VM:
 			Press Right-Ctrl key at keyboard to release pointer from VM;
 			to allow mouse & keybd to talk to the host o/s.
+Project ideas.
+	Study & learn pivotal tracker in depth.
+		: Mon2016_0509_12:19 
+		How to store details abt implementation, design choices, specs?
+			User stories & acceptance tests.
+			Any place for data that's outside the user story paradigm?
+			Use story:task records for details?
+				How to find them when needed?
+				Where to put general details that apply to many stories?
+			Some links can be made w/ src code repository.
+	Build permuted index of some data sci terms.
+		: Mon2016_0509_12:17 
+		Find good dictionary for source text.
+		wikipedia.
+		wordnik.
+		Build an indexing tool & use it.
+		Post to nods site.
+	Evaluate prediction performance of some models.
+		: Mon2016_0509_12:17 
+		Test multiple algorithms & training data periods ea day.
+		Test w/ different number & combination of features.
+		Write tool to run many tests with a simple cmd.
+		Download data & run tests locally.
+		Post the results daily, over time.
+		Make investment decisions each day.
+		Use SPY for public results.
+		Test DB's stmt abt Apple predicts.
+			Using older data will not give good predicts b/c company today is very different.
+		Consider using other stocks & indexes for private results.
+			Vanguard index funds.
+			Forex.
+	Find & publish how to get data from forex site w/o login?
 Misc notes
 	tbd
-
