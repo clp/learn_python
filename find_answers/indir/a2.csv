@@ -1,0 +1,10 @@
+Id,OwnerUserId,CreationDate,ParentId,Score,Body
+497,50,2008-08-02T16:56:53Z,469,4,"<p>open up a terminal (Applications-&gt;Utilities-&gt;Terminal) and type this in:</p>
+
+<pre><code>locate InsertFontHere<br></code></pre>
+
+<p>This will spit out every file that has the name you want.</p>
+
+<p>Warning: there may be alot to wade through.</p>"
+518,153,2008-08-02T17:42:28Z,469,2,"<p>I haven't been able to find anything that does this directly.  I think you'll have to iterate through the various font folders on the system: <code>/System/Library/Fonts</code>, <code>/Library/Fonts</code>, and there can probably be a user-level directory as well <code>~/Library/Fonts</code>.</p>
+"

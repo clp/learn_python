@@ -1,0 +1,17 @@
+Id,OwnerUserId,CreationDate,Score,Title,Body
+469,147,2008-08-02T15:11:16Z,21,How can I find the full path to a font from its display name on a Mac?,"<p>I am using the Photoshop's javascript API to find the fonts in a given PSD.</p>
+
+<p>Given a font name returned by the API, I want to find the actual physical font file that that font name corresponds to on the disc.</p>
+
+<p>This is all happening in a python program running on OSX so I guess I'm looking for one of:</p>
+
+<ul>
+<li>Some Photoshop javascript</li>
+<li>A Python function</li>
+<li>An OSX API that I can call from python</li>
+</ul>
+"
+502,147,2008-08-02T17:01:58Z,27,Get a preview JPEG of a PDF on Windows?,"<p>I have a cross-platform (Python) application which needs to generate a JPEG preview of the first page of a PDF.</p>
+
+<p>On the Mac I am spawning <a href=""http://developer.apple.com/documentation/Darwin/Reference/ManPages/man1/sips.1.html"">sips</a>.  Is there something similarly simple I can do on Windows?</p>
+"

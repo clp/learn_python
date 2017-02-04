@@ -1,0 +1,202 @@
+Id,OwnerUserId,CreationDate,ParentId,Score,Body
+497,50,2008-08-02T16:56:53Z,469,4,"<p>open up a terminal (Applications-&gt;Utilities-&gt;Terminal) and type this in:</p>
+
+<pre><code>locate InsertFontHere<br></code></pre>
+
+<p>This will spit out every file that has the name you want.</p>
+
+<p>Warning: there may be alot to wade through.</p>"
+1885,50,2008-08-05T04:28:03Z,1829,0,"<p>The  reason msvcrt fails in IDLE is because IDLE is not accessing the library that runs msvcrt. Whereas when you run the program natively in cmd.exe it works nicely. For the same reason that your program blows up on Mac and Linux terminals.</p>
+
+<p>But I guess if you're going to be using this specifically for windows, more power to ya.</p>"
+1987,269,2008-08-05T07:27:40Z,1983,19,"<p>The list [1,2,3] is dynamic and flexible but that flexibility comes at a speed cost.</p>
+
+<p>The tuple (1,2,3) is fixed (immutable) and therefore faster.</p>
+"
+518,153,2008-08-02T17:42:28Z,469,2,"<p>I haven't been able to find anything that does this directly.  I think you'll have to iterate through the various font folders on the system: <code>/System/Library/Fonts</code>, <code>/Library/Fonts</code>, and there can probably be a user-level directory as well <code>~/Library/Fonts</code>.</p>
+"
+3040,457,2008-08-06T03:01:23Z,469,12,"<p>Unfortunately the only API that isn't deprecated is located in the ApplicationServices framework, which doesn't have a bridge support file, and thus isn't available in the bridge. If you're wanting to use ctypes, you can use ATSFontGetFileReference after looking up the ATSFontRef.</p>
+
+<p>Cocoa doesn't have any native support, at least as of 10.5, for getting the location of a font.</p>"
+3071,363,2008-08-06T03:57:16Z,3061,925,"<p>Assuming module <code>foo</code> with method <code>bar</code>:</p>
+
+<pre><code>import foo
+methodToCall = getattr(foo, 'bar')
+result = methodToCall()
+</code></pre>
+
+<p>As far as that goes, lines 2 and 3 can be compressed to:</p>
+
+<pre><code>result = getattr(foo, 'bar')()
+</code></pre>
+
+<p>if that makes more sense for your use case.  You can use <code>getattr</code> in this fashion on class instance bound methods, module-level methods, class methods... the list goes on.</p>
+"
+536,161,2008-08-02T18:49:07Z,502,9,"<p>You can use ImageMagick's convert utility for this, see some examples in <a href=""https://web.archive.org/web/20120413111338/http://studio.imagemagick.org/pipermail/magick-users/2002-May/002636.html"" rel=""nofollow"">http://studio.imagemagick.org/pipermail/magick-users/2002-May/002636.html</a>
+:</p>
+
+<blockquote>
+<pre><code>Convert taxes.pdf taxes.jpg 
+</code></pre>
+  
+  <p>Will convert a two page PDF file into [2] jpeg files: taxes.jpg.0,
+  taxes.jpg.1</p>
+  
+  <p>I can also convert these JPEGS to a thumbnail as follows:</p>
+
+<pre><code>convert -size 120x120 taxes.jpg.0 -geometry 120x120 +profile '*' thumbnail.jpg
+</code></pre>
+  
+  <p>I can even convert the PDF directly to a jpeg thumbnail as follows:</p>
+
+<pre><code>convert -size 120x120 taxes.pdf -geometry 120x120 +profile '*' thumbnail.jpg
+</code></pre>
+  
+  <p>This will result in a thumbnail.jpg.0 and thumbnail.jpg.1 for the two
+  pages.</p>
+</blockquote>
+"
+10129,116,2008-08-13T17:56:34Z,10123,10,"<p>This will do what you want:</p>
+
+<pre><code>signum = status &amp; 0xff
+exitstatus = (status &amp; 0xff00) &gt;&gt; 8
+</code></pre>
+"
+1840,116,2008-08-05T02:54:54Z,1829,8,"<p><strong>On Linux:</strong></p>
+
+<ul>
+<li>set raw mode</li>
+<li>select and read the keystroke</li>
+<li>restore normal settings</li>
+</ul>
+
+<pre>
+import sys
+import select
+import termios
+import tty
+
+def getkey():
+    old_settings = termios.tcgetattr(sys.stdin)
+    tty.setraw(sys.stdin.fileno())
+    select.select([sys.stdin], [], [], 0)
+    answer = sys.stdin.read(1)
+    termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
+    return answer
+
+print """"""Menu
+1) Say Foo
+2) Say Bar""""""
+
+answer=getkey()
+
+if ""1"" in answer: print ""foo""
+elif ""2"" in answer: print ""bar""
+
+</pre>
+"
+1852,116,2008-08-05T03:11:55Z,1829,6,"<p><strong>On Windows:</strong></p>
+
+<pre><code>import msvcrt
+answer=msvcrt.getch()
+</code></pre>
+"
+1879,116,2008-08-05T04:13:53Z,1854,91,"<p>For the record here's the results on Mac:</p>
+
+<pre><code>&gt;&gt;&gt; import os
+&gt;&gt;&gt; os.name
+'posix'
+&gt;&gt;&gt; import platform
+&gt;&gt;&gt; platform.system()
+'Darwin'
+&gt;&gt;&gt; platform.release()
+'8.11.1'
+</code></pre>
+"
+5165,116,2008-08-07T19:02:57Z,5102,8,"<p>Yes, mod_python is pretty confusing to set up.  Here's how I did it.</p>
+
+<p>In httpd.conf:</p>
+
+<pre><code>LoadModule python_module modules/mod_python.so<br><br>&lt;Directory ""/serverbase/htdocs/myapp""&gt;<br>  AddHandler mod_python .py<br>  PythonHandler myapp<br>  PythonDebug On<br></code></pre>
+
+<p>and in your application directory:</p>
+
+<pre><code>$ /serverbase/htdocs/myapp$ ls -l<br>total 16<br>-r-xr-xr-x 1 root sys        6484 May 21 15:54 myapp.py<br></code></pre>
+
+<p>Repeat the configuration for each python program you wish to have running under mod_python.</p>"
+10129,116,2008-08-13T17:56:34Z,10123,10,"<p>This will do what you want:</p>
+
+<pre><code>signum = status &amp; 0xff
+exitstatus = (status &amp; 0xff00) &gt;&gt; 8
+</code></pre>
+"
+538,156,2008-08-02T18:56:56Z,535,23,"<p>One possibility is Hudson.  It's written in Java, but there's integration with Python projects:</p>
+
+<blockquote>
+  <p><a href=""http://redsolo.blogspot.com/2007/11/hudson-embraces-python.html"" rel=""nofollow"">Hudson embraces Python</a></p>
+</blockquote>
+
+<p>I've never tried it myself, however.</p>
+
+<p>(<strong>Update</strong>, Sept. 2011: After a trademark dispute Hudson has been renamed to <a href=""http://jenkins-ci.org/"" rel=""nofollow"">Jenkins</a>.)</p>
+"
+2277,156,2008-08-05T13:22:43Z,1983,26,"<p>From the <a href=""http://www.python.org/doc/faq/general/#why-are-there-separate-tuple-and-list-data-types"">Python FAQ</a>:</p>
+
+<blockquote>
+  <p>Lists and tuples, while similar in many respects, are generally used in fundamentally different ways. Tuples can be thought of as being similar to Pascal records or C structs; they're small collections of related data which may be of different types which are operated on as a group. For example, a Cartesian coordinate is appropriately represented as a tuple of two or three numbers.</p>
+  
+  <p>Lists, on the other hand, are more like arrays in other languages. They tend to hold a varying number of objects all of which have the same type and which are operated on one-by-one.</p>
+</blockquote>
+
+<p>Generally by convention you wouldn't choose a list or a tuple just based on its (im)mutability.  You would choose a tuple for small collections of completely different pieces of data in which a full-blown class would be too heavyweight, and a list for collections of any reasonable size where you have a homogeneous set of data.</p>"
+541,157,2008-08-02T19:06:40Z,535,20,"<p>We run <a href=""http://buildbot.net/trac"">Buildbot - Trac</a> at work, I haven't used it too much since my code base isn't part of the release cycle yet. But we run the tests on different environments (OSX/Linux/Win) and it sends emails --and it's written in python.</p>"
+595,116,2008-08-03T01:17:36Z,594,25,"<p>The canonical way is to use the built-in cursor iterator.</p>
+
+<pre><code>curs.execute('select * from people')
+for row in curs:
+    print row
+</code></pre>
+
+<hr>
+
+<p>You can use <code>fetchall()</code> to get all rows at once.</p>
+
+<pre><code>for row in curs.fetchall():
+    print row
+</code></pre>
+
+<p>It can be convenient to use this to create a Python list containing the values returned:</p>
+
+<pre><code>curs.execute('select first_name from people')
+names = [row[0] for row in curs.fetchall()]
+</code></pre>
+
+<p>This can be useful for smaller result sets, but can have bad side effects if the result set is large.</p>
+
+<ul>
+<li><p>You have to wait for the entire result set to be returned to
+your client process.</p></li>
+<li><p>You may eat up a lot of memory in your client to hold
+the built-up list.</p></li>
+<li><p>It may take a while for Python to construct and deconstruct the
+list which you are going to immediately discard anyways.</p></li>
+</ul>
+
+<hr>
+
+<p>If you know there's a single row being returned in the result set you can call <code>fetchone()</code> to get the single row.</p>
+
+<pre><code>curs.execute('select max(x) from t')
+maxValue = curs.fetchone()[0]
+</code></pre>
+
+<hr>
+
+<p>Finally, you can loop over the result set fetching one row at a time.  In general, there's no particular advantage in doing this over using the iterator.</p>
+
+<pre><code>row = curs.fetchone()
+while row:
+    print row
+    row = curs.fetchone()
+</code></pre>
+"

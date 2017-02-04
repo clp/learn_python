@@ -1,0 +1,117 @@
+Id,OwnerUserId,CreationDate,Score,Title,Body
+469,147,2008-08-02T15:11:16Z,21,How can I find the full path to a font from its display name on a Mac?,"<p>I am using the Photoshop's javascript API to find the fonts in a given PSD.</p>
+
+<p>Given a font name returned by the API, I want to find the actual physical font file that that font name corresponds to on the disc.</p>
+
+<p>This is all happening in a python program running on OSX so I guess I'm looking for one of:</p>
+
+<ul>
+<li>Some Photoshop javascript</li>
+<li>A Python function</li>
+<li>An OSX API that I can call from python</li>
+</ul>
+"
+502,147,2008-08-02T17:01:58Z,27,Get a preview JPEG of a PDF on Windows?,"<p>I have a cross-platform (Python) application which needs to generate a JPEG preview of the first page of a PDF.</p>
+
+<p>On the Mac I am spawning <a href=""http://developer.apple.com/documentation/Darwin/Reference/ManPages/man1/sips.1.html"">sips</a>.  Is there something similarly simple I can do on Windows?</p>
+"
+535,154,2008-08-02T18:43:54Z,40,Continuous Integration System for a Python Codebase,"<p>I'm starting work on a hobby project with a python codebase and would like to set up some form of continuous integration (i.e. running a battery of test-cases each time a check-in is made and sending nag e-mails to responsible persons when the tests fail) similar to CruiseControl or TeamCity.</p>
+
+<p>I realize I could do this with hooks in most VCSes, but that requires that the tests run on the same machine as the version control server, which isn't as elegant as I would like. Does anyone have any suggestions for a small, user-friendly, open-source continuous integration system suitable for a Python codebase?</p>
+"
+594,116,2008-08-03T01:15:08Z,25,cx_Oracle: How do I iterate over a result set?,"<p>There are several ways to iterate over a result set. What are the tradeoff of each?</p>
+"
+683,199,2008-08-03T13:19:16Z,28,Using 'in' to match an attribute of Python objects in an array,"<p>I don't remember whether I was dreaming or not but I seem to recall there being a function which allowed something like,</p>
+
+<pre><code>foo in iter_attr(array of python objects, attribute name)</code></pre>
+
+<p>I've looked over the docs but this kind of thing doesn't fall under any obvious listed headers</p>"
+742,189,2008-08-03T15:55:28Z,30,Class views in Django,"<p><a href=""http://www.djangoproject.com/"">Django</a> view points to a function, which can be a problem if you want to change only a bit of functionality. Yes, I could have million keyword arguments and even more if statements in the function, but I was thinking more of an object oriented approach.</p>
+
+<p>For example, I have a page that displays a user. This page is very similar to page that displays a group, but it's still not so similar to just use another data model. Group also has members etc...</p>
+
+<p>One way would be to point views to class methods and then extend that class. Has anyone tried this approach or has any other idea? </p>"
+766,1384652,2008-08-03T17:44:07Z,20,Python and MySQL,"<p>I can get Python to work with Postgresql but I cannot get it to work with MySQL. The main problem is that on the shared hosting account I have I do not have the ability to install things such as Django or PySQL, I generally fail when installing them on my computer so maybe it's good I can't install on the host.</p>
+
+<p>I found <a href=""http://barryp.org/software/bpgsql/"">bpgsql</a> really good because it does not require an install, it's a single file that I can look at, read and then call the functions of. Does anybody know of something like this for MySQL?</p>"
+773,207,2008-08-03T18:27:09Z,256,How do I use Python's itertools.groupby()?,"<p>I haven't been able to find an understandable explanation of how to actually use Python's <code>itertools.groupby()</code> function.  What I'm trying to do is this:</p>
+
+<ul>
+<li>Take a list - in this case, the children of an objectified <code>lxml</code> element</li>
+<li>Divide it into groups based on some criteria</li>
+<li>Then later iterate over each of these groups separately.</li>
+</ul>
+
+<p>I've reviewed <a href=""https://docs.python.org/2/library/itertools.html"">the documentation</a>, and <a href=""https://docs.python.org/2/library/itertools.html#itertools.groupby"">the examples</a>, but I've had trouble trying to apply them beyond a simple list of numbers. </p>
+
+<p>So, how do I use of <code>itertools.groupby()</code>?  Is there another technique I should be using?  Pointers to good ""prerequisite"" reading would also be appreciated.</p>
+"
+972,145,2008-08-04T02:17:51Z,364,Adding a Method to an Existing Object Instance,"<p>I've read that it is possible to add a method to an existing object (e.g. not in the class definition) in <strong>Python</strong>, I think this is called <em>Monkey Patching</em> (or in some cases <em>Duck Punching</em>). I understand that it's not always a good decision to do so. But, how might one do this?</p>
+
+<p><strong>UPDATE 8/04/2008 00:21:01 EST:</strong></p>
+
+<p><a href=""http://stackoverflow.com/a/982"">That</a> looks like a good answer John Downey, I tried it but it appears that it ends up being not a <em>true</em> method.</p>
+
+<p>Your example defines the new patch function with an argument of <strong><code>self</code></strong>, but if you write actual code that way, the now patched class method asks for an argument named <code>self</code> (it doesn't automagically recognize it as the object to which it is supposed to bind, which is what would happen if defined within the class definition), meaning you have to call <strong><code>class.patch(obj)</code></strong> instead of just <strong><code>class.patch()</code></strong> if you want the same functionality as a <em>true</em> method.</p>
+
+<p><strong>It looks like Python isn't really treating it as a method, but more just as a variable which happens to be a function</strong> (and as such is callable).  Is there any way to attach an actual method to a class?</p>
+
+<p>Oh, and Ryan, <a href=""http://pypi.python.org/pypi/monkey"">that</a> isn't exactly what I was looking for (it isn't a builtin functionality), but it is quite cool nonetheless.</p>
+"
+1476,92,2008-08-04T18:20:36Z,251,How do you express binary literals in Python?,"<p>How do you express an integer as a binary number with Python literals?</p>
+
+<p>I was easily able to find the answer for hex:</p>
+
+<pre><code>    &gt;&gt;&gt; 0x12AF
+    4783
+    &gt;&gt;&gt; 0x100
+    256
+</code></pre>
+
+<p>and octal:</p>
+
+<pre><code>    &gt;&gt;&gt; 01267
+    695
+    &gt;&gt;&gt; 0100
+    64
+</code></pre>
+
+<p><strong>How do you use literals to express binary in Python?</strong></p>
+
+<hr>
+
+<p><strong><em>Summary of Answers</em></strong></p>
+
+<ul>
+<li>Python 2.5 and earlier: can express binary using <code>int('01010101111',2)</code> but not with a literal.</li>
+<li>Python 2.5 and earlier: there is <em>no way</em> to express binary literals.</li>
+<li>Python 2.6 beta: You can do like so: <code>0b1100111</code> or <code>0B1100111</code>.</li>
+<li>Python 2.6 beta: will also allow <code>0o27</code> or <code>0O27</code> (second character is the letter O) to represent an octal.</li>
+<li>Python 3.0 beta: Same as 2.6, but will no longer allow the older <code>027</code> syntax for octals.</li>
+</ul>
+"
+1734,59,2008-08-05T00:12:55Z,20,Any experiences with Protocol Buffers?,"<p>I was just looking through some information about Google's <a href=""http://code.google.com/apis/protocolbuffers/"">protocol buffers</a> data interchange format.  Has anyone played around with the code or even created a project around it?</p>
+
+<p>I'm currently using XML in a Python project for structured content created by hand in a text editor, and I was wondering what the general opinion was on Protocol Buffers as a user-facing input format.  The speed and brevity benefits definitely seem to be there, but there are so many factors when it comes to actually generating and processing the data.</p>"
+1829,30,2008-08-05T02:39:23Z,12,How do I make a menu that does not require the user to press [enter] to make a selection?,"<p>I've got a menu in Python. That part was easy. I'm using <code>raw_input()</code> to get the selection from the user. </p>
+
+<p>The problem is that <code>raw_input</code> (and input) require the user to press <kbd>Enter</kbd> after they make a selection. Is there any way to make the program act immediately upon a keystroke? Here's what I've got so far:</p>
+
+<pre><code>import sys
+print """"""Menu
+1) Say Foo
+2) Say Bar""""""
+answer = raw_input(""Make a selection&gt; "")
+
+if ""1"" in answer: print ""foo""
+elif ""2"" in answer: print ""bar""
+</code></pre>
+
+<p>It would be great to have something like</p>
+
+<pre><code>print menu
+while lastKey = """":
+    lastKey = check_for_recent_keystrokes()
+if ""1"" in lastKey: #do stuff...
+</code></pre>
+"

@@ -1,0 +1,992 @@
+Id,OwnerUserId,CreationDate,Score,Title,Body
+469,147,2008-08-02T15:11:16Z,21,How can I find the full path to a font from its display name on a Mac?,"<p>I am using the Photoshop's javascript API to find the fonts in a given PSD.</p>
+
+<p>Given a font name returned by the API, I want to find the actual physical font file that that font name corresponds to on the disc.</p>
+
+<p>This is all happening in a python program running on OSX so I guess I'm looking for one of:</p>
+
+<ul>
+<li>Some Photoshop javascript</li>
+<li>A Python function</li>
+<li>An OSX API that I can call from python</li>
+</ul>
+"
+502,147,2008-08-02T17:01:58Z,27,Get a preview JPEG of a PDF on Windows?,"<p>I have a cross-platform (Python) application which needs to generate a JPEG preview of the first page of a PDF.</p>
+
+<p>On the Mac I am spawning <a href=""http://developer.apple.com/documentation/Darwin/Reference/ManPages/man1/sips.1.html"">sips</a>.  Is there something similarly simple I can do on Windows?</p>
+"
+535,154,2008-08-02T18:43:54Z,40,Continuous Integration System for a Python Codebase,"<p>I'm starting work on a hobby project with a python codebase and would like to set up some form of continuous integration (i.e. running a battery of test-cases each time a check-in is made and sending nag e-mails to responsible persons when the tests fail) similar to CruiseControl or TeamCity.</p>
+
+<p>I realize I could do this with hooks in most VCSes, but that requires that the tests run on the same machine as the version control server, which isn't as elegant as I would like. Does anyone have any suggestions for a small, user-friendly, open-source continuous integration system suitable for a Python codebase?</p>
+"
+594,116,2008-08-03T01:15:08Z,25,cx_Oracle: How do I iterate over a result set?,"<p>There are several ways to iterate over a result set. What are the tradeoff of each?</p>
+"
+683,199,2008-08-03T13:19:16Z,28,Using 'in' to match an attribute of Python objects in an array,"<p>I don't remember whether I was dreaming or not but I seem to recall there being a function which allowed something like,</p>
+
+<pre><code>foo in iter_attr(array of python objects, attribute name)</code></pre>
+
+<p>I've looked over the docs but this kind of thing doesn't fall under any obvious listed headers</p>"
+742,189,2008-08-03T15:55:28Z,30,Class views in Django,"<p><a href=""http://www.djangoproject.com/"">Django</a> view points to a function, which can be a problem if you want to change only a bit of functionality. Yes, I could have million keyword arguments and even more if statements in the function, but I was thinking more of an object oriented approach.</p>
+
+<p>For example, I have a page that displays a user. This page is very similar to page that displays a group, but it's still not so similar to just use another data model. Group also has members etc...</p>
+
+<p>One way would be to point views to class methods and then extend that class. Has anyone tried this approach or has any other idea? </p>"
+766,1384652,2008-08-03T17:44:07Z,20,Python and MySQL,"<p>I can get Python to work with Postgresql but I cannot get it to work with MySQL. The main problem is that on the shared hosting account I have I do not have the ability to install things such as Django or PySQL, I generally fail when installing them on my computer so maybe it's good I can't install on the host.</p>
+
+<p>I found <a href=""http://barryp.org/software/bpgsql/"">bpgsql</a> really good because it does not require an install, it's a single file that I can look at, read and then call the functions of. Does anybody know of something like this for MySQL?</p>"
+773,207,2008-08-03T18:27:09Z,256,How do I use Python's itertools.groupby()?,"<p>I haven't been able to find an understandable explanation of how to actually use Python's <code>itertools.groupby()</code> function.  What I'm trying to do is this:</p>
+
+<ul>
+<li>Take a list - in this case, the children of an objectified <code>lxml</code> element</li>
+<li>Divide it into groups based on some criteria</li>
+<li>Then later iterate over each of these groups separately.</li>
+</ul>
+
+<p>I've reviewed <a href=""https://docs.python.org/2/library/itertools.html"">the documentation</a>, and <a href=""https://docs.python.org/2/library/itertools.html#itertools.groupby"">the examples</a>, but I've had trouble trying to apply them beyond a simple list of numbers. </p>
+
+<p>So, how do I use of <code>itertools.groupby()</code>?  Is there another technique I should be using?  Pointers to good ""prerequisite"" reading would also be appreciated.</p>
+"
+972,145,2008-08-04T02:17:51Z,364,Adding a Method to an Existing Object Instance,"<p>I've read that it is possible to add a method to an existing object (e.g. not in the class definition) in <strong>Python</strong>, I think this is called <em>Monkey Patching</em> (or in some cases <em>Duck Punching</em>). I understand that it's not always a good decision to do so. But, how might one do this?</p>
+
+<p><strong>UPDATE 8/04/2008 00:21:01 EST:</strong></p>
+
+<p><a href=""http://stackoverflow.com/a/982"">That</a> looks like a good answer John Downey, I tried it but it appears that it ends up being not a <em>true</em> method.</p>
+
+<p>Your example defines the new patch function with an argument of <strong><code>self</code></strong>, but if you write actual code that way, the now patched class method asks for an argument named <code>self</code> (it doesn't automagically recognize it as the object to which it is supposed to bind, which is what would happen if defined within the class definition), meaning you have to call <strong><code>class.patch(obj)</code></strong> instead of just <strong><code>class.patch()</code></strong> if you want the same functionality as a <em>true</em> method.</p>
+
+<p><strong>It looks like Python isn't really treating it as a method, but more just as a variable which happens to be a function</strong> (and as such is callable).  Is there any way to attach an actual method to a class?</p>
+
+<p>Oh, and Ryan, <a href=""http://pypi.python.org/pypi/monkey"">that</a> isn't exactly what I was looking for (it isn't a builtin functionality), but it is quite cool nonetheless.</p>
+"
+1476,92,2008-08-04T18:20:36Z,251,How do you express binary literals in Python?,"<p>How do you express an integer as a binary number with Python literals?</p>
+
+<p>I was easily able to find the answer for hex:</p>
+
+<pre><code>    &gt;&gt;&gt; 0x12AF
+    4783
+    &gt;&gt;&gt; 0x100
+    256
+</code></pre>
+
+<p>and octal:</p>
+
+<pre><code>    &gt;&gt;&gt; 01267
+    695
+    &gt;&gt;&gt; 0100
+    64
+</code></pre>
+
+<p><strong>How do you use literals to express binary in Python?</strong></p>
+
+<hr>
+
+<p><strong><em>Summary of Answers</em></strong></p>
+
+<ul>
+<li>Python 2.5 and earlier: can express binary using <code>int('01010101111',2)</code> but not with a literal.</li>
+<li>Python 2.5 and earlier: there is <em>no way</em> to express binary literals.</li>
+<li>Python 2.6 beta: You can do like so: <code>0b1100111</code> or <code>0B1100111</code>.</li>
+<li>Python 2.6 beta: will also allow <code>0o27</code> or <code>0O27</code> (second character is the letter O) to represent an octal.</li>
+<li>Python 3.0 beta: Same as 2.6, but will no longer allow the older <code>027</code> syntax for octals.</li>
+</ul>
+"
+1734,59,2008-08-05T00:12:55Z,20,Any experiences with Protocol Buffers?,"<p>I was just looking through some information about Google's <a href=""http://code.google.com/apis/protocolbuffers/"">protocol buffers</a> data interchange format.  Has anyone played around with the code or even created a project around it?</p>
+
+<p>I'm currently using XML in a Python project for structured content created by hand in a text editor, and I was wondering what the general opinion was on Protocol Buffers as a user-facing input format.  The speed and brevity benefits definitely seem to be there, but there are so many factors when it comes to actually generating and processing the data.</p>"
+1829,30,2008-08-05T02:39:23Z,12,How do I make a menu that does not require the user to press [enter] to make a selection?,"<p>I've got a menu in Python. That part was easy. I'm using <code>raw_input()</code> to get the selection from the user. </p>
+
+<p>The problem is that <code>raw_input</code> (and input) require the user to press <kbd>Enter</kbd> after they make a selection. Is there any way to make the program act immediately upon a keystroke? Here's what I've got so far:</p>
+
+<pre><code>import sys
+print """"""Menu
+1) Say Foo
+2) Say Bar""""""
+answer = raw_input(""Make a selection&gt; "")
+
+if ""1"" in answer: print ""foo""
+elif ""2"" in answer: print ""bar""
+</code></pre>
+
+<p>It would be great to have something like</p>
+
+<pre><code>print menu
+while lastKey = """":
+    lastKey = check_for_recent_keystrokes()
+if ""1"" in lastKey: #do stuff...
+</code></pre>
+"
+1854,116,2008-08-05T03:23:18Z,270,How to check what OS am I running on in Python?,"<p>What do I need to look at to see if I'm on Windows, Unix, etc?</p>
+"
+1983,116,2008-08-05T07:18:55Z,31,"Python: what is the difference between (1,2,3) and [1,2,3], and when should I use each?","<p>In many places, <code>(1,2,3)</code> and <code>[1,2,3]</code> can be used interchangeably.</p>
+
+<p>When should I use one or the other, and why?</p>
+"
+2311,394,2008-08-05T13:40:47Z,26,File size differences after copying a file to a server vía FTP,"<p>I have created a PHP-script to update a webserver that is live inside a local directory.
+I'm migrating the script into Python. It works fine for the most part, but after a PUT command the size of the file appears to change. Thus, the size of the file is different from that of the file on the server. </p>
+
+<p>Once I download again the file from the FTP server, the only difference is the CR/LF mark. This annoys me because the same script is comparing the size of the files to update. Also, in case it means anything, the script works perfectly in PHP vía ftp_put.</p>
+
+<pre><code>from ftplib import FTP
+
+ftpserver = ""myserver""
+ftpuser = ""myuser""
+ftppass = ""mypwd""
+
+locfile =  ""g:/test/style.css""
+ftpfile =  ""/temp/style.css""
+
+try:
+    ftp = FTP(ftpserver, ftpuser, ftppass)
+except:
+    exit (""Cannot connect"")
+
+f = open (locfile, ""r"")
+try:
+    ftp.delete (ftpfile)
+except:
+    pass
+
+# ftp.sendcmd (""TYPE I"")
+# ftp.storlines(""STOR %s"" % ftpfile, f)
+ftp.storbinary(""STOR %s"" % ftpfile, f)
+f.close()
+
+ftp.dir (ftpfile)
+ftp.quit()
+</code></pre>
+
+<p>Any suggestions?</p>
+"
+2933,1384652,2008-08-05T22:26:00Z,171,How can I create a directly-executable cross-platform GUI app using Python?,"<p>Python works on multiple platforms and can be used for desktop and web applications, thus I conclude that there is some way to compile it into an executable for Mac, Windows and Linux.</p>
+
+<p>The problem being I have no idea where to start or how to write a GUI with it, can anybody shed some light on this and point me in the right direction please?</p>"
+3061,121,2008-08-06T03:36:08Z,761,Calling a function of a module from a string with the function's name in Python,"<p>What is the best way to go about calling a function given a string with the function's name in a Python program.  For example, let's say that I have a module <code>foo</code>, and I have a string whose contents are <code>""bar""</code>. What is the best way to go about calling <code>foo.bar()</code>?</p>
+
+<p>I need to get the return value of the function, which is why I don't just use <code>eval</code>. I figured out how to do it by using <code>eval</code> to define a temp function that returns the result of that function call, but I'm hoping that there is a more elegant way to do this.</p>
+"
+3976,556,2008-08-06T21:00:01Z,12,Programmatically talking to a Serial Port in OS X or Linux,"<p>I have a Prolite LED sign that I like to set up to show scrolling search queries from a apache logs and other fun statistics. The problem is, my G5 does not have a serial port, so I have to use a usb to serial dongle. It shows up as /dev/cu.usbserial and /dev/tty.usbserial . </p>
+
+<p>When i do this everything seems to be hunky-dory:</p>
+
+<pre><code>stty -f /dev/cu.usbserial
+speed 9600 baud;
+lflags: -icanon -isig -iexten -echo
+iflags: -icrnl -ixon -ixany -imaxbel -brkint
+oflags: -opost -onlcr -oxtabs
+cflags: cs8 -parenb
+</code></pre>
+
+<p>Everything also works when I use the <a href=""http://www.versiontracker.com/dyn/moreinfo/macosx/24024"">serial port tool</a> to talk to it.</p>
+
+<p>If I run this piece of code while the above mentioned serial port tool, everthing also works. But as soon as I disconnect the tool the connection gets lost. </p>
+
+<pre><code>#!/usr/bin/python
+
+import serial
+
+ser = serial.Serial('/dev/cu.usbserial', 9600, timeout=10) 
+ser.write(""&lt;ID01&gt;&lt;PA&gt; \r\n"") 
+read_chars = ser.read(20)
+print read_chars
+
+ser.close()
+</code></pre>
+
+<p>So the question is, what magicks do I need to perform to start talking to the serial port without the serial port tool? Is that a permissions problem? Also, what's the difference between /dev/cu.usbserial and /dev/tty.usbserial?</p>
+
+<hr>
+
+<p>Nope, no serial numbers. The thing is, the problem persists even with sudo-running the python script, and the only thing that makes it go through if I open the connection in the gui tool that I mentioned.</p>
+"
+4942,1384652,2008-08-07T16:43:21Z,5,How to sell Python to a client/boss/person with lots of cash,"<p>When asked to create system XYZ and you ask to do it in Python over PHP or Ruby, what are the main features you can mention when they require you to explain it?</p>"
+5102,556,2008-08-07T18:24:12Z,14,How do you set up Python scripts to work in Apache 2.0?,"<p>I tried to follow a couple of googled up tutorials on setting up mod_python, but failed every time. Do you have a good, step-by step, rock-solid howto?</p>
+
+<p>My dev box is OS X, production - Centos.</p>"
+5136,676,2008-08-07T18:47:58Z,6,Does anyone have experience creating a shared library in MATLAB?,"<p>A researcher has created a small simulation in MATLAB, and we want to make it accessible to others. My plan is to take the simulation, clean up a few things, and turn it into a set of functions. Then, I plan to compile it into a C library and use SWIG to create a Python wrapper. At that point, I should be able to call the simulation from a small Django app. At least, I hope so.</p>
+
+<p>Do I have the right plan? Has anyone else done something similar? Can you let me know if there are some serious pitfalls I'm not aware of at the moment?</p>"
+5313,680,2008-08-07T21:07:24Z,11,"Cross Platform, Language Agnostic GUI Markup Language?","<p>I learned Swing back in the day but now I've moved to Python and want to make some apps with GUIs. I haven't had the time to learn a new GUI API so I've been using Jython, but I would prefer to use CPython. </p>
+
+<p>It would be great if I can have one simple markup that allows me to switch GUI libraries. It would be even better if I can use the same markup language across languages so I can quickly make GUIs for any language I'm using. Does anyone know of such a markup/library?</p>
+
+<p>I've seen markups like Glade and wxWidget's markup (I forget the name). They're partly what I'm looking for (making a GUI without coding it in a language) but they're intertwined with a specific library. And neither are really nice looking or friendly to human editting.</p>"
+5415,680,2008-08-07T22:24:27Z,21,Convert Bytes to Floating Point Numbers in Python,<p>I have a binary file that I have to parse and I'm using Python. Is there a way to take 4 bytes and convert it to a single precision floating point number?</p>
+5419,207,2008-08-07T22:26:58Z,72,"Python, Unicode, and the Windows console","<p>When I try to print a Unicode string in a Windows console, I get a <code>UnicodeEncodeError: 'charmap' codec can't encode character ....</code> error.  I assume this is because the Windows console does not accept Unicode-only characters. What's the best way around this? Is there any way I can make Python automatically print a <code>?</code> instead of failing in this situation?</p>
+
+<p><strong>Edit:</strong>  I'm using Python 2.5.</p>
+
+<hr>
+
+<p><strong>Note:</strong> @LasseV.Karlsen answer with the checkmark is sort of outdated (from 2008). Please use the solutions/answers/suggestions below with care!!</p>
+
+<p><a href=""http://stackoverflow.com/a/32176732/610569"">@JFSebastian answer</a> is more relevant as of today (6 Jan 2016).</p>
+"
+5909,394,2008-08-08T13:35:19Z,28,Get size of a file before downloading in Python,"<p>I'm downloading an entire directory from a web server. It works OK, but I can't figure how to get the file size before download to compare if it was updated on the server or not. Can this be done as if I was downloading the file from a FTP server?</p>
+
+<pre><code>import urllib
+import re
+
+url = ""http://www.someurl.com""
+
+# Download the page locally
+f = urllib.urlopen(url)
+html = f.read()
+f.close()
+
+f = open (""temp.htm"", ""w"")
+f.write (html)
+f.close()
+
+# List only the .TXT / .ZIP files
+fnames = re.findall('^.*&lt;a href=""(\w+(?:\.txt|.zip)?)"".*$', html, re.MULTILINE)
+
+for fname in fnames:
+    print fname, ""...""
+
+    f = urllib.urlopen(url + ""/"" + fname)
+
+    #### Here I want to check the filesize to download or not #### 
+    file = f.read()
+    f.close()
+
+    f = open (fname, ""w"")
+    f.write (file)
+    f.close()
+</code></pre>
+
+<hr>
+
+<p>@Jon: thank for your quick answer. It works, but the filesize on the web server is slightly less than the filesize of the downloaded file. </p>
+
+<p>Examples:</p>
+
+<pre><code>Local Size  Server Size
+ 2.223.533  2.115.516
+   664.603    662.121
+</code></pre>
+
+<p>It has anything to do with the CR/LF conversion?</p>
+"
+5966,745,2008-08-08T14:05:45Z,10,Best way to abstract season/show/episode data,"<p>Basically, I've written an API to www.thetvdb.com in Python. The current code can be found <a href=""http://github.com/dbr/tvdb_api/tree/master/tvdb_api.py"">here</a>.</p>
+
+<p>It grabs data from the API as requested, and has to store the data somehow, and make it available by doing:</p>
+
+<pre><code>print tvdbinstance[1][23]['episodename'] # get the name of episode 23 of season 1<br></code></pre>
+
+<p>What is the ""best"" way to abstract this data within the Tvdb() class?</p>
+
+<p>I originally used a extended Dict() that automatically created sub-dicts (so you could do <code>x[1][2][3][4] = ""something""</code> without having to do <code>if x[1].has_key(2): x[1][2] = []</code> and so on)</p>
+
+<p>Then I just stored the data by doing <code>self.data[show_id][season_number][episode_number][attribute_name] = ""something""</code></p>
+
+<p>This worked okay, but there was no easy way of checking if x[3][24] was supposed to exist or not (so I couldn't raise the season_not_found exception)</p>
+
+<p>Currently it's using four classes. ShowContainer, Show, Season and Episode. Each one is a very basic dict, which I can easily add extra functionality in (the search() function on Show() for example). Each has a <code>__setitem__</code>, <code>__getitem_</code> and <code>has_key</code></p>
+
+<p>This works mostly fine, I can check in Shows if it has that season in it's self.data dict, if not, raise season_not_found. Check in Season() if it has that episode and so on.</p>
+
+<p>The problem now is it's presenting itself as a dict, but doesn't have all the functionality, and because I'm overriding the <em>_getitem_</em> and <em>_setitem_</em> functions, it's easy to accidently recursively call <em>_getitem_</em> (so I'm not sure if extending the Dict class will cause problems)</p>
+
+<p>The other slight problem is adding data into the dict is a lot more work than the old Ddict method (which was <code>self.data[seas_no][ep_no]['attribute'] = 'something'</code>). See _setItem and _setData. It's not too bad, since it's currently only a read-only API interface (so the users of the API should only ever retrieve data, not add more), but it's hardly.. elegant..</p>
+
+<p>I think the series-of-classes system is probably the best way, but does anyone have a better idea for storing the data? And would extending the ShowContainer/etc classes with Dict cause problems?</p>"
+8154,736,2008-08-11T19:59:32Z,10,Pylons error - 'MySQL server has gone away',"<p>[I hope this isn't too obscure&hellip; I'll ask the newsgroup if nobody knows here]</p>
+
+<p>I'm using Pylons (a python framework) to serve a simple web application, but it seems to die from time to time, with this in the error log: <code>(2006, 'MySQL server has gone away')</code></p>
+
+<p>I did a bit of checking, and saw that this was because the connections to MySQL were not being renewed. This shouldn't be a problem though, because the <code>sqlalchemy.pool_recycle</code> in the config file should automatically keep it alive. The default was <code>3600</code>, but I dialed it back to <code>1800</code> because of this problem. It helped a bit, but <code>3600</code> <em>should</em> be fine according to the docs. The errors still happen semi-regularly. I don't want to lower it too much though and DOS my own database :).</p>
+
+<p>Maybe something in my MySQL config is goofy? Not sure where to look exactly.</p>
+
+<p>Other relevant details:</p>
+
+<pre><code>  Python 2.5
+  Pylons: 0.9.6.2 (w/ sql_alchemy)
+  MySQL: 5.0.51
+</code></pre>
+"
+8692,NA,2008-08-12T11:28:36Z,164,How to use Xpath in Python?,"<p>What is the library? Is there a full implementation? How is the library used? Where is its website?</p>
+"
+8948,145,2008-08-12T15:16:00Z,81,Accessing mp3 Meta-Data with Python,"<p>What is the best way to retrieve mp3 metadata in python?  I've seen a couple frameworks out there, but I'm unsure as to which would be the best to use.... Any ideas?</p>
+"
+10123,742,2008-08-13T17:46:41Z,8,How do I treat an integer as an array of bytes in Python?,"<p>I'm trying to decode the result of the Python os.wait() function. This returns, according to the Python docs:</p>
+
+<blockquote>
+  <p>a tuple containing its pid and exit status indication: a 16-bit number, whose low byte is the signal number that killed the process, and whose high byte is the exit status (if the signal number is zero); the high bit of the low byte is set if a core file was produced.</p>
+</blockquote>
+
+<p>How do I decode the exit status indication (which is an integer) to obtain the high and low byte? To be specific, how do I implement the decode function used in the following code snippet:</p>
+
+<pre><code>(pid,status) = os.wait()
+(exitstatus, signum) = decode(status)
+</code></pre>
+"
+11060,912,2008-08-14T13:59:21Z,18,How should I unit test a code-generator?,"<p>This is a difficult and open-ended question I know, but I thought I'd throw it to the floor and see if anyone had any interesting suggestions.</p>
+
+<p>I have developed a code-generator that takes our python interface to our C++ code (generated via SWIG) and generates code needed to expose this as WebServices.  When I developed this code I did it using TDD, but I've found my tests to be brittle as hell.  Because each test essentially wanted to verify that for a given bit of input code (which happens to be a C++ header) I'd get a given bit of outputted code I wrote a small engine that reads test definitions from XML input files and generates test cases from these expectations.</p>
+
+<p>The problem is I dread going in to modify the code at all.  That and the fact that the unit tests themselves are a: complex, and b: brittle.</p>
+
+<p>So I'm trying to think of alternative approaches to this problem, and it strikes me I'm perhaps tackling it the wrong way.  Maybe I need to focus more on the outcome, IE: does the code I generate actually run and do what I want it to, rather than, does the code look the way I want it to.</p>
+
+<p>Has anyone got any experiences of something similar to this they would care to share?</p>
+"
+12591,207,2008-08-15T18:42:20Z,6,Using an XML catalog with Python's lxml?,"<p>Is there a way, when I parse an XML document using lxml, to validate that document against its DTD using an external catalog file?   I need to be able to work the fixed attributes defined in a document’s DTD.</p>
+"
+12592,742,2008-08-15T18:43:17Z,28,Can you check that an exception is thrown with doctest in Python?,"<p>Is it possible to write a doctest unit test that will check that an exception is raised?<br>
+For example, if I have a function <code>foo(x)</code> that is supposed to raise an exception if <code>x&lt;0</code>, how would I write the doctest for that? </p>
+"
+13396,1266,2008-08-16T22:28:39Z,5,Replacement for for... if array iteration,"<p>I love list comprehensions in Python, because they concisely represent a transformation of a list.</p>
+
+<p>However, in other languages, I frequently find myself writing something along the lines of:</p>
+
+<pre><code>foreach (int x in intArray)
+  if (x &gt; 3) //generic condition on x
+    x++ 
+    //do other processing
+</code></pre>
+
+<p>This example is in C#, where I'm under the impression LINQ can help with this, but is there some common programming construct which can replace this slightly less-than-elegant solution?  Perhaps a data structure I'm not considering?</p>
+"
+13454,NA,2008-08-17T01:23:50Z,9,Python version of PHP's stripslashes,"<p>I wrote a piece of code to convert PHP's striplashes into valid Python [backslash] escapes:</p>
+
+<pre><code>cleaned = stringwithslashes
+cleaned = cleaned.replace('\\n', '\n')
+cleaned = cleaned.replace('\\r', '\n')
+cleaned = cleaned.replace('\\', '')
+</code></pre>
+
+<p>How can I condense it? </p>
+"
+13791,1370,2008-08-17T18:20:21Z,10,Python Regular Expressions to implement string unescaping,"<p>I'm trying to implement string unescaping with Python regex and backreferences, and it doesn't seem to want to work very well. I'm sure it's something I'm doing wrong but I can't figure out what...</p>
+
+<pre><code>&gt;&gt;&gt; import re
+&gt;&gt;&gt; mystring = r""This is \n a test \r""
+&gt;&gt;&gt; p = re.compile( ""\\\\(\\S)"" )
+&gt;&gt;&gt; p.sub( ""\\1"", mystring )
+'This is n a test r'
+&gt;&gt;&gt; p.sub( ""\\\\\\1"", mystring )
+'This is \\n a test \\r'
+&gt;&gt;&gt; p.sub( ""\\\\1"", mystring )
+'This is \\1 a test \\1'
+</code></pre>
+
+<p>I'd like to replace \\[char] with \[char], but backreferences in Python don't appear to follow the same rules they do in every other implementation I've ever used. Could someone shed some light?</p>
+"
+13857,1649,2008-08-17T19:14:30Z,56,Can you explain closures (as they relate to Python)?,"<p>I've been reading a lot about closures and I think I understand them, but without clouding the picture for myself and others, I am hoping someone can explain closures as succinctly and clearly as possible.  I'm looking for a simple explanation that might help me understand where and why I would want to use them.</p>
+"
+13941,1615,2008-08-17T21:33:39Z,34,"Python Sound (""Bell"")","<p>I'd like to have a python program alert me when it has completed its task by making a beep noise.  Currently,  I use <code>import os</code> and then use a command line speech program to say ""Process complete.""  I much rather it be a simple ""bell.""</p>
+
+<p>I know that there's a function that can be used in Cocoa apps, NSBeep, but I don't think that has much anything to do with this.</p>
+
+<p>I've also tried <code>print(\a)</code> but that didn't work.</p>
+
+<p>I'm using a Mac, if you couldn't tell by my Cocoa comment, so that may help.</p>
+
+<p>Thanks!</p>
+"
+14281,1448,2008-08-18T07:41:09Z,3,Is there a python module for regex matching in zip files,"<p>I have over a million text files compressed into 40 zip files. I also have a list of about 500 model names of phones. I want to find out the number of times a particular model was mentioned in the text files. </p>
+
+<p>Is there any python module which can do a regex match on the files without unzipping it. Is there a simple way to solve this problem without unzipping?</p>
+"
+14389,745,2008-08-18T09:41:14Z,21,Regex and unicode,"<p>I have a script that parses the filenames of TV episodes (show.name.s01e02.avi for example), grabs the episode name (from the www.thetvdb.com API) and automatically renames them into something nicer (Show Name - [01x02].avi)</p>
+
+<p>The script works fine, that is until you try and use it on files that have Unicode show-names (something I never really thought about, since all the files I have are English, so mostly pretty-much all fall within <code>[a-zA-Z0-9'\-]</code>)</p>
+
+<p>How can I allow the regular expressions to match accented characters and the likes? Currently the regex's config section looks like..</p>
+
+<pre><code>config['valid_filename_chars'] = """"""0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@£$%^&amp;*()_+=-[]{}""'.,&lt;&gt;`~? """"""
+config['valid_filename_chars_regex'] = re.escape(config['valid_filename_chars'])
+
+config['name_parse'] = [
+    # foo_[s01]_[e01]
+    re.compile('''^([%s]+?)[ \._\-]\[[Ss]([0-9]+?)\]_\[[Ee]([0-9]+?)\]?[^\\/]*$'''% (config['valid_filename_chars_regex'])),
+    # foo.1x09*
+    re.compile('''^([%s]+?)[ \._\-]\[?([0-9]+)x([0-9]+)[^\\/]*$''' % (config['valid_filename_chars_regex'])),
+    # foo.s01.e01, foo.s01_e01
+    re.compile('''^([%s]+?)[ \._\-][Ss]([0-9]+)[\.\- ]?[Ee]([0-9]+)[^\\/]*$''' % (config['valid_filename_chars_regex'])),
+    # foo.103*
+    re.compile('''^([%s]+)[ \._\-]([0-9]{1})([0-9]{2})[\._ -][^\\/]*$''' % (config['valid_filename_chars_regex'])),
+    # foo.0103*
+    re.compile('''^([%s]+)[ \._\-]([0-9]{2})([0-9]{2,3})[\._ -][^\\/]*$''' % (config['valid_filename_chars_regex'])),
+]
+</code></pre>
+"
+15798,446497,2008-08-19T06:24:54Z,27,How do I validate xml against a DTD file in Python,"<p>I need to validate an XML string (and not a file)
+against a DTD description file. </p>
+
+<p>How can that be done in <code>python</code>?</p>
+"
+16067,199,2008-08-19T12:32:38Z,18,Prototyping with Python code before compiling,"<p>I have been mulling over writing a peak fitting library for a while. I know Python fairly well and plan on implementing everything in Python to begin with but envisage that I may have to re-implement some core routines in a compiled language eventually.</p>
+
+<p>IIRC, one of Python's original remits was as a prototyping language, however Python is pretty liberal in allowing functions, functors, objects to be passed to functions and methods, whereas I suspect the same is not true of say C or Fortran.</p>
+
+<p>What should I know about designing functions/classes which I envisage will have to interface into the compiled language? And how much of these potential problems are dealt with by libraries such as cTypes, bgen, <a href=""http://www.swig.org/"">SWIG</a>, <a href=""http://www.boost.org/doc/libs/1_35_0/libs/python/doc/index.html"">Boost.Python</a>, <a href=""http://cython.org/"">Cython</a> or <a href=""http://www.riverbankcomputing.co.uk/software/sip/intro"">Python SIP</a>?</p>
+
+<p>For this particular use case, (a fitting library) I imagine allowing users to define mathematical functions (Guassian, Lorentzian etc.) as Python functions which can then to be passed an interpreted by the compiled code fitting library. Passing and returning arrays is also essential.</p>
+"
+16861,2019,2008-08-19T20:18:31Z,46,Sanitising user input using Python,"<p>What's the best way to sanitise user input for a Python-based web application? Is there a single function to remove HTML characters and any other necessary characters combinations to prevent an <a href=""http://en.wikipedia.org/wiki/Cross-site_scripting"" rel=""nofollow"">XSS</a> or SQL injection attack?</p>
+"
+17250,394,2008-08-20T00:16:40Z,24,Create an encrypted ZIP file in Python,"<p>I'm creating an ZIP file with ZipFile in Python 2.5, it works ok so far:</p>
+
+<pre><code>import zipfile, os
+
+locfile = ""test.txt""
+loczip = os.path.splitext (locfile)[0] + "".zip""
+zip = zipfile.ZipFile (loczip, ""w"")
+zip.write (locfile)
+zip.close()
+</code></pre>
+
+<p>but I couldn't find how to encrypt the files in the ZIP file.
+I could use system and call PKZIP -s, but I suppose there must be a more ""Pythonic"" way.  I'm looking for an open source solution.</p>
+"
+17893,745,2008-08-20T13:07:25Z,36,What's the best way to distribute python command-line tools?,"<p>My current setup.py script works okay, but it installs tvnamer.py (the tool) as ""tvnamer.py"" into site-packages or somewhere similar..</p>
+
+<p>Can I make setup.py install tvnamer.py as tvnamer, and/or is there a better way of installing command-line applications?</p>
+"
+19030,745,2008-08-20T22:50:55Z,2,How to check set of files conform to a naming scheme,"<p>I have a bunch of files (TV episodes, although that is fairly arbitrary) that I want to check match a specific naming/organisation scheme..</p>
+
+<p>Currently: I have three arrays of regex, one for valid filenames, one for files missing an episode name, and one for valid paths.</p>
+
+<p>Then, I loop though each valid-filename regex, if it matches, append it to a ""valid"" dict, if not, do the same with the missing-ep-name regexs, if it matches this I append it to an ""invalid"" dict with an error code (2:'missing epsiode name'), if it matches neither, it gets added to invalid with the 'malformed name' error code.</p>
+
+<p>The current code can be found <a href=""http://github.com/dbr/checktveps/tree/8a6dc68ad61e684c8d8f0ca1dc37a22d1c51aa82/2checkTvEps.py"" rel=""nofollow"">here</a></p>
+
+<p>I want to add a rule that checks for the presence of a folder.jpg file in each directory, but to add this would make the code substantially more messy in it's current state.. </p>
+
+<p>How could I write this system in a more expandable way?</p>
+
+<p>The rules it needs to check would be..</p>
+
+<ul>
+<li>File is in the format <code>Show Name - [01x23] - Episode Name.avi</code> or <code>Show Name - [01xSpecial02] - Special Name.avi</code> or <code>Show Name - [01xExtra01] - Extra Name.avi</code></li>
+<li>If filename is in the format <code>Show Name - [01x23].avi</code> display it a 'missing episode name' section of the output</li>
+<li>The path should be in the format <code>Show Name/season 2/the_file.avi</code> (where season 2 should be the correct season number in the filename)</li>
+<li>each <code>Show Name/season 1/</code> folder should contain ""folder.jpg""</li>
+</ul>
+
+<p>.any ideas? While I'm trying to check TV episodes, this concept/code should be able to apply to many things..</p>
+
+<p>The only thought I had was a list of dicts in the format:</p>
+
+<pre><code>checker = [
+{
+    'name':'valid files',
+    'type':'file',
+    'function':check_valid(), # runs check_valid() on all files
+    'status':0 # if it returns True, this is the status the file gets
+}
+</code></pre>
+"
+19151,145,2008-08-21T00:36:11Z,321,Build a Basic Python Iterator,"<p>How would one create an iterative function (or iterator object) in python?</p>
+"
+19339,680,2008-08-21T04:29:07Z,241,A Transpose/Unzip Function in Python (inverse of zip),"<p>I have a list of 2-item tuples and I'd like to convert them to 2 lists where the first contains the first item in each tuple and the second list holds the second item.</p>
+
+<p><strong>For example:</strong></p>
+
+<pre><code>original = [('a', 1), ('b', 2), ('c', 3), ('d', 4)]
+# and I want to become...
+result = (['a', 'b', 'c', 'd'], [1, 2, 3, 4])
+</code></pre>
+
+<p>Is there a builtin function that does that?</p>
+"
+19654,1951,2008-08-21T11:48:03Z,5,Introducing Python,"<p>The company I used to work with has two developers working fulltime, and a handful of freelancers. They're in the process of hiring a new lead developer to try to bring order and management to the development.</p>
+
+<p>But, currently, one of the developers has seen the light of Django (the company has only developed in PHP to date) while the other developer is concerned that introducing a new language (Python) is a bad idea right now.</p>
+
+<p>How should they approach introducing this new technology? Obviously with only one of the developers actually knowing Python, there will be no redundancy when that dev is away or leaves the company.</p>
+
+<p>Should they bother to introduce Python, or should they look for PHP-only solutions until such a time when the team actually have more than one Pythonion? Without a team leader, the decisions are having to fall to them.</p>
+"
+20063,1335,2008-08-21T14:24:41Z,84,What's the best way to grab/parse command line arguments passed to a Python script?,"<p>What's the <strong>easiest, tersest, and most flexible</strong> method or library for parsing Python command line arguments?</p>
+"
+20794,1892,2008-08-21T19:00:52Z,13,Find broken symlinks with Python,"<p>If I call <code>os.stat()</code> on a broken <code>symlink</code>, python throws an <code>OSError</code> exception. This makes it useful for finding them. However, there are a few other reasons that <code>os.stat()</code> might throw a similar exception. Is there a more precise way of detecting broken <code>symlinks</code> with Python under Linux?</p>
+"
+20927,1914,2008-08-21T19:41:57Z,6,updating an auto_now DateTimeField in a parent model w/ Django,"<p>I've got two models: Message and Attachment. Each attachment is attached to a specific message, using a ForeignKey on the Attachment model. Both models have an auto_now DateTimeField called updated. I'm trying to make it so that when any attachment is saved, it also sets the updated field on the associated message to now. Here's my code:</p>
+
+<pre><code>def save(self):
+    super(Attachment, self).save()
+    self.message.updated = self.updated
+</code></pre>
+
+<p>Will this work, and if you can explain it to me, why? If not, how would I accomplish this?</p>
+"
+21454,2019,2008-08-21T23:48:08Z,65,Specifying a mySQL ENUM in a Django model,"<p>How do I go about specifying and using an ENUM in a Django model?</p>
+"
+21934,1556,2008-08-22T07:35:26Z,35,Why Java and Python garbage collection methods are different?,"<p>Python uses the reference count method to handle object life time. So an object that has no more use will be immediately destroyed.</p>
+
+<p>But, in Java, the GC(garbage collector) destroys objects which are no longer used at a specific time.</p>
+
+<p>Why does Java choose this strategy and what is the benefit from this?</p>
+
+<p>Is this better than the Python approach?</p>
+"
+21961,2427,2008-08-22T09:06:43Z,3,Why does this python date/time conversion seem wrong?,"<pre><code>&gt;&gt;&gt; import time
+&gt;&gt;&gt; time.strptime(""01-31-2009"", ""%m-%d-%Y"")
+(2009, 1, 31, 0, 0, 0, 5, 31, -1)
+&gt;&gt;&gt; time.mktime((2009, 1, 31, 0, 0, 0, 5, 31, -1))
+1233378000.0
+&gt;&gt;&gt; 60*60*24 # seconds in a day
+86400
+&gt;&gt;&gt; 1233378000.0 / 86400
+14275.208333333334
+</code></pre>
+
+<p>time.mktime should return the number of seconds since the epoch. Since I'm giving it a time at midnight and the epoch is at midnight, shouldn't the result be evenly divisible by the number of seconds in a day?</p>
+"
+22059,NA,2008-08-22T10:51:19Z,4,"How do content discovery engines, like Zemanta and Open Calais work?","<p>I was wondering how as semantic service like Open Calais figures out the names of companies, or people, tech concepts, keywords, etc. from a piece of text. Is it because they have a large database that they match the text against? </p>
+
+<p>How would a service like Zemanta know what images to suggest to a piece of text for instance? </p>
+"
+22149,2077,2008-08-22T12:01:53Z,25,Unicode vs UTF-8 confusion in Python / Django?,"<p>I stumbled over this passage in the <a href=""http://www.djangoproject.com/documentation/tutorial01/"">Django tutorial</a>:</p>
+
+<blockquote>
+  <p>Django models have a default <strong>str</strong>() method that calls <strong>unicode</strong>() and converts the result to a UTF-8 bytestring. This means that unicode(p) will return a Unicode string, and str(p) will return a normal string, with characters encoded as UTF-8.</p>
+</blockquote>
+
+<p>Now, I'm confused because afaik Unicode is not any particular representation, so what is a ""Unicode string"" in Python? Does that mean UCS-2? Googling turned up <a href=""http://www.reportlab.com/i18n/python_unicode_tutorial.html"">this ""Python Unicode Tutorial""</a> which boldly states</p>
+
+<blockquote>
+  <p>Unicode is a two-byte encoding which covers all of the world's common writing systems.</p>
+</blockquote>
+
+<p>which is plain wrong, or is it? I have been confused many times by character set and encoding issues, but here I'm quite sure that the documentation I'm reading is confused. Does anybody know what's going on in Python when it gives me a ""Unicode string""?</p>
+"
+22617,2504,2008-08-22T15:10:46Z,68,Format numbers to strings in Python,"<p>I need to find out how to format numbers as strings. My code is here:</p>
+
+<pre><code>return str(hours)+"":""+str(minutes)+"":""+str(seconds)+"" ""+ampm
+</code></pre>
+
+<p>Hours and minutes are integers, and seconds is a float.  the str() function will convert all of these numbers to the tenths (0.1) place.  So instead of my string outputting ""5:30:59.07 pm"", it would display something like ""5.0:30.0:59.1 pm"".</p>
+
+<p>Bottom line, what library / function do I need to do this for me?</p>
+"
+22676,2109,2008-08-22T15:34:13Z,492,How do I download a file over HTTP using Python?,"<p>I have a small utility that I use to download a MP3 from a website on a schedule and then builds/updates a podcast XML file which I've obviously added to iTunes.</p>
+
+<p>The text processing that creates/updates the XML file is written in Python. I use wget inside a Windows <code>.bat</code> file to download the actual MP3 however. I would prefer to have the entire utility written in Python though.</p>
+
+<p>I struggled though to find a way to actually down load the file in Python, thus why I resorted to <code>wget</code>.</p>
+
+<p>So, how do I download the file using Python?</p>
+"
+23397,2555,2008-08-22T20:27:46Z,20,What's the best way to duplicate fork() in windows?,"<p>How do I implement some logic that will allow me to reproduce on Windows the functionality that I have on Linux with the <code>fork()</code> system call, using Python?</p>
+
+<p>I'm specifically trying to execute a method on the SAPI Com component, while continuing the other logic in the main thread without blocking or waiting.</p>
+"
+23907,745,2008-08-23T03:00:46Z,34,How can I graph the Lines of Code history for git repo?,"<p>Basically I want to get the number of lines-of-code in the repository after each commit.</p>
+
+<p>The only (really crappy) ways I have found is to use git filter-branch to run ""wc -l *"", and a script that run git reset --hard on each commit, then ran wc -l</p>
+
+<p>To make it a bit clearer, when the tool is run, it would output the lines of code of the very first commit, then the second and so on.. This is what I want the tool to output (as an example):</p>
+
+<pre><code>me@something:~/$ gitsloc --branch master
+10
+48
+153
+450
+1734
+1542
+</code></pre>
+
+<p>I've played around with the ruby 'git' library, but the closest I found was using the .lines() method on a diff, which seems like it should give the added lines (but does not.. it returns 0 when you delete lines for example)</p>
+
+<pre><code>require 'rubygems'
+require 'git'
+
+total = 0
+g = Git.open(working_dir = '/Users/dbr/Desktop/code_projects/tvdb_api')
+
+
+last = nil
+g.log.each do |cur|
+  diff = g.diff(last, cur)
+  total = total + diff.lines
+  puts total
+  last = cur
+end
+</code></pre>
+"
+24193,267,2008-08-23T12:41:43Z,3,Python code generator for Visual Studio?,"<p>I had an idea, if I add a python .py file to my C# project, and tag the file with a custom generator that would execute the python file, and treat the output as the result of the code generation, ie. put it into a C# file, that would allow me to do quite a lot of code generation as part of the build process.</p>
+
+<p>Does anyone know if such a custom generator for Visual Studio 2008 exists?</p>
+"
+24931,1670,2008-08-24T08:46:57Z,7,How to capture Python interpreter's and/or CMD.EXE's output from a Python script?,"<ol>
+<li>Is it possible to capture Python interpreter's output from a Python script?</li>
+<li>Is it possible to capture Windows CMD's output from a Python script?</li>
+</ol>
+
+<p>If so, which librar(y|ies) should I look into?</p>
+"
+25116,2679,2008-08-24T15:37:50Z,41,Binary buffer in Python,"<p>In Python you can use <a href=""https://docs.python.org/library/struct.html"">StringIO</a> for a file-like buffer for character data. <a href=""https://docs.python.org/library/mmap.html"">Memory-mapped file</a> basically does similar thing for binary data, but it requires a file that is used as the basis. Does Python have a file object that is intended for binary data and is memory only, equivalent to Java's <a href=""http://java.sun.com/javase/6/docs/api/java/io/ByteArrayOutputStream.html"">ByteArrayOutputStream</a>?</p>
+
+<p>The use-case I have is I want to create a ZIP file in memory, and <a href=""https://docs.python.org/library/zipfile.html"">ZipFile</a> requires a file-like object.</p>
+"
+25661,2772,2008-08-25T04:36:48Z,7,pyGame within a pyGTK application,"<p>What is the best way to use PyGame (SDL) within a PyGTK application?</p>
+
+<p>I'm searching for a method that allows me to have a drawing area in the GTK window and at the same time being able to manage both GTK and SDL events.</p>
+"
+25807,2679,2008-08-25T09:06:16Z,30,Python super class reflection,"<p>If I have Python code</p>
+
+<pre><code>class A():
+    pass
+class B():
+    pass
+class C(A, B):
+    pass
+</code></pre>
+
+<p>and I have class <code>C</code>, is there a way to iterate through it's super classed (<code>A</code> and <code>B</code>)? Something like pseudocode:</p>
+
+<pre><code>&gt;&gt;&gt; magicGetSuperClasses(C)
+(&lt;type 'A'&gt;, &lt;type 'B'&gt;)
+</code></pre>
+
+<p>One solution seems to be <a href=""http://docs.python.org/lib/module-inspect.html"">inspect module</a> and <code>getclasstree</code> function.</p>
+
+<pre><code>def magicGetSuperClasses(cls):
+    return [o[0] for o in inspect.getclasstree([cls]) if type(o[0]) == type]
+</code></pre>
+
+<p>but is this a ""Pythonian"" way to achieve the goal?</p>
+"
+26595,156,2008-08-25T18:27:16Z,193,"Is there any difference between ""foo is None"" and ""foo == None""?","<p>Is there any difference between:</p>
+
+<pre><code>if foo is None: pass
+</code></pre>
+
+<p>and</p>
+
+<pre><code>if foo == None: pass
+</code></pre>
+
+<p>The convention that I've seen in most Python code (and the code I myself write) is the former, but I recently came across code which uses the latter.  None is an instance (and the only instance, IIRC) of NoneType, so it shouldn't matter, right?  Are there any circumstances in which it might?</p>
+"
+26706,1785,2008-08-25T19:43:15Z,5,wxpython: How do I examine dragged data in OnDragOver?,"<p>I'm a bit perplexed by drag and drop in wxPython (but perhaps this questions pertains to drag and drop in other GUI frameworks as well). The frameworks provides a couple of callbacks (OnEnter and OnDragOver) that purportedly allow me to inform the system whether the current mouse position is a valid place to drop whatever it is that is being dragged. From these methods I can return wx.DragNone, wx.DragCopy, etc. What baffles me is that from within these methods I am not allowed to call GetData, which means I am not allowed to examine the data that the user is dragging. If I cannot see the data, how am I supposed to know whether it is OK for the user to drop here?</p>
+"
+27567,1662,2008-08-26T08:40:28Z,9,Where can I learn more about PyPy's translation function?,"<p>I've been having a hard time trying to understand PyPy's translation.  It looks like something absolutely revolutionary from simply reading the description, however I'm hard-pressed to find good documentation on actually translating a real world piece of code to something such as LLVM.  Does such a thing exist?  The official PyPy documentation on it just skims over the functionality, rather than providing anything I can try out myself.</p>
+"
+28165,305,2008-08-26T14:20:48Z,10,Does PHP have an equivalent to this type of Python string substitution?,"<p>Python has this wonderful way of handling string substitutions using dictionaries:</p>
+
+<pre><code>&gt;&gt;&gt; 'The %(site)s site %(adj)s because it %(adj)s' % {'site':'Stackoverflow', 'adj':'rocks'}
+'The Stackoverflow site rocks because it rocks'
+</code></pre>
+
+<p>I love this because you can specify a value once in the dictionary and then replace it all over the place in the string.</p>
+
+<p>I've tried to achieve something similar in PHP using various string replace functions but everything I've come up with feels awkward.</p>
+
+<p>Does anybody have a nice clean way to do this kind of string substitution in PHP?</p>
+
+<p><em><strong>Edit</em></strong><br>
+Here's the code from the sprintf page that I liked best.  </p>
+
+<pre><code>&lt;?php
+
+function sprintf3($str, $vars, $char = '%')
+{
+    $tmp = array();
+    foreach($vars as $k =&gt; $v)
+    {
+        $tmp[$char . $k . $char] = $v;
+    }
+    return str_replace(array_keys($tmp), array_values($tmp), $str);
+}
+
+echo sprintf3( 'The %site% site %adj% because it %adj%', array('site'=&gt;'Stackoverflow', 'adj'=&gt;'rocks'));
+?&gt;
+</code></pre>
+"
+28369,3002,2008-08-26T15:27:03Z,3,"Is ""safe_eval"" really safe?","<p>I'm looking for a ""safe"" eval function, to implement spreadsheet-like calculations (using numpy/scipy).</p>
+
+<p>The functionality to do this (the <a href=""http://docs.python.org/lib/module-rexec.html"" rel=""nofollow"">rexec module</a>) has been removed from Python since 2.3 due to apparently unfixable security problems. There are several third-party hacks out there that purport to do this - the most thought-out solution that I have found is 
+<a href=""http://code.activestate.com/recipes/496746/"" rel=""nofollow"">this Python Cookbok recipe</a>, ""safe_eval"". </p>
+
+<p>Am I reasonably safe if I use this (or something similar), to protect from malicious code, or am I stuck with writing my own parser? Does anyone know of any better alternatives?</p>
+
+<p>EDIT: I just discovered <a href=""http://pypi.python.org/pypi/RestrictedPython"" rel=""nofollow"">RestrictedPython</a>, which is part of Zope. Any opinions on this are  welcome.</p>
+"
+28559,116,2008-08-26T16:37:52Z,9,Most Pythonic way equivalent for: while ((x = next()) != END),"<p>What's the best Python idiom for this C construct?</p>
+
+<pre><code>while ((x = next()) != END) {
+    ....
+}
+</code></pre>
+
+<p>I don't have the ability to recode next().</p>
+
+<p>update:  and the answer from seems to be:</p>
+
+<pre><code>for x in iter(next, END):
+    ....
+</code></pre>
+"
+28668,1892,2008-08-26T17:20:47Z,8,Best way to extract data from a FileMaker Pro database in a script?,"<p>My job would be easier, or at least less tedious if I could come up with an automated way (preferably in a Python script) to extract useful information from a FileMaker Pro database. I am working on Linux machine and the FileMaker database is on the same LAN running on an OS X machine. I can log into the webby interface from my machine.</p>
+
+<p>I'm quite handy with SQL, and if somebody could point me to some FileMaker plug-in that could give me SQL access to the data within FileMaker, I would be pleased as punch. Everything I've found only goes the other way: Having FileMaker get data from SQL sources. Not useful.</p>
+
+<p>It's not my first choice, but I'd use Perl instead of Python if there was a Perl-y solution at hand.</p>
+
+<p><em>Note</em>: XML/XSLT services (as suggested by some folks) are only available on FM Server, not FM Pro. Otherwise, that would probably be the best solution. ODBC is turning out to be extremely difficult to even get working. There is absolutely zero feedback from FM when you set it up so you have to dig through /var/log/system.log and parse obscure error messages.</p>
+
+<p><em>Conclusion</em>: I got it working by running a python script locally on the machine that queries the FM database through the ODBC connections. The script is actually a TCPServer that accepts socket connections from other systems on the LAN, runs the queries, and returns the data through the socket connection. I had to do this to bypass the fact that FM Pro only accepts ODBC connections locally (FM server is required for external connections).</p>
+"
+28796,2900,2008-08-26T18:26:51Z,52,What refactoring tools do you use for Python?,"<p>I have a bunch of classes I want to rename.  Some of them have names that are small and that name is reused in other class names, where I don't want that name changed.  Most of this lives in Python code, but we also have some XML code that references class names.</p>
+
+<p>Simple search and replace only gets me so far.  In my case, I want to rename AdminAction to AdminActionPlug and AdminActionLogger to AdminActionLoggerPlug, so the first one's search-and-replace would also hit the second, wrongly.</p>
+
+<p>Does anyone have experience with Python refactoring tools ? Bonus points if they can fix class names in the XML documents too.</p>
+"
+28961,3117,2008-08-26T19:49:54Z,7,What's the best way to use web services in python?,"<p>I have a medium sized application that runs as a .net web-service which I do not control,
+and I want to create a loose pythonic API above it to enable easy scripting.</p>
+
+<p>I wanted to know what is the best/most practical solution for using web-services in python.</p>
+
+<p>Edit:
+I need to consume a complex soap WS
+and I have no control over it.</p>
+"
+29243,1638,2008-08-27T00:21:35Z,14,How do I create an xml document in python,"<p>Here is my sample code:</p>
+
+<pre><code>from xml.dom.minidom import *
+def make_xml():
+    doc = Document()
+    node = doc.createElement('foo')
+    node.innerText = 'bar'
+    doc.appendChild(node)
+    return doc
+if __name__ == '__main__':
+    make_xml().writexml(sys.stdout)
+</code></pre>
+
+<p>when I run the above code I get this:</p>
+
+<pre><code>&lt;?xml version=""1.0"" ?&gt;
+&lt;foo/&gt;
+</code></pre>
+
+<p>I would like to get:</p>
+
+<pre><code>&lt;?xml version=""1.0"" ?&gt;
+&lt;foo&gt;bar&lt;/foo&gt;
+</code></pre>
+
+<p>I just guessed that there was an innerText property, it gives no compiler error, but does not seem to work... how do I go about creating a text node?</p>
+"
+29562,2908,2008-08-27T05:03:07Z,23,Python distutils - does anyone know how to use it?,"<p>I wrote a quick program in python to add a gtk GUI to a cli program. I was wondering how I can create an installer using distutils. Since it's just a GUI frontend for a command line app it only works in *nix anyway so I'm not worried about it being cross platform.</p>
+
+<p>my main goal is to create a .deb package for debian/ubuntu users, but I don't understand make/configure files. I've primarily been a web developer up until now.</p>
+
+<p>Thanks for your help!</p>
+
+<p><strong>edit</strong>: Does anyone know of a project that uses distutils so I could see it in action and, you know, actually try building it?</p>
+
+<h2>Here are a few useful links</h2>
+
+<ul>
+<li><p><a href=""https://wiki.ubuntu.com/PackagingGuide/Python"">Ubuntu Python Packaging Guide</a></p>
+
+<p>This Guide is <strong><em>very</em></strong> helpful. I don't know how I missed it during my initial wave of gooling. It even walks you through packaging up an existing python application</p></li>
+<li><p><a href=""https://wiki.ubuntu.com/MOTU/GettingStarted"">The Ubuntu MOTU Project</a></p>
+
+<p>This is the official package maintaining project at ubuntu. Anyone can join, and there are lots of tutorials and info about creating packages, of all types, which include the above 'python packaging guide'.</p></li>
+<li><p><a href=""http://episteme.arstechnica.com/eve/forums/a/tpc/f/96509133/m/808004952931"">""Python distutils to deb?"" - Ars Technica Forum discussion</a></p>
+
+<p>According to this conversation, you can't just use distutils. It doesn't follow the debian packaging format (or something like that). I guess that's why you need dh_make as seen in the Ubuntu Packaging guide</p></li>
+<li><p><a href=""http://osdir.com/ml/linux.debian.devel.python/2004-10/msg00013.html"">""A bdist_deb command for distutils</a></p>
+
+<p>This one has some interesting discussion (it's also how I found the ubuntu guide) about concatenating a zip-file and a shell script to create some kind of universal executable (anything with python and bash that is). weird. Let me know if anyone finds more info on this practice because I've never heard of it.</p></li>
+<li><p><A href=""http://mail.python.org/pipermail/distutils-sig/2000-May/001000.html"">Description of the deb format and how distutils fit in - python mailing list</a></p></li>
+</ul>
+"
+29856,3431280,2008-08-27T10:22:09Z,2,Install Python to match directory layout in OS X 10.5,"<p>The default Python install on OS X 10.5 is 2.5.1 with a fat 32 bit (Intel and PPC) client. I want to setup apache and mysql to run django. In the past I have run apache and mysql to match this install in 32 bit mode (even stripping out the 64 bit stuff from apache to make it work).</p>
+
+<p>I want to upgrade Python to 64 bit. I am completely comfortable with compiling it from source with one caveat. How to I match the way that the default install is laid out? Especially with regards to site-packages being in <code>/Library/Python/2.5/</code> and not the one in buried at the top of the framework once I compile it. </p>
+"
+31340,242853,2008-08-27T23:44:47Z,71,"How do threads work in Python, and what are common Python-threading specific pitfalls?","<p>I've been trying to wrap my head around how threads work in Python, and it's hard to find good information on how they operate. I may just be missing a link or something, but it seems like the official documentation isn't very thorough on the subject, and I haven't been able to find a good write-up.</p>
+
+<p>From what I can tell, only one thread can be running at once, and the active thread switches every 10 instructions or so?</p>
+
+<p>Where is there a good explanation, or can you provide one? It would also be very nice to be aware of common problems that you run into while using threads with Python.</p>
+"
+32044,3154,2008-08-28T11:43:10Z,44,How can I render a tree structure (recursive) using a django template?,"<p>I have a tree structure in memory that I would like to render in HTML using a Django template. </p>
+
+<pre><code>class Node():
+  name = ""node name""
+  children = []
+</code></pre>
+
+<p>There will be some object <code>root</code> that is a <code>Node</code>, and <code>children</code> is a list of <code>Node</code>s. <code>root</code> will be passed in the content of the template.</p>
+
+<p>I have found <a href=""http://blog.elsdoerfer.name/2008/01/22/recursion-in-django-templates/"">this</a> one discussion of how this might be achieved, but the poster suggests this might not be good in a production environment.</p>
+
+<p>Does anybody know of a better way?</p>
+"
+32385,2147,2008-08-28T14:23:00Z,6,Programmatically editing Python source,"<p>This is something that I think would be very useful.  Basically, I'd like there to be a way to edit Python source programmatically without requiring human intervention.  There are a couple of things I would like to do with this:</p>
+
+<ol>
+<li><p>Edit the configuration of Python apps that use source modules for configuration.</p></li>
+<li><p>Set up a ""template"" so that I can customize a Python source file on the fly.  This way, I can set up a ""project"" system on an open source app I'm working on and allow certain files to be customized.</p></li>
+</ol>
+
+<p>I could probably write something that can do this myself, but I can see that opening up a lot of ""devil's in the details"" type issues.  Are there any ways to do this currently, or am I just going to have to bite the bullet and implement it myself?</p>
+"
+32404,2077,2008-08-28T14:28:04Z,165,"Is it possible to run a Python script as a service in Windows? If possible, how?","<p>I am sketching the architecture for a set of programs that share various interrelated objects stored in a database. I want one of the programs to act as a service which provides a higher level interface for operations on these objects, and the other programs to access the objects through that service.</p>
+
+<p>I am currently aiming for Python and the Django framework as the technologies to implement that service with. I'm pretty sure I figure how to demonize the Python program in Linux. However, it is an optional spec item that the system should support Windows. I have little experience with Windows programming and no experience at all with Windows services.</p>
+
+<p><strong>Is it possible to run a Python programs as a Windows service (i. e. run it automatically without user login)?</strong> I won't necessarily have to implement this part, but I need a rough idea how it would be done in order to decide whether to design along these lines.</p>
+
+<p><i>Edit: Thanks for all the answers so far, they are quite comprehensive. I would like to know one more thing: <b>How is Windows aware of my service? Can I manage it with the native Windows utilities?</b> <strong>Basically, what is the equivalent of putting a start/stop script in /etc/init.d?</i></strong></p>
+"
+32899,720,2008-08-28T17:49:02Z,111,How to generate dynamic (parametrized) unit tests in python?,"<p>I have some kind of test data and want to create an unit test for each item. My first idea was to do it like this:</p>
+
+<pre><code>import unittest
+
+l = [[""foo"", ""a"", ""a"",], [""bar"", ""a"", ""b""], [""lee"", ""b"", ""b""]]
+
+class TestSequence(unittest.TestCase):
+    def testsample(self):
+        for name, a,b in l:
+            print ""test"", name
+            self.assertEqual(a,b)
+
+if __name__ == '__main__':
+    unittest.main()
+</code></pre>
+
+<p>The downside of this is that it handles all data in one test. I would like to generate one test for each item on the fly. Any suggestions?</p>
+"
+33475,742,2008-08-28T21:48:09Z,1,"ssh hangs when command invoked directly, but exits cleanly when run interactive","<p>I need to launch a server on the remote machine and retrieve the port number that the server process is lsitening on.  When invoked, the server will listen on a random port and output the port number on stderr.</p>
+
+<p>I want to automate the process of logging on to the remote machine, launching the process, and retrieving the port number. I wrote a Python script called ""<code>invokejob.py</code>"" that lives on the remote machine to act as a wrapper that invokes the job and then returns the port number, it looks like this:</p>
+
+<pre><code>import re, subprocess
+executable = ... # Name of executable
+regex = ... # Regex to extract the port number from the output
+p = subprocess.Popen(executable,
+    bufsize=1, # line buffered
+    stderr=subprocess.PIPE
+    )
+s = p.stderr.readline()
+port = re.match(regex).groups()[0]
+print port
+</code></pre>
+
+<p>If I log in interactively, this script works:</p>
+
+<pre><code>$ ssh remotehost.example.com
+Last login: Thu Aug 28 17:31:18 2008 from localhost
+$ ./invokejob.py
+63409
+$ exit
+logout
+Connection to remotehost.example.com closed.
+</code></pre>
+
+<p>(Note: successful logout, it did not hang).</p>
+
+<p>However, if I try to invoke it from the command-line, it just hangs:</p>
+
+<pre><code>$ ssh remotehost.example.com invokejob.py
+</code></pre>
+
+<p>Does anybody know why it hangs in the second case, and what I can do to avoid this? </p>
+
+<p>Note that I need to retrieve the output of the program, so I can't just use the ssh ""-f"" flag or redirect standard output.</p>
+"
+33534,394,2008-08-28T22:18:02Z,10,Extending base classes in Python,"<p>I'm trying to extend some ""base"" classes in Python:</p>
+
+<pre><code>class xlist (list):
+    def len(self):
+        return len(self)
+
+    def add(self, *args):
+        self.extend(args)
+        return None
+
+
+class xint (int):
+    def add(self, value):
+        self += value
+        return self
+
+
+x = xlist([1,2,3])
+print x.len()   ## &gt;&gt;&gt; 3 ok
+print x         ## &gt;&gt;&gt; [1,2,3] ok
+x.add (4, 5, 6)
+print x         ## &gt;&gt;&gt; [1,2,3,4,5,6] ok
+
+x = xint(10)
+print x         ## &gt;&gt;&gt; 10 ok
+x.add (2)
+print x         ## &gt;&gt;&gt; 10  # Not ok (#1)
+
+print type(x)         ## &gt;&gt;&gt; &lt;class '__main__.xint'&gt; ok
+x += 5
+print type(x)         ## &gt;&gt;&gt; &lt;type 'int'&gt;  # Not ok (#2)
+</code></pre>
+
+<p>It works fine in the <em>list</em> case because the <em>append</em> method modifies the object ""in place"", without returning it. But in the <em>int</em> case, the <em>add</em> method doesn't modify the value of the external <em>x</em> variable. I suppose that's fine in the sense that <em>self</em> is a local variable in the <em>add</em> method of the class, but this is preventing me from modifying the initial value assigned to the instance of the class.</p>
+
+<p>Is it possible to extend a class this way or should I define a class property with the base type and map all the needed methods to this property?</p>
+"
+33978,3119,2008-08-29T04:59:31Z,117,Find out how much memory is being used by an object in Python,"<p>How would you go about finding out how much memory is being used by an object? I know it is possible to find out how much is used by a block of code, but not by an instantiated object (anytime during its life), which is what I want. </p>
+"
+34020,3561,2008-08-29T05:43:16Z,17,Are Python threads buggy?,"<p>A reliable coder friend told me that Python's current multi-threading implementation is seriously buggy - enough to avoid using altogether.  What can said about this rumor?</p>
+"
+34079,3573,2008-08-29T06:55:54Z,44,How to specify an authenticated proxy for a python http connection?,"<p>What's the best way to specify a proxy with username and password for an http connection in python?</p>
+"
+34209,3594,2008-08-29T09:03:27Z,1,Django ImageField core=False in newforms admin,"<p>In the transition to newforms admin I'm having difficulty figuring out how specify core=False for ImageFields.</p>
+
+<p>I get the following error:</p>
+
+<pre><code>TypeError: __init__() got an unexpected keyword argument 'core'
+</code></pre>
+
+<p>[Edit] However, by just removing the core argument I get a ""This field is required."" error in the admin interface on attempted submission. How does one accomplish what core=False is meant to do using newforms admin?</p>
+"
+34243,3594,2008-08-29T09:24:08Z,8,Python descriptor protocol analog in other languages?,"<p>Is there something like the Python descriptor protocol implemented in other languages? It seems like a nice way to increase modularity/encapsulation without bloating your containing class' implementation, but I've never heard of a similar thing in any other languages. Is it likely absent from other languages because of the lookup overhead?</p>
+"
+34328,2077,2008-08-29T10:18:21Z,10,How do I make Windows aware of a service I have written in Python?,"<p>In <a href=""http://stackoverflow.com/questions/32404/can-i-run-a-python-script-as-a-service-in-windows-how"" rel=""nofollow"" title=""Python scripts as Windows service"">another question</a> I posted yesterday, I got very good advice on how a Python script could be run as a service in Windows. What I'm left wondering is: How is Windows aware of the services that can be managed in the native tools (""services"" window in ""administrative tools""). I. e. what is the Windows equivalent of putting a start/stop script in /etc/init.d under Linux?</p>
+"
+34439,3587,2008-08-29T15:05:17Z,159,Finding what methods an object has,"<p>Given a Python object of any kind, is there an easy way to get a list of all methods that this object has?<br>
+Or,</p>
+
+<p>if this is not possible, is there at least an easy way to check if it has a particular method other than simply checking if an error occurs when the method is called?</p>
+"
+34916,985,2008-08-29T18:12:30Z,8,Scaffolding in pylons,"<p>Is there anything similar to rails' scaffolding fo pylons? I've been poking around google, but fofund only this thing caled dbsprockets, which is fine, although probably way to much for my needs. What i really need is a basic CRUD thas is based on the SQLAlchemy model.</p>
+"
+35538,3594,2008-08-30T01:15:32Z,21,Validate (X)HTML in Python,"<p>What's the best way to go about validating that a document follows some version of HTML (prefereably that I can specify)? I'd like to be able to know where the failures occur, as in a web-based validator, except in a native Python app.</p>
+"
+35569,3594,2008-08-30T01:51:05Z,6,Why does Python's iter() on a mapping return iterkeys() instead of iteritems()?,"<p>It seems like if you want to get the keys of a mapping, you ask for them; otherwise, give me the <em>whole</em> mapping (constituted by a set of key-value pairs). Is there a historical reason for this?</p>
+"
+35634,3594,2008-08-30T03:04:54Z,6,"Ruby ""is"" equivalent","<p>Is there a Ruby equivalent for Python's ""is""? It tests whether two objects are identical (i.e. have the same memory location).</p>
+"
+35753,3373,2008-08-30T07:08:22Z,25,Is Python good for big software projects (not web based)?,"<p>Right now I'm developing mostly in C/C++, but I wrote some small utilities in Python to automatize some tasks and I really love it as language (especially the productivity). </p>
+
+<p>Except for the performances (a problem that could be sometimes solved thanks to the ease of interfacing Python with C modules), do you think it is proper for production use in the development of stand-alone complex applications (think for example to a word processor or a graphic tool)?</p>
+
+<p>What IDE would you suggest? The IDLE provided with Python is not enough even for small projects in my opinion.</p>
+"
+35805,3154,2008-08-30T09:12:41Z,27,Why is my instance variable not in __dict__?,"<p>If I create a class <code>A</code> as follows:</p>
+
+<pre><code>class A:
+    def __init__(self):
+        self.name = 'A'
+</code></pre>
+
+<p>Inspecting the <code>__dict__</code> member looks like <code>{'name': 'A'}</code></p>
+
+<p>If however I create a class <code>B</code>:</p>
+
+<pre><code>class B:
+    name = 'B'
+</code></pre>
+
+<p><code>__dict__</code> is empty.</p>
+
+<p>What is the difference between the two, and why doesn't <code>name</code> show up in <code>B</code>'s <code>__dict__</code>?</p>
+"
