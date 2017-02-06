@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Sun 2017 Feb 05 12:09:14 PMPM clpoda> 
+#   Time-stamp: <Mon 2017 Feb 06 01:50:38 PMPM clpoda> 
 """fga_find_good_answers.py
 
    Usage:
@@ -29,6 +29,24 @@ Data format of stackoverflow.com python file from kaggle.com.
         from its display name on a Mac?,
         "<p>I am using the Photoshop's javascript API to find the fonts in a given PSD.</p>
 ..."
+
+Data format of q_with_a.csv o/p file from this program.
+    Note: question records have a Title but no ParentId;
+    answer records have a ParentId but no Title.
+
+==> q_with_a.csv <==
+        Id,ParentId,OwnerUserId,CreationDate,Score,Title,Body
+        5313,,680.0,2008-08-07T21:07:24Z,11,"Cross Platform, Language
+        Agnostic GUI Markup Language?",
+        "<p>I learned Swing back in the day but now 
+..."
+        5319,5313.0,380.0,2008-08-07T21:10:27Z,8,,<p>erm.. HTML?
+        (trying to be funny here... while we wait for real answers..)</p>
+        5320,5313.0,216.0,2008-08-07T21:11:28Z,1,,"<p>The
+        <a href=""http://www.wxwidgets.org/"" rel=""nofollow""
+        title=""wxWidgets"">wxWidgets</a> (formerly known as wxWindows)
+..."
+
 """
 
 
@@ -76,7 +94,7 @@ def main():
     q_with_a_df = combine_related_q_and_a(parent_id_l, all_ques_df, all_ans_df)
     # Write df to a csv file.
     outfile = 'outdir/q_with_a.csv'
-    q_with_a_df[['Id', 'Title', 'ParentId', 'OwnerUserId', 'Score', 'Body']].to_csv(outfile, header=True, index=None, sep=',', mode='w')
+    q_with_a_df[['Id', 'ParentId', 'OwnerUserId', 'CreationDate', 'Score', 'Title', 'Body']].to_csv(outfile, header=True, index=None, sep=',', mode='w')
     #DBG  write_df_to_file(q_with_a_df, outdir, a_fname)
 
 
@@ -200,7 +218,7 @@ def combine_related_q_and_a(parent_id_l, all_ques_df, all_ans_df):
         #
         # Get a pandas series of booleans to find all A's related to the current Q.
         ans_match_b = (all_ans_df.ParentId == qid)
-        df = all_ans_df[['Id', 'OwnerUserId',  'ParentId', 'Score', 'Body']][ans_match_b]
+        df = all_ans_df[['Id', 'ParentId', 'OwnerUserId',  'CreationDate', 'Score', 'Body']][ans_match_b]
         #
         # Append all related answers to the list.
         ques_ans_l.append(df)
