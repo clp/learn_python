@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Fri 2017 Feb 03 10:59:11 PMPM clpoda> 
+#   Time-stamp: <Sun 2017 Feb 05 12:09:14 PMPM clpoda> 
 """fga_find_good_answers.py
 
    Usage:
@@ -96,11 +96,11 @@ def config_data():
     indir = 'indir/'  # Relative to pwd, holds i/p files.
     outdir = 'outdir/'  # Relative to pwd, holds o/p files.
     q_fname = 'Questions.csv'
-    a_fname = 'Answers.csv'      # Ran in 43 sec.; o/p 4695 lines.
-    #D q_fname = 'a5_99998.csv'  # Ran in 20 sec.; o/p 4477 lines.
-    #D q_fname = 'q30_99993.csv'
+    a_fname = 'Answers.csv'      
+    q_fname = 'q30_99993.csv'
+    a_fname = 'a5_99998.csv'  
     q_fname = 'q3_992.csv'
-    a_fname = 'a3_986.csv'
+    a_fname = 'a3_986.csv'   
     #D q_fname = 'q2.csv'
     #D a_fname = 'a2.csv'
 
@@ -223,6 +223,6 @@ def write_df_to_file(in_df, wdir, wfile):
 
 if __name__ == '__main__':
     # Set the number of top scoring owners to select from the data.
-    num_owners = 20  # Default is 10.
+    num_owners = 10  # Default is 10.
     main()
 
