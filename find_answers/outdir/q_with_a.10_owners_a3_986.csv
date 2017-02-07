@@ -1,0 +1,732 @@
+Id,ParentId,OwnerUserId,CreationDate,Score,Title,Body
+5313,,680.0,2008-08-07T21:07:24Z,11,"Cross Platform, Language Agnostic GUI Markup Language?","<p>I learned Swing back in the day but now I've moved to Python and want to make some apps with GUIs. I haven't had the time to learn a new GUI API so I've been using Jython, but I would prefer to use CPython. </p>
+
+<p>It would be great if I can have one simple markup that allows me to switch GUI libraries. It would be even better if I can use the same markup language across languages so I can quickly make GUIs for any language I'm using. Does anyone know of such a markup/library?</p>
+
+<p>I've seen markups like Glade and wxWidget's markup (I forget the name). They're partly what I'm looking for (making a GUI without coding it in a language) but they're intertwined with a specific library. And neither are really nice looking or friendly to human editting.</p>"
+5319,5313.0,380.0,2008-08-07T21:10:27Z,8,,<p>erm.. HTML? (trying to be funny here... while we wait for real answers..)</p>
+5320,5313.0,216.0,2008-08-07T21:11:28Z,1,,"<p>The <a href=""http://www.wxwidgets.org/"" rel=""nofollow"" title=""wxWidgets"">wxWidgets</a> (formerly known as wxWindows) library might be what you're looking for. There's a particularly good port for Python, <a href=""http://wxpython.org/"" rel=""nofollow"" title=""wxPython"">wxPython</a>, as well as versions for different languages -- C#, C++, Perl and Ruby come to mind -- and for various GUIs: Win32, Mac OS X, GTK+, X11, Motif, WinCE. The library's been around for a while and is pretty solid.</p>"
+5340,5313.0,108.0,2008-08-07T21:24:26Z,3,,"<P>Not sure if this is what you're looking for, but there's <A href=""http://glade.gnome.org/"" rel=""nofollow"">Glade</A> (or <A href=""http://gladewin32.sourceforge.net/"" rel=""nofollow"">Windows download</A>) which is a designer for GTK+. It generates an XML file which can then be used to build the GUI in a number of different languages.</P>"
+5343,5313.0,25.0,2008-08-07T21:25:26Z,5,,"<p><a href=""http://en.wikipedia.org/wiki/Qt_%28toolkit%29"">Qt</a> (pronounced ""cute"" by its creators[1]) is a cross-platform application development framework, widely used for the development of GUI programs.</p>
+
+<p>Qt uses <strong>C++</strong> with several non-standard extensions implemented by an additional pre-processor that generates standard C++ code before compilation. Qt can also be used in several other programming languages; bindings exist for <strong>Ada</strong> (QtAda)[4], C<strong>#</strong> (Qyoto/Kimono)[5], <strong>Java</strong> (Qt Jambi)[6], <strong>Pascal</strong>, <strong>Perl</strong>, <strong>PHP</strong> (PHP-Qt), <strong>Ruby</strong> (RubyQt), and <strong>Python</strong> (PyQt). It runs on all major platforms, and has extensive internationalization support. Non-GUI features include SQL database access, XML parsing, thread management, network support and a unified cross-platform API for file handling.</p>"
+6616,5313.0,488.0,2008-08-09T04:44:41Z,3,,"<p><a href=""http://www.mozilla.org/projects/xul/"" rel=""nofollow"">XML User Interface Language</a>. Don't know much about it so not sure if it meets your desires. Post back with your experience if you play with it.</p>"
+7496,5313.0,680.0,2008-08-11T03:11:55Z,0,,"<p>I read a little on XML User Interface Language (XUL) and it looks really robust and well supported. The main problem for me is it's tied to the Gecko rendering engine so it's cross platform the way wxWidgets, QT and GTK+ are cross platform. Also, there Python bindings don't seem as good as those other libraries.</p>
+
+<p>GladeXML and XRC seem like better markups</p>
+"
+8109,5313.0,1026.0,2008-08-11T19:17:41Z,1,,"<p>@Cristian and Antony Cramp: while XUL is a nice choice for UI development (cross-platform, open-source licensed, used in Firefox and other major software), it's certainly not language agnostic. You're tied to Gecko, with JS for scripting. There is experimental support for Python scripting, but it's only experimental, AFAIK.</p>
+
+<p>You can define the UI in XUL+JS and use back-end components written in C++ though (there are Python and Java bridges available too).</p>
+"
+8114,5313.0,872.0,2008-08-11T19:21:14Z,4,,"<p>I seriously doubt you're going to find a markup language for GIU's that's <em>not</em> tied to a specific library.  For such a thing to exist, there would need to be a standardized GUI markup language, with several implementations.</p>
+"
+1476,,92.0,2008-08-04T18:20:36Z,251,How do you express binary literals in Python?,"<p>How do you express an integer as a binary number with Python literals?</p>
+
+<p>I was easily able to find the answer for hex:</p>
+
+<pre><code>    &gt;&gt;&gt; 0x12AF
+    4783
+    &gt;&gt;&gt; 0x100
+    256
+</code></pre>
+
+<p>and octal:</p>
+
+<pre><code>    &gt;&gt;&gt; 01267
+    695
+    &gt;&gt;&gt; 0100
+    64
+</code></pre>
+
+<p><strong>How do you use literals to express binary in Python?</strong></p>
+
+<hr>
+
+<p><strong><em>Summary of Answers</em></strong></p>
+
+<ul>
+<li>Python 2.5 and earlier: can express binary using <code>int('01010101111',2)</code> but not with a literal.</li>
+<li>Python 2.5 and earlier: there is <em>no way</em> to express binary literals.</li>
+<li>Python 2.6 beta: You can do like so: <code>0b1100111</code> or <code>0B1100111</code>.</li>
+<li>Python 2.6 beta: will also allow <code>0o27</code> or <code>0O27</code> (second character is the letter O) to represent an octal.</li>
+<li>Python 3.0 beta: Same as 2.6, but will no longer allow the older <code>027</code> syntax for octals.</li>
+</ul>
+"
+1478,1476.0,305.0,2008-08-04T18:26:13Z,-1,,"<p>As far as I can tell Python, up through 2.5, only supports hexadecimal &amp; octal literals.  I did find some discussions about adding binary to future versions but nothing definite.</p>"
+1479,1476.0,269.0,2008-08-04T18:27:26Z,-1,,"<p>I am pretty sure this is one of the things due to change in Python 3.0 with perhaps bin() to go with hex() and oct().</p>
+
+<p>EDIT:
+lbrandy's answer is correct in all cases.</p>
+"
+1484,1476.0,2089740.0,2008-08-04T18:34:45Z,57,,"<pre><code>&gt;&gt;&gt; print int('01010101111',2)
+687
+&gt;&gt;&gt; print int('11111111',2)
+255
+</code></pre>
+
+<p>Another way.</p>
+"
+1829,,30.0,2008-08-05T02:39:23Z,12,How do I make a menu that does not require the user to press [enter] to make a selection?,"<p>I've got a menu in Python. That part was easy. I'm using <code>raw_input()</code> to get the selection from the user. </p>
+
+<p>The problem is that <code>raw_input</code> (and input) require the user to press <kbd>Enter</kbd> after they make a selection. Is there any way to make the program act immediately upon a keystroke? Here's what I've got so far:</p>
+
+<pre><code>import sys
+print """"""Menu
+1) Say Foo
+2) Say Bar""""""
+answer = raw_input(""Make a selection&gt; "")
+
+if ""1"" in answer: print ""foo""
+elif ""2"" in answer: print ""bar""
+</code></pre>
+
+<p>It would be great to have something like</p>
+
+<pre><code>print menu
+while lastKey = """":
+    lastKey = check_for_recent_keystrokes()
+if ""1"" in lastKey: #do stuff...
+</code></pre>
+"
+1840,1829.0,116.0,2008-08-05T02:54:54Z,8,,"<p><strong>On Linux:</strong></p>
+
+<ul>
+<li>set raw mode</li>
+<li>select and read the keystroke</li>
+<li>restore normal settings</li>
+</ul>
+
+<pre>
+import sys
+import select
+import termios
+import tty
+
+def getkey():
+    old_settings = termios.tcgetattr(sys.stdin)
+    tty.setraw(sys.stdin.fileno())
+    select.select([sys.stdin], [], [], 0)
+    answer = sys.stdin.read(1)
+    termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
+    return answer
+
+print """"""Menu
+1) Say Foo
+2) Say Bar""""""
+
+answer=getkey()
+
+if ""1"" in answer: print ""foo""
+elif ""2"" in answer: print ""bar""
+
+</pre>
+"
+1852,1829.0,116.0,2008-08-05T03:11:55Z,6,,"<p><strong>On Windows:</strong></p>
+
+<pre><code>import msvcrt
+answer=msvcrt.getch()
+</code></pre>
+"
+1870,1829.0,30.0,2008-08-05T03:51:57Z,2,,"<p>Wow, that took forever. Ok, here's what I've ended up with </p>
+
+<pre><code>#!C:\python25\python.exe<br>import msvcrt<br>print """"""Menu<br>1) Say Foo <br>2) Say Bar""""""<br>while 1:<br>    char = msvcrt.getch()<br>    if char == chr(27): #escape<br>        break<br>    if char == ""1"":<br>        print ""foo""<br>        break<br>    if char == ""2"":<br>        print ""Bar""<br>        break<br></code></pre>
+
+<p>It fails hard using IDLE, the python...thing...that comes with python. But once I tried it in DOS (er, CMD.exe), as a real program, then it ran fine.</p>
+
+<p>No one try it in IDLE, unless you have Task Manager handy.</p>
+
+<p>I've already forgotten how I lived with menus that arn't super-instant responsive.</p>"
+1885,1829.0,50.0,2008-08-05T04:28:03Z,0,,"<p>The  reason msvcrt fails in IDLE is because IDLE is not accessing the library that runs msvcrt. Whereas when you run the program natively in cmd.exe it works nicely. For the same reason that your program blows up on Mac and Linux terminals.</p>
+
+<p>But I guess if you're going to be using this specifically for windows, more power to ya.</p>"
+773,,207.0,2008-08-03T18:27:09Z,256,How do I use Python's itertools.groupby()?,"<p>I haven't been able to find an understandable explanation of how to actually use Python's <code>itertools.groupby()</code> function.  What I'm trying to do is this:</p>
+
+<ul>
+<li>Take a list - in this case, the children of an objectified <code>lxml</code> element</li>
+<li>Divide it into groups based on some criteria</li>
+<li>Then later iterate over each of these groups separately.</li>
+</ul>
+
+<p>I've reviewed <a href=""https://docs.python.org/2/library/itertools.html"">the documentation</a>, and <a href=""https://docs.python.org/2/library/itertools.html#itertools.groupby"">the examples</a>, but I've had trouble trying to apply them beyond a simple list of numbers. </p>
+
+<p>So, how do I use of <code>itertools.groupby()</code>?  Is there another technique I should be using?  Pointers to good ""prerequisite"" reading would also be appreciated.</p>
+"
+783,773.0,189.0,2008-08-03T18:40:09Z,52,,"<p>Can you show us your code?</p>
+
+<p>The example on the Python docs is quite straightforward:</p>
+
+<pre><code>groups = []
+uniquekeys = []
+for k, g in groupby(data, keyfunc):
+    groups.append(list(g))      # Store group iterator as a list
+    uniquekeys.append(k)
+</code></pre>
+
+<p>So in your case, data is a list of nodes, keyfunc is where the logic of your criteria function goes and then <code>groupby()</code> groups the data.</p>
+
+<p>You must be careful to <strong>sort the data</strong> by the criteria before you call <code>groupby</code> or it won't work. <code>groupby</code> method actually just iterates through a list and whenever the key changes it creates a new group.</p>
+"
+7286,773.0,207.0,2008-08-10T18:45:32Z,394,,"<p>As Sebastjan said, <strong>you first have to sort your data. This is important.</strong></p>
+
+<p>The part I didn't get is that in the example construction</p>
+
+<pre><code>groups = []
+uniquekeys = []
+for k, g in groupby(data, keyfunc):
+   groups.append(list(g))    # Store group iterator as a list
+   uniquekeys.append(k)
+</code></pre>
+
+<p><code>k</code> is the current grouping key, and <code>g</code> is an iterator that you can use to iterate over the group defined by that grouping key. In other words, the <code>groupby</code> iterator itself returns iterators.</p>
+
+<p>Here's an example of that, using clearer variable names:</p>
+
+<pre><code>from itertools import groupby
+
+things = [(""animal"", ""bear""), (""animal"", ""duck""), (""plant"", ""cactus""), (""vehicle"", ""speed boat""), (""vehicle"", ""school bus"")]
+
+for key, group in groupby(things, lambda x: x[0]):
+    for thing in group:
+        print ""A %s is a %s."" % (thing[1], key)
+    print "" ""
+</code></pre>
+
+<p>This will give you the output:</p>
+
+<blockquote>
+  <p>A bear is a animal.<br>
+  A duck is a animal.</p>
+  
+  <p>A cactus is a plant.</p>
+  
+  <p>A speed boat is a vehicle.<br>
+  A school bus is a vehicle.</p>
+</blockquote>
+
+<p>In this example, <code>things</code> is a list of tuples where the first item in each tuple is the group the second item belongs to. </p>
+
+<p>The <code>groupby()</code> function takes two arguments: (1) the data to group and (2) the function to group it with. </p>
+
+<p>Here, <code>lambda x: x[0]</code> tells <code>groupby()</code> to use the first item in each tuple as the grouping key.</p>
+
+<p>In the above <code>for</code> statement, <code>groupby</code> returns three (key, group iterator) pairs - once for each unique key. You can use the returned iterator to iterate over each individual item in that group.</p>
+
+<p>Here's a slightly different example with the same data, using a list comprehension:</p>
+
+<pre><code>for key, group in groupby(things, lambda x: x[0]):
+    listOfThings = "" and "".join([thing[1] for thing in group])
+    print key + ""s:  "" + listOfThings + "".""
+</code></pre>
+
+<p>This will give you the output:</p>
+
+<blockquote>
+  <p>animals: bear and duck.<br>
+  plants: cactus.<br>
+  vehicles: speed boat and school bus.</p>
+</blockquote>
+"
+10123,,742.0,2008-08-13T17:46:41Z,8,How do I treat an integer as an array of bytes in Python?,"<p>I'm trying to decode the result of the Python os.wait() function. This returns, according to the Python docs:</p>
+
+<blockquote>
+  <p>a tuple containing its pid and exit status indication: a 16-bit number, whose low byte is the signal number that killed the process, and whose high byte is the exit status (if the signal number is zero); the high bit of the low byte is set if a core file was produced.</p>
+</blockquote>
+
+<p>How do I decode the exit status indication (which is an integer) to obtain the high and low byte? To be specific, how do I implement the decode function used in the following code snippet:</p>
+
+<pre><code>(pid,status) = os.wait()
+(exitstatus, signum) = decode(status)
+</code></pre>
+"
+10129,10123.0,116.0,2008-08-13T17:56:34Z,10,,"<p>This will do what you want:</p>
+
+<pre><code>signum = status &amp; 0xff
+exitstatus = (status &amp; 0xff00) &gt;&gt; 8
+</code></pre>
+"
+10132,10123.0,872.0,2008-08-13T17:58:27Z,1,,"<p>You can unpack the status using <a href=""http://docs.python.org/ref/shifting.html"" rel=""nofollow"">bit-shifting</a> and <a href=""http://docs.python.org/ref/bitwise.html"" rel=""nofollow"">masking</a> operators.</p>
+
+<pre><code>low = status &amp; 0x00FF
+high = (status &amp; 0xFF00) &gt;&gt; 8
+</code></pre>
+
+<p>I'm not a Python programmer, so I hope got the syntax correct.</p>
+"
+10148,10123.0,429.0,2008-08-13T18:14:10Z,0,,"<p>The folks before me've nailed it, but if you really want it on one line, you can do this:</p>
+
+<pre><code>(signum, exitstatus) = (status &amp; 0xFF, (status &gt;&gt; 8) &amp; 0xFF)
+</code></pre>
+
+<p>EDIT: Had it backwards.</p>
+"
+10213,10123.0,99.0,2008-08-13T18:52:36Z,10,,"<p>To answer your general question, you can use <a href=""http://en.wikipedia.org/wiki/Bit_twiddling"" rel=""nofollow"">bit manipulation</a> techniques:</p>
+
+<pre><code>pid, status = os.wait()
+exitstatus, signum = status &amp; 0xFF, (status &amp; 0xFF00) &gt;&gt; 8
+</code></pre>
+
+<p>However, there are also <a href=""http://docs.python.org/lib/os-process.html#l2h-2780"" rel=""nofollow"">built-in functions</a> for interpreting exit status values:</p>
+
+<pre><code>pid, status = os.wait()
+exitstatus, signum = os.WEXITSTATUS( status ), os.WTERMSIG( status )
+</code></pre>
+
+<p>See also:</p>
+
+<ul>
+<li>os.WCOREDUMP()</li>
+<li>os.WIFCONTINUED()</li>
+<li>os.WIFSTOPPED()</li>
+<li>os.WIFSIGNALED()</li>
+<li>os.WIFEXITED()</li>
+<li>os.WSTOPSIG()</li>
+</ul>
+"
+972,,145.0,2008-08-04T02:17:51Z,364,Adding a Method to an Existing Object Instance,"<p>I've read that it is possible to add a method to an existing object (e.g. not in the class definition) in <strong>Python</strong>, I think this is called <em>Monkey Patching</em> (or in some cases <em>Duck Punching</em>). I understand that it's not always a good decision to do so. But, how might one do this?</p>
+
+<p><strong>UPDATE 8/04/2008 00:21:01 EST:</strong></p>
+
+<p><a href=""http://stackoverflow.com/a/982"">That</a> looks like a good answer John Downey, I tried it but it appears that it ends up being not a <em>true</em> method.</p>
+
+<p>Your example defines the new patch function with an argument of <strong><code>self</code></strong>, but if you write actual code that way, the now patched class method asks for an argument named <code>self</code> (it doesn't automagically recognize it as the object to which it is supposed to bind, which is what would happen if defined within the class definition), meaning you have to call <strong><code>class.patch(obj)</code></strong> instead of just <strong><code>class.patch()</code></strong> if you want the same functionality as a <em>true</em> method.</p>
+
+<p><strong>It looks like Python isn't really treating it as a method, but more just as a variable which happens to be a function</strong> (and as such is callable).  Is there any way to attach an actual method to a class?</p>
+
+<p>Oh, and Ryan, <a href=""http://pypi.python.org/pypi/monkey"">that</a> isn't exactly what I was looking for (it isn't a builtin functionality), but it is quite cool nonetheless.</p>
+"
+982,972.0,200.0,2008-08-04T02:31:13Z,14,,"<p>In Python monkey patching generally works by overwriting a class or functions signature with your own. Below is an example from the <a href=""http://wiki.zope.org/zope2/MonkeyPatch"">Zope Wiki</a>:</p>
+
+<pre><code>from SomeOtherProduct.SomeModule import SomeClass<br>def speak(self):<br>   return ""ook ook eee eee eee!""<br>SomeClass.speak = speak<br></code></pre>
+
+<p>That code will overwrite/create a method called speak on the class. In Jeff Atwood's <a href=""http://www.codinghorror.com/blog/archives/001151.html"">recent post on monkey patching</a>. He shows an example in C# 3.0 which is the current language I use for work.</p>"
+984,972.0,122.0,2008-08-04T02:36:40Z,-6,,"<p>I don't know Python syntax, but I know Ruby can do it, and it is rather trivial.  Let's say you want to add a method to Array that prints the length to standard out:</p>
+
+<pre><code>class Array<br>  def print_length<br>    puts length<br>  end<br>end<br></code></pre>
+
+<p>If you don't want to modify the whole class, you can just add the method to a single instance of the array, and no other arrays will have the method:</p>
+
+<pre><code>array = [1, 2, 3]<br>def array.print_length<br>  puts length<br>end<br></code></pre>
+
+<p>Just be aware of the issues involved in using this feature.  Jeff Atwood actually <a href=""http://www.codinghorror.com/blog/archives/001151.html"" rel=""nofollow"">wrote about it</a> not too long ago.</p>"
+2982,972.0,99.0,2008-08-06T00:33:35Z,576,,"<p>In Python, there is a difference between functions and bound methods.</p>
+
+<pre><code>&gt;&gt;&gt; def foo():
+...     print ""foo""
+...
+&gt;&gt;&gt; class A:
+...     def bar( self ):
+...         print ""bar""
+...
+&gt;&gt;&gt; a = A()
+&gt;&gt;&gt; foo
+&lt;function foo at 0x00A98D70&gt;
+&gt;&gt;&gt; a.bar
+&lt;bound method A.bar of &lt;__main__.A instance at 0x00A9BC88&gt;&gt;
+&gt;&gt;&gt;
+</code></pre>
+
+<p>Bound methods have been ""bound"" (how descriptive) to an instance, and that instance will be passed as the first argument whenever the method is called.</p>
+
+<p>Callables that are attributes of a class (as opposed to an instance) are still unbound, though, so you can modify the class definition whenever you want:</p>
+
+<pre><code>&gt;&gt;&gt; def fooFighters( self ):
+...     print ""fooFighters""
+...
+&gt;&gt;&gt; A.fooFighters = fooFighters
+&gt;&gt;&gt; a2 = A()
+&gt;&gt;&gt; a2.fooFighters
+&lt;bound method A.fooFighters of &lt;__main__.A instance at 0x00A9BEB8&gt;&gt;
+&gt;&gt;&gt; a2.fooFighters()
+fooFighters
+</code></pre>
+
+<p>Previously defined instances are updated as well (as long as they haven't overridden the attribute themselves):</p>
+
+<pre><code>&gt;&gt;&gt; a.fooFighters()
+fooFighters
+</code></pre>
+
+<p>The problem comes when you want to attach a method to a single instance:</p>
+
+<pre><code>&gt;&gt;&gt; def barFighters( self ):
+...     print ""barFighters""
+...
+&gt;&gt;&gt; a.barFighters = barFighters
+&gt;&gt;&gt; a.barFighters()
+Traceback (most recent call last):
+  File ""&lt;stdin&gt;"", line 1, in &lt;module&gt;
+TypeError: barFighters() takes exactly 1 argument (0 given)
+</code></pre>
+
+<p>The function is not automatically bound when it's attached directly to an instance:</p>
+
+<pre><code>&gt;&gt;&gt; a.barFighters
+&lt;function barFighters at 0x00A98EF0&gt;
+</code></pre>
+
+<p>To bind it, we can use the <a href=""http://docs.python.org/library/types.html?highlight=methodtype#module-types"">MethodType function in the types module</a>:</p>
+
+<pre><code>&gt;&gt;&gt; import types
+&gt;&gt;&gt; a.barFighters = types.MethodType( barFighters, a )
+&gt;&gt;&gt; a.barFighters
+&lt;bound method ?.barFighters of &lt;__main__.A instance at 0x00A9BC88&gt;&gt;
+&gt;&gt;&gt; a.barFighters()
+barFighters
+</code></pre>
+
+<p>This time other instances of the class have not been affected:</p>
+
+<pre><code>&gt;&gt;&gt; a2.barFighters()
+Traceback (most recent call last):
+  File ""&lt;stdin&gt;"", line 1, in &lt;module&gt;
+AttributeError: A instance has no attribute 'barFighters'
+</code></pre>
+
+<p>More information can be found by reading about <a href=""http://users.rcn.com/python/download/Descriptor.htm"">descriptors</a> and <a href=""http://www.onlamp.com/pub/a/python/2003/04/17/metaclasses.html"">metaclass</a> <a href=""http://www.gnosis.cx/publish/programming/metaclass_2.html"">programming</a>.</p>
+"
+4600,972.0,618.0,2008-08-07T11:30:16Z,4,,"<p>What you're looking for is <code>setattr</code> I believe.
+Use this to set an attribute on an object.</p>
+
+<pre><code>&gt;&gt;&gt; def printme(s): print repr(s)<br>&gt;&gt;&gt; class A: pass<br>&gt;&gt;&gt; setattr(A,'printme',printme)<br>&gt;&gt;&gt; a = A()<br>&gt;&gt;&gt; a.printme() # s becomes the implicit 'self' variable<br>&lt; __ main __ . A instance at 0xABCDEFG&gt;<br></code></pre>"
+5102,,556.0,2008-08-07T18:24:12Z,14,How do you set up Python scripts to work in Apache 2.0?,"<p>I tried to follow a couple of googled up tutorials on setting up mod_python, but failed every time. Do you have a good, step-by step, rock-solid howto?</p>
+
+<p>My dev box is OS X, production - Centos.</p>"
+5129,5102.0,680.0,2008-08-07T18:40:53Z,12,,"<p>There are two main ways of running Python on Apache. The simplest would be to use CGI and write normal Python scripts while the second is using a web framework like Django or Pylons.</p>
+
+<p>Using CGI is straightforward. Make sure your Apache config file has a cgi-bin set up. If not, follow their documentation (<a href=""http://httpd.apache.org/docs/2.0/howto/cgi.html"" rel=""nofollow"">http://httpd.apache.org/docs/2.0/howto/cgi.html</a>). At that point all you need to do is place your Python scripts in the cgi-bin directory and the standard output will become the HTTP response. Refer to Python's documentation for further info (<a href=""https://docs.python.org/library/cgi.html"" rel=""nofollow"">https://docs.python.org/library/cgi.html</a>).</p>
+
+<p>If you want to use a web framework you'll need to setup mod_python or FastCGI. These steps are dependent on which framework you want to use. Django provides clear instructions on how to setup mod_python and Django with Apache (<a href=""http://www.djangoproject.com/documentation/modpython/"" rel=""nofollow"">http://www.djangoproject.com/documentation/modpython/</a>)</p>
+"
+5165,5102.0,116.0,2008-08-07T19:02:57Z,8,,"<p>Yes, mod_python is pretty confusing to set up.  Here's how I did it.</p>
+
+<p>In httpd.conf:</p>
+
+<pre><code>LoadModule python_module modules/mod_python.so<br><br>&lt;Directory ""/serverbase/htdocs/myapp""&gt;<br>  AddHandler mod_python .py<br>  PythonHandler myapp<br>  PythonDebug On<br></code></pre>
+
+<p>and in your application directory:</p>
+
+<pre><code>$ /serverbase/htdocs/myapp$ ls -l<br>total 16<br>-r-xr-xr-x 1 root sys        6484 May 21 15:54 myapp.py<br></code></pre>
+
+<p>Repeat the configuration for each python program you wish to have running under mod_python.</p>"
+5168,5102.0,636.0,2008-08-07T19:05:58Z,5,,"<p>Are you running Python on UNIX or Windows?</p>
+
+<p>An alternative to mod_python and FastCGI is mod_wsgi. You can find out more at <a href=""http://code.google.com/p/modwsgi/"" rel=""nofollow"">modwsgi</a></p>
+
+<p>I have built and installed this on Solaris without problems. I had previously tried mod_python but ran into problems with shared libraries as part of the build. There are <a href=""http://code.google.com/p/modwsgi/wiki/InstallationInstructions"" rel=""nofollow"">good install docs</a> available.</p>
+"
+594,,116.0,2008-08-03T01:15:08Z,25,cx_Oracle: How do I iterate over a result set?,"<p>There are several ways to iterate over a result set. What are the tradeoff of each?</p>
+"
+595,594.0,116.0,2008-08-03T01:17:36Z,25,,"<p>The canonical way is to use the built-in cursor iterator.</p>
+
+<pre><code>curs.execute('select * from people')
+for row in curs:
+    print row
+</code></pre>
+
+<hr>
+
+<p>You can use <code>fetchall()</code> to get all rows at once.</p>
+
+<pre><code>for row in curs.fetchall():
+    print row
+</code></pre>
+
+<p>It can be convenient to use this to create a Python list containing the values returned:</p>
+
+<pre><code>curs.execute('select first_name from people')
+names = [row[0] for row in curs.fetchall()]
+</code></pre>
+
+<p>This can be useful for smaller result sets, but can have bad side effects if the result set is large.</p>
+
+<ul>
+<li><p>You have to wait for the entire result set to be returned to
+your client process.</p></li>
+<li><p>You may eat up a lot of memory in your client to hold
+the built-up list.</p></li>
+<li><p>It may take a while for Python to construct and deconstruct the
+list which you are going to immediately discard anyways.</p></li>
+</ul>
+
+<hr>
+
+<p>If you know there's a single row being returned in the result set you can call <code>fetchone()</code> to get the single row.</p>
+
+<pre><code>curs.execute('select max(x) from t')
+maxValue = curs.fetchone()[0]
+</code></pre>
+
+<hr>
+
+<p>Finally, you can loop over the result set fetching one row at a time.  In general, there's no particular advantage in doing this over using the iterator.</p>
+
+<pre><code>row = curs.fetchone()
+while row:
+    print row
+    row = curs.fetchone()
+</code></pre>
+"
+8692,,,2008-08-12T11:28:36Z,164,How to use Xpath in Python?,"<p>What is the library? Is there a full implementation? How is the library used? Where is its website?</p>
+"
+8699,8692.0,207.0,2008-08-12T11:40:13Z,74,,"<p>The <a href=""http://lxml.de/"">lxml package</a> supports xpath.  It seems to work pretty well, although I've had some trouble with the self:: axis.  There's also <a href=""http://pypi.python.org/pypi/Amara/1.1.6"">Amara</a>, but I haven't used it personally.</p>
+"
+9171,8692.0,1146.0,2008-08-12T19:34:44Z,2,,"<p><a href=""http://pyxml.sourceforge.net"" rel=""nofollow"" title=""PyXML"">PyXML</a> works well.  </p>
+
+<p>You didn't say what platform you're using, however if you're on Ubuntu you can get it with <code>sudo apt-get install python-xml</code>.  I'm sure other Linux distros have it as well.  </p>
+
+<p>If you're on a Mac, xpath is already installed but not immediately accessible.  You can set <code>PY_USE_XMLPLUS</code> in your environment or do it the Python way before you import xml.xpath:</p>
+
+<pre><code>if sys.platform.startswith('darwin'):
+    os.environ['PY_USE_XMLPLUS'] = '1'
+</code></pre>
+
+<p>In the worst case you may have to build it yourself.  This package is no longer maintained but still builds fine and works with modern 2.x Pythons.  Basic docs are <a href=""http://pyxml.sourceforge.net/topics/howto/section-XPath.html"" rel=""nofollow"">here</a>.</p>
+"
+10846,8692.0,912.0,2008-08-14T09:48:59Z,7,,"<p>The latest version of <a href=""http://effbot.org/zone/element-xpath.htm"">elementtree</a> supports XPath pretty well.  Not being an XPath expert I can't say for sure if the implementation is full but it has satisfied most of my needs when working in Python.  I've also use lxml and PyXML and I find etree nice because it's a standard module.</p>
+
+<p>NOTE: I've since found lxml and for me it's definitely the best XML lib out there for Python.  It does XPath nicely as well (though again perhaps not a full implementation).</p>
+"
+3061,,121.0,2008-08-06T03:36:08Z,761,Calling a function of a module from a string with the function's name in Python,"<p>What is the best way to go about calling a function given a string with the function's name in a Python program.  For example, let's say that I have a module <code>foo</code>, and I have a string whose contents are <code>""bar""</code>. What is the best way to go about calling <code>foo.bar()</code>?</p>
+
+<p>I need to get the return value of the function, which is why I don't just use <code>eval</code>. I figured out how to do it by using <code>eval</code> to define a temp function that returns the result of that function call, but I'm hoping that there is a more elegant way to do this.</p>
+"
+3071,3061.0,363.0,2008-08-06T03:57:16Z,925,,"<p>Assuming module <code>foo</code> with method <code>bar</code>:</p>
+
+<pre><code>import foo
+methodToCall = getattr(foo, 'bar')
+result = methodToCall()
+</code></pre>
+
+<p>As far as that goes, lines 2 and 3 can be compressed to:</p>
+
+<pre><code>result = getattr(foo, 'bar')()
+</code></pre>
+
+<p>if that makes more sense for your use case.  You can use <code>getattr</code> in this fashion on class instance bound methods, module-level methods, class methods... the list goes on.</p>
+"
+4605,3061.0,618.0,2008-08-07T11:35:23Z,145,,"<p>Patrick's solution is probably the cleanest.
+If you need to dynamically pick up the module as well, you can import it like:</p>
+
+<pre><code>m = __import__ ('foo')
+func = getattr(m,'bar')
+func()
+</code></pre>
+"
+502,,147.0,2008-08-02T17:01:58Z,27,Get a preview JPEG of a PDF on Windows?,"<p>I have a cross-platform (Python) application which needs to generate a JPEG preview of the first page of a PDF.</p>
+
+<p>On the Mac I am spawning <a href=""http://developer.apple.com/documentation/Darwin/Reference/ManPages/man1/sips.1.html"">sips</a>.  Is there something similarly simple I can do on Windows?</p>
+"
+536,502.0,161.0,2008-08-02T18:49:07Z,9,,"<p>You can use ImageMagick's convert utility for this, see some examples in <a href=""https://web.archive.org/web/20120413111338/http://studio.imagemagick.org/pipermail/magick-users/2002-May/002636.html"" rel=""nofollow"">http://studio.imagemagick.org/pipermail/magick-users/2002-May/002636.html</a>
+:</p>
+
+<blockquote>
+<pre><code>Convert taxes.pdf taxes.jpg 
+</code></pre>
+  
+  <p>Will convert a two page PDF file into [2] jpeg files: taxes.jpg.0,
+  taxes.jpg.1</p>
+  
+  <p>I can also convert these JPEGS to a thumbnail as follows:</p>
+
+<pre><code>convert -size 120x120 taxes.jpg.0 -geometry 120x120 +profile '*' thumbnail.jpg
+</code></pre>
+  
+  <p>I can even convert the PDF directly to a jpeg thumbnail as follows:</p>
+
+<pre><code>convert -size 120x120 taxes.pdf -geometry 120x120 +profile '*' thumbnail.jpg
+</code></pre>
+  
+  <p>This will result in a thumbnail.jpg.0 and thumbnail.jpg.1 for the two
+  pages.</p>
+</blockquote>
+"
+7073,502.0,878.0,2008-08-10T07:10:19Z,2,,"<p>Is the PC likely to have Acrobat installed? I think Acrobat installs a shell extension so previews of the first page of a PDF document appear in Windows Explorer's thumbnail view. You can get thumbnails yourself via the IExtractImage COM API, which you'll need to wrap. <a href=""http://www.vbaccelerator.com/home/net/code/libraries/shell_projects/Thumbnail_Extraction/article.asp"" rel=""nofollow"" title=""Domain Specific Development with Visual Studio DSL Tools."">VBAccelerator has an example in C#</a> that you could port to Python.</p>
+"
+7090,502.0,13.0,2008-08-10T08:08:33Z,25,,"<p>ImageMagick delegates the PDF->bitmap conversion to GhostScript anyway, so here's a command you can use (it's based on the actual command listed by the <code>ps:alpha</code> delegate in ImageMagick, just adjusted to use JPEG as output):</p>
+
+<pre><code>gs -q -dQUIET -dPARANOIDSAFER -dBATCH -dNOPAUSE -dNOPROMPT \
+-dMaxBitmap=500000000 -dLastPage=1 -dAlignToPixels=0 -dGridFitTT=0 \
+-sDEVICE=jpeg -dTextAlphaBits=4 -dGraphicsAlphaBits=4 -r72x72 \
+-sOutputFile=$OUTPUT -f$INPUT
+</code></pre>
+
+<p>where <code>$OUTPUT</code> and <code>$INPUT</code> are the output and input filenames. Adjust the <code>72x72</code> to whatever resolution you need. (Obviously, strip out the backslashes if you're writing out the whole command as one line.)</p>
+
+<p>This is good for two reasons:</p>
+
+<ol>
+<li>You don't need to have ImageMagick installed anymore. Not that I have anything against ImageMagick (I love it to bits), but I believe in simple solutions.</li>
+<li>ImageMagick does a two-step conversion. First PDF->PPM, then PPM->JPEG. This way, the conversion is one-step.</li>
+</ol>
+
+<p>Other things to consider: with the files I've tested, PNG compresses better than JPEG. If you want to use PNG, change the <code>-sDEVICE=jpeg</code> to <code>-sDEVICE=png16m</code>.</p>
+"
+2933,,1384652.0,2008-08-05T22:26:00Z,171,How can I create a directly-executable cross-platform GUI app using Python?,"<p>Python works on multiple platforms and can be used for desktop and web applications, thus I conclude that there is some way to compile it into an executable for Mac, Windows and Linux.</p>
+
+<p>The problem being I have no idea where to start or how to write a GUI with it, can anybody shed some light on this and point me in the right direction please?</p>"
+2937,2933.0,275.0,2008-08-05T22:34:25Z,189,,"<p>First you will need some GUI library with Python bindings and then (if you want) some program that will convert your python scripts into standalone executables.</p>
+
+<p><strong>Cross-platform GUI libraries with Python bindings (Windows, Linux, Mac)</strong></p>
+
+<p>Of course, there are many, but the most popular that I've seen in wild are:</p>
+
+<ul>
+<li><a href=""http://wiki.python.org/moin/TkInter"">Tkinter</a>  - based on <a href=""http://www.tcl.tk/"">Tk GUI toolkit</a> (de-facto standard GUI library for python, free for commercial projects)</li>
+<li><a href=""http://www.wxpython.org/"">WxPython</a> - based on <a href=""http://www.wxwidgets.org/"">WxWidgets</a> (very popular, free for commercial projects)</li>
+<li><a href=""http://www.riverbankcomputing.co.uk/news"">PyQt</a> - based on <a href=""http://trolltech.com/products/qt/"">Qt</a> (also very popular and more stable than WxWidgets but costly license for commercial projects)</li>
+</ul>
+
+<p>Complete list is at <a href=""http://wiki.python.org/moin/GuiProgramming"">http://wiki.python.org/moin/GuiProgramming</a></p>
+
+<p><strong>Single executable (Windows)</strong></p>
+
+<ul>
+<li><a href=""http://www.py2exe.org/"">py2exe</a> - Probably the most popular out there (<a href=""http://stackoverflow.com/questions/2933/an-executable-python-app/31859#31859"">PyInstaller</a> is also gaining in popularity)</li>
+</ul>
+
+<p><strong>Single executable (Linux)</strong></p>
+
+<ul>
+<li><a href=""http://wiki.python.org/moin/Freeze"">Freeze</a> - works the same way like py2exe but targets Linux platform</li>
+</ul>
+
+<p><strong>Single executable (Mac)</strong></p>
+
+<ul>
+<li><a href=""https://pythonhosted.org/py2app/"">py2app</a> - again, works like py2exe but targets Mac OS</li>
+</ul>
+"
+2941,2933.0,92.0,2008-08-05T22:40:17Z,0,,"<p>You don't need to <em>compile</em> python for Mac/Windows/Linux.  It is an interpreted language, so you simply need to have the Python interpreter installed on the system of your choice (it is available for all three platforms).</p>
+
+<p>As for a GUI library that works cross platform, Python's <a href=""http://www.tcl.tk/"" rel=""nofollow"">Tk/Tcl</a> widget library works very well, and I believe is sufficiently cross platform.</p>
+
+<p><a href=""http://docs.python.org/lib/module-Tkinter.html"" rel=""nofollow"">Tkinter</a> is the python interface to Tk/Tcl</p>
+
+<p>From the python project webpage: </p>
+
+<blockquote>
+  <p>Tkinter is not the only GuiProgramming
+  toolkit for Python.  It is however the
+  most commonly used one, and almost the
+  only  one that is portable between
+  Unix, Mac and Windows</p>
+</blockquote>"
+2980,2933.0,188.0,2008-08-06T00:29:36Z,2,,"<p>Since python is installed on nearly every non-Windows OS by default now, the only thing you really need to make sure of is that all of the non-standard libraries you use are installed.</p>
+
+<p>Having said that, it is possible to build executables that include the python interpreter, and any libraries you use.  This is likely to create a large executable, however.</p>
+
+<p>MacOS X even includes support in the Xcode IDE for creating full standalone GUI apps.  These can be run by any user running OS X.</p>"
+12166,2933.0,995.0,2008-08-15T11:56:02Z,13,,"<p>An alternative tool to py2exe is <a href=""http://pypi.python.org/pypi/bbfreeze/"">bbfreeze</a> which generates executables for windows and linux. It's newer than py2exe and handles eggs quite well. I've found it magically works better without configuration for a wide variety of applications.</p>
+"
+12167,2933.0,1344.0,2008-08-15T12:00:37Z,2,,"<p>I'm not sure that this is the best way to do it, but when I'm deploying Ruby GUI apps (not Python, but has the same ""problem"" as far as .exe's are concerned) on Windows, I just write a short launcher in C# that calls on my main script. It compiles to an executable, and I then have an application executable.</p>
+"
+1854,,116.0,2008-08-05T03:23:18Z,270,How to check what OS am I running on in Python?,"<p>What do I need to look at to see if I'm on Windows, Unix, etc?</p>
+"
+1857,1854.0,2089740.0,2008-08-05T03:27:03Z,341,,"<pre><code>&gt;&gt;&gt; import os
+&gt;&gt;&gt; print os.name
+posix
+&gt;&gt;&gt; import platform
+&gt;&gt;&gt; platform.system()
+'Linux'
+&gt;&gt;&gt; platform.release()
+'2.6.22-15-generic'
+</code></pre>
+
+<p>See: <a href=""https://docs.python.org/2/library/platform.html"">platform â Access to underlying platformâs identifying data</a></p>
+"
+1871,1854.0,216.0,2008-08-05T03:57:22Z,112,,"<p>Dang -- lbrandy beat me to the punch, but that doesn't mean I can't provide you with the system results for Vista!</p>
+
+<pre><code>&gt;&gt;&gt; import os
+&gt;&gt;&gt; os.name
+'nt'
+&gt;&gt;&gt; import platform
+&gt;&gt;&gt; platform.system()
+'Windows'
+&gt;&gt;&gt; platform.release()
+'Vista'
+</code></pre>
+"
+1879,1854.0,116.0,2008-08-05T04:13:53Z,91,,"<p>For the record here's the results on Mac:</p>
+
+<pre><code>&gt;&gt;&gt; import os
+&gt;&gt;&gt; os.name
+'posix'
+&gt;&gt;&gt; import platform
+&gt;&gt;&gt; platform.system()
+'Darwin'
+&gt;&gt;&gt; platform.release()
+'8.11.1'
+</code></pre>
+"
+1983,,116.0,2008-08-05T07:18:55Z,31,"Python: what is the difference between (1,2,3) and [1,2,3], and when should I use each?","<p>In many places, <code>(1,2,3)</code> and <code>[1,2,3]</code> can be used interchangeably.</p>
+
+<p>When should I use one or the other, and why?</p>
+"
+1987,1983.0,269.0,2008-08-05T07:27:40Z,19,,"<p>The list [1,2,3] is dynamic and flexible but that flexibility comes at a speed cost.</p>
+
+<p>The tuple (1,2,3) is fixed (immutable) and therefore faster.</p>
+"
+2277,1983.0,156.0,2008-08-05T13:22:43Z,26,,"<p>From the <a href=""http://www.python.org/doc/faq/general/#why-are-there-separate-tuple-and-list-data-types"">Python FAQ</a>:</p>
+
+<blockquote>
+  <p>Lists and tuples, while similar in many respects, are generally used in fundamentally different ways. Tuples can be thought of as being similar to Pascal records or C structs; they're small collections of related data which may be of different types which are operated on as a group. For example, a Cartesian coordinate is appropriately represented as a tuple of two or three numbers.</p>
+  
+  <p>Lists, on the other hand, are more like arrays in other languages. They tend to hold a varying number of objects all of which have the same type and which are operated on one-by-one.</p>
+</blockquote>
+
+<p>Generally by convention you wouldn't choose a list or a tuple just based on its (im)mutability.  You would choose a tuple for small collections of completely different pieces of data in which a full-blown class would be too heavyweight, and a list for collections of any reasonable size where you have a homogeneous set of data.</p>"
+4595,1983.0,618.0,2008-08-07T11:21:56Z,10,,"<p>Tuples are a quick\flexible way to create <em>composite</em> data-types.
+Lists are containers for, well, lists of objects.</p>
+
+<p>For example, you would use a List to store a list of student details in a class.</p>
+
+<p>Each student detail in that list may be a 3-tuple containing their roll number, name and test score.</p>
+
+<pre><code> `[(1,'Mark',86),(2,'John',34)...]`<br></code></pre>
+
+<p>Also, because tuples are immutable they can be used as keys in dictionaries.</p>"
+5719,1983.0,108465.0,2008-08-08T06:06:33Z,1,,"<P>As others have mentioned, Lists and tuples are both containers which can be used to store python objects. Lists are extensible and their contents can change by assignment, on the other hand tuples are immutable.</P>
+<P>Also, lists cannot be used as keys in a dictionary whereas tuples can. </P>"
+5746,1983.0,699.0,2008-08-08T06:48:52Z,1,,"<p>If you can find a solution that works with tuples, use them, as it forces immutability which kind of drives you down a more functional path. You almost never regret going down the functional/immutable path.</p>"
+12454,1983.0,1448.0,2008-08-15T16:38:59Z,2,,"<p>Whenever I need to pass in a collection of items to a function, if I want the function to not change the values passed in - I use tuples. </p>
+
+<p>Else if I want to have the function to alter the values, I use list. </p>
+
+<p>Always if you are using external libraries and need to pass in a list of values to a function and are unsure about the integrity of the data, use a tuple. </p>
+"
+12557,1983.0,1416.0,2008-08-15T18:00:37Z,7,,"<p>The notion of tuples are highly expressive:</p>
+
+<ul>
+<li><p>Pragmatically, they are great for packing and unpacking values (<code>x,y=coord</code>).</p></li>
+<li><p>In combination with dictionaries (hash tables), they allow forms of mapping that would otherwise require many levels of association.  For example, consider marking that (x,y) has been found.</p>
+
+<pre><code>// PHP
+if (!isset($found[$x])) {
+    $found[$x] = Array();
+    $found[$x][$y] = true;
+} else if (!isset($found[$x][$y])) {
+    $found[$x][$y] = true;
+}
+
+
+# Python
+found[(x,y)] = True # parens added for clarity
+</code></pre></li>
+<li><p>Lists should be used with the expectation of operations on its contents (hence the various mentions of immutability).  One will want to pop, push, splice, slice, search, insert before, insert after, etc with a list.</p></li>
+<li><p>Tuples should be a low-level representation of an object, where simple comparisons are made, or operations such as extracting the n'th element or n elements in a predictable fashion, such as the coordinates example given earlier.</p></li>
+<li><p>Lastly, lists are not hashable, so the type of mapping done with dictionaries (hash tables in Perl, associative arrays in PHP) must be done with tuples.</p>
+
+<p>Here's a simple example of tuples and dictionaries, together at last:</p>
+
+<pre><code>""""""
+couple is a tuple of two people
+doesLike is a dictionary mapping couples to True or False
+""""""
+couple = ""john"", ""jane""
+doesLike = dict()
+doesLike[couple] = True
+doesLike[""jane"", ""john""] = False # unrequited love :'(
+</code></pre></li>
+</ul>
+"
