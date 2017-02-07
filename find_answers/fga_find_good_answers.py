@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Tue 2017 Feb 07 01:00:26 PMPM clpoda> 
+#   Time-stamp: <Tue 2017 Feb 07 02:58:24 PMPM clpoda> 
 """fga_find_good_answers.py
 
    Usage:
@@ -150,6 +150,9 @@ def group_data(all_ans_df):
     """Group the contents of the answers df by a specific column.
     Group by OwnerUserId, ouid, and sort by mean score for each ouid.
     Make a numpy array of owners w/ highest mean scores.
+    TBD.1, Find low of scores for these hi-score owners; 
+    then mark the low score records for evaluation.
+    Low score is any score below lo_score_limit.
     """
     print('\n=== ouid_grouped_df: Group by owner and sort by mean score for each owner.')
     ouid_grouped_df = all_ans_df.groupby('OwnerUserId').mean()
@@ -167,10 +170,35 @@ def group_data(all_ans_df):
     print(ouid_grouped_df.tail(num_owners))  # See highest scores at bottom:
     print()
 
-    owners_a = ouid_grouped_df['OwnerUserId'].values
     # Take slice of owners w/ highest mean scores; convert to int.
+    owners_a = ouid_grouped_df['OwnerUserId'].values
     top_scoring_owners_a = np.vectorize(np.int)(owners_a[-num_owners:])
     print('top_scoring_owners_a: ', top_scoring_owners_a )
+    print()
+
+    # Make a list of the A scores for each of the hi-score owners.
+    print('\n=== ouid_grouped_df: Group by owner .')
+    #ORG ouid_grouped_df = all_ans_df.groupby('OwnerUserId')
+    o2_grouped_df = all_ans_df.groupby('OwnerUserId')
+    #ORG ouid_grouped_df = ouid_grouped_df[['Score']].sort_values(['Score'])
+
+    o2_df_l = []
+    lo_score_limit = 10
+    for o2 in top_scoring_owners_a:
+        # Get a pandas series of booleans for filtering:
+        answered_by_o2_b = (all_ans_df.OwnerUserId == o2)
+        # Get a pandas df with rows for all answers of one user:
+        answers_by_o2_df = all_ans_df[['Id', 'OwnerUserId', 'Score']][answered_by_o2_b]
+        # Get a pandas series of booleans for filtering:
+        lo_score_by_o2_b = (answers_by_o2_df.Score < lo_score_limit)
+        # Get a pandas df with rows for all low-score answers of one user:
+        lo_score_answers_by_o2_df = answers_by_o2_df [['Id', 'OwnerUserId', 'Score']][lo_score_by_o2_b]
+        o2_df_l.append(lo_score_answers_by_o2_df)
+
+    lo_scores_for_top_users_df = pd.concat(o2_df_l)
+    print('Length of lo_scores_for_top_users_df: ', len(lo_scores_for_top_users_df))
+    print('lo_scores_for_top_users_df: ')
+    print(lo_scores_for_top_users_df)
     print()
 
     return top_scoring_owners_a
@@ -243,5 +271,6 @@ def write_df_to_file(in_df, wdir, wfile):
 if __name__ == '__main__':
     # Set the number of top scoring owners to select from the data.
     num_owners = 10  # Default is 10.
+    num_owners = 40  # Default is 10.
     main()
 
