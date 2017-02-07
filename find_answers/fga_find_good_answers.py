@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Tue 2017 Feb 07 12:42:03 PMPM clpoda> 
+#   Time-stamp: <Tue 2017 Feb 07 01:00:26 PMPM clpoda> 
 """fga_find_good_answers.py
 
    Usage:
@@ -89,8 +89,8 @@ def main():
     init()
     a_fname, a_infile, q_infile, indir, outdir = config_data()
     all_ans_df, all_ques_df, progress_msg_factor = read_data(a_infile, q_infile)
-    ouid_grouped_df = group_data(all_ans_df)
-    parent_id_l = find_question_ids(ouid_grouped_df, all_ans_df)
+    top_scoring_owners_a = group_data(all_ans_df)
+    parent_id_l = find_question_ids(top_scoring_owners_a, all_ans_df)
     q_with_a_df = combine_related_q_and_a(parent_id_l, all_ques_df, all_ans_df)
     # Write df to a csv file.
     outfile = 'outdir/q_with_a.csv'
@@ -149,6 +149,7 @@ def read_data(ans_file, ques_file):
 def group_data(all_ans_df):
     """Group the contents of the answers df by a specific column.
     Group by OwnerUserId, ouid, and sort by mean score for each ouid.
+    Make a numpy array of owners w/ highest mean scores.
     """
     print('\n=== ouid_grouped_df: Group by owner and sort by mean score for each owner.')
     ouid_grouped_df = all_ans_df.groupby('OwnerUserId').mean()
@@ -166,22 +167,21 @@ def group_data(all_ans_df):
     print(ouid_grouped_df.tail(num_owners))  # See highest scores at bottom:
     print()
 
-    return ouid_grouped_df
-
-
-def find_question_ids(ouid_grouped_df, all_ans_df):
-    """Make a numpy array of owners w/ highest mean scores.
-    Make a list of all answer records by those high-score owners.
-    Use that list to build a list of Question Id's (= ParentId)
-    to collect for evaluation.
-    Return that list of question Id's.
-    """
     owners_a = ouid_grouped_df['OwnerUserId'].values
     # Take slice of owners w/ highest mean scores; convert to int.
     top_scoring_owners_a = np.vectorize(np.int)(owners_a[-num_owners:])
     print('top_scoring_owners_a: ', top_scoring_owners_a )
     print()
 
+    return top_scoring_owners_a
+
+
+def find_question_ids(top_scoring_owners_a, all_ans_df):
+    """Make a list of all answer records by the high-score owners.
+    Use that list to build a list of Question Id's (= ParentId)
+    to collect for evaluation.
+    Return that list of question Id's.
+    """
     ouids_df_l = []
     for ouid in top_scoring_owners_a:
         # Get a pandas series of booleans for filtering:
