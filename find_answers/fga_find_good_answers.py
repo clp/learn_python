@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Tue 2017 Feb 07 08:46:49 AMAM clpoda> 
+#   Time-stamp: <Tue 2017 Feb 07 12:42:03 PMPM clpoda> 
 """fga_find_good_answers.py
 
    Usage:
@@ -154,7 +154,7 @@ def group_data(all_ans_df):
     ouid_grouped_df = all_ans_df.groupby('OwnerUserId').mean()
     ouid_grouped_df = ouid_grouped_df[['Score']].sort_values(['Score'])
 
-    # Copy index column into ouid column; Change index column from ouid to int
+    # Copy index column into ouid column; Change index column from ouid to integer
     ouid_grouped_df['OwnerUserId'] = ouid_grouped_df.index
     ouid_grouped_df.reset_index(drop=True, inplace=True)
     ouid_grouped_df.rename(columns = {'Score' : 'MeanScore'}, inplace=True)
@@ -165,6 +165,7 @@ def group_data(all_ans_df):
     print('Show owners with ', str(num_owners), ' highest MeanScores.')
     print(ouid_grouped_df.tail(num_owners))  # See highest scores at bottom:
     print()
+
     return ouid_grouped_df
 
 
@@ -177,12 +178,12 @@ def find_question_ids(ouid_grouped_df, all_ans_df):
     """
     owners_a = ouid_grouped_df['OwnerUserId'].values
     # Take slice of owners w/ highest mean scores; convert to int.
-    top_scoring_owners = np.vectorize(np.int)(owners_a[-num_owners:])
-    #D print('top_scoring_owners: ', top_scoring_owners )
-    #D print()
+    top_scoring_owners_a = np.vectorize(np.int)(owners_a[-num_owners:])
+    print('top_scoring_owners_a: ', top_scoring_owners_a )
+    print()
 
     ouids_df_l = []
-    for ouid in top_scoring_owners:
+    for ouid in top_scoring_owners_a:
         # Get a pandas series of booleans for filtering:
         answered_by_ouid_b = (all_ans_df.OwnerUserId == ouid)
         # Get a pandas df with rows for all answers of one user:
