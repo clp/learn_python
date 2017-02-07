@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Mon 2017 Feb 06 02:18:03 PMPM clpoda> 
+#   Time-stamp: <Tue 2017 Feb 07 08:46:49 AMAM clpoda> 
 """fga_find_good_answers.py
 
    Usage:
@@ -116,7 +116,8 @@ def config_data():
     a_fname = 'Answers.csv'      
     q_fname = 'Questions.csv'
     a_fname = 'a5_99998.csv'  
-    q_fname = 'q3_992.csv'
+    q_fname = 'q30_99993.csv'
+    #D q_fname = 'q3_992.csv'
     #D a_fname = 'a3_986.csv'   
     #D q_fname = 'q2.csv'
     #D a_fname = 'a2.csv'
