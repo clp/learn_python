@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Tue 2017 Feb 07 02:58:24 PMPM clpoda> 
+#   Time-stamp: <Sat 2017 Feb 11 10:30:51 PMPM clpoda> 
 """fga_find_good_answers.py
 
    Usage:
@@ -83,6 +83,11 @@ Data format of q_with_a.csv o/p file from this program.
 import pandas as pd
 import numpy as np
 import os
+import nltk
+import random
+
+from bs4 import BeautifulSoup
+
 
 
 def main():
@@ -92,16 +97,26 @@ def main():
     top_scoring_owners_a = group_data(all_ans_df)
     parent_id_l = find_question_ids(top_scoring_owners_a, all_ans_df)
     q_with_a_df = combine_related_q_and_a(parent_id_l, all_ques_df, all_ans_df)
-    # Write df to a csv file.
+    qa_with_keyword_df = select_recs(keyword, parent_id_l, q_with_a_df, all_ques_df, all_ans_df)
+
+    # Write qa with keyword data set df to a csv file.
+    #F outfields = 'Id', 'ParentId', 'OwnerUserId', 'CreationDate', 'Score', 'Title', 'Body'
+    outfile = 'outdir/qa_with_keyword.csv'
+    qa_with_keyword_df[['Id', 'ParentId', 'OwnerUserId', 'CreationDate', 'Score', 'Title', 'Body']].to_csv(outfile, header=True, index=None, sep=',', mode='w')
+    #F qa_with_keyword_df[[outfields]].to_csv(outfile, header=True, index=None, sep=',', mode='w')
+
+    # Write full data set df to a csv file.
     outfile = 'outdir/q_with_a.csv'
     q_with_a_df[['Id', 'ParentId', 'OwnerUserId', 'CreationDate', 'Score', 'Title', 'Body']].to_csv(outfile, header=True, index=None, sep=',', mode='w')
+    #F q_with_a_df[[outfields]].to_csv(outfile, header=True, index=None, sep=',', mode='w')
     #DBG  write_df_to_file(q_with_a_df, outdir, a_fname)
 
 
 def init():
     """Initialize some settings for pandas.
     """
-    pd.set_option('display.width', 80)
+    #ORG pd.set_option('display.width', 80)
+    pd.set_option('display.width', 0)
     pd.options.display.float_format = '{:.0f}'.format  # Don't show commas in large numbers
         # To show OwnerUserId w/o '.0' suffix; see b.10.
 
@@ -117,10 +132,10 @@ def config_data():
     q_fname = 'Questions.csv'
     a_fname = 'a5_99998.csv'  
     q_fname = 'q30_99993.csv'
-    #D q_fname = 'q3_992.csv'
     #D a_fname = 'a3_986.csv'   
-    #D q_fname = 'q2.csv'
+    #D q_fname = 'q3_992.csv'
     #D a_fname = 'a2.csv'
+    #D q_fname = 'q2.csv'
 
     a_infile = indir  + a_fname
     q_infile = indir  + q_fname
@@ -254,6 +269,51 @@ def combine_related_q_and_a(parent_id_l, all_ques_df, all_ans_df):
     q_with_a_df = pd.concat(ques_ans_l)
     return q_with_a_df
 
+#TBD Fri2017_0210_16:17  wip.
+def select_recs(keyword, parent_id_l, q_with_a_df, all_ques_df, all_ans_df):
+    """Find all Q's that contain the keyword, in Title or Body.
+    Find all A's that contain the keyword; select the corresponding Q's.
+    Combine the two sets into one set of unique Q's w/ their A's.
+    Save all the selected data for analysis.
+    """
+    # TBD = select_recs(keyword, q_with_a_df)
+
+    ques_ans_l = []
+    #TBD Fri2017_0210_23:23  Copied from above for testing & not debugged.
+    #TBD Fri2017_0210_23:23  Copied from above for testing & not debugged.
+    #TBD Fri2017_0210_23:23  Copied from above for testing & not debugged.
+    # qm_df = pd.DataFrame()
+    for qid in parent_id_l:
+        # Get a pandas series of booleans to find the current question id.
+        # Check both Question Title and Body columns.
+        qb_sr = (all_ques_df.Body.str.contains(keyword, regex=False))
+        qt_sr = (all_ques_df.Title.str.contains(keyword, regex=False))
+        # Combine two series into one w/ boolean OR.
+        ques_contains_b = qb_sr | qt_sr
+        #DBG print('dbg qcb: ', ques_contains_b)
+        qm_df = all_ques_df[['Id', 'OwnerUserId',  'CreationDate', 'Score', 'Title', 'Body']][ques_contains_b]
+        #
+        # Now check the Answer Body column.
+        ab_sr = (all_ans_df.Body.str.contains(keyword, regex=False))
+        # Find the Q's that correspond to these A's
+        #TBD
+
+        # Append current question to the list.
+        ques_ans_l.append(qm_df)
+        #
+        #
+        # Get a pandas series of booleans to find all A's related to the current Q.
+        ans_contains_b = (all_ans_df.ParentId == qid)
+        df = all_ans_df[['Id', 'ParentId', 'OwnerUserId',  'CreationDate', 'Score', 'Body']][ans_contains_b]
+        #
+        # Append all related answers to the list.
+        ques_ans_l.append(df)
+    print('len(qm_df): ', len(qm_df))
+    print(qm_df)
+    print()
+    qak_df = pd.concat(ques_ans_l)
+    
+    return qak_df
 
 def write_df_to_file(in_df, wdir, wfile):
     """Write one column of a pandas data frame to a file w/ suffix 'qanda'.
@@ -271,6 +331,10 @@ def write_df_to_file(in_df, wdir, wfile):
 if __name__ == '__main__':
     # Set the number of top scoring owners to select from the data.
     num_owners = 10  # Default is 10.
-    num_owners = 40  # Default is 10.
+    #D num_owners = 40  # Default is 10.
+    #D num_owners = 100  # Default is 10.
+    keyword = 'beginner'  #TBD
+    #D keyword = 'begin'  #TBD
+    #D keyword = 'python'  #TBD
     main()
 
