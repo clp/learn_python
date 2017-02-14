@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Mon 2017 Feb 13 10:31:20 PMPM clpoda> 
+#   Time-stamp: <Mon 2017 Feb 13 10:59:57 PMPM clpoda> 
 """fga_find_good_answers.py
 
    Find answers in stackoverflow that might be good, but 'hidden'
@@ -38,7 +38,8 @@ Data format of stackoverflow.com python file from kaggle.com.
 
 Data format of q_with_a.csv o/p file from this program.
     Note: question records have a Title but no ParentId;
-    answer records have a ParentId but no Title.
+    answer records have a ParentId (which is the related
+    question's Id) but no Title.
 
 ==> q_with_a.csv <==
         Id,ParentId,OwnerUserId,CreationDate,Score,Title,Body
@@ -105,13 +106,13 @@ def main():
     q_with_a_df = combine_related_q_and_a(parent_id_l, all_ques_df, all_ans_df)
     qa_with_keyword_df = select_keyword_recs(keyword, parent_id_l, q_with_a_df, all_ques_df, all_ans_df)
 
-    # Write qa with keyword data set df to a csv file.
+    # Write qa with keyword, subset of full data set, to a csv file.
     #F outfields = 'Id', 'ParentId', 'OwnerUserId', 'CreationDate', 'Score', 'Title', 'Body'
     outfile = 'outdir/qa_with_keyword.csv'
     qa_with_keyword_df[['Id', 'ParentId', 'OwnerUserId', 'CreationDate', 'Score', 'Title', 'Body']].to_csv(outfile, header=True, index=None, sep=',', mode='w')
     #F qa_with_keyword_df[[outfields]].to_csv(outfile, header=True, index=None, sep=',', mode='w')
 
-    # Write full data set df to a csv file.
+    # Write full data set to a csv file.
     outfile = 'outdir/q_with_a.csv'
     q_with_a_df[['Id', 'ParentId', 'OwnerUserId', 'CreationDate', 'Score', 'Title', 'Body']].to_csv(outfile, header=True, index=None, sep=',', mode='w')
     #F q_with_a_df[[outfields]].to_csv(outfile, header=True, index=None, sep=',', mode='w')
@@ -119,12 +120,15 @@ def main():
 
 
 def init():
-    """Initialize some settings for pandas.
+    """Initialize some settings for the program.
     """
+    # Initialize settings for pandas.
     #ORG pd.set_option('display.width', 80)
     pd.set_option('display.width', 0)
-    pd.options.display.float_format = '{:.0f}'.format  # Don't show commas in large numbers
-        # To show OwnerUserId w/o '.0' suffix; see b.10.
+
+    # Don't show commas in large numbers.
+    # Show OwnerUserId w/o '.0' suffix.
+    pd.options.display.float_format = '{:.0f}'.format
 
 
 def config_data():
@@ -136,6 +140,8 @@ def config_data():
     outdir = 'outdir/'  # Relative to pwd, holds o/p files.
     a_fname = 'Answers.csv'      
     q_fname = 'Questions.csv'
+
+    # Smaller data sets, used for debugging.
     a_fname = 'a5_99998.csv'  
     q_fname = 'q30_99993.csv'
     #D a_fname = 'a3_986.csv'   
@@ -207,13 +213,14 @@ def group_data(all_ans_df):
     lo_score_limit = 10
     for o2 in top_scoring_owners_a:
         # Get a pandas series of booleans for filtering:
-        answered_by_o2_b = (all_ans_df.OwnerUserId == o2)
+        answered_by_o2_sr = (all_ans_df.OwnerUserId == o2)
         # Get a pandas df with rows for all answers of one user:
-        answers_by_o2_df = all_ans_df[['Id', 'OwnerUserId', 'Score']][answered_by_o2_b]
+        answers_by_o2_df = all_ans_df[['Id', 'OwnerUserId', 'Score']][answered_by_o2_sr]
+
         # Get a pandas series of booleans for filtering:
-        lo_score_by_o2_b = (answers_by_o2_df.Score < lo_score_limit)
+        lo_score_by_o2_sr = (answers_by_o2_df.Score < lo_score_limit)
         # Get a pandas df with rows for all low-score answers of one user:
-        lo_score_answers_by_o2_df = answers_by_o2_df [['Id', 'OwnerUserId', 'Score']][lo_score_by_o2_b]
+        lo_score_answers_by_o2_df = answers_by_o2_df [['Id', 'OwnerUserId', 'Score']][lo_score_by_o2_sr]
         o2_df_l.append(lo_score_answers_by_o2_df)
 
     lo_scores_for_top_users_df = pd.concat(o2_df_l)
@@ -234,9 +241,9 @@ def find_question_ids(top_scoring_owners_a, all_ans_df):
     ouids_df_l = []
     for ouid in top_scoring_owners_a:
         # Get a pandas series of booleans for filtering:
-        answered_by_ouid_b = (all_ans_df.OwnerUserId == ouid)
+        answered_by_ouid_sr = (all_ans_df.OwnerUserId == ouid)
         # Get a pandas df with rows for all answers of one user:
-        answers_by_ouid_df = all_ans_df[['Id', 'OwnerUserId', 'ParentId', 'Score']][answered_by_ouid_b]
+        answers_by_ouid_df = all_ans_df[['Id', 'OwnerUserId', 'ParentId', 'Score']][answered_by_ouid_sr]
         ouids_df_l.append(answers_by_ouid_df)
 
     hi_scoring_users_df = pd.concat(ouids_df_l)
@@ -260,15 +267,15 @@ def combine_related_q_and_a(parent_id_l, all_ques_df, all_ans_df):
     ques_ans_l = []
     for qid in parent_id_l:
         # Get a pandas series of booleans to find the current question id.
-        ques_match_b = (all_ques_df.Id == qid)
-        ques_match_df = all_ques_df[['Id', 'OwnerUserId',  'CreationDate', 'Score', 'Title', 'Body']][ques_match_b]
+        ques_match_sr = (all_ques_df.Id == qid)
+        ques_match_df = all_ques_df[['Id', 'OwnerUserId',  'CreationDate', 'Score', 'Title', 'Body']][ques_match_sr]
         #
         # Append current question to the list.
         ques_ans_l.append(ques_match_df)
         #
         # Get a pandas series of booleans to find all A's related to the current Q.
-        ans_match_b = (all_ans_df.ParentId == qid)
-        df = all_ans_df[['Id', 'ParentId', 'OwnerUserId',  'CreationDate', 'Score', 'Body']][ans_match_b]
+        ans_match_sr = (all_ans_df.ParentId == qid)
+        df = all_ans_df[['Id', 'ParentId', 'OwnerUserId',  'CreationDate', 'Score', 'Body']][ans_match_sr]
         #
         # Append all related answers to the list.
         ques_ans_l.append(df)
@@ -290,8 +297,8 @@ def select_keyword_recs(keyword, parent_id_l, q_with_a_df, all_ques_df, all_ans_
     qt_sr = q_with_a_df.Title.str.contains(keyword, regex=False)
     qb_sr = q_with_a_df.Body.str.contains(keyword, regex=False)
     # Combine two series into one w/ boolean OR.
-    ques_contains_b = qb_sr | qt_sr
-    qm_df = q_with_a_df[['Id', 'ParentId', 'OwnerUserId',  'CreationDate', 'Score', 'Title', 'Body']][ques_contains_b]
+    ques_contains_sr = qb_sr | qt_sr
+    qm_df = q_with_a_df[['Id', 'ParentId', 'OwnerUserId',  'CreationDate', 'Score', 'Title', 'Body']][ques_contains_sr]
 
     #TBD, Now check the Answer Body column in the same way.
     #  See b.2, for future.
