@@ -1,14 +1,20 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Sat 2017 Feb 11 10:30:51 PMPM clpoda> 
+#   Time-stamp: <Mon 2017 Feb 13 10:31:20 PMPM clpoda> 
 """fga_find_good_answers.py
+
+   Find answers in stackoverflow that might be good, but 'hidden'
+   because they have low scores.
+   Look for such answers from contributors who have high scores
+   based on their other questions & answers.
+   Save the o/p to a file for further evaluation & processing.
 
    Usage:
      fga_find_good_answers.py 
 
-     Set the value of num_owners below; default is 10.
-     It determines how much o/p data will be saved.
+     Set the value of num_owners at the bottom of the file;
+     default is 10.  It determines how much o/p data will be saved.
 
    Options:
      TBD: -h  --help  Show this help data.
@@ -97,7 +103,7 @@ def main():
     top_scoring_owners_a = group_data(all_ans_df)
     parent_id_l = find_question_ids(top_scoring_owners_a, all_ans_df)
     q_with_a_df = combine_related_q_and_a(parent_id_l, all_ques_df, all_ans_df)
-    qa_with_keyword_df = select_recs(keyword, parent_id_l, q_with_a_df, all_ques_df, all_ans_df)
+    qa_with_keyword_df = select_keyword_recs(keyword, parent_id_l, q_with_a_df, all_ques_df, all_ans_df)
 
     # Write qa with keyword data set df to a csv file.
     #F outfields = 'Id', 'ParentId', 'OwnerUserId', 'CreationDate', 'Score', 'Title', 'Body'
@@ -165,7 +171,7 @@ def group_data(all_ans_df):
     """Group the contents of the answers df by a specific column.
     Group by OwnerUserId, ouid, and sort by mean score for each ouid.
     Make a numpy array of owners w/ highest mean scores.
-    TBD.1, Find low of scores for these hi-score owners; 
+    TBD.1, Find low scores for these hi-score owners; 
     then mark the low score records for evaluation.
     Low score is any score below lo_score_limit.
     """
@@ -269,51 +275,31 @@ def combine_related_q_and_a(parent_id_l, all_ques_df, all_ans_df):
     q_with_a_df = pd.concat(ques_ans_l)
     return q_with_a_df
 
-#TBD Fri2017_0210_16:17  wip.
-def select_recs(keyword, parent_id_l, q_with_a_df, all_ques_df, all_ans_df):
+#TBD.1 Sat2017_0211_22:55 , should this func be called before combine_related*()?
+# Use it to make the final parent_id_l?
+#
+def select_keyword_recs(keyword, parent_id_l, q_with_a_df, all_ques_df, all_ans_df):
     """Find all Q's that contain the keyword, in Title or Body.
-    Find all A's that contain the keyword; select the corresponding Q's.
+    TBD, Find all A's that contain the keyword; select the corresponding Q's.
     Combine the two sets into one set of unique Q's w/ their A's.
     Save all the selected data for analysis.
     """
-    # TBD = select_recs(keyword, q_with_a_df)
+    #
+    # Get a pandas series of booleans to find the current question id.
+    # Check both Question Title and Body columns.
+    qt_sr = q_with_a_df.Title.str.contains(keyword, regex=False)
+    qb_sr = q_with_a_df.Body.str.contains(keyword, regex=False)
+    # Combine two series into one w/ boolean OR.
+    ques_contains_b = qb_sr | qt_sr
+    qm_df = q_with_a_df[['Id', 'ParentId', 'OwnerUserId',  'CreationDate', 'Score', 'Title', 'Body']][ques_contains_b]
 
-    ques_ans_l = []
-    #TBD Fri2017_0210_23:23  Copied from above for testing & not debugged.
-    #TBD Fri2017_0210_23:23  Copied from above for testing & not debugged.
-    #TBD Fri2017_0210_23:23  Copied from above for testing & not debugged.
-    # qm_df = pd.DataFrame()
-    for qid in parent_id_l:
-        # Get a pandas series of booleans to find the current question id.
-        # Check both Question Title and Body columns.
-        qb_sr = (all_ques_df.Body.str.contains(keyword, regex=False))
-        qt_sr = (all_ques_df.Title.str.contains(keyword, regex=False))
-        # Combine two series into one w/ boolean OR.
-        ques_contains_b = qb_sr | qt_sr
-        #DBG print('dbg qcb: ', ques_contains_b)
-        qm_df = all_ques_df[['Id', 'OwnerUserId',  'CreationDate', 'Score', 'Title', 'Body']][ques_contains_b]
-        #
-        # Now check the Answer Body column.
-        ab_sr = (all_ans_df.Body.str.contains(keyword, regex=False))
-        # Find the Q's that correspond to these A's
-        #TBD
+    #TBD, Now check the Answer Body column in the same way.
+    #  See b.2, for future.
+    #  ab_sr = (q_with_a_df.Body.str.contains(keyword, regex=False))
+    #  Find the Q's that correspond to these A's.
+    #  Save those Q's & all related A's.
 
-        # Append current question to the list.
-        ques_ans_l.append(qm_df)
-        #
-        #
-        # Get a pandas series of booleans to find all A's related to the current Q.
-        ans_contains_b = (all_ans_df.ParentId == qid)
-        df = all_ans_df[['Id', 'ParentId', 'OwnerUserId',  'CreationDate', 'Score', 'Body']][ans_contains_b]
-        #
-        # Append all related answers to the list.
-        ques_ans_l.append(df)
-    print('len(qm_df): ', len(qm_df))
-    print(qm_df)
-    print()
-    qak_df = pd.concat(ques_ans_l)
-    
-    return qak_df
+    return qm_df
 
 def write_df_to_file(in_df, wdir, wfile):
     """Write one column of a pandas data frame to a file w/ suffix 'qanda'.
@@ -335,6 +321,6 @@ if __name__ == '__main__':
     #D num_owners = 100  # Default is 10.
     keyword = 'beginner'  #TBD
     #D keyword = 'begin'  #TBD
-    #D keyword = 'python'  #TBD
+    keyword = 'Python'  #TBD Both Title & Body of smaller data sets have it; good for debug
     main()
 
