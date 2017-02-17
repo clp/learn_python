@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Fri 2017 Feb 17 12:34:16 PMPM clpoda> 
+#   Time-stamp: <Fri 2017 Feb 17 03:36:24 PMPM clpoda> 
 """fga_find_good_answers.py
 
    Find answers in stackoverflow that might be good, but 'hidden'
@@ -57,7 +57,7 @@ Data format of q_with_a.csv o/p file from this program.
 """
 
 
-#----------------------------------------------------------
+# ----------------------------------------------------------
 # Plan
 # Find top-scoring owners.
 # Find all answers by top-scoring owners.
@@ -73,16 +73,16 @@ Data format of q_with_a.csv o/p file from this program.
 #   Mark the answer w/ value tag: Is it worth reading?: Y or N.
 #     TBD, Consider using Hi-M-Lo or an integer to add to its score.
 # Build tools to analyze a larger test set.
-#----------------------------------------------------------
+# ----------------------------------------------------------
 
 
-#----------------------------------------------------------
+# ----------------------------------------------------------
 # Preliminary steps.
 #
 # This csvcut (part of csvkit) operation  may not be needed; used for debug.
 # Build subset of full Answers data set; exclude Body field:
 # csvcut -c 1,2,3,4,5 -e latin1 indir/Answers.csv > outdir/a21_all_iocps.csv
-#----------------------------------------------------------
+# ----------------------------------------------------------
 
 
 import pandas as pd
@@ -129,8 +129,8 @@ def init():
 def config_data():
     """Configure path and file names for i/o data.
     """
-    #TBD Make the in & out dirs w/ this program, if they don't exist?
-    #TBD Include the test data files w/ this project.
+    # TBD Make the in & out dirs w/ this program, if they don't exist?
+    # TBD Include the test data files w/ this project.
     indir = 'indir/'  # Relative to pwd, holds i/p files.
     outdir = 'outdir/'  # Relative to pwd, holds o/p files.
     a_fname = 'Answers.csv'      
@@ -271,7 +271,7 @@ def combine_related_q_and_a(parent_id_l, all_ques_df, all_ans_df):
     q_with_a_df = pd.concat(ques_ans_l)
     return q_with_a_df
 
-#TBD.1 Sat2017_0211_22:55 , should this func be called before combine_related*()?
+# TBD.1 Sat2017_0211_22:55 , should this func be called before combine_related*()?
 # Use it to make the final parent_id_l?
 #
 def select_keyword_recs(keyword, parent_id_l, q_with_a_df, all_ques_df, all_ans_df):
@@ -289,7 +289,7 @@ def select_keyword_recs(keyword, parent_id_l, q_with_a_df, all_ques_df, all_ans_
     ques_contains_sr = qb_sr | qt_sr
     qm_df = q_with_a_df[['Id', 'ParentId', 'OwnerUserId',  'CreationDate', 'Score', 'Title', 'Body']][ques_contains_sr]
 
-    #TBD, Now check the Answer Body column in the same way.
+    # TBD, Now check the Answer Body column in the same way.
     #  See b.2, for future.
     #  ab_sr = (q_with_a_df.Body.str.contains(keyword, regex=False))
     #  Find the Q's that correspond to these A's.
