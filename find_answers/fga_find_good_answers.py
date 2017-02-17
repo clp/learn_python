@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Mon 2017 Feb 13 10:59:57 PMPM clpoda> 
+#   Time-stamp: <Thu 2017 Feb 16 04:59:28 PMPM clpoda> 
 """fga_find_good_answers.py
 
    Find answers in stackoverflow that might be good, but 'hidden'
@@ -107,15 +107,13 @@ def main():
     qa_with_keyword_df = select_keyword_recs(keyword, parent_id_l, q_with_a_df, all_ques_df, all_ans_df)
 
     # Write qa with keyword, subset of full data set, to a csv file.
-    #F outfields = 'Id', 'ParentId', 'OwnerUserId', 'CreationDate', 'Score', 'Title', 'Body'
+    outfields_l = ['Id', 'ParentId', 'OwnerUserId', 'CreationDate', 'Score', 'Title', 'Body']
     outfile = 'outdir/qa_with_keyword.csv'
-    qa_with_keyword_df[['Id', 'ParentId', 'OwnerUserId', 'CreationDate', 'Score', 'Title', 'Body']].to_csv(outfile, header=True, index=None, sep=',', mode='w')
-    #F qa_with_keyword_df[[outfields]].to_csv(outfile, header=True, index=None, sep=',', mode='w')
+    qa_with_keyword_df[outfields_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
 
     # Write full data set to a csv file.
     outfile = 'outdir/q_with_a.csv'
-    q_with_a_df[['Id', 'ParentId', 'OwnerUserId', 'CreationDate', 'Score', 'Title', 'Body']].to_csv(outfile, header=True, index=None, sep=',', mode='w')
-    #F q_with_a_df[[outfields]].to_csv(outfile, header=True, index=None, sep=',', mode='w')
+    q_with_a_df[outfields_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
     #DBG  write_df_to_file(q_with_a_df, outdir, a_fname)
 
 
@@ -144,8 +142,8 @@ def config_data():
     # Smaller data sets, used for debugging.
     a_fname = 'a5_99998.csv'  
     q_fname = 'q30_99993.csv'
-    #D a_fname = 'a3_986.csv'   
-    #D q_fname = 'q3_992.csv'
+    a_fname = 'a3_986.csv'   
+    q_fname = 'q3_992.csv'
     #D a_fname = 'a2.csv'
     #D q_fname = 'q2.csv'
 
