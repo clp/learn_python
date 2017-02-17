@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Fri 2017 Feb 17 03:36:24 PMPM clpoda> 
+#   Time-stamp: <Fri 2017 Feb 17 03:51:11 PMPM clpoda> 
 """fga_find_good_answers.py
 
    Find answers in stackoverflow that might be good, but 'hidden'
@@ -94,7 +94,6 @@ import random
 from bs4 import BeautifulSoup
 
 
-
 def main():
     init()
     a_fname, a_infile, q_infile, indir, outdir = config_data()
@@ -112,7 +111,7 @@ def main():
     # Write full data set to a csv file.
     outfile = 'outdir/q_with_a.csv'
     q_with_a_df[outfields_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
-    #DBG  write_df_to_file(q_with_a_df, outdir, a_fname)
+    # DBG  write_df_to_file(q_with_a_df, outdir, a_fname)
 
 
 def init():
@@ -141,13 +140,13 @@ def config_data():
     q_fname = 'q30_99993.csv'
     a_fname = 'a3_986.csv'   
     q_fname = 'q3_992.csv'
-    #D a_fname = 'a2.csv'
-    #D q_fname = 'q2.csv'
+    # D a_fname = 'a2.csv'
+    # D q_fname = 'q2.csv'
 
-    a_infile = indir  + a_fname
-    q_infile = indir  + q_fname
+    a_infile = indir + a_fname
+    q_infile = indir + q_fname
 
-    print('Input files, q & a:\n'  + q_infile + '\n' + a_infile)
+    print('Input files, q & a:\n' + q_infile + '\n' + a_infile)
     print()
 
     return a_fname, a_infile, q_infile, indir, outdir
@@ -180,10 +179,10 @@ def group_data(all_ans_df):
     owner_grouped_df = all_ans_df.groupby('OwnerUserId').mean()
     owner_grouped_df = owner_grouped_df[['Score']].sort_values(['Score'])
 
-    # Copy index column into owner column; Change index column from owner to integer
+    # Copy index column into owner column; Change index column to integer
     owner_grouped_df['OwnerUserId'] = owner_grouped_df.index
     owner_grouped_df.reset_index(drop=True, inplace=True)
-    owner_grouped_df.rename(columns = {'Score' : 'MeanScore'}, inplace=True)
+    owner_grouped_df.rename(columns={'Score': 'MeanScore'}, inplace=True)
 
     print()
     print('len(owner_grouped_df): number of unique OwnerUserId values: ' + str(len(owner_grouped_df)))
@@ -195,8 +194,8 @@ def group_data(all_ans_df):
     # Take slice of owners w/ highest mean scores; convert to int.
     owners_a = owner_grouped_df['OwnerUserId'].values
     top_scoring_owners_a = np.vectorize(np.int)(owners_a[-num_owners:])
-    #D print('top_scoring_owners_a: ', top_scoring_owners_a )
-    #D print()
+    # D print('top_scoring_owners_a: ', top_scoring_owners_a )
+    # D print()
 
     owners_df_l = []
     lo_score_limit = 10
@@ -209,7 +208,7 @@ def group_data(all_ans_df):
         # Get a pandas series of booleans for filtering:
         lo_score_by_o2_sr = (answers_df.Score < lo_score_limit)
         # Get a pandas df with rows for all low-score answers of one user:
-        lo_score_answers_by_o2_df = answers_df [['Id', 'OwnerUserId', 'Score']][lo_score_by_o2_sr]
+        lo_score_answers_by_o2_df = answers_df[['Id', 'OwnerUserId', 'Score']][lo_score_by_o2_sr]
         owners_df_l.append(lo_score_answers_by_o2_df)
 
     lo_scores_for_top_users_df = pd.concat(owners_df_l)
@@ -236,15 +235,15 @@ def find_question_ids(top_scoring_owners_a, all_ans_df):
         owners_df_l.append(answers_df)
 
     hi_scoring_users_df = pd.concat(owners_df_l)
-    #D print('Length of hi_scoring_users_df: ', len(hi_scoring_users_df))
-    #D print('hi_scoring_users_df: ')
-    #D print(hi_scoring_users_df)
+    # D print('Length of hi_scoring_users_df: ', len(hi_scoring_users_df))
+    # D print('hi_scoring_users_df: ')
+    # D print(hi_scoring_users_df)
 
     # Get list of unique ParentId's:
     parent_id_l = list(set(hi_scoring_users_df['ParentId']))
-    #D print('parent_id_l: ')
-    #D print(parent_id_l)
-    #D print()
+    # D print('parent_id_l: ')
+    # D print(parent_id_l)
+    # D print()
     return parent_id_l
 
 
@@ -270,6 +269,7 @@ def combine_related_q_and_a(parent_id_l, all_ques_df, all_ans_df):
         ques_ans_l.append(df)
     q_with_a_df = pd.concat(ques_ans_l)
     return q_with_a_df
+
 
 # TBD.1 Sat2017_0211_22:55 , should this func be called before combine_related*()?
 # Use it to make the final parent_id_l?
@@ -297,6 +297,7 @@ def select_keyword_recs(keyword, parent_id_l, q_with_a_df, all_ques_df, all_ans_
 
     return qm_df
 
+
 def write_df_to_file(in_df, wdir, wfile):
     """Write one column of a pandas data frame to a file w/ suffix 'qanda'.
     """
@@ -304,19 +305,18 @@ def write_df_to_file(in_df, wdir, wfile):
     outfile = wdir + wfile + '.qanda'
     if os.path.exists(outfile):
         os.rename(outfile, outfile + '.bak')
-        print('\nWARN: renamed o/p file to *.bak; save it manually if needed:'+ outfile)
+        print('\nWARN: renamed o/p file to *.bak; save it manually if needed:' + outfile)
     with open(outfile, 'w') as f:
-        print('\nWriting Q and A to outfile: '+ outfile)
+        print('\nWriting Q and A to outfile: ' + outfile)
         print(in_df['Body'], file=f)
 
 
 if __name__ == '__main__':
     # Set the number of top scoring owners to select from the data.
     num_owners = 10  # Default is 10.
-    #D num_owners = 40  # Default is 10.
-    #D num_owners = 100  # Default is 10.
-    keyword = 'beginner'  #TBD
-    #D keyword = 'begin'  #TBD
+    # D num_owners = 40  # Default is 10.
+    # D num_owners = 100  # Default is 10.
+    keyword = 'beginner'
+    # D keyword = 'begin'
     keyword = 'Python'  #TBD Both Title & Body of smaller data sets have it; good for debug
     main()
-
