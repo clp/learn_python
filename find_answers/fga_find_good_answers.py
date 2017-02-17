@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Fri 2017 Feb 17 03:51:11 PMPM clpoda> 
+#   Time-stamp: <Fri 2017 Feb 17 03:54:11 PMPM clpoda>
 """fga_find_good_answers.py
 
    Find answers in stackoverflow that might be good, but 'hidden'
@@ -11,7 +11,7 @@
    Save the o/p to a file for further evaluation & processing.
 
    Usage:
-     fga_find_good_answers.py 
+     fga_find_good_answers.py
 
      Set the value of num_owners at the bottom of the file;
      default is 10.  It determines how much o/p data will be saved.
@@ -45,7 +45,7 @@ Data format of q_with_a.csv o/p file from this program.
         Id,ParentId,OwnerUserId,CreationDate,Score,Title,Body
         5313,,680.0,2008-08-07T21:07:24Z,11,"Cross Platform, Language
         Agnostic GUI Markup Language?",
-        "<p>I learned Swing back in the day but now 
+        "<p>I learned Swing back in the day but now
 ..."
         5319,5313.0,380.0,2008-08-07T21:10:27Z,8,,<p>erm.. HTML?
         (trying to be funny here... while we wait for real answers..)</p>
@@ -132,13 +132,13 @@ def config_data():
     # TBD Include the test data files w/ this project.
     indir = 'indir/'  # Relative to pwd, holds i/p files.
     outdir = 'outdir/'  # Relative to pwd, holds o/p files.
-    a_fname = 'Answers.csv'      
+    a_fname = 'Answers.csv'
     q_fname = 'Questions.csv'
 
     # Smaller data sets, used for debugging.
-    a_fname = 'a5_99998.csv'  
+    a_fname = 'a5_99998.csv'
     q_fname = 'q30_99993.csv'
-    a_fname = 'a3_986.csv'   
+    a_fname = 'a3_986.csv'
     q_fname = 'q3_992.csv'
     # D a_fname = 'a2.csv'
     # D q_fname = 'q2.csv'
@@ -171,7 +171,7 @@ def group_data(all_ans_df):
     """Group the contents of the answers df by a specific column.
     Group by OwnerUserId, and sort by mean score for each owner.
     Make a numpy array of owners w/ highest mean scores.
-    TBD.1, Find low scores for these hi-score owners; 
+    TBD.1, Find low scores for these hi-score owners;
     then mark the low score records for evaluation.
     Low score is any score below lo_score_limit.
     """
@@ -318,5 +318,5 @@ if __name__ == '__main__':
     # D num_owners = 100  # Default is 10.
     keyword = 'beginner'
     # D keyword = 'begin'
-    keyword = 'Python'  #TBD Both Title & Body of smaller data sets have it; good for debug
+    keyword = 'Python'  # Both Title & Body of data sets have it; for debug
     main()
