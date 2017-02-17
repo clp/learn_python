@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Fri 2017 Feb 17 12:24:51 PMPM clpoda> 
+#   Time-stamp: <Fri 2017 Feb 17 12:34:16 PMPM clpoda> 
 """fga_find_good_answers.py
 
    Find answers in stackoverflow that might be good, but 'hidden'
@@ -195,8 +195,8 @@ def group_data(all_ans_df):
     # Take slice of owners w/ highest mean scores; convert to int.
     owners_a = owner_grouped_df['OwnerUserId'].values
     top_scoring_owners_a = np.vectorize(np.int)(owners_a[-num_owners:])
-    print('top_scoring_owners_a: ', top_scoring_owners_a )
-    print()
+    #D print('top_scoring_owners_a: ', top_scoring_owners_a )
+    #D print()
 
     owners_df_l = []
     lo_score_limit = 10
@@ -236,15 +236,15 @@ def find_question_ids(top_scoring_owners_a, all_ans_df):
         owners_df_l.append(answers_df)
 
     hi_scoring_users_df = pd.concat(owners_df_l)
-    print('Length of hi_scoring_users_df: ', len(hi_scoring_users_df))
+    #D print('Length of hi_scoring_users_df: ', len(hi_scoring_users_df))
     #D print('hi_scoring_users_df: ')
     #D print(hi_scoring_users_df)
 
     # Get list of unique ParentId's:
     parent_id_l = list(set(hi_scoring_users_df['ParentId']))
-    print('parent_id_l: ')
-    print(parent_id_l)
-    print()
+    #D print('parent_id_l: ')
+    #D print(parent_id_l)
+    #D print()
     return parent_id_l
 
 
