@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Fri 2017 Feb 17 11:47:10 AMAM clpoda> 
+#   Time-stamp: <Fri 2017 Feb 17 12:02:10 PMPM clpoda> 
 """fga_find_good_answers.py
 
    Find answers in stackoverflow that might be good, but 'hidden'
@@ -119,8 +119,7 @@ def init():
     """Initialize some settings for the program.
     """
     # Initialize settings for pandas.
-    #ORG pd.set_option('display.width', 80)
-    pd.set_option('display.width', 0)
+    pd.set_option('display.width', 0)  # 0=no limit, use for debugging
 
     # Don't show commas in large numbers.
     # Show OwnerUserId w/o '.0' suffix.
@@ -198,12 +197,6 @@ def group_data(all_ans_df):
     top_scoring_owners_a = np.vectorize(np.int)(owners_a[-num_owners:])
     print('top_scoring_owners_a: ', top_scoring_owners_a )
     print()
-
-    # Make a list of the A scores for each of the hi-score owners.
-    print('\n=== owner_grouped_df: Group by owner .')
-    #ORG owner_grouped_df = all_ans_df.groupby('OwnerUserId')
-    o2_grouped_df = all_ans_df.groupby('OwnerUserId')
-    #ORG owner_grouped_df = owner_grouped_df[['Score']].sort_values(['Score'])
 
     o2_df_l = []
     lo_score_limit = 10
