@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Fri 2017 Feb 17 11:33:39 AMAM clpoda> 
+#   Time-stamp: <Fri 2017 Feb 17 11:47:10 AMAM clpoda> 
 """fga_find_good_answers.py
 
    Find answers in stackoverflow that might be good, but 'hidden'
@@ -239,8 +239,8 @@ def find_question_ids(top_scoring_owners_a, all_ans_df):
         # Get a pandas series of booleans for filtering:
         answered_by_owner_sr = (all_ans_df.OwnerUserId == owner)
         # Get a pandas df with rows for all answers of one user:
-        answers_by_owner_df = all_ans_df[['Id', 'OwnerUserId', 'ParentId', 'Score']][answered_by_owner_sr]
-        owners_df_l.append(answers_by_owner_df)
+        answers_df = all_ans_df[['Id', 'OwnerUserId', 'ParentId', 'Score']][answered_by_owner_sr]
+        owners_df_l.append(answers_df)
 
     hi_scoring_users_df = pd.concat(owners_df_l)
     print('Length of hi_scoring_users_df: ', len(hi_scoring_users_df))
