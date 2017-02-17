@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Thu 2017 Feb 16 04:59:28 PMPM clpoda> 
+#   Time-stamp: <Fri 2017 Feb 17 11:33:39 AMAM clpoda> 
 """fga_find_good_answers.py
 
    Find answers in stackoverflow that might be good, but 'hidden'
@@ -59,22 +59,20 @@ Data format of q_with_a.csv o/p file from this program.
 
 #----------------------------------------------------------
 # Plan
-# Loop over top scoring owners of answers.
-#   Find next top-scoring owner.
-#   Use pandas.describe() or other tool to find stats.
-#   Loop over each record by ParentId in the bottom N % (0.1-1-10-25%) of scores
-#     Use lowest scores to find answers that might be good & deserve higher score.
-#     Get Q.Body of the related question from Questions.csv.
-#     Get other answers with that ParentId from Answers.csv.
-#     Save the Q & all related A's: append to data frame.
-# Print a report to a csv file w/ all Q's & all A's.
+# Find top-scoring owners.
+# Find all answers by top-scoring owners.
+# Find the questions for each of those answers.
+# Find all answers for each of those questions.
+# Build a data frame with each question followed by all its answers.
+# Find the subset of Q's and A's that contain a keyword.
+# Save the subset of data to a csv file.
 #
 # Next steps.
 #
 # Manually review the A's.
 #   Mark the answer w/ value tag: Is it worth reading?: Y or N.
 #     TBD, Consider using Hi-M-Lo or an integer to add to its score.
-# Use these data to learn about the data; then analyze a larger test set.
+# Build tools to analyze a larger test set.
 #----------------------------------------------------------
 
 
@@ -173,39 +171,39 @@ def read_data(ans_file, ques_file):
 
 def group_data(all_ans_df):
     """Group the contents of the answers df by a specific column.
-    Group by OwnerUserId, ouid, and sort by mean score for each ouid.
+    Group by OwnerUserId, and sort by mean score for each owner.
     Make a numpy array of owners w/ highest mean scores.
     TBD.1, Find low scores for these hi-score owners; 
     then mark the low score records for evaluation.
     Low score is any score below lo_score_limit.
     """
-    print('\n=== ouid_grouped_df: Group by owner and sort by mean score for each owner.')
-    ouid_grouped_df = all_ans_df.groupby('OwnerUserId').mean()
-    ouid_grouped_df = ouid_grouped_df[['Score']].sort_values(['Score'])
+    print('\n=== owner_grouped_df: Group by owner and sort by mean score for each owner.')
+    owner_grouped_df = all_ans_df.groupby('OwnerUserId').mean()
+    owner_grouped_df = owner_grouped_df[['Score']].sort_values(['Score'])
 
-    # Copy index column into ouid column; Change index column from ouid to integer
-    ouid_grouped_df['OwnerUserId'] = ouid_grouped_df.index
-    ouid_grouped_df.reset_index(drop=True, inplace=True)
-    ouid_grouped_df.rename(columns = {'Score' : 'MeanScore'}, inplace=True)
+    # Copy index column into owner column; Change index column from owner to integer
+    owner_grouped_df['OwnerUserId'] = owner_grouped_df.index
+    owner_grouped_df.reset_index(drop=True, inplace=True)
+    owner_grouped_df.rename(columns = {'Score' : 'MeanScore'}, inplace=True)
 
     print()
-    print('len(ouid_grouped_df): number of unique OwnerUserId values: ' + str(len(ouid_grouped_df)))
+    print('len(owner_grouped_df): number of unique OwnerUserId values: ' + str(len(owner_grouped_df)))
     print()
     print('Show owners with ', str(num_owners), ' highest MeanScores.')
-    print(ouid_grouped_df.tail(num_owners))  # See highest scores at bottom:
+    print(owner_grouped_df.tail(num_owners))  # See highest scores at bottom:
     print()
 
     # Take slice of owners w/ highest mean scores; convert to int.
-    owners_a = ouid_grouped_df['OwnerUserId'].values
+    owners_a = owner_grouped_df['OwnerUserId'].values
     top_scoring_owners_a = np.vectorize(np.int)(owners_a[-num_owners:])
     print('top_scoring_owners_a: ', top_scoring_owners_a )
     print()
 
     # Make a list of the A scores for each of the hi-score owners.
-    print('\n=== ouid_grouped_df: Group by owner .')
-    #ORG ouid_grouped_df = all_ans_df.groupby('OwnerUserId')
+    print('\n=== owner_grouped_df: Group by owner .')
+    #ORG owner_grouped_df = all_ans_df.groupby('OwnerUserId')
     o2_grouped_df = all_ans_df.groupby('OwnerUserId')
-    #ORG ouid_grouped_df = ouid_grouped_df[['Score']].sort_values(['Score'])
+    #ORG owner_grouped_df = owner_grouped_df[['Score']].sort_values(['Score'])
 
     o2_df_l = []
     lo_score_limit = 10
@@ -236,15 +234,15 @@ def find_question_ids(top_scoring_owners_a, all_ans_df):
     to collect for evaluation.
     Return that list of question Id's.
     """
-    ouids_df_l = []
-    for ouid in top_scoring_owners_a:
+    owners_df_l = []
+    for owner in top_scoring_owners_a:
         # Get a pandas series of booleans for filtering:
-        answered_by_ouid_sr = (all_ans_df.OwnerUserId == ouid)
+        answered_by_owner_sr = (all_ans_df.OwnerUserId == owner)
         # Get a pandas df with rows for all answers of one user:
-        answers_by_ouid_df = all_ans_df[['Id', 'OwnerUserId', 'ParentId', 'Score']][answered_by_ouid_sr]
-        ouids_df_l.append(answers_by_ouid_df)
+        answers_by_owner_df = all_ans_df[['Id', 'OwnerUserId', 'ParentId', 'Score']][answered_by_owner_sr]
+        owners_df_l.append(answers_by_owner_df)
 
-    hi_scoring_users_df = pd.concat(ouids_df_l)
+    hi_scoring_users_df = pd.concat(owners_df_l)
     print('Length of hi_scoring_users_df: ', len(hi_scoring_users_df))
     #D print('hi_scoring_users_df: ')
     #D print(hi_scoring_users_df)
