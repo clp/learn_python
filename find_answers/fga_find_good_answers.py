@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Fri 2017 Feb 17 12:02:10 PMPM clpoda> 
+#   Time-stamp: <Fri 2017 Feb 17 12:14:16 PMPM clpoda> 
 """fga_find_good_answers.py
 
    Find answers in stackoverflow that might be good, but 'hidden'
@@ -204,12 +204,12 @@ def group_data(all_ans_df):
         # Get a pandas series of booleans for filtering:
         answered_by_o2_sr = (all_ans_df.OwnerUserId == o2)
         # Get a pandas df with rows for all answers of one user:
-        answers_by_o2_df = all_ans_df[['Id', 'OwnerUserId', 'Score']][answered_by_o2_sr]
+        answers_df = all_ans_df[['Id', 'OwnerUserId', 'Score']][answered_by_o2_sr]
 
         # Get a pandas series of booleans for filtering:
-        lo_score_by_o2_sr = (answers_by_o2_df.Score < lo_score_limit)
+        lo_score_by_o2_sr = (answers_df.Score < lo_score_limit)
         # Get a pandas df with rows for all low-score answers of one user:
-        lo_score_answers_by_o2_df = answers_by_o2_df [['Id', 'OwnerUserId', 'Score']][lo_score_by_o2_sr]
+        lo_score_answers_by_o2_df = answers_df [['Id', 'OwnerUserId', 'Score']][lo_score_by_o2_sr]
         o2_df_l.append(lo_score_answers_by_o2_df)
 
     lo_scores_for_top_users_df = pd.concat(o2_df_l)
