@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Fri 2017 Feb 17 03:54:11 PMPM clpoda>
+#   Time-stamp: <Sat 2017 Feb 18 11:29:15 AMAM clpoda>
 """fga_find_good_answers.py
 
    Find answers in stackoverflow that might be good, but 'hidden'
@@ -319,4 +319,5 @@ if __name__ == '__main__':
     keyword = 'beginner'
     # D keyword = 'begin'
     keyword = 'Python'  # Both Title & Body of data sets have it; for debug
+    print("Keyword: ", keyword)
     main()
