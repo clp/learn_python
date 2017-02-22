@@ -2,7 +2,7 @@
 
 # nltk_ex22.py  clpoda  2017_0115 . 2017_0126 . 2017_0220
 #   VM-ds2:/home/ann/p/learn_python/find_answers/
-#   Time-stamp: <Mon 2017 Feb 20 08:18:10 PMPM clpoda> 
+#   Time-stamp: <Tue 2017 Feb 21 10:45:27 PMPM clpoda> 
 #
 # Ref: https://www.kaggle.com/c/word2vec-nlp-tutorial/details/part-1-for-beginners-bag-of-words
 #
@@ -48,9 +48,9 @@ outdir = 'outdir/'  # Relative to /home/ann/p/antxso/
 q_fname = 'Questions.csv'
 a_fname = 'Answers.csv'
 a_fname = 'a6_999999.csv'  # Bag has TBD rows.
-a_fname = 'a5_99998.csv'  # Bag has 7903 rows.
+#D a_fname = 'a5_99998.csv'  # Bag has 7903 rows.
 q_fname = 'q3_992.csv'
-a_fname = 'a3_986.csv'
+#D a_fname = 'a3_986.csv'
 #D q_fname = 'q2.csv'
 #D a_fname = 'a2.csv'
 
@@ -216,7 +216,7 @@ with open(outfile, 'w') as f:
 # '''
 
 
-# '''
+'''
 def make_bag_of_words(clean_q_bodies):
     print("\nCreating the bag of words for word counts ...\n")
     from sklearn.feature_extraction.text import CountVectorizer
@@ -238,6 +238,63 @@ def make_bag_of_words(clean_q_bodies):
     # and learns the vocabulary; second, it transforms our training data
     # into feature vectors. The input to fit_transform should be a list of 
     # strings.
+    train_data_features = vectorizer.fit_transform(clean_q_bodies)
+
+    # Numpy arrays are easy to work with, so convert the result to an 
+    # array
+    #
+    # TBF, Fails here.
+    # Sun2017_0122_19:46 , Prog stops w/ MemErr at this line,
+    # when i/p is Questions.csv, after abt 7.5 minutes.
+    # Free mem drops steadily to abt 75 MB, then program stops.
+    train_data_features = train_data_features.toarray()
+
+    #DBG Wed2017_0118_19:38 , w/ q9999 data, got (727, 1550):
+    print('Bag shape: rows (num of records), cols (num of features):')
+    print(train_data_features.shape)  
+    print()
+
+    # Take a look at the words in the vocabulary
+    vocab = vectorizer.get_feature_names()
+    #D print(vocab)
+
+    # Print counts of each word in vocab.
+    # Sum up the counts of each vocabulary word
+    dist = np.sum(train_data_features, axis=0)
+
+    return (vocab, dist) 
+'''
+
+
+# TBD Time-stamp: Tue2017_0221_18:04  Use ngrams instead of words.
+def make_bag_of_words(clean_q_bodies):
+    print("\nCreating the bag of words for word counts ...\n")
+    from sklearn.feature_extraction.text import CountVectorizer
+
+    # Initialize the "CountVectorizer" object, which is scikit-learn's
+    # bag of words tool.  
+    #
+    # Sun2017_0122, Chg max_features from 5000 to 100, for MemErr. 
+    # Sun2017_0219_15:01 , TBD, Is max_features number of words in o/p list?
+    #   Seems to be true.
+    #
+    vectorizer = CountVectorizer(analyzer = "word",   \
+                                 tokenizer = None,    \
+                                 preprocessor = None, \
+                                 stop_words = None,   \
+                                 ngram_range = (1,5),   \
+                                 token_pattern = r'\b\w+\b',   \
+                                 max_features = 200) 
+
+    # fit_transform() does two functions: First, it fits the model
+    # and learns the vocabulary; second, it transforms our training data
+    # into feature vectors. The input to fit_transform should be a list of 
+    # strings.
+    #
+    # TBF, Stuck here.
+    # Tue2017_0221_22:42  , Prog uses all VM's memory & much swap & busy disk..
+    #   It was still running after 3 hrs, but will probably fail.
+    #   Using a6*.csv for i/p.
     train_data_features = vectorizer.fit_transform(clean_q_bodies)
 
     # Numpy arrays are easy to work with, so convert the result to an 
@@ -294,10 +351,6 @@ with open(outfile, 'w') as f:
 
 
 
-# TBD Mon2017_0220_20:00 , Un-commented the following lines to test; need debug if they work at all.
-# TBD Mon2017_0220_20:00 , Un-commented the following lines to test; need debug if they work at all.
-# TBD Mon2017_0220_20:00 , Un-commented the following lines to test; need debug if they work at all.
-# TBD Mon2017_0220_20:00 , Un-commented the following lines to test; need debug if they work at all.
 
 #TBD  Tue2017_0124  Remove code temporarily. 
 # Sort data by Score for each record.
