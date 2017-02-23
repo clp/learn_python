@@ -2,13 +2,13 @@
 
 # nltk_ex22.py  clpoda  2017_0115 . 2017_0126 . 2017_0220
 #   VM-ds2:/home/ann/p/learn_python/find_answers/
-#   Time-stamp: <Thu 2017 Feb 23 09:03:29 AMAM clpoda> 
+#   Time-stamp: <Thu 2017 Feb 23 03:05:34 PMPM clpoda>
 #
 # Ref: https://www.kaggle.com/c/word2vec-nlp-tutorial/details/part-1-for-beginners-bag-of-words
 #
 # Thu2017_0126_15:39 :
 # Copied from antxso/anques.py and modified to process Answers.csv
-# Mon2017_0220_18:26 
+# Mon2017_0220_18:26
 # Stand-alone program to test nltk.
 # Copied from ~/p/antxso/antxso/aa_ananswer.py to ~/p/learn_python/find_answers/nltk_ex22.py.
 
@@ -89,7 +89,7 @@ print()
 
 
 ## print('\n=== Find range of scores for top-scoring OwnerUserId.')
-#TBD, Tue2017_0124_12:27 
+#TBD, Tue2017_0124_12:27
 # Get list of top-scoring ouid's
 # For each ouid:
 #   Find every record they wrote.
@@ -104,7 +104,7 @@ print()
 ## for i in df_score_l:
 ##     top_n_titles.append( qa_to_words( df8["Title"][i] ))
 ##     # Print a progress message for every 10% of i/p data handled.
-##     if( (i+1)%progress_msg_factor == 0 ):  
+##     if( (i+1)%progress_msg_factor == 0 ):
 ##         clean_qa = qa_to_words( df8["Title"][i] )
 ##         print("\nTitle for Id %d " % ( i))
 ##         print('  Original text: ' + df8['Title'][i])
@@ -113,7 +113,7 @@ print()
 '''
 # TBD, answers have no title field! Use body field.
 Steps
-Mon2017_0116_16:33 
+Mon2017_0116_16:33
 Read each Title from df_all_ans, ie, column 5.
 For each entry:
     For each word:
@@ -145,34 +145,34 @@ from nltk.corpus import stopwords # Import the stop word list
 def qa_to_words( raw_qa ):
     # Function to convert a raw stackoverflow question or answer
     # to a string of words.
-    # The input is a single string (a raw q or a entry), and 
+    # The input is a single string (a raw q or a entry), and
     # the output is a single string (a preprocessed q or a).
     #
     # 1. Remove HTML
-    #ORG.OK qa_text = BeautifulSoup(raw_qa).get_text() 
-    qa_text = BeautifulSoup(raw_qa, "lxml").get_text() 
+    #ORG.OK qa_text = BeautifulSoup(raw_qa).get_text()
+    qa_text = BeautifulSoup(raw_qa, "lxml").get_text()
     #
-    # 2. Remove non-letters        
-    #TBD.skip letters_only = qa_text 
-    letters_only = re.sub("[^a-zA-Z]", " ", qa_text) 
+    # 2. Remove non-letters
+    #TBD.skip letters_only = qa_text
+    letters_only = re.sub("[^a-zA-Z]", " ", qa_text)
     #
     # 3. Convert to lower case, split into individual words
     #TBD Keep camel case terms?
-    #TBD words = letters_only.lower().split()                             
-    #OK? words = letters_only.split()                             
-    words = letters_only.lower().split()                             
+    #TBD words = letters_only.lower().split()
+    #OK? words = letters_only.split()
+    words = letters_only.lower().split()
         # Sun2017_0122_18:51 , see b.13; more stopwords were removed by adding lower().
     #
     # 4. In Python, searching a set is much faster than searching
     #   a list, so convert the stop words to a set
-    stops = set(stopwords.words("english"))                  
-    # 
-    # 5. Remove stop words
-    meaningful_words = [w for w in words if not w in stops]   
+    stops = set(stopwords.words("english"))
     #
-    # 6. Join the words back into one string separated by space, 
+    # 5. Remove stop words
+    meaningful_words = [w for w in words if not w in stops]
+    #
+    # 6. Join the words back into one string separated by space,
     # and return the result.
-    return( " ".join( meaningful_words ))  
+    return( " ".join( meaningful_words ))
 
 # '''
 print()
@@ -199,7 +199,7 @@ clean_q_bodies = []
 for i in range( 0, num_bodies ):
     clean_q_bodies.append( qa_to_words( df_all_ans["Body"][i] ))
     # Print a progress message for every 10% of i/p data handled.
-    if( (i+1)%progress_msg_factor == 0 ):  
+    if( (i+1)%progress_msg_factor == 0 ):
         clean_qa = qa_to_words( df_all_ans["Body"][i] )
         #D print("\nBody %d of %d" % ( i+1, num_bodies ))
         #D print('  Original text: ' + df_all_ans['Body'][i])
@@ -222,9 +222,9 @@ def make_bag_of_words(clean_q_bodies):
     from sklearn.feature_extraction.text import CountVectorizer
 
     # Initialize the "CountVectorizer" object, which is scikit-learn's
-    # bag of words tool.  
+    # bag of words tool
     #
-    # Sun2017_0122, Chg max_features from 5000 to 100, for MemErr. 
+    # Sun2017_0122, Chg max_features from 5000 to 100, for MemErr
     # Sun2017_0219_15:01 , TBD, Is max_features number of words in o/p list?
     #   Seems to be true.
     #
@@ -232,15 +232,15 @@ def make_bag_of_words(clean_q_bodies):
                                  tokenizer = None,    \
                                  preprocessor = None, \
                                  stop_words = None,   \
-                                 max_features = 200) 
+                                 max_features = 200)
 
     # fit_transform() does two functions: First, it fits the model
     # and learns the vocabulary; second, it transforms our training data
-    # into feature vectors. The input to fit_transform should be a list of 
+    # into feature vectors. The input to fit_transform should be a list of
     # strings.
     train_data_features = vectorizer.fit_transform(clean_q_bodies)
 
-    # Numpy arrays are easy to work with, so convert the result to an 
+    # Numpy arrays are easy to work with, so convert the result to an
     # array
     #
     # TBF, Fails here.
@@ -251,7 +251,7 @@ def make_bag_of_words(clean_q_bodies):
 
     #DBG Wed2017_0118_19:38 , w/ q9999 data, got (727, 1550):
     print('Bag shape: rows (num of records), cols (num of features):')
-    print(train_data_features.shape)  
+    print(train_data_features.shape)
     print()
 
     # Take a look at the words in the vocabulary
@@ -262,7 +262,7 @@ def make_bag_of_words(clean_q_bodies):
     # Sum up the counts of each vocabulary word
     dist = np.sum(train_data_features, axis=0)
 
-    return (vocab, dist) 
+    return (vocab, dist)
 '''
 
 
@@ -272,9 +272,9 @@ def make_bag_of_words(clean_q_bodies):
     from sklearn.feature_extraction.text import CountVectorizer
 
     # Initialize the "CountVectorizer" object, which is scikit-learn's
-    # bag of words tool.  
+    # bag of words tool
     #
-    # Sun2017_0122, Chg max_features from 5000 to 100, for MemErr. 
+    # Sun2017_0122, Chg max_features from 5000 to 100, for MemErr
     # Sun2017_0219_15:01 , TBD, Is max_features number of words in o/p list?
     #   Seems to be true.
     #
@@ -284,11 +284,11 @@ def make_bag_of_words(clean_q_bodies):
                                  stop_words = None,   \
                                  ngram_range = (3,5),   \
                                  token_pattern = r'\b\w+\b',   \
-                                 max_features = 200) 
+                                 max_features = 200)
 
     # fit_transform() does two functions: First, it fits the model
     # and learns the vocabulary; second, it transforms our training data
-    # into feature vectors. The input to fit_transform should be a list of 
+    # into feature vectors. The input to fit_transform should be a list of
     # strings.
     #
     # TBF, Stuck here.
@@ -297,7 +297,7 @@ def make_bag_of_words(clean_q_bodies):
     #   Using a6*.csv for i/p.
     train_data_features = vectorizer.fit_transform(clean_q_bodies)
 
-    # Numpy arrays are easy to work with, so convert the result to an 
+    # Numpy arrays are easy to work with, so convert the result to an
     # array
     #
     # TBF, Fails here.
@@ -308,7 +308,7 @@ def make_bag_of_words(clean_q_bodies):
 
     #DBG Wed2017_0118_19:38 , w/ q9999 data, got (727, 1550):
     print('Bag shape: rows (num of records), cols (num of features):')
-    print(train_data_features.shape)  
+    print(train_data_features.shape)
     print()
 
     # Take a look at the words in the vocabulary
@@ -319,14 +319,14 @@ def make_bag_of_words(clean_q_bodies):
     # Sum up the counts of each vocabulary word
     dist = np.sum(train_data_features, axis=0)
 
-    return (vocab, dist) 
+    return (vocab, dist)
 
 print('==== make_bag_of_words(clean_q_bodies')
 (vocab, dist) = make_bag_of_words(clean_q_bodies)
 # '''
 
 # '''
-# For each, print the vocabulary word and the number of times it 
+# For each, print the vocabulary word and the number of times it
 # appears in the training set
 count_tag = []
 word_freq_d = {}
@@ -353,7 +353,7 @@ with open(outfile, 'w') as f:
 
 
 
-#TBD  Tue2017_0124  Remove code temporarily. 
+#TBD  Tue2017_0124  Remove code temporarily
 # Sort data by Score for each record.
 print()
 print('\n=== Sort data by Score for each record.')
@@ -395,7 +395,7 @@ df8 = df_all_ans.set_index('Id')
 for i in df_score_l:
     top_n_bodies.append( qa_to_words( df8["Body"][i] ))
     # Print a progress message for every 10% of i/p data handled.
-    if( (i+1)%progress_msg_factor == 0 ):  
+    if( (i+1)%progress_msg_factor == 0 ):
         clean_qa = qa_to_words( df8["Body"][i] )
         print("\nBody for Id %d " % ( i))
         print('  Original text: ' + df8['Body'][i])
@@ -407,7 +407,7 @@ print('==== make_bag_of_words(top_n_bodies')
 
 #TBD Mon2017_0123_14:37 , Move helper code to funcs.
 
-# For each, print the vocabulary word and the number of times it 
+# For each, print the vocabulary word and the number of times it
 # appears in the training set
 count_tag = []
 word_freq_d = {}
@@ -450,7 +450,7 @@ df8 = df_all_ans.set_index('Id')
 for i in df_score_l:
     bot_n_bodies.append( qa_to_words( df8["Body"][i] ))
     # Print a progress message for every 10% of i/p data handled.
-    if( (i+1)%progress_msg_factor == 0 ):  
+    if( (i+1)%progress_msg_factor == 0 ):
         clean_qa = qa_to_words( df8["Body"][i] )
         print("\nBody for Id %d " % ( i))
         print('  Original text: ' + df8['Body'][i])
@@ -462,7 +462,7 @@ print('==== make_bag_of_words(bot_n_bodies')
 
 #TBD Mon2017_0123_14:37 , Move helper code to funcs.
 
-# For each, print the vocabulary word and the number of times it 
+# For each, print the vocabulary word and the number of times it
 # appears in the training set
 count_tag = []
 word_freq_d = {}
