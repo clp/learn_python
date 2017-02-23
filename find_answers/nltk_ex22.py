@@ -2,7 +2,7 @@
 
 # nltk_ex22.py  clpoda  2017_0115 . 2017_0126 . 2017_0220
 #   VM-ds2:/home/ann/p/learn_python/find_answers/
-#   Time-stamp: <Tue 2017 Feb 21 10:45:27 PMPM clpoda> 
+#   Time-stamp: <Thu 2017 Feb 23 09:03:29 AMAM clpoda> 
 #
 # Ref: https://www.kaggle.com/c/word2vec-nlp-tutorial/details/part-1-for-beginners-bag-of-words
 #
@@ -48,7 +48,7 @@ outdir = 'outdir/'  # Relative to /home/ann/p/antxso/
 q_fname = 'Questions.csv'
 a_fname = 'Answers.csv'
 a_fname = 'a6_999999.csv'  # Bag has TBD rows.
-#D a_fname = 'a5_99998.csv'  # Bag has 7903 rows.
+a_fname = 'a5_99998.csv'  # Bag has 7903 rows.
 q_fname = 'q3_992.csv'
 #D a_fname = 'a3_986.csv'
 #D q_fname = 'q2.csv'
@@ -153,8 +153,8 @@ def qa_to_words( raw_qa ):
     qa_text = BeautifulSoup(raw_qa, "lxml").get_text() 
     #
     # 2. Remove non-letters        
-    #TBD letters_only = re.sub("[^a-zA-Z]", " ", qa_text) 
-    letters_only = qa_text 
+    #TBD.skip letters_only = qa_text 
+    letters_only = re.sub("[^a-zA-Z]", " ", qa_text) 
     #
     # 3. Convert to lower case, split into individual words
     #TBD Keep camel case terms?
@@ -194,7 +194,7 @@ num_bodies = df_all_ans["Body"].size
 
 # '''
 print()
-print("Cleaning and parsing the training set bodies...")
+print("For all ans: Cleaning and parsing the training set bodies...")
 clean_q_bodies = []
 for i in range( 0, num_bodies ):
     clean_q_bodies.append( qa_to_words( df_all_ans["Body"][i] ))
@@ -266,7 +266,7 @@ def make_bag_of_words(clean_q_bodies):
 '''
 
 
-# TBD Time-stamp: Tue2017_0221_18:04  Use ngrams instead of words.
+# TBD Time-stamp: Tue2017_0221_18:04  Use ngrams instead of single words.
 def make_bag_of_words(clean_q_bodies):
     print("\nCreating the bag of words for word counts ...\n")
     from sklearn.feature_extraction.text import CountVectorizer
@@ -282,7 +282,7 @@ def make_bag_of_words(clean_q_bodies):
                                  tokenizer = None,    \
                                  preprocessor = None, \
                                  stop_words = None,   \
-                                 ngram_range = (1,5),   \
+                                 ngram_range = (3,5),   \
                                  token_pattern = r'\b\w+\b',   \
                                  max_features = 200) 
 
@@ -321,6 +321,7 @@ def make_bag_of_words(clean_q_bodies):
 
     return (vocab, dist) 
 
+print('==== make_bag_of_words(clean_q_bodies')
 (vocab, dist) = make_bag_of_words(clean_q_bodies)
 # '''
 
@@ -384,7 +385,7 @@ df_score_top_n = df_score[['Id']]
 
 # Use top_n records & count their words.
 print()
-print("Cleaning and parsing the training set bodies...")
+print("For top ans: Cleaning and parsing the training set bodies...")
 #D print("Number of bodies: " + str(num_bodies))
 top_n_bodies = []
 df_score_l = []
@@ -401,6 +402,7 @@ for i in df_score_l:
         print('  Cleaned text:  ' + clean_qa)
 
 
+print('==== make_bag_of_words(top_n_bodies')
 (vocab, dist) = make_bag_of_words(top_n_bodies)
 
 #TBD Mon2017_0123_14:37 , Move helper code to funcs.
@@ -438,7 +440,7 @@ df_score_bot_n = df_score[['Id']]
 
 # Use bot_n records & count their words.
 print()
-print("Cleaning and parsing the training set bodies...")
+print("For bottom ans: Cleaning and parsing the training set bodies...")
 #D print("Number of bodies: " + str(num_bodies))
 bot_n_bodies = []
 df_score_l = []
@@ -455,6 +457,7 @@ for i in df_score_l:
         print('  Cleaned text:  ' + clean_qa)
 
 
+print('==== make_bag_of_words(bot_n_bodies')
 (vocab, dist) = make_bag_of_words(bot_n_bodies)
 
 #TBD Mon2017_0123_14:37 , Move helper code to funcs.
