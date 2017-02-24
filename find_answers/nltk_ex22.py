@@ -2,7 +2,7 @@
 
 # nltk_ex22.py  clpoda  2017_0115 . 2017_0126 . 2017_0220
 #   VM-ds2:/home/ann/p/learn_python/find_answers/
-#   Time-stamp: <Thu 2017 Feb 23 03:05:34 PMPM clpoda>
+#   Time-stamp: <Thu 2017 Feb 23 03:57:38 PMPM clpoda>
 #
 # Ref: https://www.kaggle.com/c/word2vec-nlp-tutorial/details/part-1-for-beginners-bag-of-words
 #
@@ -50,7 +50,7 @@ a_fname = 'Answers.csv'
 a_fname = 'a6_999999.csv'  # Bag has TBD rows.
 a_fname = 'a5_99998.csv'  # Bag has 7903 rows.
 q_fname = 'q3_992.csv'
-#D a_fname = 'a3_986.csv'
+a_fname = 'a3_986.csv'
 #D q_fname = 'q2.csv'
 #D a_fname = 'a2.csv'
 
@@ -217,6 +217,7 @@ with open(outfile, 'w') as f:
 
 
 '''
+# TBD Time-stamp: Tue2017_0221_18:04  Use single words.
 def make_bag_of_words(clean_q_bodies):
     print("\nCreating the bag of words for word counts ...\n")
     from sklearn.feature_extraction.text import CountVectorizer
@@ -282,8 +283,8 @@ def make_bag_of_words(clean_q_bodies):
                                  tokenizer = None,    \
                                  preprocessor = None, \
                                  stop_words = None,   \
-                                 ngram_range = (3,5),   \
-                                 token_pattern = r'\b\w+\b',   \
+                                 ngram_range = (3,5), \
+                                 token_pattern = r'\b\w+\b', \
                                  max_features = 200)
 
     # fit_transform() does two functions: First, it fits the model
@@ -369,10 +370,12 @@ if num_selected_recs < 6:
     num_selected_recs = 5
 print('  rec_selection_ratio, number of selected recs: ', rec_selection_ratio, num_selected_recs, '\n')
 print('Lowest scoring records:')
-print(df_score.head(num_selected_recs))
+#D print(df_score.head(num_selected_recs))
+print(df_score.head())
 print()
 print('Highest scoring records:')
-print(df_score.tail(num_selected_recs))
+#D print(df_score.tail(num_selected_recs))
+print(df_score.tail())
 print()
 
 
