@@ -2,7 +2,7 @@
 
 # nltk_ex22.py  clpoda  2017_0115 . 2017_0126 . 2017_0220
 #   VM-ds2:/home/ann/p/learn_python/find_answers/
-#   Time-stamp: <Thu 2017 Feb 23 03:57:38 PMPM clpoda>
+#   Time-stamp: <Fri 2017 Feb 24 04:14:09 PMPM clpoda>
 #
 # Ref: https://www.kaggle.com/c/word2vec-nlp-tutorial/details/part-1-for-beginners-bag-of-words
 #
@@ -51,6 +51,9 @@ a_fname = 'a6_999999.csv'  # Bag has TBD rows.
 a_fname = 'a5_99998.csv'  # Bag has 7903 rows.
 q_fname = 'q3_992.csv'
 a_fname = 'a3_986.csv'
+a_fname = 'q_with_a.csv'  # O/p from fga*.py
+a_fname = 'q_with_a.0211_1308.csv'  # O/p from fga*.py
+a_fname = 'q_with_a.40_owners_a5_9998.csv'  # O/p from fga*.py
 #D q_fname = 'q2.csv'
 #D a_fname = 'a2.csv'
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Sat 2017 Feb 18 11:29:15 AMAM clpoda>
+#   Time-stamp: <Fri 2017 Feb 24 04:29:08 PMPM clpoda>
 """fga_find_good_answers.py
 
    Find answers in stackoverflow that might be good, but 'hidden'
@@ -136,10 +136,12 @@ def config_data():
     q_fname = 'Questions.csv'
 
     # Smaller data sets, used for debugging.
-    a_fname = 'a5_99998.csv'
-    q_fname = 'q30_99993.csv'
-    a_fname = 'a3_986.csv'
-    q_fname = 'q3_992.csv'
+    q_fname = 'q6_999994.csv'
+    #D a_fname = 'a6_999999.csv'
+    # D a_fname = 'a5_99998.csv'
+    # D q_fname = 'q30_99993.csv'
+    # D a_fname = 'a3_986.csv'
+    # D q_fname = 'q3_992.csv'
     # D a_fname = 'a2.csv'
     # D q_fname = 'q2.csv'
 
@@ -314,10 +316,11 @@ def write_df_to_file(in_df, wdir, wfile):
 if __name__ == '__main__':
     # Set the number of top scoring owners to select from the data.
     num_owners = 10  # Default is 10.
-    # D num_owners = 40  # Default is 10.
-    # D num_owners = 100  # Default is 10.
+    num_owners = 40  # Default is 10.
+    num_owners = 100  # Default is 10.
+    print("num_owners: ", num_owners)
     keyword = 'beginner'
     # D keyword = 'begin'
-    keyword = 'Python'  # Both Title & Body of data sets have it; for debug
+    #D keyword = 'Python'  # Both Title & Body of data sets have it; for debug
     print("Keyword: ", keyword)
     main()
