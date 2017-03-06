@@ -2,7 +2,7 @@
 
 # nltk_ex22.py  clpoda  2017_0115 . 2017_0126 . 2017_0220
 #   VM-ds2:/home/ann/p/learn_python/find_answers/
-#   Time-stamp: <Fri 2017 Feb 24 04:14:09 PMPM clpoda>
+#   Time-stamp: <Sun 2017 Mar 05 10:25:56 PMPM clpoda>
 #
 # Ref: https://www.kaggle.com/c/word2vec-nlp-tutorial/details/part-1-for-beginners-bag-of-words
 #
@@ -38,8 +38,9 @@ pd.options.display.float_format = '{:.0f}'.format  # Don't show commas in large 
 
 
 #TBD Make the tmp & out dirs w/ this program, if they don't exist?
+#   Beware of permission problems for dirs outside the pwd.
 #TBD Make the test data files w/ this program, if they don't exist?
-datadir = '/data/datasets/'  # Don't make this dir-permits problem.
+datadir = '/data/datasets/'
 #
 # TBD.1, Mon2017_0220_18:51 , Rename: indir, outdir, tmpdir? See b.5.
 #TBR tmpdir = 'tmp/'  # Relative to /home/ann/p/antxso/
@@ -101,6 +102,7 @@ print()
 #   Write the range of scores.
 #   Write top and bottom N scores.
 
+## TBD, If this code is needed, move it after def of qa_to_words().
 ## # Convert dataframe to list of Id's, to get the title of each Id.
 ## df_score_l = df_score_top_n['Id'].tail(num_selected_recs).tolist()
 ## df8 = df_all_ans.set_index('Id')
@@ -137,7 +139,7 @@ Print most frequent words.
 from bs4 import BeautifulSoup
 import re
 import nltk
-from nltk.corpus import stopwords # Import the stop word list
+from nltk.corpus import stopwords
 
 #TBD print stopwords.words("english")
 #TBD.done.once.90.minutes  nltk.download()  # Download text data sets, including stop words
@@ -146,7 +148,7 @@ from nltk.corpus import stopwords # Import the stop word list
 
 
 def qa_to_words( raw_qa ):
-    # Function to convert a raw stackoverflow question or answer
+    # Convert a raw stackoverflow question or answer
     # to a string of words.
     # The input is a single string (a raw q or a entry), and
     # the output is a single string (a preprocessed q or a).
@@ -156,13 +158,10 @@ def qa_to_words( raw_qa ):
     qa_text = BeautifulSoup(raw_qa, "lxml").get_text()
     #
     # 2. Remove non-letters
-    #TBD.skip letters_only = qa_text
     letters_only = re.sub("[^a-zA-Z]", " ", qa_text)
     #
     # 3. Convert to lower case, split into individual words
     #TBD Keep camel case terms?
-    #TBD words = letters_only.lower().split()
-    #OK? words = letters_only.split()
     words = letters_only.lower().split()
         # Sun2017_0122_18:51 , see b.13; more stopwords were removed by adding lower().
     #
@@ -220,7 +219,7 @@ with open(outfile, 'w') as f:
 
 
 '''
-# TBD Time-stamp: Tue2017_0221_18:04  Use single words.
+# TBD Time-stamp: Tue2017_0221_18:04  This code uses single words instead of ngrams.
 def make_bag_of_words(clean_q_bodies):
     print("\nCreating the bag of words for word counts ...\n")
     from sklearn.feature_extraction.text import CountVectorizer
@@ -270,7 +269,7 @@ def make_bag_of_words(clean_q_bodies):
 '''
 
 
-# TBD Time-stamp: Tue2017_0221_18:04  Use ngrams instead of single words.
+# TBD Time-stamp: Tue2017_0221_18:04  This code uses ngrams instead of single words.
 def make_bag_of_words(clean_q_bodies):
     print("\nCreating the bag of words for word counts ...\n")
     from sklearn.feature_extraction.text import CountVectorizer
