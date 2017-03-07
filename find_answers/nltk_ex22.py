@@ -2,12 +2,13 @@
 
 # nltk_ex22.py  clpoda  2017_0115 . 2017_0126 . 2017_0220
 #   VM-ds2:/home/ann/p/learn_python/find_answers/
-#   Time-stamp: <Sun 2017 Mar 05 10:25:56 PMPM clpoda>
+#   Time-stamp: <Mon 2017 Mar 06 08:57:00 PMPM clpoda>
 #
 # Ref: https://www.kaggle.com/c/word2vec-nlp-tutorial/details/part-1-for-beginners-bag-of-words
 #
 # Thu2017_0126_15:39 :
 # Copied from antxso/anques.py and modified to process Answers.csv
+#   See those dirs for bugs referenced here.
 # Mon2017_0220_18:26
 # Stand-alone program to test nltk.
 # Copied from ~/p/antxso/antxso/aa_ananswer.py to ~/p/learn_python/find_answers/nltk_ex22.py.
@@ -31,14 +32,14 @@ import csv
 
 pd.set_option('display.width', 120)
 
-#TBD, To show OwnerUserId w/o '.0'; see b.10.
-#TBD, Do we ever need floats to be shown as floats? Maybe restrict this to ouid field.
-#TBD  Some calculations of score stats will be floats.
+#TBD, To show OwnerUserId w/o trailing '.0'; see b.10.
+#TBD,   Do we ever need floats to be shown as floats? Maybe restrict this fix to ouid field.
+#TBD,   Some calculations of score stats will be floats.
 pd.options.display.float_format = '{:.0f}'.format  # Don't show commas in large numbers
 
 
 #TBD Make the tmp & out dirs w/ this program, if they don't exist?
-#   Beware of permission problems for dirs outside the pwd.
+#   Beware of permission problems for dirs outside the pwd
 #TBD Make the test data files w/ this program, if they don't exist?
 datadir = '/data/datasets/'
 #
@@ -52,9 +53,9 @@ a_fname = 'a6_999999.csv'  # Bag has TBD rows.
 a_fname = 'a5_99998.csv'  # Bag has 7903 rows.
 q_fname = 'q3_992.csv'
 a_fname = 'a3_986.csv'
-a_fname = 'q_with_a.csv'  # O/p from fga*.py
-a_fname = 'q_with_a.0211_1308.csv'  # O/p from fga*.py
-a_fname = 'q_with_a.40_owners_a5_9998.csv'  # O/p from fga*.py
+#D a_fname = 'q_with_a.csv'  # O/p from fga*.py
+#D a_fname = 'q_with_a.0211_1308.csv'  # O/p from fga*.py
+#D a_fname = 'q_with_a.40_owners_a5_9998.csv'  # O/p from fga*.py
 #D q_fname = 'q2.csv'
 #D a_fname = 'a2.csv'
 
@@ -77,6 +78,8 @@ print('Input files, q & a:\n'  + q_infile + '\n' + a_infile)
 print()
 
 
+# Step 1. Read data from file into dataframe.
+
 # Build data frames.
 df_all_ans = pd.read_csv(a_infile, encoding='latin-1', warn_bad_lines=False, error_bad_lines=False)
 #TBD.not.used  df_all_ques = pd.read_csv(q_infile, encoding='latin-1', warn_bad_lines=False, error_bad_lines=False)
@@ -85,7 +88,7 @@ print('df_all_ans.head(): ' )
 print(df_all_ans.head())
 
 numlines = len(df_all_ans)
-print('Number of records in i/p data frame, df_all_ans: ' + str(numlines))
+print('\nNumber of records in i/p data frame, df_all_ans: ' + str(numlines))
 progress_msg_factor = int(round(numlines/10))
 print()
 
@@ -135,7 +138,9 @@ Print most frequent words.
 '''
 
 
-# Process the words of each input line.
+
+# Step 2. Process the words of each input line.
+
 from bs4 import BeautifulSoup
 import re
 import nltk
@@ -217,6 +222,9 @@ with open(outfile, 'w') as f:
     f.write('\n'.join(clean_q_bodies))
 # '''
 
+ 
+
+# Step 3. Build a bag of words and their counts.
 
 '''
 # TBD Time-stamp: Tue2017_0221_18:04  This code uses single words instead of ngrams.
@@ -328,6 +336,7 @@ print('==== make_bag_of_words(clean_q_bodies')
 (vocab, dist) = make_bag_of_words(clean_q_bodies)
 # '''
 
+
 # '''
 # For each, print the vocabulary word and the number of times it
 # appears in the training set
@@ -356,8 +365,9 @@ with open(outfile, 'w') as f:
 
 
 
+# Step 4. Sort data by score.
+
 #TBD  Tue2017_0124  Remove code temporarily
-# Sort data by Score for each record.
 print()
 print('\n=== Sort data by Score for each record.')
 print()
@@ -370,7 +380,7 @@ rec_selection_ratio = 0.01
 num_selected_recs = int(numlines * rec_selection_ratio)
 if num_selected_recs < 6:
     num_selected_recs = 5
-print('  rec_selection_ratio, number of selected recs: ', rec_selection_ratio, num_selected_recs, '\n')
+print('  rec_selection_ratio,  number of selected recs: ', rec_selection_ratio, num_selected_recs, '\n')
 print('Lowest scoring records:')
 #D print(df_score.head(num_selected_recs))
 print(df_score.head())
@@ -380,6 +390,9 @@ print('Highest scoring records:')
 print(df_score.tail())
 print()
 
+
+
+# Step 5. Find most frequent words for top-scoring records.
 
 print('\n=== Find most freq words for top-scoring records.')
 df_score_top_n = df_score[['Id']]
@@ -397,14 +410,16 @@ df_score_l = []
 # Convert dataframe to list of Id's, to get the body of each Id.
 df_score_l = df_score_top_n['Id'].tail(num_selected_recs).tolist()
 df8 = df_all_ans.set_index('Id')
+id_count = 0
 for i in df_score_l:
+    id_count += 1
     top_n_bodies.append( qa_to_words( df8["Body"][i] ))
     # Print a progress message for every 10% of i/p data handled.
-    if( (i+1)%progress_msg_factor == 0 ):
+    if( (id_count+1) % progress_msg_factor == 0 ):
         clean_qa = qa_to_words( df8["Body"][i] )
         print("\nBody for Id %d " % ( i))
-        print('  Original text: ' + df8['Body'][i])
-        print('  Cleaned text:  ' + clean_qa)
+        print('  Original text:\n' + df8['Body'][i][:50])
+        print('  Cleaned text:\n' + clean_qa[:50])
 
 
 print('==== make_bag_of_words(top_n_bodies')
@@ -436,6 +451,8 @@ with open(outfile, 'w') as f:
         print(count, word, file=f)
 
 
+# Step 6. Find most frequent words for bottom-scoring records.
+
 print('\n=== Find most freq words for bottom-scoring records.')
 df_score_bot_n = df_score[['Id']]
 #D print(df_score_bot_n.head(20))
@@ -458,8 +475,8 @@ for i in df_score_l:
     if( (i+1)%progress_msg_factor == 0 ):
         clean_qa = qa_to_words( df8["Body"][i] )
         print("\nBody for Id %d " % ( i))
-        print('  Original text: ' + df8['Body'][i])
-        print('  Cleaned text:  ' + clean_qa)
+        print('  Original text:\n' + df8['Body'][i][:50])
+        print('  Cleaned text:\n' + clean_qa[:50])
 
 
 print('==== make_bag_of_words(bot_n_bodies')
