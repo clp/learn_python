@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # nltk_ex22.py  clpoda  2017_0115 . 2017_0126 . 2017_0220
-# Time-stamp: <Tue 2017 Mar 07 12:36:22 PMPM clpoda>
+# Time-stamp: <Tue 2017 Mar 07 01:25:15 PMPM clpoda>
 # Stand-alone program to test nltk.
 #
 # Ref: https://www.kaggle.com/c/word2vec-nlp-tutorial/details/part-1-for-beginners-bag-of-words
@@ -69,29 +69,27 @@ import re
 import nltk
 from nltk.corpus import stopwords
 
-#TBD print stopwords.words("english")
-#TBD.done.once.90.minutes  nltk.download()  # Download text data sets, including stop words
-    #TBD, are there any issues btwn py2 & py3 for nltk?
-    # S/w installed at ~/nltk/ by default.
+#D print stopwords.words("english")
+#TBD Done once & took 90 minutes; download text data sets, including stop words
+    # Are there any issues btwn py2 & py3 for nltk?
+    # S/w installed at ~/nltk_data/.
+#TBD nltk.download()
 
 
 def qa_to_words( raw_qa ):
     # Convert a raw stackoverflow question or answer
     # to a string of words.
-    # The input is a single string (a raw q or a entry), and
-    # the output is a single string (a preprocessed q or a).
+    # The input is a single string (a raw ques or ans entry), and
+    # the output is a single string (a preprocessed ques or ans).
     #
     # 1. Remove HTML
-    #ORG.OK qa_text = BeautifulSoup(raw_qa).get_text()
     qa_text = BeautifulSoup(raw_qa, "lxml").get_text()
     #
     # 2. Remove non-letters
     letters_only = re.sub("[^a-zA-Z]", " ", qa_text)
     #
     # 3. Convert to lower case, split into individual words
-    #TBD Keep camel case terms?
     words = letters_only.lower().split()
-        # Sun2017_0122_18:51 , see b.13; more stopwords were removed by adding lower().
     #
     # 4. In Python, searching a set is much faster than searching
     #   a list, so convert the stop words to a set
@@ -104,25 +102,18 @@ def qa_to_words( raw_qa ):
     # and return the result.
     return( " ".join( meaningful_words ))
 
-# '''
-print()
-#D clean_qa = qa_to_words( df_all_ans["Body"][0:5].all())
+
+#D Verify the function works.
 clean_qa = qa_to_words( df_all_ans["Body"].all())
-print('The answer body keywords: ')
-#D print('  Cleaned text:  ' + clean_qa)
+print("One answer's body's keywords: ")
 print(clean_qa)
 print()
-# '''
 
 
-'''
-# Get the number of bodies based on the dataframe column size
-num_titles = df_all_ans["Body"].size
-'''
+# Get the number of bodies based on that column's size
 num_bodies = df_all_ans["Body"].size
 #D print("Number of bodies: " + str(num_bodies))
 
-# '''
 print()
 print("For all ans: Cleaning and parsing the training set bodies...")
 clean_q_bodies = []
@@ -143,7 +134,6 @@ if os.path.exists(outfile):
     print('\nWARN: renamed o/p file w/ .bak; save it manually if needed: ' + outfile)
 with open(outfile, 'w') as f:
     f.write('\n'.join(clean_q_bodies))
-# '''
 
  
 
