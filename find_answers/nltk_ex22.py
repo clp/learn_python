@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # nltk_ex22.py  clpoda  2017_0115 . 2017_0126 . 2017_0220
-# Time-stamp: <Tue 2017 Mar 07 01:25:15 PMPM clpoda>
+# Time-stamp: <Tue 2017 Mar 07 01:27:33 PMPM clpoda>
 # Stand-alone program to test nltk.
 #
 # Ref: https://www.kaggle.com/c/word2vec-nlp-tutorial/details/part-1-for-beginners-bag-of-words
@@ -116,9 +116,9 @@ num_bodies = df_all_ans["Body"].size
 
 print()
 print("For all ans: Cleaning and parsing the training set bodies...")
-clean_q_bodies = []
+clean_a_bodies_l = []
 for i in range( 0, num_bodies ):
-    clean_q_bodies.append( qa_to_words( df_all_ans["Body"][i] ))
+    clean_a_bodies_l.append( qa_to_words( df_all_ans["Body"][i] ))
     # Print a progress message for every 10% of i/p data handled.
     if( (i+1)%progress_msg_factor == 0 ):
         clean_qa = qa_to_words( df_all_ans["Body"][i] )
@@ -133,7 +133,7 @@ if os.path.exists(outfile):
     os.rename(outfile, outfile + '.bak')
     print('\nWARN: renamed o/p file w/ .bak; save it manually if needed: ' + outfile)
 with open(outfile, 'w') as f:
-    f.write('\n'.join(clean_q_bodies))
+    f.write('\n'.join(clean_a_bodies_l))
 
  
 
@@ -141,7 +141,7 @@ with open(outfile, 'w') as f:
 
 '''
 # TBD Time-stamp: Tue2017_0221_18:04  This code uses single words instead of ngrams.
-def make_bag_of_words(clean_q_bodies):
+def make_bag_of_words(clean_a_bodies_l):
     print("\nCreating the bag of words for word counts ...\n")
     from sklearn.feature_extraction.text import CountVectorizer
 
@@ -162,7 +162,7 @@ def make_bag_of_words(clean_q_bodies):
     # and learns the vocabulary; second, it transforms our training data
     # into feature vectors. The input to fit_transform should be a list of
     # strings.
-    train_data_features = vectorizer.fit_transform(clean_q_bodies)
+    train_data_features = vectorizer.fit_transform(clean_a_bodies_l)
 
     # Numpy arrays are easy to work with, so convert the result to an
     # array
@@ -191,7 +191,7 @@ def make_bag_of_words(clean_q_bodies):
 
 
 # TBD Time-stamp: Tue2017_0221_18:04  This code uses ngrams instead of single words.
-def make_bag_of_words(clean_q_bodies):
+def make_bag_of_words(clean_a_bodies_l):
     print("\nCreating the bag of words for word counts ...\n")
     from sklearn.feature_extraction.text import CountVectorizer
 
@@ -219,7 +219,7 @@ def make_bag_of_words(clean_q_bodies):
     # Tue2017_0221_22:42  , Prog uses all VM's memory & much swap & busy disk..
     #   It was still running after 3 hrs, but will probably fail.
     #   Using a6*.csv for i/p.
-    train_data_features = vectorizer.fit_transform(clean_q_bodies)
+    train_data_features = vectorizer.fit_transform(clean_a_bodies_l)
 
     # Numpy arrays are easy to work with, so convert the result to an
     # array
@@ -245,8 +245,8 @@ def make_bag_of_words(clean_q_bodies):
 
     return (vocab, dist)
 
-print('==== make_bag_of_words(clean_q_bodies')
-(vocab, dist) = make_bag_of_words(clean_q_bodies)
+print('==== make_bag_of_words(clean_a_bodies_l')
+(vocab, dist) = make_bag_of_words(clean_a_bodies_l)
 # '''
 
 
