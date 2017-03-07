@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # nltk_ex22.py  clpoda  2017_0115 . 2017_0126 . 2017_0220
-# Time-stamp: <Tue 2017 Mar 07 01:27:33 PMPM clpoda>
+# Time-stamp: <Tue 2017 Mar 07 01:49:25 PMPM clpoda>
 # Stand-alone program to test nltk.
 #
 # Ref: https://www.kaggle.com/c/word2vec-nlp-tutorial/details/part-1-for-beginners-bag-of-words
@@ -27,9 +27,9 @@ outdir = 'outdir/'  # Relative to current dir
 #D q_fname = 'Questions.csv'
 #D a_fname = 'Answers.csv'
 #D a_fname = 'a6_999999.csv'  # Bag has TBD rows.
-#D a_fname = 'a5_99998.csv'  # Bag has 7903 rows.
+a_fname = 'a5_99998.csv'  # Bag has 7903 rows.
 q_fname = 'q3_992.csv'
-a_fname = 'a3_986.csv'
+#D a_fname = 'a3_986.csv'
 #D a_fname = 'q_with_a.csv'  # O/p from fga*.py
 #D a_fname = 'q_with_a.0211_1308.csv'  # 2729 lines; O/p from fga*.py
 #D a_fname = 'q_with_a.40_owners_a5_9998.csv'  # 800 lines; O/p from fga*.py
@@ -45,7 +45,7 @@ a_infile = datadir + a_fname
 #D q_infile = tmpdir  + q_fname
 q_infile = datadir + q_fname
 
-print('Input files, q & a:\n'  + q_infile + '\n' + a_infile + '\n')
+print('=== Input files, q & a:\n'  + q_infile + '\n' + a_infile + '\n')
 
 
 # Step 1. Read data from file into dataframe.
@@ -55,11 +55,11 @@ df_all_ans = pd.read_csv(a_infile, encoding='latin-1', warn_bad_lines=False, err
 #D questions are not yet used.
 #D df_all_ques = pd.read_csv(q_infile, encoding='latin-1', warn_bad_lines=False, error_bad_lines=False)
 
-print('df_all_ans.head():\n', df_all_ans.head())
+print('=== df_all_ans.head():\n', df_all_ans.head())
 
 numlines = len(df_all_ans)
 progress_msg_factor = int(round(numlines/10))
-print('\nNumber of records in i/p data frame, df_all_ans: ' + str(numlines) + '\n')
+print('\n=== Number of records in i/p data frame, df_all_ans: ' + str(numlines) + '\n')
 
 
 # Step 2. Process the words of each input line.
@@ -105,27 +105,23 @@ def qa_to_words( raw_qa ):
 
 #D Verify the function works.
 clean_qa = qa_to_words( df_all_ans["Body"].all())
-print("One answer's body's keywords: ")
-print(clean_qa)
-print()
+print("=== One answer's body's keywords:\n" + (clean_qa) + '\n')
 
 
 # Get the number of bodies based on that column's size
 num_bodies = df_all_ans["Body"].size
-#D print("Number of bodies: " + str(num_bodies))
+#D print("=== Number of bodies: " + str(num_bodies))
 
-print()
-print("For all ans: Cleaning and parsing the training set bodies...")
+print("=== For all ans: Cleaning and parsing the training set bodies...")
 clean_a_bodies_l = []
 for i in range( 0, num_bodies ):
     clean_a_bodies_l.append( qa_to_words( df_all_ans["Body"][i] ))
-    # Print a progress message for every 10% of i/p data handled.
-    if( (i+1)%progress_msg_factor == 0 ):
+    # Print a progress message; default is for every 10% of i/p data handled.
+    if( (i+1) % progress_msg_factor == 0 ):
         clean_qa = qa_to_words( df_all_ans["Body"][i] )
-        #D print("\nBody %d of %d" % ( i+1, num_bodies ))
+        #D print("\n=== Body %d of %d" % ( i+1, num_bodies ))
         #D print('  Original text: ' + df_all_ans['Body'][i])
         #D print('  Cleaned text:  ' + clean_qa)
-
 
 # Write cleaned bodies to a file, one body per line, for visual review.
 outfile = tmpdir + a_fname + '.out'
@@ -245,7 +241,7 @@ def make_bag_of_words(clean_a_bodies_l):
 
     return (vocab, dist)
 
-print('==== make_bag_of_words(clean_a_bodies_l')
+print('=== make_bag_of_words(clean_a_bodies_l')
 (vocab, dist) = make_bag_of_words(clean_a_bodies_l)
 # '''
 
@@ -346,7 +342,7 @@ top = True
 top_n_bodies = find_freq_words()
 
 
-print('==== make_bag_of_words(top_n_bodies')
+print('=== make_bag_of_words(top_n_bodies')
 (vocab, dist) = make_bag_of_words(top_n_bodies)
 
 #TBD Mon2017_0123_14:37 , Move helper code to funcs.
@@ -388,7 +384,7 @@ top = False
 bot_n_bodies = find_freq_words()
 
 
-print('==== make_bag_of_words(bot_n_bodies')
+print('=== make_bag_of_words(bot_n_bodies')
 (vocab, dist) = make_bag_of_words(bot_n_bodies)
 
 #TBD Mon2017_0123_14:37 , Move helper code to funcs.
