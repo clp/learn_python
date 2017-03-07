@@ -1,25 +1,10 @@
 # -*- coding: utf-8 -*-
 
 # nltk_ex22.py  clpoda  2017_0115 . 2017_0126 . 2017_0220
-#   VM-ds2:/home/ann/p/learn_python/find_answers/
-#   Time-stamp: <Mon 2017 Mar 06 10:38:01 PMPM clpoda>
+# Time-stamp: <Tue 2017 Mar 07 12:36:22 PMPM clpoda>
+# Stand-alone program to test nltk.
 #
 # Ref: https://www.kaggle.com/c/word2vec-nlp-tutorial/details/part-1-for-beginners-bag-of-words
-#
-# Thu2017_0126_15:39 :
-# Copied from antxso/anques.py and modified to process Answers.csv
-#   See those dirs for bugs referenced here.
-# Mon2017_0220_18:26
-# Stand-alone program to test nltk.
-# Copied from ~/p/antxso/antxso/aa_ananswer.py to ~/p/learn_python/find_answers/nltk_ex22.py.
-
-# #####################################################
-# Preliminary steps.
-# TBD, Maybe not needed.
-# Mon2017_0220_18:29 , Build csv file w/ each question with its answers.
-# python fga_find_good_answers.py
-# Use the o/p data in outdir/qa_with_keyword.csv (or q_with_a.csv).
-# #####################################################
 
 
 import pandas as pd
@@ -32,111 +17,49 @@ import csv
 
 pd.set_option('display.width', 120)
 
-#TBD, To show OwnerUserId w/o trailing '.0'; see b.10.
-#TBD,   Do we ever need floats to be shown as floats? Maybe restrict this fix to ouid field.
-#TBD,   Some calculations of score stats will be floats.
-pd.options.display.float_format = '{:.0f}'.format  # Don't show commas in large numbers
+# Show OwnerUserId w/o trailing '.0'; don't show commas in large numbers.
+pd.options.display.float_format = '{:.0f}'.format
 
 
-#TBD Make the tmp & out dirs w/ this program, if they don't exist?
-#   Beware of permission problems for dirs outside the pwd
-#TBD Make the test data files w/ this program, if they don't exist?
 datadir = '/data/datasets/'
-#
-# TBD.1, Mon2017_0220_18:51 , Rename: indir, outdir, tmpdir? See b.5.
-#TBR tmpdir = 'tmp/'  # Relative to /home/ann/p/antxso/
-tmpdir = 'indir/'  # Relative to /home/ann/p/antxso/
-outdir = 'outdir/'  # Relative to /home/ann/p/antxso/
-q_fname = 'Questions.csv'
-a_fname = 'Answers.csv'
-a_fname = 'a6_999999.csv'  # Bag has TBD rows.
-a_fname = 'a5_99998.csv'  # Bag has 7903 rows.
+tmpdir = 'indir/'  # Relative to current dir
+outdir = 'outdir/'  # Relative to current dir
+#D q_fname = 'Questions.csv'
+#D a_fname = 'Answers.csv'
+#D a_fname = 'a6_999999.csv'  # Bag has TBD rows.
+#D a_fname = 'a5_99998.csv'  # Bag has 7903 rows.
 q_fname = 'q3_992.csv'
 a_fname = 'a3_986.csv'
 #D a_fname = 'q_with_a.csv'  # O/p from fga*.py
-#D a_fname = 'q_with_a.0211_1308.csv'  # O/p from fga*.py
-#D a_fname = 'q_with_a.40_owners_a5_9998.csv'  # O/p from fga*.py
+#D a_fname = 'q_with_a.0211_1308.csv'  # 2729 lines; O/p from fga*.py
+#D a_fname = 'q_with_a.40_owners_a5_9998.csv'  # 800 lines; O/p from fga*.py
 #D q_fname = 'q2.csv'
 #D a_fname = 'a2.csv'
 
-# Other test data files.
-#D a_fname = 'a4.csv'
-#D a_fname = 'a5.csv'
-#D q_fname = 'q27_117.csv'
-#D q_fname = 'q29_992.csv'  # Has 992 HTML question lines
-#D q_fname = 'q30_99993.csv' # Has 99993 HTML question lines, abt 5666 recs
 #
-# Choose one:
+# Choose tmpdir or datadir:
 #D a_infile = tmpdir  + a_fname
 a_infile = datadir + a_fname
 
-# Choose one:
+# Choose tmpdir or datadir:
 #D q_infile = tmpdir  + q_fname
 q_infile = datadir + q_fname
 
-print('Input files, q & a:\n'  + q_infile + '\n' + a_infile)
-print()
+print('Input files, q & a:\n'  + q_infile + '\n' + a_infile + '\n')
 
 
 # Step 1. Read data from file into dataframe.
 
 # Build data frames.
 df_all_ans = pd.read_csv(a_infile, encoding='latin-1', warn_bad_lines=False, error_bad_lines=False)
-#TBD.not.used  df_all_ques = pd.read_csv(q_infile, encoding='latin-1', warn_bad_lines=False, error_bad_lines=False)
+#D questions are not yet used.
+#D df_all_ques = pd.read_csv(q_infile, encoding='latin-1', warn_bad_lines=False, error_bad_lines=False)
 
-print('df_all_ans.head(): ' )
-print(df_all_ans.head())
+print('df_all_ans.head():\n', df_all_ans.head())
 
 numlines = len(df_all_ans)
-print('\nNumber of records in i/p data frame, df_all_ans: ' + str(numlines))
 progress_msg_factor = int(round(numlines/10))
-print()
-
-
-
-
-## print('\n=== Find range of scores for top-scoring OwnerUserId.')
-#TBD, Tue2017_0124_12:27
-# Get list of top-scoring ouid's
-# For each ouid:
-#   Find every record they wrote.
-#   Save the score of each record.
-#   Run describe() on that list of scores.
-#   Write the range of scores.
-#   Write top and bottom N scores.
-
-## TBD, If this code is needed, move it after def of qa_to_words().
-## # Convert dataframe to list of Id's, to get the title of each Id.
-## df_score_l = df_score_top_n['Id'].tail(num_selected_recs).tolist()
-## df8 = df_all_ans.set_index('Id')
-## for i in df_score_l:
-##     top_n_titles.append( qa_to_words( df8["Title"][i] ))
-##     # Print a progress message for every 10% of i/p data handled.
-##     if( (i+1)%progress_msg_factor == 0 ):
-##         clean_qa = qa_to_words( df8["Title"][i] )
-##         print("\nTitle for Id %d " % ( i))
-##         print('  Original text: ' + df8['Title'][i])
-##         print('  Cleaned text:  ' + clean_qa)
-
-'''
-# TBD, answers have no title field! Use body field.
-Steps
-Mon2017_0116_16:33
-Read each Title from df_all_ans, ie, column 5.
-For each entry:
-    For each word:
-        Process each word from current line..
-        Term is any white-space separated string; including first & last strings.
-        Shift to lower case?
-        Remove all punctuation symbols?
-            No: "... 'in' ..." is different from "in".
-            So keep punc w/ words?
-            Maybe remove trailing punc (,;:) and unmatched quotes?
-Build dict of word:count.
-Print most frequent words.
-
-'''
-
+print('\nNumber of records in i/p data frame, df_all_ans: ' + str(numlines) + '\n')
 
 
 # Step 2. Process the words of each input line.
