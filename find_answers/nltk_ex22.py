@@ -2,7 +2,7 @@
 
 # nltk_ex22.py  clpoda  2017_0115 . 2017_0126 . 2017_0220
 #   VM-ds2:/home/ann/p/learn_python/find_answers/
-#   Time-stamp: <Mon 2017 Mar 06 08:57:00 PMPM clpoda>
+#   Time-stamp: <Mon 2017 Mar 06 10:38:01 PMPM clpoda>
 #
 # Ref: https://www.kaggle.com/c/word2vec-nlp-tutorial/details/part-1-for-beginners-bag-of-words
 #
@@ -377,6 +377,8 @@ df_score = df_score[['Id', 'Score']]
 #D print()
 # Compute the number of records to use for computation and display.
 rec_selection_ratio = 0.01
+#D
+rec_selection_ratio = 0.10
 num_selected_recs = int(numlines * rec_selection_ratio)
 if num_selected_recs < 6:
     num_selected_recs = 5
@@ -394,7 +396,7 @@ print()
 
 # Step 5. Find most frequent words for top-scoring records.
 
-print('\n=== Find most freq words for top-scoring records.')
+print('\n=== Step 5. Find most freq words for top-scoring records.')
 df_score_top_n = df_score[['Id']]
 #D print(df_score_top_n.tail(20))
 #D print()
@@ -405,21 +407,30 @@ df_score_top_n = df_score[['Id']]
 print()
 print("For top ans: Cleaning and parsing the training set bodies...")
 #D print("Number of bodies: " + str(num_bodies))
-top_n_bodies = []
-df_score_l = []
-# Convert dataframe to list of Id's, to get the body of each Id.
-df_score_l = df_score_top_n['Id'].tail(num_selected_recs).tolist()
-df8 = df_all_ans.set_index('Id')
-id_count = 0
-for i in df_score_l:
-    id_count += 1
-    top_n_bodies.append( qa_to_words( df8["Body"][i] ))
-    # Print a progress message for every 10% of i/p data handled.
-    if( (id_count+1) % progress_msg_factor == 0 ):
-        clean_qa = qa_to_words( df8["Body"][i] )
-        print("\nBody for Id %d " % ( i))
-        print('  Original text:\n' + df8['Body'][i][:50])
-        print('  Cleaned text:\n' + clean_qa[:50])
+
+def find_freq_words():
+    top_n_bodies = []
+    df_score_l = []
+    # Convert dataframe to list of Id's, to get the body of each Id.
+    if top:
+        df_score_l = df_score_top_n['Id'].tail(num_selected_recs).tolist()
+    else:  # Get the head of the list, lowest-score items.
+        df_score_l = df_score_top_n['Id'].head(num_selected_recs).tolist()
+    df8 = df_all_ans.set_index('Id')
+    progress_count = 0
+    for i in df_score_l:
+        progress_count += 1
+        top_n_bodies.append( qa_to_words( df8["Body"][i] ))
+        # Print a progress message for every 10% of i/p data handled.
+        if( (progress_count+1) % progress_msg_factor == 0 ):
+            clean_qa = qa_to_words( df8["Body"][i] )
+            print("\nBody for Id %d " % ( i))
+            print('  Original text:\n' + df8['Body'][i][:70])
+            print('  Cleaned text:\n' + clean_qa[:70])
+    return top_n_bodies 
+
+top = True
+top_n_bodies = find_freq_words()
 
 
 print('==== make_bag_of_words(top_n_bodies')
@@ -453,30 +464,15 @@ with open(outfile, 'w') as f:
 
 # Step 6. Find most frequent words for bottom-scoring records.
 
-print('\n=== Find most freq words for bottom-scoring records.')
+print('\n=== Step 6. Find most freq words for bottom-scoring records.')
 df_score_bot_n = df_score[['Id']]
 #D print(df_score_bot_n.head(20))
 #D print()
 #D print(df_score_bot_n.head(num_selected_recs))
 #D print()
 
-# Use bot_n records & count their words.
-print()
-print("For bottom ans: Cleaning and parsing the training set bodies...")
-#D print("Number of bodies: " + str(num_bodies))
-bot_n_bodies = []
-df_score_l = []
-# Convert dataframe to list of Id's, to get the body of each Id.
-df_score_l = df_score_bot_n['Id'].head(num_selected_recs).tolist()
-df8 = df_all_ans.set_index('Id')
-for i in df_score_l:
-    bot_n_bodies.append( qa_to_words( df8["Body"][i] ))
-    # Print a progress message for every 10% of i/p data handled.
-    if( (i+1)%progress_msg_factor == 0 ):
-        clean_qa = qa_to_words( df8["Body"][i] )
-        print("\nBody for Id %d " % ( i))
-        print('  Original text:\n' + df8['Body'][i][:50])
-        print('  Cleaned text:\n' + clean_qa[:50])
+top = False
+bot_n_bodies = find_freq_words()
 
 
 print('==== make_bag_of_words(bot_n_bodies')
