@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # nltk_ex22.py  clpoda  2017_0115 . 2017_0126 . 2017_0220
-# Time-stamp: <Tue 2017 Mar 07 01:49:25 PMPM clpoda>
+# Time-stamp: <Thu 2017 Mar 09 04:21:07 PMPM clpoda>
 # Stand-alone program to test nltk.
 #
 # Ref: https://www.kaggle.com/c/word2vec-nlp-tutorial/details/part-1-for-beginners-bag-of-words
@@ -69,11 +69,11 @@ import re
 import nltk
 from nltk.corpus import stopwords
 
-#D print stopwords.words("english")
-#TBD Done once & took 90 minutes; download text data sets, including stop words
+#TBD nltk.download()
+    #TBD Done once & took 90 minutes; download text data sets, including stop words
     # Are there any issues btwn py2 & py3 for nltk?
     # S/w installed at ~/nltk_data/.
-#TBD nltk.download()
+    # You can use web site & only d/l some parts if you don't need all.
 
 
 def qa_to_words( raw_qa ):
@@ -103,11 +103,6 @@ def qa_to_words( raw_qa ):
     return( " ".join( meaningful_words ))
 
 
-#D Verify the function works.
-clean_qa = qa_to_words( df_all_ans["Body"].all())
-print("=== One answer's body's keywords:\n" + (clean_qa) + '\n')
-
-
 # Get the number of bodies based on that column's size
 num_bodies = df_all_ans["Body"].size
 #D print("=== Number of bodies: " + str(num_bodies))
@@ -131,60 +126,8 @@ if os.path.exists(outfile):
 with open(outfile, 'w') as f:
     f.write('\n'.join(clean_a_bodies_l))
 
- 
 
 # Step 3. Build a bag of words and their counts.
-
-'''
-# TBD Time-stamp: Tue2017_0221_18:04  This code uses single words instead of ngrams.
-def make_bag_of_words(clean_a_bodies_l):
-    print("\nCreating the bag of words for word counts ...\n")
-    from sklearn.feature_extraction.text import CountVectorizer
-
-    # Initialize the "CountVectorizer" object, which is scikit-learn's
-    # bag of words tool
-    #
-    # Sun2017_0122, Chg max_features from 5000 to 100, for MemErr
-    # Sun2017_0219_15:01 , TBD, Is max_features number of words in o/p list?
-    #   Seems to be true.
-    #
-    vectorizer = CountVectorizer(analyzer = "word",   \
-                                 tokenizer = None,    \
-                                 preprocessor = None, \
-                                 stop_words = None,   \
-                                 max_features = 200)
-
-    # fit_transform() does two functions: First, it fits the model
-    # and learns the vocabulary; second, it transforms our training data
-    # into feature vectors. The input to fit_transform should be a list of
-    # strings.
-    train_data_features = vectorizer.fit_transform(clean_a_bodies_l)
-
-    # Numpy arrays are easy to work with, so convert the result to an
-    # array
-    #
-    # TBF, Fails here.
-    # Sun2017_0122_19:46 , Prog stops w/ MemErr at this line,
-    # when i/p is Questions.csv, after abt 7.5 minutes.
-    # Free mem drops steadily to abt 75 MB, then program stops.
-    train_data_features = train_data_features.toarray()
-
-    #DBG Wed2017_0118_19:38 , w/ q9999 data, got (727, 1550):
-    print('Bag shape: rows (num of records), cols (num of features):')
-    print(train_data_features.shape)
-    print()
-
-    # Take a look at the words in the vocabulary
-    vocab = vectorizer.get_feature_names()
-    #D print(vocab)
-
-    # Print counts of each word in vocab.
-    # Sum up the counts of each vocabulary word
-    dist = np.sum(train_data_features, axis=0)
-
-    return (vocab, dist)
-'''
-
 
 # TBD Time-stamp: Tue2017_0221_18:04  This code uses ngrams instead of single words.
 def make_bag_of_words(clean_a_bodies_l):
@@ -194,16 +137,16 @@ def make_bag_of_words(clean_a_bodies_l):
     # Initialize the "CountVectorizer" object, which is scikit-learn's
     # bag of words tool
     #
-    # Sun2017_0122, Chg max_features from 5000 to 100, for MemErr
-    # Sun2017_0219_15:01 , TBD, Is max_features number of words in o/p list?
-    #   Seems to be true.
+    # Fails w/ MemErr with max_features at 5000; ok at 100-200.
+    # Include ngram_range to use ngrams; otherwise, use single words only.
+    # This: token_pattern = r'\b\w+\b', includes 1-letter words.
     #
     vectorizer = CountVectorizer(analyzer = "word",   \
                                  tokenizer = None,    \
                                  preprocessor = None, \
                                  stop_words = None,   \
                                  ngram_range = (3,5), \
-                                 token_pattern = r'\b\w+\b', \
+                                 # token_pattern = r'\b\w+\b', \
                                  max_features = 200)
 
     # fit_transform() does two functions: First, it fits the model
@@ -211,19 +154,11 @@ def make_bag_of_words(clean_a_bodies_l):
     # into feature vectors. The input to fit_transform should be a list of
     # strings.
     #
-    # TBF, Stuck here.
-    # Tue2017_0221_22:42  , Prog uses all VM's memory & much swap & busy disk..
-    #   It was still running after 3 hrs, but will probably fail.
-    #   Using a6*.csv for i/p.
     train_data_features = vectorizer.fit_transform(clean_a_bodies_l)
 
     # Numpy arrays are easy to work with, so convert the result to an
     # array
     #
-    # TBF, Fails here.
-    # Sun2017_0122_19:46 , Prog stops w/ MemErr at this line,
-    # when i/p is Questions.csv, after abt 7.5 minutes.
-    # Free mem drops steadily to abt 75 MB, then program stops.
     train_data_features = train_data_features.toarray()
 
     #DBG Wed2017_0118_19:38 , w/ q9999 data, got (727, 1550):
@@ -233,7 +168,6 @@ def make_bag_of_words(clean_a_bodies_l):
 
     # Take a look at the words in the vocabulary
     vocab = vectorizer.get_feature_names()
-    #D print(vocab)
 
     # Print counts of each word in vocab.
     # Sum up the counts of each vocabulary word
@@ -243,23 +177,18 @@ def make_bag_of_words(clean_a_bodies_l):
 
 print('=== make_bag_of_words(clean_a_bodies_l')
 (vocab, dist) = make_bag_of_words(clean_a_bodies_l)
-# '''
 
 
-# '''
 # For each, print the vocabulary word and the number of times it
 # appears in the training set
-count_tag = []
+count_tag_l = []
 word_freq_d = {}
 for tag, count in zip(vocab, dist):
-    #D print(count, tag)
-    count_and_tag = (count, tag)
-    # Build list of tuples
-    count_tag.append(count_and_tag)
+    count_tag_l.append((count, tag))
     #D word_freq_d[tag] = count
 
 # Sort the list of tuples by count.
-wsbc = words_sorted_by_count = sorted(count_tag, key=lambda x: x[0])
+words_sorted_by_count = sorted(count_tag_l, key=lambda x: x[0])
 
 # Write sorted vocab to a file.
 outfile = tmpdir + a_fname + '.vocab'
@@ -269,9 +198,6 @@ if os.path.exists(outfile):
 with open(outfile, 'w') as f:
     for count, word in words_sorted_by_count:
         print(count, word, file=f)
-# '''
-
-
 
 
 # Step 4. Sort data by score.
@@ -349,17 +275,17 @@ print('=== make_bag_of_words(top_n_bodies')
 
 # For each, print the vocabulary word and the number of times it
 # appears in the training set
-count_tag = []
+count_tag_l = []
 word_freq_d = {}
 for tag, count in zip(vocab, dist):
     #D print(count, tag)
     count_and_tag = (count, tag)
     # Build list of tuples
-    count_tag.append(count_and_tag)
+    count_tag_l.append(count_and_tag)
     #D word_freq_d[tag] = count
 
 # Sort the list of tuples by count.
-wsbc = words_sorted_by_count = sorted(count_tag, key=lambda x: x[0])
+words_sorted_by_count = sorted(count_tag_l, key=lambda x: x[0])
 
 # Write sorted vocab to a file, w/ name suffix 'hiscore'.
 outfile = tmpdir + a_fname + '.vocab.hiscore'
@@ -391,17 +317,17 @@ print('=== make_bag_of_words(bot_n_bodies')
 
 # For each, print the vocabulary word and the number of times it
 # appears in the training set
-count_tag = []
+count_tag_l = []
 word_freq_d = {}
 for tag, count in zip(vocab, dist):
     #D print(count, tag)
     count_and_tag = (count, tag)
     # Build list of tuples
-    count_tag.append(count_and_tag)
+    count_tag_l.append(count_and_tag)
     #D word_freq_d[tag] = count
 
 # Sort the list of tuples by count.
-wsbc = words_sorted_by_count = sorted(count_tag, key=lambda x: x[0])
+words_sorted_by_count = sorted(count_tag_l, key=lambda x: x[0])
 
 # Write sorted vocab to a file, w/ name suffix 'loscore'.
 outfile = tmpdir + a_fname + '.vocab.loscore'
