@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # nltk_ex22.py  clpoda  2017_0115 . 2017_0126 . 2017_0220
-# Time-stamp: <Sat 2017 Mar 11 01:38:36 PMPM clpoda>
+# Time-stamp: <Sat 2017 Mar 11 01:58:03 PMPM clpoda>
 # Stand-alone program to test nltk.
 #
 # Ref: https://www.kaggle.com/c/word2vec-nlp-tutorial/details/part-1-for-beginners-bag-of-words
@@ -163,8 +163,7 @@ def make_bag_of_words(clean_a_bodies_l):
 
     #DBG Wed2017_0118_19:38 , w/ q9999 data, got (727, 1550):
     print('Bag shape: rows (num of records), cols (num of features):')
-    print(train_data_features.shape)
-    print()
+    print(train_data_features.shape, '\n')
 
     # Take a look at the words in the vocabulary
     vocab = vectorizer.get_feature_names()
@@ -208,30 +207,23 @@ sort_save_vocab('.vocab')
 
 # Step 4. Sort data by score.
 
-#TBD  Tue2017_0124  Remove code temporarily
-print()
-print('\n=== Sort data by Score for each record.')
-print()
+print('\n=== Sort data by Score for each record.\n')
 df_score = df_all_ans.sort_values(['Score'])
 df_score = df_score[['Id', 'Score']]
-#D print(df_score.head())
-#D print()
+#D print(df_score.head(), '\n')
+
 # Compute the number of records to use for computation and display.
-rec_selection_ratio = 0.01
-#D
-rec_selection_ratio = 0.10
+rec_selection_ratio = 0.10  # Default 0.01?
 num_selected_recs = int(numlines * rec_selection_ratio)
 if num_selected_recs < 6:
     num_selected_recs = 5
 print('  rec_selection_ratio,  number of selected recs: ', rec_selection_ratio, num_selected_recs, '\n')
 print('Lowest scoring records:')
 #D print(df_score.head(num_selected_recs))
-print(df_score.head())
-print()
+print(df_score.head(), '\n')
 print('Highest scoring records:')
 #D print(df_score.tail(num_selected_recs))
-print(df_score.tail())
-print()
+print(df_score.tail(), '\n')
 
 
 
@@ -239,14 +231,11 @@ print()
 
 print('\n=== Step 5. Find most freq words for top-scoring records.')
 df_score_top_n = df_score[['Id']]
-#D print(df_score_top_n.tail(20))
-#D print()
-#D print(df_score_top_n.tail(num_selected_recs))
-#D print()
+#D print(df_score_top_n.tail(20), '\n')
+#D print(df_score_top_n.tail(num_selected_recs), '\n')
 
 # Use top_n records & count their words.
-print()
-print("For top ans: Cleaning and parsing the training set bodies...")
+print("\nFor top ans: Cleaning and parsing the training set bodies...")
 #D print("Number of bodies: " + str(num_bodies))
 
 def find_freq_words():
@@ -284,10 +273,8 @@ sort_save_vocab('.vocab.hiscore')
 
 print('\n=== Step 6. Find most freq words for bottom-scoring records.')
 df_score_bot_n = df_score[['Id']]
-#D print(df_score_bot_n.head(20))
-#D print()
-#D print(df_score_bot_n.head(num_selected_recs))
-#D print()
+#D print(df_score_bot_n.head(20), '\n')
+#D print(df_score_bot_n.head(num_selected_recs), '\n')
 
 top = False
 bot_n_bodies = find_freq_words()
@@ -302,15 +289,12 @@ sort_save_vocab('.vocab.loscore')
 
 '''
 # Sort data by OwnerUserId for each record.
-print('\n=== Sort data by OwnerUserId for each record.')
-print()
+print('\n=== Sort data by OwnerUserId for each record.\n')
 df_ouid = df_all_ans.sort_values(['OwnerUserId'])
 df_ouid = df_ouid[['Id', 'OwnerUserId', 'Score']]
 #D print(df_ouid)
-print(df_ouid.head())
-print()
-print(df_ouid.tail())
-print()
+print(df_ouid.head(), '\n')
+print(df_ouid.tail(), '\n')
 '''
 
 
@@ -325,10 +309,8 @@ df_all_ans['Length'] = df_all_ans['Body'].apply(lambda x: len(x.split()))
 df_aa_sort_len = df_all_ans.sort_values(['Length'])
 df_aa_sort_len = df_aa_sort_len[['Id', 'OwnerUserId', 'Score', 'Length']]
 print()
-print(df_aa_sort_len.head())
-print()
-print(df_aa_sort_len.tail())
-print()
+print(df_aa_sort_len.head(), '\n')
+print(df_aa_sort_len.tail(), '\n')
 '''
 
 'bye'
