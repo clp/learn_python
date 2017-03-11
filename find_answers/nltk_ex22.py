@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # nltk_ex22.py  clpoda  2017_0115 . 2017_0126 . 2017_0220
-# Time-stamp: <Thu 2017 Mar 09 04:21:07 PMPM clpoda>
+# Time-stamp: <Sat 2017 Mar 11 01:38:36 PMPM clpoda>
 # Stand-alone program to test nltk.
 #
 # Ref: https://www.kaggle.com/c/word2vec-nlp-tutorial/details/part-1-for-beginners-bag-of-words
@@ -27,9 +27,9 @@ outdir = 'outdir/'  # Relative to current dir
 #D q_fname = 'Questions.csv'
 #D a_fname = 'Answers.csv'
 #D a_fname = 'a6_999999.csv'  # Bag has TBD rows.
-a_fname = 'a5_99998.csv'  # Bag has 7903 rows.
+#D a_fname = 'a5_99998.csv'  # Bag has 7903 rows.
 q_fname = 'q3_992.csv'
-#D a_fname = 'a3_986.csv'
+a_fname = 'a3_986.csv'
 #D a_fname = 'q_with_a.csv'  # O/p from fga*.py
 #D a_fname = 'q_with_a.0211_1308.csv'  # 2729 lines; O/p from fga*.py
 #D a_fname = 'q_with_a.40_owners_a5_9998.csv'  # 800 lines; O/p from fga*.py
@@ -179,25 +179,31 @@ print('=== make_bag_of_words(clean_a_bodies_l')
 (vocab, dist) = make_bag_of_words(clean_a_bodies_l)
 
 
-# For each, print the vocabulary word and the number of times it
-# appears in the training set
-count_tag_l = []
-word_freq_d = {}
-for tag, count in zip(vocab, dist):
-    count_tag_l.append((count, tag))
-    #D word_freq_d[tag] = count
+# Sort and save vocabulary data to file w/ a specified suffix.
 
-# Sort the list of tuples by count.
-words_sorted_by_count = sorted(count_tag_l, key=lambda x: x[0])
+def sort_save_vocab(suffix):
+    # For each, print the vocabulary word and the number of times it
+    # appears in the training set
+    count_tag_l = []
+    word_freq_d = {}
+    for tag, count in zip(vocab, dist):
+        count_tag_l.append((count, tag))
+        #D word_freq_d[tag] = count
 
-# Write sorted vocab to a file.
-outfile = tmpdir + a_fname + '.vocab'
-if os.path.exists(outfile):
-    os.rename(outfile, outfile + '.bak')
-    print('\nWARN: renamed o/p file to *.bak; save it manually if needed:'+ outfile)
-with open(outfile, 'w') as f:
-    for count, word in words_sorted_by_count:
-        print(count, word, file=f)
+    # Sort the list of tuples by count.
+    words_sorted_by_count = sorted(count_tag_l, key=lambda x: x[0])
+
+    # Write sorted vocab to a file.
+    #ORG outfile = tmpdir + a_fname + '.vocab'
+    outfile = tmpdir + a_fname + suffix
+    if os.path.exists(outfile):
+        os.rename(outfile, outfile + '.bak')
+        print('\nWARN: renamed o/p file to *.bak; save it manually if needed:'+ outfile)
+    with open(outfile, 'w') as f:
+        for count, word in words_sorted_by_count:
+            print(count, word, file=f)
+
+sort_save_vocab('.vocab')
 
 
 # Step 4. Sort data by score.
@@ -271,30 +277,7 @@ top_n_bodies = find_freq_words()
 print('=== make_bag_of_words(top_n_bodies')
 (vocab, dist) = make_bag_of_words(top_n_bodies)
 
-#TBD Mon2017_0123_14:37 , Move helper code to funcs.
-
-# For each, print the vocabulary word and the number of times it
-# appears in the training set
-count_tag_l = []
-word_freq_d = {}
-for tag, count in zip(vocab, dist):
-    #D print(count, tag)
-    count_and_tag = (count, tag)
-    # Build list of tuples
-    count_tag_l.append(count_and_tag)
-    #D word_freq_d[tag] = count
-
-# Sort the list of tuples by count.
-words_sorted_by_count = sorted(count_tag_l, key=lambda x: x[0])
-
-# Write sorted vocab to a file, w/ name suffix 'hiscore'.
-outfile = tmpdir + a_fname + '.vocab.hiscore'
-if os.path.exists(outfile):
-    os.rename(outfile, outfile + '.bak')
-    print('\nWARN: renamed o/p file to *.bak; save it manually if needed:'+ outfile)
-with open(outfile, 'w') as f:
-    for count, word in words_sorted_by_count:
-        print(count, word, file=f)
+sort_save_vocab('.vocab.hiscore')
 
 
 # Step 6. Find most frequent words for bottom-scoring records.
@@ -313,32 +296,7 @@ bot_n_bodies = find_freq_words()
 print('=== make_bag_of_words(bot_n_bodies')
 (vocab, dist) = make_bag_of_words(bot_n_bodies)
 
-#TBD Mon2017_0123_14:37 , Move helper code to funcs.
-
-# For each, print the vocabulary word and the number of times it
-# appears in the training set
-count_tag_l = []
-word_freq_d = {}
-for tag, count in zip(vocab, dist):
-    #D print(count, tag)
-    count_and_tag = (count, tag)
-    # Build list of tuples
-    count_tag_l.append(count_and_tag)
-    #D word_freq_d[tag] = count
-
-# Sort the list of tuples by count.
-words_sorted_by_count = sorted(count_tag_l, key=lambda x: x[0])
-
-# Write sorted vocab to a file, w/ name suffix 'loscore'.
-outfile = tmpdir + a_fname + '.vocab.loscore'
-if os.path.exists(outfile):
-    os.rename(outfile, outfile + '.bak')
-    print('\nWARN: renamed o/p file to *.bak; save it manually if needed:'+ outfile)
-with open(outfile, 'w') as f:
-    for count, word in words_sorted_by_count:
-        print(count, word, file=f)
-
-
+sort_save_vocab('.vocab.loscore')
 
 
 
