@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # nltk_ex22.py  clpoda  2017_0115 . 2017_0126 . 2017_0220
-# Time-stamp: <Sat 2017 Mar 11 01:58:03 PMPM clpoda>
+# Time-stamp: <Sat 2017 Mar 11 02:02:12 PMPM clpoda>
 # Stand-alone program to test nltk.
 #
 # Ref: https://www.kaggle.com/c/word2vec-nlp-tutorial/details/part-1-for-beginners-bag-of-words
@@ -303,7 +303,7 @@ print(df_ouid.tail(), '\n')
 #TBD, Use w/ or w/o stopwords?
 print('\n=== Count number of words in each Body.')
 #
-#TBD Ref: http://stackoverflow.com/questions/40058436/python-count-frequency-of-words-from-a-column-and-store-the-results-into-anothe
+# Ref: http://stackoverflow.com/questions/40058436/python-count-frequency-of-words-from-a-column-and-store-the-results-into-anothe
 #TBD Explain
 df_all_ans['Length'] = df_all_ans['Body'].apply(lambda x: len(x.split()))
 df_aa_sort_len = df_all_ans.sort_values(['Length'])
