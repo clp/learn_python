@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # nltk_ex22.py  clpoda  2017_0115 . 2017_0126 . 2017_0220
-# Time-stamp: <Sat 2017 Mar 11 02:02:12 PMPM clpoda>
+# Time-stamp: <Thu 2017 Mar 16 05:07:18 PMPM clpoda>
 # Stand-alone program to test nltk.
 #
 # Ref: https://www.kaggle.com/c/word2vec-nlp-tutorial/details/part-1-for-beginners-bag-of-words
@@ -27,6 +27,7 @@ outdir = 'outdir/'  # Relative to current dir
 #D q_fname = 'Questions.csv'
 #D a_fname = 'Answers.csv'
 #D a_fname = 'a6_999999.csv'  # Bag has TBD rows.
+#TBD Explain
 #D a_fname = 'a5_99998.csv'  # Bag has 7903 rows.
 q_fname = 'q3_992.csv'
 a_fname = 'a3_986.csv'
@@ -193,7 +194,6 @@ def sort_save_vocab(suffix):
     words_sorted_by_count = sorted(count_tag_l, key=lambda x: x[0])
 
     # Write sorted vocab to a file.
-    #ORG outfile = tmpdir + a_fname + '.vocab'
     outfile = tmpdir + a_fname + suffix
     if os.path.exists(outfile):
         os.rename(outfile, outfile + '.bak')
@@ -210,7 +210,6 @@ sort_save_vocab('.vocab')
 print('\n=== Sort data by Score for each record.\n')
 df_score = df_all_ans.sort_values(['Score'])
 df_score = df_score[['Id', 'Score']]
-#D print(df_score.head(), '\n')
 
 # Compute the number of records to use for computation and display.
 rec_selection_ratio = 0.10  # Default 0.01?
@@ -219,12 +218,9 @@ if num_selected_recs < 6:
     num_selected_recs = 5
 print('  rec_selection_ratio,  number of selected recs: ', rec_selection_ratio, num_selected_recs, '\n')
 print('Lowest scoring records:')
-#D print(df_score.head(num_selected_recs))
-print(df_score.head(), '\n')
+print(df_score.head(), '\n') #D print(df_score.head(num_selected_recs), '\n')
 print('Highest scoring records:')
-#D print(df_score.tail(num_selected_recs))
-print(df_score.tail(), '\n')
-
+print(df_score.tail(), '\n') #D print(df_score.tail(num_selected_recs), '\n')
 
 
 # Step 5. Find most frequent words for top-scoring records.
