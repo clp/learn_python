@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # nltk_ex22.py  clpoda  2017_0115 . 2017_0126 . 2017_0220
-# Time-stamp: <Thu 2017 Mar 16 05:07:18 PMPM clpoda>
+# Time-stamp: <Thu 2017 Mar 16 05:41:24 PMPM clpoda>
 # Stand-alone program to test nltk.
 #
 # Ref: https://www.kaggle.com/c/word2vec-nlp-tutorial/details/part-1-for-beginners-bag-of-words
@@ -26,8 +26,7 @@ tmpdir = 'indir/'  # Relative to current dir
 outdir = 'outdir/'  # Relative to current dir
 #D q_fname = 'Questions.csv'
 #D a_fname = 'Answers.csv'
-#D a_fname = 'a6_999999.csv'  # Bag has TBD rows.
-#TBD Explain
+#D a_fname = 'a6_999999.csv'  
 #D a_fname = 'a5_99998.csv'  # Bag has 7903 rows.
 q_fname = 'q3_992.csv'
 a_fname = 'a3_986.csv'
@@ -71,7 +70,7 @@ import nltk
 from nltk.corpus import stopwords
 
 #TBD nltk.download()
-    #TBD Done once & took 90 minutes; download text data sets, including stop words
+    # Done once & took 90 minutes; download text data sets, including stop words
     # Are there any issues btwn py2 & py3 for nltk?
     # S/w installed at ~/nltk_data/.
     # You can use web site & only d/l some parts if you don't need all.
@@ -130,7 +129,7 @@ with open(outfile, 'w') as f:
 
 # Step 3. Build a bag of words and their counts.
 
-# TBD Time-stamp: Tue2017_0221_18:04  This code uses ngrams instead of single words.
+# This code uses ngrams instead of single words.
 def make_bag_of_words(clean_a_bodies_l):
     print("\nCreating the bag of words for word counts ...\n")
     from sklearn.feature_extraction.text import CountVectorizer
@@ -227,8 +226,7 @@ print(df_score.tail(), '\n') #D print(df_score.tail(num_selected_recs), '\n')
 
 print('\n=== Step 5. Find most freq words for top-scoring records.')
 df_score_top_n = df_score[['Id']]
-#D print(df_score_top_n.tail(20), '\n')
-#D print(df_score_top_n.tail(num_selected_recs), '\n')
+#D print(df_score_top_n.tail(20), '\n') #D print(df_score_top_n.tail(num_selected_recs), '\n')
 
 # Use top_n records & count their words.
 print("\nFor top ans: Cleaning and parsing the training set bodies...")
@@ -238,7 +236,7 @@ def find_freq_words():
     top_n_bodies = []
     df_score_l = []
     # Convert dataframe to list of Id's, to get the body of each Id.
-    if top:
+    if top: # Get the tail of the list, highest-score items.
         df_score_l = df_score_top_n['Id'].tail(num_selected_recs).tolist()
     else:  # Get the head of the list, lowest-score items.
         df_score_l = df_score_top_n['Id'].head(num_selected_recs).tolist()
@@ -258,7 +256,6 @@ def find_freq_words():
 top = True
 top_n_bodies = find_freq_words()
 
-
 print('=== make_bag_of_words(top_n_bodies')
 (vocab, dist) = make_bag_of_words(top_n_bodies)
 
@@ -269,44 +266,15 @@ sort_save_vocab('.vocab.hiscore')
 
 print('\n=== Step 6. Find most freq words for bottom-scoring records.')
 df_score_bot_n = df_score[['Id']]
-#D print(df_score_bot_n.head(20), '\n')
-#D print(df_score_bot_n.head(num_selected_recs), '\n')
+#D print(df_score_bot_n.head(20), '\n') #D print(df_score_bot_n.head(num_selected_recs), '\n')
 
 top = False
 bot_n_bodies = find_freq_words()
-
 
 print('=== make_bag_of_words(bot_n_bodies')
 (vocab, dist) = make_bag_of_words(bot_n_bodies)
 
 sort_save_vocab('.vocab.loscore')
 
-
-
-'''
-# Sort data by OwnerUserId for each record.
-print('\n=== Sort data by OwnerUserId for each record.\n')
-df_ouid = df_all_ans.sort_values(['OwnerUserId'])
-df_ouid = df_ouid[['Id', 'OwnerUserId', 'Score']]
-#D print(df_ouid)
-print(df_ouid.head(), '\n')
-print(df_ouid.tail(), '\n')
-'''
-
-
-'''
-# Count length of each record's Body field: number of words.
-#TBD, Use w/ or w/o stopwords?
-print('\n=== Count number of words in each Body.')
-#
-# Ref: http://stackoverflow.com/questions/40058436/python-count-frequency-of-words-from-a-column-and-store-the-results-into-anothe
-#TBD Explain
-df_all_ans['Length'] = df_all_ans['Body'].apply(lambda x: len(x.split()))
-df_aa_sort_len = df_all_ans.sort_values(['Length'])
-df_aa_sort_len = df_aa_sort_len[['Id', 'OwnerUserId', 'Score', 'Length']]
-print()
-print(df_aa_sort_len.head(), '\n')
-print(df_aa_sort_len.tail(), '\n')
-'''
 
 'bye'
