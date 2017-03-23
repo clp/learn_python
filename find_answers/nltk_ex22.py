@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-# nltk_ex22.py  clpoda  2017_0115 . 2017_0126 . 2017_0220
-# Time-stamp: <Wed 2017 Mar 22 09:48:27 PMPM clpoda>
+# nltk_ex22.py  clpoda  2017_0220
+# Time-stamp: <Wed 2017 Mar 22 10:17:51 PMPM clpoda>
 # Stand-alone program to test nltk.
 #
 # Ref: https://www.kaggle.com/c/word2vec-nlp-tutorial/details/part-1-for-beginners-bag-of-words
@@ -70,10 +70,12 @@ import nltk
 from nltk.corpus import stopwords
 
 #TBD nltk.download()
-    # Done once & took 90 minutes; download text data sets, including stop words
+    # Note: Did this once & it took 90 minutes;
+    # it downloaded text data sets, including stop words.
     # Are there any issues btwn py2 & py3 for nltk?
     # S/w installed at ~/nltk_data/.
     # You can use web site & only d/l some parts if you don't need all.
+    # Add code to check for current files on local disk before d/l.
 
 
 def convert_text_to_words( raw_q_a ):
@@ -108,9 +110,9 @@ num_bodies = df_all_ans["Body"].size
 #D print("=== Number of bodies: " + str(num_bodies))
 
 print("=== For all ans: Cleaning and parsing the training set bodies...")
-clean_a_bodies_l = []
+clean_ans_bodies_l = []
 for i in range( 0, num_bodies ):
-    clean_a_bodies_l.append( convert_text_to_words( df_all_ans["Body"][i] ))
+    clean_ans_bodies_l.append( convert_text_to_words( df_all_ans["Body"][i] ))
     # Print a progress message; default is for every 10% of i/p data handled.
     if( (i+1) % progress_msg_factor == 0 ):
         clean_q_a = convert_text_to_words( df_all_ans["Body"][i] )
@@ -124,13 +126,13 @@ if os.path.exists(outfile):
     os.rename(outfile, outfile + '.bak')
     print('\nWARN: renamed o/p file w/ .bak; save it manually if needed: ' + outfile)
 with open(outfile, 'w') as f:
-    f.write('\n'.join(clean_a_bodies_l))
+    f.write('\n'.join(clean_ans_bodies_l))
 
 
 # Step 3. Build a bag of words and their counts.
 
 # This code uses ngrams instead of single words.
-def make_bag_of_words(clean_a_bodies_l):
+def make_bag_of_words(clean_ans_bodies_l):
     print("\nCreating the bag of words for word counts ...\n")
     from sklearn.feature_extraction.text import CountVectorizer
 
@@ -154,14 +156,14 @@ def make_bag_of_words(clean_a_bodies_l):
     # into feature vectors. The input to fit_transform should be a list of
     # strings.
     #
-    train_data_features = vectorizer.fit_transform(clean_a_bodies_l)
+    train_data_features = vectorizer.fit_transform(clean_ans_bodies_l)
 
     # Numpy arrays are easy to work with, so convert the result to an
     # array
     #
     train_data_features = train_data_features.toarray()
 
-    #DBG Wed2017_0118_19:38 , w/ q9999 data, got (727, 1550):
+    # Note, w/ q9999 data, got (727, 1550):
     print('Bag shape: rows (num of records), cols (num of features):')
     print(train_data_features.shape, '\n')
 
@@ -174,15 +176,15 @@ def make_bag_of_words(clean_a_bodies_l):
 
     return (vocab, dist)
 
-print('=== make_bag_of_words(clean_a_bodies_l')
-(vocab, dist) = make_bag_of_words(clean_a_bodies_l)
+print('=== make_bag_of_words(clean_ans_bodies_l')
+(vocab, dist) = make_bag_of_words(clean_ans_bodies_l)
 
 
 # Sort and save vocabulary data to file w/ a specified suffix.
 
 def sort_save_vocab(suffix):
-    # For each, print the vocabulary word and the number of times it
-    # appears in the training set
+    # For each item in bag of words, print the vocabulary word and the number
+    # of times it appears in the training set
     count_tag_l = []
     word_freq_d = {}
     for tag, count in zip(vocab, dist):
