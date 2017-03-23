@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # nltk_ex22.py  clpoda  2017_0115 . 2017_0126 . 2017_0220
-# Time-stamp: <Thu 2017 Mar 16 05:41:24 PMPM clpoda>
+# Time-stamp: <Wed 2017 Mar 22 09:48:27 PMPM clpoda>
 # Stand-alone program to test nltk.
 #
 # Ref: https://www.kaggle.com/c/word2vec-nlp-tutorial/details/part-1-for-beginners-bag-of-words
@@ -76,17 +76,17 @@ from nltk.corpus import stopwords
     # You can use web site & only d/l some parts if you don't need all.
 
 
-def qa_to_words( raw_qa ):
+def convert_text_to_words( raw_q_a ):
     # Convert a raw stackoverflow question or answer
     # to a string of words.
     # The input is a single string (a raw ques or ans entry), and
     # the output is a single string (a preprocessed ques or ans).
     #
     # 1. Remove HTML
-    qa_text = BeautifulSoup(raw_qa, "lxml").get_text()
+    q_a_text = BeautifulSoup(raw_q_a, "lxml").get_text()
     #
     # 2. Remove non-letters
-    letters_only = re.sub("[^a-zA-Z]", " ", qa_text)
+    letters_only = re.sub("[^a-zA-Z]", " ", q_a_text)
     #
     # 3. Convert to lower case, split into individual words
     words = letters_only.lower().split()
@@ -110,13 +110,13 @@ num_bodies = df_all_ans["Body"].size
 print("=== For all ans: Cleaning and parsing the training set bodies...")
 clean_a_bodies_l = []
 for i in range( 0, num_bodies ):
-    clean_a_bodies_l.append( qa_to_words( df_all_ans["Body"][i] ))
+    clean_a_bodies_l.append( convert_text_to_words( df_all_ans["Body"][i] ))
     # Print a progress message; default is for every 10% of i/p data handled.
     if( (i+1) % progress_msg_factor == 0 ):
-        clean_qa = qa_to_words( df_all_ans["Body"][i] )
+        clean_q_a = convert_text_to_words( df_all_ans["Body"][i] )
         #D print("\n=== Body %d of %d" % ( i+1, num_bodies ))
         #D print('  Original text: ' + df_all_ans['Body'][i])
-        #D print('  Cleaned text:  ' + clean_qa)
+        #D print('  Cleaned text:  ' + clean_q_a)
 
 # Write cleaned bodies to a file, one body per line, for visual review.
 outfile = tmpdir + a_fname + '.out'
@@ -244,13 +244,13 @@ def find_freq_words():
     progress_count = 0
     for i in df_score_l:
         progress_count += 1
-        top_n_bodies.append( qa_to_words( df8["Body"][i] ))
+        top_n_bodies.append( convert_text_to_words( df8["Body"][i] ))
         # Print a progress message for every 10% of i/p data handled.
         if( (progress_count+1) % progress_msg_factor == 0 ):
-            clean_qa = qa_to_words( df8["Body"][i] )
+            clean_q_a = convert_text_to_words( df8["Body"][i] )
             print("\nBody for Id %d " % ( i))
             print('  Original text:\n' + df8['Body'][i][:70])
-            print('  Cleaned text:\n' + clean_qa[:70])
+            print('  Cleaned text:\n' + clean_q_a[:70])
     return top_n_bodies 
 
 top = True
