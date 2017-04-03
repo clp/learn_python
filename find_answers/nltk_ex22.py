@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # nltk_ex22.py  clpoda  2017_0220
-# Time-stamp: <Wed 2017 Mar 22 10:17:51 PMPM clpoda>
+# Time-stamp: <Mon 2017 Mar 27 09:26:39 AMAM clpoda>
 # Stand-alone program to test nltk.
 #
 # Ref: https://www.kaggle.com/c/word2vec-nlp-tutorial/details/part-1-for-beginners-bag-of-words
