@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Mon 2017 Apr 03 11:23:24 AMAM clpoda>
+#   Time-stamp: <Tue 2017 Apr 04 11:56:08 AMAM clpoda>
 """fga_find_good_answers.py
 
    Find answers in stackoverflow that might be good, but 'hidden'
@@ -11,7 +11,8 @@
    Save the o/p to a file for further evaluation & processing.
 
    Usage:
-     fga_find_good_answers.py
+     pydoc  fga_find_good_answers
+     python fga_find_good_answers.py
 
      Set the value of num_owners at the bottom of the file;
      default is 10.  It determines how much o/p data will be saved.
@@ -22,7 +23,7 @@
 
 ------
 
-Data format of stackoverflow.com python file from kaggle.com.
+Input data format of stackoverflow.com python file from kaggle.com.
 
 ==> Answers.csv <==
         Id,OwnerUserId,CreationDate,ParentId,Score,Body
@@ -36,7 +37,7 @@ Data format of stackoverflow.com python file from kaggle.com.
         "<p>I am using the Photoshop's javascript API to find the fonts in a given PSD.</p>
 ..."
 
-Data format of q_with_a.csv o/p file from this program.
+Output data format of q_with_a.csv o/p file from this program.
     Note: question records have a Title but no ParentId;
     answer records have a ParentId (which is the related
     question's Id) but no Title.
