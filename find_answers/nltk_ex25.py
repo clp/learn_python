@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.6.0 :: Anaconda 4.3.0 (64-bit)
 
-# Time-stamp: <Tue 2017 Apr 04 02:30:08 PMPM clpoda>
+# Time-stamp: <Tue 2017 Apr 04 10:08:08 PMPM clpoda>
 
 """nltk_ex25.py
 
@@ -271,7 +271,6 @@ def make_bag_of_words(clean_ans_bodies_l):
                                  tokenizer = None,    \
                                  preprocessor = None, \
                                  stop_words = None,   \
-                                 #D Mon2017_0327_18:33 , \
                                  ngram_range = (3,5), \
                                  # token_pattern = r'\b\w+\b', \
                                  max_features = 200)
@@ -393,12 +392,12 @@ def search_for_terms():
     #D print("### bottom:")
     #D print(clean_ans_bodies_l[-1:]) 
     #
-    #D Mon2017_0327_22:22 Use short cab_l for testing:
+    #D Use short list cab_l for testing:
     #D cab_l = ['step isprimenumber call', 'foo step isprimenumber call bar', 'yield abc def ghi generators long first string', 'generator', 'foo next function bar', 'short list foo bar baz']
     #
     #D cab_df = pd.DataFrame(cab_l)
     #
-    #TBF, Wed2017_0329_21:33 ,
+    #TBF
     # p.1. Separate the terms from each other so it is clear what was found
     #  and what was not found in the A's being checked.
     #  Should tmp_df not be a df?  Would a list of lists be better?
@@ -411,7 +410,7 @@ def search_for_terms():
         tmp2_sr = clean_ans_bodies_df[0].str.contains(w)
         for index,row in tmp2_sr.iteritems():
             if row:
-                #TBD,Sun2017_0402_13:49 , Change string 'w' to list for better storage in df?
+                #TBD, Change string 'w' to list or tuple for better storage in df?
                 #OK all_ans_df.loc[index, "HiScoreTerms"] = all_ans_df.loc[index, "HiScoreTerms"] + w + ' , '
                 all_ans_df.loc[index, "HiScoreTerms"] += ( w + ' , ')
     #
@@ -420,19 +419,22 @@ def search_for_terms():
     #D print(all_ans_df.head())
     #
     # Save full df to a file.
-    outfile = "tmpdir/all_ans_df.out"
+    outfile = "tmpdir/all_ans.csv"
     all_ans_df.to_csv(outfile)
     #
     # Save possible valuable answers to a separate file for review.
+    # Replace empty strings in HiScoreTerms cells with NaN, for easier manipulation.
     all_ans_df['HiScoreTerms'].replace('', np.nan, inplace=True)
+    # Save a new df with only rows that have data in the HiScoreTerms column.
     ans_with_hst_df = all_ans_df.dropna(subset=['HiScoreTerms'])
-    outfile = "tmpdir/ans_with_hst_df.out"
+    outfile = "tmpdir/ans_with_hst.csv"
     ans_with_hst_df.to_csv(outfile)
     #
     # Print list of Id's for a quick check.
     print('\nInput files, q & a:\n'  + q_infile + '\n' + a_infile)
-    print("\nDBG, check these Id's for useful data: ")
-    print(ans_with_hst_df['Id'])
+    print("\nDBG, check the low score Answers for useful data: ")
+    print(ans_with_hst_df[['Id', 'Score', 'CreationDate', 'Title']])
+    print(ans_with_hst_df[['Id', 'HiScoreTerms']])
 
 
 if __name__ == '__main__':
