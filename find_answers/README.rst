@@ -57,7 +57,8 @@ Program: **nltk_ex25.py**
 Introduction
 ------------
 
-The nltk_ex25 program uses the Natural Language Toolkit, nltk.
+The nltk_ex25 is an experiment to learn about text processing
+using the Natural Language Toolkit, nltk.
 It processes data for one question with several answers
 from stackoverflow.com.
 It identifies answers that might contain useful data,
@@ -82,6 +83,11 @@ Notes
    the num_hi_score_terms variable.
    Original setting of num_hi_score_terms is 22.
 
+2. The program is now hard-coded to use a single,
+   specific input file.
+   That file is derived from the output
+   of fga_find_good_answers.py,
+   and is stored in the outdir/ directory of this repository.
 
 
 
