@@ -48,6 +48,42 @@ Notes
    each cell.  Use that tool to mark records that are valuable,
    and worth more detailed analysis.
 
+-------------
+
+
+
+Program: **nltk_ex25.py**
+
+Introduction
+------------
+
+The nltk_ex25 program uses the Natural Language Toolkit, nltk.
+It processes data for one question with several answers
+from stackoverflow.com.
+It identifies answers that might contain useful data,
+based on the terms that they contain
+(terms that are found in high-score answers).
+
+The o/p is a csv file containing a question followed
+by the selected answers.
+
+
+Usage
+------------
+
+``python nltk_ex25.py``
+
+
+Notes
+-----
+
+1. The number of high-score terms used for comparison can be varied
+   by changing
+   the num_hi_score_terms variable.
+   Original setting of num_hi_score_terms is 22.
+
+
+
 
 FAQ
 ------------
@@ -85,6 +121,16 @@ One way might be to identify some unique properties of high score answers,
 and find low score answers with the same or similar properties.
 
 
+**What is the Natural Language Toolkit, NLTK?**
+
+NLTK is a platform (code, documents, data sets, and more)
+for building s/w to work with human language data.
+For documentation, please visit nltk.org.
+
+* https://nltk.org
+* https://github.com/nltk/nltk
+
+
 **What are some other useful sites and resources to check?**
 
 * https://github.com/gleitz/howdoi
@@ -93,4 +139,4 @@ and find low score answers with the same or similar properties.
 * https://worksheets.codalab.org/
 
 
-Sun2017_0205_23:32 
+Tue2017_0404_15:44  
