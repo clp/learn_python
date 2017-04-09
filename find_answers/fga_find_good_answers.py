@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Tue 2017 Apr 04 11:56:08 AMAM clpoda>
+#   Time-stamp: <Sat 2017 Apr 08 11:16:11 PMPM clpoda>
 """fga_find_good_answers.py
 
    Find answers in stackoverflow that might be good, but 'hidden'
@@ -133,16 +133,16 @@ def config_data():
     # TBD Include the test data files w/ this project.
     indir = 'indir/'  # Relative to pwd, holds i/p files.
     outdir = 'outdir/'  # Relative to pwd, holds o/p files.
-    a_fname = 'Answers.csv'
-    q_fname = 'Questions.csv'
+    #D a_fname = 'Answers.csv'
+    #D q_fname = 'Questions.csv'
 
     # Smaller data sets, used for debugging.
-    q_fname = 'q6_999994.csv'
+    #D q_fname = 'q6_999994.csv'
     #D a_fname = 'a6_999999.csv'
     # D a_fname = 'a5_99998.csv'
     # D q_fname = 'q30_99993.csv'
-    # D a_fname = 'a3_986.csv'
-    # D q_fname = 'q3_992.csv'
+    a_fname = 'a3_986.csv'
+    q_fname = 'q3_992.csv'
     # D a_fname = 'a2.csv'
     # D q_fname = 'q2.csv'
 
