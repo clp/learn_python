@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.6.0 :: Anaconda 4.3.0 (64-bit)
 
-# Time-stamp: <Tue 2017 Apr 04 10:08:08 PMPM clpoda>
+# Time-stamp: <Thu 2017 Apr 13 09:32:37 PMPM clpoda>
 
 """nltk_ex25.py
 
@@ -335,7 +335,6 @@ def sort_answers_by_score():
     """
     Build a sorted dataframe of answers.
     """
-    print('\n=== Step 4. Sort Answers by Score.\n')
     df_score = all_ans_df.sort_values(['Score'])
     df_score = df_score[['Id', 'Score']]
     #
