@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.6.0 :: Anaconda 4.3.0 (64-bit)
 
-# Time-stamp: <Tue 2017 Apr 18 08:00:26 PMPM clpoda>
+# Time-stamp: <Thu 2017 Apr 20 07:23:13 PMPM clpoda>
 
 """nltk_ex25.py
     
@@ -47,6 +47,14 @@ import os
 import csv
 
 import logging
+
+
+# ----------------------------------------------------------
+# TBD Hard-coded i/p file to use for temporary debugging.
+#
+# a_fname = 'pid_231767.csv'  # Based on o/p from fga*.py?
+# ----------------------------------------------------------
+
 
 
 # Configure basic logging.
@@ -154,7 +162,7 @@ def config_data():
     #D q_fname = 'q3_992.csv'
     #D a_fname = 'a3_986.csv'
     #D a_fname = 'q_with_a.csv'  # O/p from fga*.py
-    a_fname = 'pid_231767.csv'  # O/p from fga*.py
+    a_fname = 'pid_231767.csv'  # TBD Temp hard-coded i/p file
     #D a_fname = 'q_with_a.0211_1308.csv'  # 2729 lines; O/p from fga*.py
     #D a_fname = 'q_with_a.40_owners_a5_9998.csv'  # 800 lines; O/p from fga*.py
     q_fname = 'q2.csv'

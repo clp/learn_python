@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Sat 2017 Apr 08 11:16:11 PMPM clpoda>
+#   Time-stamp: <Thu 2017 Apr 20 06:44:01 PMPM clpoda>
 """fga_find_good_answers.py
 
    Find answers in stackoverflow that might be good, but 'hidden'
@@ -104,7 +104,7 @@ def main():
     q_with_a_df = combine_related_q_and_a(parent_id_l, all_ques_df, all_ans_df)
     qa_with_keyword_df = select_keyword_recs(keyword, parent_id_l, q_with_a_df, all_ques_df, all_ans_df)
 
-    # Write qa with keyword, subset of full data set, to a csv file.
+    # Write qa_with_keyword_df, a subset of full data set, to a csv file.
     outfields_l = ['Id', 'ParentId', 'OwnerUserId', 'CreationDate', 'Score', 'Title', 'Body']
     outfile = 'outdir/qa_with_keyword.csv'
     qa_with_keyword_df[outfields_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
@@ -323,6 +323,7 @@ if __name__ == '__main__':
     keyword = 'beginner'
     keyword = 'yield'
     # D keyword = 'begin'
+    # D keyword = 'pandas'
     #D keyword = 'Python'  # Both Title & Body of data sets have it; for debug
     print("Keyword: ", keyword)
     main()
