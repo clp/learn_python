@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Tue 2017 May 02 05:24:51 PMPM clpoda>
+#   Time-stamp: <Tue 2017 May 02 10:40:28 PMPM clpoda>
 """fga_find_good_answers.py
 
    Find answers in stackoverflow that might be good, but 'hidden'
@@ -93,6 +93,10 @@ import nltk
 import random
 
 from bs4 import BeautifulSoup
+
+import argparse
+#F from . import __version__
+
 
 
 def main():
@@ -201,7 +205,7 @@ def group_data(all_ans_df):
     # D print()
 
     owners_df_l = []
-    lo_score_limit = 10
+    lo_score_limit = args['lo_score_limit']
     for owner in top_scoring_owners_a:
         # Get a pandas series of booleans for filtering:
         answered_by_o2_sr = (all_ans_df.OwnerUserId == owner)
@@ -217,6 +221,7 @@ def group_data(all_ans_df):
     # These are the answers to examine for useful data, even though
     # they have low scores.
     lo_scores_for_top_users_df = pd.concat(owners_df_l)
+    print('lo_score_limit: ', lo_score_limit)
     print('Length of lo_scores_for_top_users_df: ', len(lo_scores_for_top_users_df))
     print('lo_scores_for_top_users_df: ')
     print(lo_scores_for_top_users_df)
@@ -316,6 +321,49 @@ def write_df_to_file(in_df, wdir, wfile):
         print(in_df['Body'], file=f)
 
 
+
+
+def get_parser():
+    parser = argparse.ArgumentParser(description='find good answers hidden in stackoverflow data')
+
+    parser.add_argument('-L', '--lo_score_limit', help='lowest score for an answer to be included', default=10, type=int)
+
+    #TBD: User must specify -p or -t but not both; add code for that.
+    #TBD: parser.add_argument('-p', '--popular_questions', help='select questions with many answers', 
+                        #TBD: action='store_true')
+    #TBD: parser.add_argument('-t', '--top_users', help='find lo-score answers by hi-scoring owners',
+                        #TBD: action='store_true')
+    #TBD: parser.add_argument('-u', '--user_eval', help='user can evaluate answers and add data',
+                        #TBD: action='store_true')
+    #TBD: parser.add_argument('-v', '--version', help='show the current version of the program',
+                        #TBD: action='store_true')
+    return parser
+
+
+def interpret_args(args):
+    if args['version']:
+        print(__version__)
+        return
+
+    if args['lo_score_limit']:
+        lo_score_limit = args['lo_score_limit']
+
+    if args['user_eval']:
+        user_eval_b = True
+
+    #TBD: User must specify -p or -t but not both; add code for that.
+    if args['popular_questions']:
+        pop_ques_b = True
+        return
+
+    if args['top_users']:
+        top_users_b = True
+        return
+
+
+
+
+
 if __name__ == '__main__':
     # Set the number of top scoring owners to select from the data.
     num_owners = 10  # Default is 10.
@@ -328,4 +376,9 @@ if __name__ == '__main__':
     # D keyword = 'pandas'
     #D keyword = 'Python'  # Both Title & Body of data sets have it; for debug
     print("Keyword: ", keyword)
+
+    parser = get_parser()
+    args = vars(parser.parse_args())
+    interpret_args(args)
+
     main()
