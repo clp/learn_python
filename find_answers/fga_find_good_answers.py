@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Thu 2017 Apr 20 09:56:00 PMPM clpoda>
+#   Time-stamp: <Tue 2017 May 02 05:24:51 PMPM clpoda>
 """fga_find_good_answers.py
 
    Find answers in stackoverflow that might be good, but 'hidden'
@@ -214,6 +214,8 @@ def group_data(all_ans_df):
         lo_score_answers_by_o2_df = answers_df[['Id', 'OwnerUserId', 'Score']][lo_score_by_o2_sr]
         owners_df_l.append(lo_score_answers_by_o2_df)
 
+    # These are the answers to examine for useful data, even though
+    # they have low scores.
     lo_scores_for_top_users_df = pd.concat(owners_df_l)
     print('Length of lo_scores_for_top_users_df: ', len(lo_scores_for_top_users_df))
     print('lo_scores_for_top_users_df: ')
