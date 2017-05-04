@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Tue 2017 May 02 10:40:28 PMPM clpoda>
+#   Time-stamp: <Thu 2017 May 04 01:17:04 PMPM clpoda>
 """fga_find_good_answers.py
 
    Find answers in stackoverflow that might be good, but 'hidden'
@@ -85,6 +85,8 @@ Output data format of q_with_a.csv o/p file from this program.
 # csvcut -c 1,2,3,4,5 -e latin1 indir/Answers.csv > outdir/a21_all_iocps.csv
 # ----------------------------------------------------------
 
+#F __version__ = '0.0.1'
+version = '0.0.1'
 
 import pandas as pd
 import numpy as np
@@ -95,7 +97,6 @@ import random
 from bs4 import BeautifulSoup
 
 import argparse
-#F from . import __version__
 
 
 
@@ -182,7 +183,7 @@ def group_data(all_ans_df):
     then mark the low score records for evaluation.
     Low score is any score below lo_score_limit.
     """
-    print('\n=== owner_grouped_df: Group by owner and sort by mean score for each owner.')
+    print('=== owner_grouped_df: Group by owner and sort by mean score for each owner.')
     owner_grouped_df = all_ans_df.groupby('OwnerUserId').mean()
     owner_grouped_df = owner_grouped_df[['Score']].sort_values(['Score'])
 
@@ -194,9 +195,10 @@ def group_data(all_ans_df):
     print()
     print('len(owner_grouped_df): number of unique OwnerUserId values: ' + str(len(owner_grouped_df)))
     print()
-    print('Show owners with ', str(num_owners), ' highest MeanScores.')
-    print(owner_grouped_df.tail(num_owners))  # See highest scores at bottom:
-    print()
+    if args['verbose']:
+        print('Show owners with ', str(num_owners), ' highest MeanScores.')
+        print(owner_grouped_df.tail(num_owners))  # See highest scores at bottom:
+        print()
 
     # Take slice of owners w/ highest mean scores; convert to int.
     owners_a = owner_grouped_df['OwnerUserId'].values
@@ -223,8 +225,9 @@ def group_data(all_ans_df):
     lo_scores_for_top_users_df = pd.concat(owners_df_l)
     print('lo_score_limit: ', lo_score_limit)
     print('Length of lo_scores_for_top_users_df: ', len(lo_scores_for_top_users_df))
-    print('lo_scores_for_top_users_df: ')
-    print(lo_scores_for_top_users_df)
+    if args['verbose']:
+        print('lo_scores_for_top_users_df: ')
+        print(lo_scores_for_top_users_df)
     print()
 
     return top_scoring_owners_a
@@ -325,26 +328,19 @@ def write_df_to_file(in_df, wdir, wfile):
 
 def get_parser():
     parser = argparse.ArgumentParser(description='find good answers hidden in stackoverflow data')
+    group = parser.add_mutually_exclusive_group()
 
     parser.add_argument('-L', '--lo_score_limit', help='lowest score for an answer to be included', default=10, type=int)
 
     #TBD: User must specify -p or -t but not both; add code for that.
-    #TBD: parser.add_argument('-p', '--popular_questions', help='select questions with many answers', 
-                        #TBD: action='store_true')
-    #TBD: parser.add_argument('-t', '--top_users', help='find lo-score answers by hi-scoring owners',
-                        #TBD: action='store_true')
-    #TBD: parser.add_argument('-u', '--user_eval', help='user can evaluate answers and add data',
-                        #TBD: action='store_true')
-    #TBD: parser.add_argument('-v', '--version', help='show the current version of the program',
-                        #TBD: action='store_true')
+    group.add_argument('-p', '--popular_questions', help='select questions with many answers', action='store_true')
+    group.add_argument('-t', '--top_users', help='find lo-score answers by hi-scoring owners', action='store_true')
+    parser.add_argument('-u', '--user_eval', help='user can evaluate answers and add data', action='store_true')
+    parser.add_argument('-v', '--verbose', action='store_true')
     return parser
 
 
 def interpret_args(args):
-    if args['version']:
-        print(__version__)
-        return
-
     if args['lo_score_limit']:
         lo_score_limit = args['lo_score_limit']
 
