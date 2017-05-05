@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Thu 2017 May 04 01:17:04 PMPM clpoda>
+#   Time-stamp: <Thu 2017 May 04 06:55:14 PMPM clpoda>
 """fga_find_good_answers.py
 
    Find answers in stackoverflow that might be good, but 'hidden'
@@ -99,15 +99,41 @@ from bs4 import BeautifulSoup
 import argparse
 
 
+# ----------------------------------------------------------
+# Set ID's to find questions and answers
+#D global pid_l 
+#DBG pid_l = [469, 535, 231767]
+#DBG.all pid_l = [469, 502, 535, 594, 683, 742, 766, 773, 972, 1476, 766, 1734, 1829, 1854, 1983, 2311, 2933, 3061, 3976, 4942, 5102, 5313, 1983, 5909, 5966, 8692, 8948, 10123, 11060, 2933, 1983]
+pid_l = [469, 502, 535, 594, 683, 742, 766, 773, 972]
+
+#D Most pid's found in a3_986.csv:
+# 469, 502, 535, 594, 683, 742, 766, 773, 972, 1476, 766, 1734, 1829, 1854, 1983, 2311, 2933, 3061, 3976, 4942, 5102, 5313, 1983, 5909, 5966, 8692, 8948, 10123, 11060, 2933, 1983
+# ----------------------------------------------------------
+
+
 
 def main():
     init()
     a_fname, a_infile, q_infile, indir, outdir = config_data()
     all_ans_df, all_ques_df, progress_msg_factor = read_data(a_infile, q_infile)
-    top_scoring_owners_a = group_data(all_ans_df)
-    parent_id_l = find_question_ids(top_scoring_owners_a, all_ans_df)
-    q_with_a_df = combine_related_q_and_a(parent_id_l, all_ques_df, all_ans_df)
-    qa_with_keyword_df = select_keyword_recs(keyword, parent_id_l, q_with_a_df, all_ques_df, all_ans_df)
+    popular_ids = find_popular_ques(all_ans_df, a_fname)
+    popular_ids_a = popular_ids.index.values
+    if args['top_users']:
+        top_scoring_owners_a = group_data(all_ans_df)
+        parent_id_l = find_question_ids(top_scoring_owners_a, all_ans_df)
+        #
+        # Find parent Ids that have several answers, including some from high-scoring owners.
+        #TBD, Set the size of inputs to get enough o/p to analyze.
+        pop_and_top_l = list(set(parent_id_l[:20]).intersection(set(popular_ids_a[:40])))
+        if args['verbose']:
+            print('len(pop_and_top_l) : ', len(pop_and_top_l))
+            print('pop_and_top_l, parent id\'s to examine: ', pop_and_top_l[:])
+    else:  # The -p option is now the default setting, instead of -t.
+        pid_grouped_df = group_data_by_pid(all_ans_df)
+        parent_id_l = find_question_ids_2(pid_grouped_df, all_ans_df)
+    #ORG q_with_a_df = combine_related_q_and_a(parent_id_l, all_ques_df, all_ans_df)
+    q_with_a_df = combine_related_q_and_a(pop_and_top_l, all_ques_df, all_ans_df)
+    qa_with_keyword_df = select_keyword_recs(keyword, pop_and_top_l, q_with_a_df, all_ques_df, all_ans_df)
 
     # Write qa_with_keyword_df, a subset of the full data set, to a csv file.
     outfields_l = ['Id', 'ParentId', 'OwnerUserId', 'CreationDate', 'Score', 'Title', 'Body']
@@ -119,6 +145,85 @@ def main():
     q_with_a_df[outfields_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
     # DBG  write_df_to_file(q_with_a_df, outdir, a_fname)
 
+
+
+def find_popular_ques(all_ans_df, a_fname):
+    # Find the most frequent ParentIds found in the answers df.
+    popular_ids = pd.value_counts(all_ans_df['ParentId'])
+    #
+    outfile = "outdir/fpq_popular_ids."+ a_fname+ ".csv"
+    popular_ids.to_csv(outfile)
+    return popular_ids
+
+
+### Thu2017_0504_13:38 
+### Thu2017_0504_13:38 
+### Thu2017_0504_13:38 
+def group_data_by_pid(all_ans_df):
+    """Group the contents of the answers df by a specific column.
+    Group by ParentId, which is also the Id field of the related question record.
+    TBD, Show the Q first, then all the related A's, in here or other func.
+    """
+    print("=== pid_grouped_df: Group by ParentId, and save the Q then its A's.")
+    pid_grouped_df = all_ans_df.groupby('ParentId')
+
+    #D print('pid_l: ', pid_l[0])
+    pid_df = pd.DataFrame()
+    for pid in pid_l:
+        tmp_df = all_ans_df.loc[all_ans_df['ParentId'] == pid]
+        pid_df = pid_df.append(tmp_df)
+
+    """ Sat2017_0325_14:07 , Remove code.
+    # Copy index column into owner column; Change index column to integer
+    owner_grouped_df['OwnerUserId'] = owner_grouped_df.index
+    owner_grouped_df.reset_index(drop=True, inplace=True)
+    owner_grouped_df.rename(columns={'Score': 'MeanScore'}, inplace=True)
+    """
+
+    print()
+    print('len(pid_grouped_df): number of unique OwnerUserId values: ' + str(len(pid_grouped_df)))
+    print()
+    """ Sat2017_0325_14:08 , rm code 
+    print('Show owners with ', str(num_owners), ' highest MeanScores.')
+    print(owner_grouped_df.tail(num_owners))  # See highest scores at bottom:
+    print()
+    """
+
+    """ Sat2017_0325_14:08 , rm code 
+    # Take slice of owners w/ highest mean scores; convert to int.
+    owners_a = owner_grouped_df['OwnerUserId'].values
+    top_scoring_owners_a = np.vectorize(np.int)(owners_a[-num_owners:])
+    # D print('top_scoring_owners_a: ', top_scoring_owners_a )
+    # D print()
+    """
+
+    """ Sat2017_0325_14:08 , rm code 
+    owners_df_l = []
+    lo_score_limit = 10
+    for owner in top_scoring_owners_a:
+        # Get a pandas series of booleans for filtering:
+        answered_by_o2_sr = (all_ans_df.OwnerUserId == owner)
+        # Get a pandas df with rows for all answers of one user:
+        answers_df = all_ans_df[['Id', 'OwnerUserId', 'Score']][answered_by_o2_sr]
+
+        # Get a pandas series of booleans for filtering:
+        lo_score_by_o2_sr = (answers_df.Score < lo_score_limit)
+        # Get a pandas df with rows for all low-score answers of one user:
+        lo_score_answers_by_o2_df = answers_df[['Id', 'OwnerUserId', 'Score']][lo_score_by_o2_sr]
+        owners_df_l.append(lo_score_answers_by_o2_df)
+
+    lo_scores_for_top_users_df = pd.concat(owners_df_l)
+    print('Length of lo_scores_for_top_users_df: ', len(lo_scores_for_top_users_df))
+    print('lo_scores_for_top_users_df: ')
+    print(lo_scores_for_top_users_df)
+    print()
+    """
+
+    #ORG return pid_grouped_df
+    return pid_df
+### Thu2017_0504_13:38 
+### Thu2017_0504_13:38 
+### Thu2017_0504_13:38 
 
 def init():
     """Initialize some settings for the program.
@@ -222,6 +327,7 @@ def group_data(all_ans_df):
 
     # These are the answers to examine for useful data, even though
     # they have low scores.
+    #TBD.Thu2017_0504_14:42 , This df is not used anywhere. Is that a mistake? Is it needed now?
     lo_scores_for_top_users_df = pd.concat(owners_df_l)
     print('lo_score_limit: ', lo_score_limit)
     print('Length of lo_scores_for_top_users_df: ', len(lo_scores_for_top_users_df))
@@ -260,13 +366,58 @@ def find_question_ids(top_scoring_owners_a, all_ans_df):
     return parent_id_l
 
 
-def combine_related_q_and_a(parent_id_l, all_ques_df, all_ans_df):
+
+###Thu2017_0504_15:04  
+###Thu2017_0504_15:04  
+###Thu2017_0504_15:04  
+#ORG def find_question_ids(pid_grouped_df, all_ans_df):
+def find_question_ids_2(pid_df, all_ans_df):
+    """TBF.Thu2017_0504_15:05 , Fix this comment.
+
+    Make a list of all answer records by the high-score owners.
+    Use that list to build a list of Question Id's (= ParentId)
+    to collect for evaluation.
+    Return that list of question Id's.
+    """
+    """ Sun2017_0326_12:10  rm code
+    owners_df_l = []
+    for owner in top_scoring_owners_a:
+        # Get a pandas series of booleans for filtering:
+        answered_by_owner_sr = (all_ans_df.OwnerUserId == owner)
+        # Get a pandas df with rows for all answers of one user:
+        answers_df = all_ans_df[['Id', 'OwnerUserId', 'ParentId', 'Score']][answered_by_owner_sr]
+        owners_df_l.append(answers_df)
+
+    hi_scoring_users_df = pd.concat(owners_df_l)
+    # D print('Length of hi_scoring_users_df: ', len(hi_scoring_users_df))
+    # D print('hi_scoring_users_df: ')
+    # D print(hi_scoring_users_df)
+    """
+
+    # Get list of unique ParentId's:
+    #F parent_id_l = list(set(pid_grouped_df['ParentId']))
+    #F parent_id_l = list( Series(pid_grouped_df.values.ravel()).unique())
+    #TBD parent_id_l = list( pid_df.values.ravel()).unique()
+    #F parent_id_l = list( pid_df['ParentId'].values.ravel()).unique()
+    parent_id_l = set(list( pid_df['ParentId']))
+    print()
+    print('parent_id_l: ')
+    print(parent_id_l)
+    print()
+    return parent_id_l
+###Thu2017_0504_15:04  
+###Thu2017_0504_15:04  
+###Thu2017_0504_15:04  
+
+
+
+def combine_related_q_and_a(pop_and_top_l, all_ques_df, all_ans_df):
     """Get each Q in the list of ParentId's, and the related A's.
     Loop over all the question Id's and store all Q & A data in a list.
     Convert the list to a df.  Return that df.
     """
     ques_ans_l = []
-    for qid in parent_id_l:
+    for qid in pop_and_top_l:
         # Get a pandas series of booleans to find the current question id.
         ques_match_sr = (all_ques_df.Id == qid)
         ques_match_df = all_ques_df[['Id', 'OwnerUserId',  'CreationDate', 'Score', 'Title', 'Body']][ques_match_sr]
@@ -281,13 +432,18 @@ def combine_related_q_and_a(parent_id_l, all_ques_df, all_ans_df):
         # Append all related answers to the list.
         ques_ans_l.append(df)
     q_with_a_df = pd.concat(ques_ans_l)
+    if args['verbose']:
+        print('ques_match_sr: ')
+        print(ques_match_sr)
     return q_with_a_df
 
 
 # TBD.1 Sat2017_0211_22:55 , should this func be called before combine_related*()?
-# Use it to make the final parent_id_l?
+# Use it to make the final pop_and_top_l?
+# TBD, Thu2017_0504_18:52 . pop_and_top_l is not used here, yet.
+#TBD, all_ques_df, all_ans_df are not used here yet.
 #
-def select_keyword_recs(keyword, parent_id_l, q_with_a_df, all_ques_df, all_ans_df):
+def select_keyword_recs(keyword, pop_and_top_l, q_with_a_df, all_ques_df, all_ans_df):
     """Find all Q's that contain the keyword, in Title or Body.
     TBD, Find all A's that contain the keyword; select the corresponding Q's.
     Combine the two sets into one set of unique Q's w/ their A's.
@@ -312,7 +468,7 @@ def select_keyword_recs(keyword, parent_id_l, q_with_a_df, all_ques_df, all_ans_
 
 
 def write_df_to_file(in_df, wdir, wfile):
-    """Write one column of a pandas data frame to a file w/ suffix 'qanda'.
+    """Write one column of a pandas data frame to a file w/ suffix '.qanda'.
     """
     # Used for testing and debugging.
     outfile = wdir + wfile + '.qanda'
@@ -340,21 +496,18 @@ def get_parser():
     return parser
 
 
+#TBR.Thu2017_0504_15:54 :
 def interpret_args(args):
-    if args['lo_score_limit']:
-        lo_score_limit = args['lo_score_limit']
+    #TBR if args['lo_score_limit']:
+        #TBR lo_score_limit = args['lo_score_limit']
 
-    if args['user_eval']:
-        user_eval_b = True
+    #TBR if args['user_eval']:
+        #TBR user_eval_b = True
 
-    #TBD: User must specify -p or -t but not both; add code for that.
-    if args['popular_questions']:
-        pop_ques_b = True
-        return
+    #TBR if args['popular_questions']:
+        #TBR pop_ques_b = True
 
-    if args['top_users']:
-        top_users_b = True
-        return
+    return
 
 
 
@@ -375,6 +528,6 @@ if __name__ == '__main__':
 
     parser = get_parser()
     args = vars(parser.parse_args())
-    interpret_args(args)
+    #TBR interpret_args(args)
 
     main()
