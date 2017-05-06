@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Fri 2017 May 05 05:25:53 PMPM clpoda>
+#   Time-stamp: <Fri 2017 May 05 08:28:10 PMPM clpoda>
 """fga_find_good_answers.py
 
    Find answers in stackoverflow that might be good, but 'hidden'
@@ -89,6 +89,7 @@ import numpy as np
 import os
 import pandas as pd
 import random
+from shutil import copyfile
 
 
 # ----------------------------------------------------------
@@ -107,7 +108,7 @@ def main():
     all_ans_df, all_ques_df, progress_msg_factor = read_data(a_infile, q_infile)
     if args['user_eval']:
         print('Open the data frame for human evaluation of answers.')
-        read_and_grade_answers()
+        read_and_grade_answers(all_ans_df, all_ques_df)
         exit
     popular_ids = find_popular_ques(all_ans_df, a_fname)
     popular_ids_a = popular_ids.index.values
@@ -191,7 +192,7 @@ def read_data(ans_file, ques_file):
     return ans_df, ques_df, progress_msg_factor
 
 
-def read_and_grade_answers():
+def read_and_grade_answers(all_ans_df, all_ques_df):
     """Ask user to enter a quality grade for each answer.
     
     Read the data file that holds the user grades 
@@ -212,8 +213,27 @@ def read_and_grade_answers():
     
     Write that df to a csv file.
     """
+    
+    gr_file = 'outdir/graded_answers.csv'
+    if not os.path.exists(gr_file):
+        #TBD Initialize the grade csv file only if it does not exist, ie,
+        # the first time this function runs (or if the file
+        # has been lost or deleted - find it or a backup file is better than starting again).
+        print('\nWARN: file not found, creating it by copying from q_with_a.csv:' + gr_file)
+        copyfile('outdir/q_with_a.csv', gr_file)
+        #TBD, handle case if i/p data file is missing.
+    graded_answers_df = pd.read_csv(gr_file, encoding='latin-1', warn_bad_lines=False, error_bad_lines=False)
+
+    #TBD Create new columns only the first time the file is read.
+    # Don't overwrite any cells that have been edited w/ real grade data.
+    graded_answers_df['Grade'] = 'N'
+    graded_answers_df['Notes'] = 'None'
+    #
+    outfields_l = ['Id', 'ParentId', 'Grade', 'Notes']
+    outfile = 'outdir/graded_answers.csv'
+    graded_answers_df[outfields_l].to_csv(gr_file, header=True, index=None, sep=',', mode='w')
+
     print()
-    pass
 
 
 def find_popular_ques(all_ans_df, a_fname):
