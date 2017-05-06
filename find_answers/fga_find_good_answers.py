@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Thu 2017 May 04 10:43:33 PMPM clpoda>
+#   Time-stamp: <Fri 2017 May 05 05:25:53 PMPM clpoda>
 """fga_find_good_answers.py
 
    Find answers in stackoverflow that might be good, but 'hidden'
@@ -105,6 +105,10 @@ def main():
     init()
     a_fname, a_infile, q_infile, indir, outdir = config_data()
     all_ans_df, all_ques_df, progress_msg_factor = read_data(a_infile, q_infile)
+    if args['user_eval']:
+        print('Open the data frame for human evaluation of answers.')
+        read_and_grade_answers()
+        exit
     popular_ids = find_popular_ques(all_ans_df, a_fname)
     popular_ids_a = popular_ids.index.values
     top_scoring_owners_a = group_data(all_ans_df)
@@ -130,16 +134,6 @@ def main():
     outfile = 'outdir/q_with_a.csv'
     q_with_a_df[outfields_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
     # DBG  write_df_to_file(q_with_a_df, outdir, a_fname)
-
-
-
-def find_popular_ques(all_ans_df, a_fname):
-    # Find the most frequent ParentIds found in the answers df.
-    popular_ids = pd.value_counts(all_ans_df['ParentId'])
-    #
-    outfile = "outdir/fpq_popular_ids."+ a_fname+ ".csv"
-    popular_ids.to_csv(outfile)
-    return popular_ids
 
 
 def init():
@@ -195,6 +189,40 @@ def read_data(ans_file, ques_file):
     progress_msg_factor = int(round(numlines/10))
     print()
     return ans_df, ques_df, progress_msg_factor
+
+
+def read_and_grade_answers():
+    """Ask user to enter a quality grade for each answer.
+    
+    Read the data file that holds the user grades 
+    for each answer.
+    If that file does not exist, create it, and begin
+    to fill it by following these steps.
+    
+    Show a question and one un-graded answer
+    at a time to the console's stdout stream.
+    
+    Prompt the user to evaluate the answer and grade it,
+    and to write any additional comments.
+    Save those data into a separate data frame,
+    and include the answer_id field with each record.
+    Repeat these steps for each un-evaluated answer,
+    until the user terminates the action, or until all
+    answers have been graded.
+    
+    Write that df to a csv file.
+    """
+    print()
+    pass
+
+
+def find_popular_ques(all_ans_df, a_fname):
+    # Find the most frequent ParentIds found in the answers df.
+    popular_ids = pd.value_counts(all_ans_df['ParentId'])
+    #
+    outfile = "outdir/fpq_popular_ids."+ a_fname+ ".csv"
+    popular_ids.to_csv(outfile)
+    return popular_ids
 
 
 def group_data(all_ans_df):
@@ -384,3 +412,4 @@ if __name__ == '__main__':
     args = vars(parser.parse_args())
 
     main()
+
