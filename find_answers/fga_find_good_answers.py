@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
+
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Fri 2017 May 05 08:28:10 PMPM clpoda>
+#   Time-stamp: <Sat 2017 May 06 03:34:40 PMPM clpoda>
 """fga_find_good_answers.py
+
 
    Find answers in stackoverflow that might be good, but 'hidden'
    because they have low scores.
@@ -182,6 +184,7 @@ def read_data(ans_file, ques_file):
     Compute a factor that dictates how progress will be indicated
     during read operations.
     """
+    #TBD, Sat2017_0506_15:34  Maybe rm latin-1 encoding here also?
     ans_df = pd.read_csv(ans_file, encoding='latin-1', warn_bad_lines=False, error_bad_lines=False)
     ques_df = pd.read_csv(ques_file, encoding='latin-1', warn_bad_lines=False, error_bad_lines=False)
 
@@ -216,20 +219,38 @@ def read_and_grade_answers(all_ans_df, all_ques_df):
     
     gr_file = 'outdir/graded_answers.csv'
     if not os.path.exists(gr_file):
+        # Create a new file; it has no graded answers.
         #TBD Initialize the grade csv file only if it does not exist, ie,
         # the first time this function runs (or if the file
-        # has been lost or deleted - find it or a backup file is better than starting again).
+        # has been lost or deleted, or if you want to start over.)
         print('\nWARN: file not found, creating it by copying from q_with_a.csv:' + gr_file)
         copyfile('outdir/q_with_a.csv', gr_file)
         #TBD, handle case if i/p data file is missing.
-    graded_answers_df = pd.read_csv(gr_file, encoding='latin-1', warn_bad_lines=False, error_bad_lines=False)
+        #TBD, maybe only read id & parentid fields into df?  trying usecols:
+        # Removing latin-1 in 2 read_csv() calls  fixed the problem:
+            #ORG graded_answers_df = pd.read_csv(gr_file, encoding='latin-1', warn_bad_lines=False, error_bad_lines=False, usecols=['Id', 'ParentId', 'Title', 'Body'])
+        graded_answers_df = pd.read_csv(gr_file,  warn_bad_lines=False, error_bad_lines=False, usecols=['Id', 'ParentId', 'Title', 'Body'])
 
-    #TBD Create new columns only the first time the file is read.
-    # Don't overwrite any cells that have been edited w/ real grade data.
-    graded_answers_df['Grade'] = 'N'
-    graded_answers_df['Notes'] = 'None'
+        #TBD Create new columns only the first time the file is read.
+        # Don't overwrite any cells that have been edited w/ real grade data.
+        graded_answers_df['Grade'] = 'N'
+        graded_answers_df['Notes'] = 'None'
+        outfields_l = ['Id', 'ParentId', 'Grade', 'Notes', 'Title', 'Body']
+        outfile = 'outdir/graded_answers.csv'
+        graded_answers_df[outfields_l].to_csv(gr_file, header=True, index=None, sep=',', mode='w')
+
+    # Read the existing file; it should have some graded answers.
+    # Removing latin-1 in 2 read_csv() calls  fixed the problem:
+    #ORG.Sat2017_0506_14:28   graded_answers_df = pd.read_csv(gr_file, encoding='latin-1', warn_bad_lines=False, error_bad_lines=False)
+    graded_answers_df = pd.read_csv(gr_file, warn_bad_lines=False, error_bad_lines=False)
+    
+    # Show Q&A & ask user for grade & notes.
+    # Show count of un-graded A's.
+    #TBD Show list of next 5 Q.Titles & let user choose one.
+
     #
-    outfields_l = ['Id', 'ParentId', 'Grade', 'Notes']
+    # Save only the needed fields to the file.
+    outfields_l = ['Id', 'ParentId', 'Grade', 'Notes', 'Title', 'Body']
     outfile = 'outdir/graded_answers.csv'
     graded_answers_df[outfields_l].to_csv(gr_file, header=True, index=None, sep=',', mode='w')
 
