@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Sat 2017 May 06 03:34:40 PMPM clpoda>
+#   Time-stamp: <Sat 2017 May 06 05:59:50 PMPM clpoda>
 """fga_find_good_answers.py
 
 
@@ -102,6 +102,13 @@ pid_l = [469, 502, 535, 594, 683, 742, 766, 773, 972]
 
 # ----------------------------------------------------------
 
+## user_menu = """    g: enter the grade for this answer
+## n: enter notes for this answer
+## q: quit
+## r: rewrite the Q & A on screen
+## s: skip w/o entering a grade
+## """
+
 
 
 def main():
@@ -109,7 +116,7 @@ def main():
     a_fname, a_infile, q_infile, indir, outdir = config_data()
     all_ans_df, all_ques_df, progress_msg_factor = read_data(a_infile, q_infile)
     if args['user_eval']:
-        print('Open the data frame for human evaluation of answers.')
+        print('Open the data frame for human evaluation of answers.\n')
         read_and_grade_answers(all_ans_df, all_ques_df)
         exit
     popular_ids = find_popular_ques(all_ans_df, a_fname)
@@ -240,13 +247,57 @@ def read_and_grade_answers(all_ans_df, all_ques_df):
         graded_answers_df[outfields_l].to_csv(gr_file, header=True, index=None, sep=',', mode='w')
 
     # Read the existing file; it should have some graded answers.
-    # Removing latin-1 in 2 read_csv() calls  fixed the problem:
+    # Removing latin-1 in 2 read_csv() calls  fixed a problem:
     #ORG.Sat2017_0506_14:28   graded_answers_df = pd.read_csv(gr_file, encoding='latin-1', warn_bad_lines=False, error_bad_lines=False)
     graded_answers_df = pd.read_csv(gr_file, warn_bad_lines=False, error_bad_lines=False)
     
     # Show Q&A & ask user for grade & notes.
     # Show count of un-graded A's.
     #TBD Show list of next 5 Q.Titles & let user choose one.
+    print('Titles of some graded_answers_df records:\n')
+    for index, row in  graded_answers_df.iterrows():
+        if not pd.isnull(row['Title']):
+            print(row['Id'], row['Title'])
+    print()
+
+    user_menu = """   g: enter the grade for this answer
+    n: enter notes for this answer
+    q: quit
+    r: rewrite the Q & A on screen
+    s: skip w/o entering a grade
+    """
+
+    print('Body text of some graded_answers_df records that have not been graded:\n')
+    for index, row in  graded_answers_df.iterrows():
+        if row['Grade'] == 'N':
+            if not pd.isnull(row['Title']):
+                q_id = row['Id']
+                q_title = row['Title']
+                q_body = row['Body']
+                print("Q.Title:\n", q_title)
+                print()
+                print("Q.Body:\n", q_body)
+                print("----------------------")
+                print()
+                user_cmd = input("q.branch: Enter a command: a b c d e f g: ")
+                interpret_user_cmd(user_cmd, user_menu)
+            else:
+                print("Q.Id:", q_id)
+                print("Q.Title:\n", q_title)
+                print()
+                print("Q.Body:\n", q_body)
+                print("----------------------")
+                print()
+                print("A.Id, A.Body:\n")
+                print(row['Id'], "\n", row['Body'][:55])
+                print("----------------------")
+                print("----------------------")
+                print("Scroll the screen to read current question and answer.")
+                user_cmd = input("a.branch: Enter a command: a b c d e f g: ")
+                print("User entered this cmd: ", user_cmd)
+                interpret_user_cmd(user_cmd, user_menu)
+            print()
+    print()
 
     #
     # Save only the needed fields to the file.
@@ -256,6 +307,13 @@ def read_and_grade_answers(all_ans_df, all_ques_df):
 
     print()
 
+
+def interpret_user_cmd(user_cmd, user_menu):
+    print("User entered this cmd: ", user_cmd)
+    if user_cmd.lower() == 'q':
+        print("TBD, Quit the program.")
+    print("Menu for evaluation mode:\n", user_menu)
+    pass
 
 def find_popular_ques(all_ans_df, a_fname):
     # Find the most frequent ParentIds found in the answers df.
@@ -451,6 +509,7 @@ if __name__ == '__main__':
 
     parser = get_parser()
     args = vars(parser.parse_args())
+
 
     main()
 
