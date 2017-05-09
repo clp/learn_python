@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Sat 2017 May 06 05:59:50 PMPM clpoda>
+#   Time-stamp: <Mon 2017 May 08 05:24:47 PMPM clpoda>
 """fga_find_good_answers.py
 
 
@@ -83,7 +83,7 @@ Output data format of q_with_a.csv o/p file from this program.
 # csvcut -c 1,2,3,4,5 -e latin1 indir/Answers.csv > outdir/a21_all_iocps.csv
 # ----------------------------------------------------------
 
-version = '0.0.1'
+version = '0.0.2'
 
 import argparse
 import nltk
@@ -109,6 +109,7 @@ pid_l = [469, 502, 535, 594, 683, 742, 766, 773, 972]
 ## s: skip w/o entering a grade
 ## """
 
+gr_df = pd.DataFrame()  # New df to hold graded answers.
 
 
 def main():
@@ -224,96 +225,149 @@ def read_and_grade_answers(all_ans_df, all_ques_df):
     Write that df to a csv file.
     """
     
-    gr_file = 'outdir/graded_answers.csv'
-    if not os.path.exists(gr_file):
-        # Create a new file; it has no graded answers.
-        #TBD Initialize the grade csv file only if it does not exist, ie,
-        # the first time this function runs (or if the file
-        # has been lost or deleted, or if you want to start over.)
-        print('\nWARN: file not found, creating it by copying from q_with_a.csv:' + gr_file)
-        copyfile('outdir/q_with_a.csv', gr_file)
-        #TBD, handle case if i/p data file is missing.
-        #TBD, maybe only read id & parentid fields into df?  trying usecols:
-        # Removing latin-1 in 2 read_csv() calls  fixed the problem:
-            #ORG graded_answers_df = pd.read_csv(gr_file, encoding='latin-1', warn_bad_lines=False, error_bad_lines=False, usecols=['Id', 'ParentId', 'Title', 'Body'])
-        graded_answers_df = pd.read_csv(gr_file,  warn_bad_lines=False, error_bad_lines=False, usecols=['Id', 'ParentId', 'Title', 'Body'])
+    ungr_file = 'outdir/ungraded_answers.csv'
+    if not os.path.exists(ungr_file):
+        # Create a new file with no graded answers.
+        #TBD Initialize the grade file only if it does not exist, ie,
+        # the first time this function runs, or if the file
+        # has been lost or deleted.
+        print('\nWARN: file not found, creating it by copying from q_with_a.csv:' + ungr_file)
+        copyfile('outdir/q_with_a.csv', ungr_file)
+        #TBD, handle case of the source data file is missing.
+        #TBD Removing latin-1 in 2 read_csv() calls  fixed a problem:
+            #ORG ungraded_answers_df = pd.read_csv(ungr_file, encoding='latin-1', warn_bad_lines=False, error_bad_lines=False, usecols=['Id', 'ParentId', 'Title', 'Body'])
+        ungraded_answers_df = pd.read_csv(ungr_file,  warn_bad_lines=False, error_bad_lines=False, usecols=['Id', 'ParentId', 'Title', 'Body'])
 
         #TBD Create new columns only the first time the file is read.
         # Don't overwrite any cells that have been edited w/ real grade data.
-        graded_answers_df['Grade'] = 'N'
-        graded_answers_df['Notes'] = 'None'
+        ungraded_answers_df['Grade'] = 'N'
+        ungraded_answers_df['Notes'] = 'None'
         outfields_l = ['Id', 'ParentId', 'Grade', 'Notes', 'Title', 'Body']
-        outfile = 'outdir/graded_answers.csv'
-        graded_answers_df[outfields_l].to_csv(gr_file, header=True, index=None, sep=',', mode='w')
+        ungraded_answers_df[outfields_l].to_csv(ungr_file, header=True, index=None, sep=',', mode='w')
 
-    # Read the existing file; it should have some graded answers.
+    # The data file exists; read it; it should have some graded answers.
     # Removing latin-1 in 2 read_csv() calls  fixed a problem:
-    #ORG.Sat2017_0506_14:28   graded_answers_df = pd.read_csv(gr_file, encoding='latin-1', warn_bad_lines=False, error_bad_lines=False)
-    graded_answers_df = pd.read_csv(gr_file, warn_bad_lines=False, error_bad_lines=False)
+    #ORG.Sat2017_0506_14:28   ungraded_answers_df = pd.read_csv(ungr_file, encoding='latin-1', warn_bad_lines=False, error_bad_lines=False)
+    ungraded_answers_df = pd.read_csv(ungr_file, warn_bad_lines=False, error_bad_lines=False)
     
     # Show Q&A & ask user for grade & notes.
-    # Show count of un-graded A's.
+    #TBD Show count of un-graded A's.
     #TBD Show list of next 5 Q.Titles & let user choose one.
-    print('Titles of some graded_answers_df records:\n')
-    for index, row in  graded_answers_df.iterrows():
+    print('Question Titles of some ungraded_answers_df records:\n')
+    a_count = 0
+    for index, row in  ungraded_answers_df.head(22).iterrows():
         if not pd.isnull(row['Title']):
+            if a_count != 0:
+                print("  Found this many answers for the Q: ", a_count)
+            print()  # Separate new ques w/ blank line.
             print(row['Id'], row['Title'])
+            a_count = 0
+        else:
+            # Count the answers for each Q.
+            a_count += 1
     print()
 
-    user_menu = """   g: enter the grade for this answer
-    n: enter notes for this answer
-    q: quit
-    r: rewrite the Q & A on screen
-    s: skip w/o entering a grade
-    """
+    user_menu = """    The menu items to enter a grade for current item:
+    h: enter a High value
+    m: enter a Medium value
+    l: enter a Low value
+    p: enter a Poor value
+    i: ignore this item for now; leave its grade 'N' for none
+    .........................................................
 
-    print('Body text of some graded_answers_df records that have not been graded:\n')
-    for index, row in  graded_answers_df.iterrows():
+    Other menu items:
+    d: show details of the menu
+    n: enter notes for this answer
+    q: quit the program
+    """
+    user_cmd = ''
+
+    print('Body text of some ungraded_answers_df records that have not been graded:\n')
+    for index, row in  ungraded_answers_df.iterrows():
         if row['Grade'] == 'N':
-            if not pd.isnull(row['Title']):
+            # Show Q then A then ask user to grade the A.
+            if not pd.isnull(row['Title']):  # Found a question.
+                print("\n###\n#D Found a question row.")
                 q_id = row['Id']
                 q_title = row['Title']
                 q_body = row['Body']
                 print("Q.Title:\n", q_title)
-                print()
-                print("Q.Body:\n", q_body)
-                print("----------------------")
-                print()
-                user_cmd = input("q.branch: Enter a command: a b c d e f g: ")
-                interpret_user_cmd(user_cmd, user_menu)
-            else:
-                print("Q.Id:", q_id)
-                print("Q.Title:\n", q_title)
-                print()
-                print("Q.Body:\n", q_body)
-                print("----------------------")
-                print()
-                print("A.Id, A.Body:\n")
-                print(row['Id'], "\n", row['Body'][:55])
-                print("----------------------")
-                print("----------------------")
-                print("Scroll the screen to read current question and answer.")
-                user_cmd = input("a.branch: Enter a command: a b c d e f g: ")
-                print("User entered this cmd: ", user_cmd)
-                interpret_user_cmd(user_cmd, user_menu)
-            print()
+                continue  # Finished w/ Q, now look for first A.
+            else: # Found an answer.
+                print("#D Found an answer row.")
+                user_cmd = show_current_q_a(q_id, q_title, q_body, row)
+            #
+            # Loop to handle user request.
+            while user_cmd:
+                print("#D while-loop: User entered this cmd: ", user_cmd)
+                if user_cmd.lower() == 'd':
+                    print("Details of the menu.")
+                    print(user_menu)
+                    user_cmd = show_current_q_a(q_id, q_title, q_body, row)
+                    continue
+                elif user_cmd.lower() == 'h':
+                    # User graded this answer as hi value; save grade, then ask for a note.
+                    save_grade('h', row)
+                    print("#D while-loop-h: Show next item.")
+                    break
+                elif user_cmd.lower() == 'a':
+                    print("#D while-loop-a: Show next answer.")
+                    break
+                elif user_cmd.lower() == 'q':
+                    print("Save data and Quit the program.")
+                    exit()
+                #TBD if user presses ENter key only, answer is skipped; fix this.
+                #F elif user_cmd.lower() == '\n':
+                    # print("Enter one char.")
+                    # print(user_menu)
+                    # continue
+                else:
+                    print("#D while-loop-else-clause: User entered invalid cmd: ", user_cmd)
+                    print(user_menu)
+                    user_cmd = show_current_q_a(q_id, q_title, q_body, row)
+                    continue
+            print("#D End of the if-clause; go to next item.")
+        print("#D End of the for-loop; go to next item.")
     print()
+    print("#D End of read_and_grade_answers(); return.\n")
+    return
 
+
+def save_grade(grade, row):
+    global gr_df
+    row['Grade'] = grade
+    note_text = input("Enter text for a note; end with the Enter key: ")
+    row['Notes'] = note_text
+    #
+    print("#D Current row:\n###\n", row)
     #
     # Save only the needed fields to the file.
     outfields_l = ['Id', 'ParentId', 'Grade', 'Notes', 'Title', 'Body']
-    outfile = 'outdir/graded_answers.csv'
-    graded_answers_df[outfields_l].to_csv(gr_file, header=True, index=None, sep=',', mode='w')
+    #TMP For testing:
+    outfields_l = ['Id', 'ParentId', 'Grade', 'Notes' ]
+    outfile = open('outdir/graded_answers.csv', 'w')
+    gr_df = gr_df.append(row)
+    #TBD, should I avoid writing to file when every row is saved?
+    #  Only save on demand, or just before quitting the program?
+    #  This func is used for manually viewing data & grading answers-hi perf not needed.
+    gr_df[outfields_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
+    outfile.flush()
+    return
 
-    print()
 
+def show_current_q_a(q_id, q_title, q_body, row):
+    print("Q.Id:", q_id, "   Q.Title:\n", q_title, '\n')
+    print("Q.Body:\n", q_body)
+    print("----------------------\n")
+    print("A.Id, A.Body:\n")
+    print(row['Id'], "\n", row['Body'][:255])
+    print("======================\n")
+    print("Grade this item: h, m, l, p; [d]etails; [q]uit.")
+    print("Scroll the screen to read current question and answer.")
+    user_cmd = input("a.branch: Enter a command: a b c d e f g: ")
+    #D print("User entered this cmd: ", user_cmd)
+    return user_cmd
 
-def interpret_user_cmd(user_cmd, user_menu):
-    print("User entered this cmd: ", user_cmd)
-    if user_cmd.lower() == 'q':
-        print("TBD, Quit the program.")
-    print("Menu for evaluation mode:\n", user_menu)
-    pass
 
 def find_popular_ques(all_ans_df, a_fname):
     # Find the most frequent ParentIds found in the answers df.
