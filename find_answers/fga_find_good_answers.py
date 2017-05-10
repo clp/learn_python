@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Wed 2017 May 10 12:06:10 PMPM clpoda>
+#   Time-stamp: <Wed 2017 May 10 12:48:59 PMPM clpoda>
 """fga_find_good_answers.py
 
 
@@ -287,17 +287,17 @@ def read_and_grade_answers(all_ans_df, all_ques_df):
         if row['Grade'] == 'N':
             # Show Q then A then ask user to grade the A.
             if not pd.isnull(row['Title']):  # Found a question.
-                print("\n###\n#D Found a question row.")
+                print("\n###\n#D Found a question.")
                 q_id = row['Id']
                 q_title = row['Title']
                 q_body = row['Body']
                 print("Q.Title:\n", q_title)
                 continue  # Finished w/ Q, now look for first A.
             elif pd.isnull(row['Title']): # Found an answer.
-                print("#D Found an answer row.")
+                print("#D Found an answer.")
                 user_cmd = show_current_q_a(q_id, q_title, q_body, row)
             else: # Found a problem
-                print("Found an unusual record; this branch should not be reached.")
+                print("ERR. Found an unusual record; this branch should not be reached.")
                 print(row['Id'])
                 exit()
             #
@@ -320,11 +320,10 @@ def read_and_grade_answers(all_ans_df, all_ques_df):
                 elif user_cmd.lower() == 'q':
                     print("Save data and Quit the program.")
                     exit()
-                #TBD if user presses ENter key only, answer is skipped; fix this.
-                #F elif user_cmd.lower() == '\n':
-                    # print("Enter one char.")
-                    # print(user_menu)
-                    # continue
+                elif user_cmd == '?':
+                    print(user_menu)
+                    user_cmd = show_current_q_a(q_id, q_title, q_body, row)
+                    continue
                 else:
                     print(user_menu)
                     user_cmd = show_current_q_a(q_id, q_title, q_body, row)
@@ -368,7 +367,7 @@ def show_current_q_a(q_id, q_title, q_body, row):
     print("Grade this item: h, m, l, p; [d]etails; [q]uit.")
     print("Scroll the screen to read current question and answer.")
     user_cmd = input("a.branch: Enter a command: a b c d e f g: ")
-    while user_cmd == "":  # Repeat the request if only Enter key is pressed.
+    while user_cmd == "":  # Repeat the request if only the Enter key is pressed.
         user_cmd = input("a.branch: Enter a command: a b c d e f g: ")
     #D print("User entered this cmd: ", user_cmd)
     return user_cmd
