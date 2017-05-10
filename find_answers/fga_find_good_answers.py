@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Mon 2017 May 08 05:24:47 PMPM clpoda>
+#   Time-stamp: <Wed 2017 May 10 11:41:50 AMAM clpoda>
 """fga_find_good_answers.py
 
 
@@ -293,9 +293,13 @@ def read_and_grade_answers(all_ans_df, all_ques_df):
                 q_body = row['Body']
                 print("Q.Title:\n", q_title)
                 continue  # Finished w/ Q, now look for first A.
-            else: # Found an answer.
+            elif pd.isnull(row['Title']): # Found an answer.
                 print("#D Found an answer row.")
                 user_cmd = show_current_q_a(q_id, q_title, q_body, row)
+            else: # Found a problem
+                print("Found an unusual record; this branch should not be reached.")
+                print(row['Id'])
+                exit()
             #
             # Loop to handle user request.
             while user_cmd:
