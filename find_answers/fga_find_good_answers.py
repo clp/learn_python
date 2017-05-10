@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Wed 2017 May 10 11:41:50 AMAM clpoda>
+#   Time-stamp: <Wed 2017 May 10 12:06:10 PMPM clpoda>
 """fga_find_good_answers.py
 
 
@@ -326,7 +326,6 @@ def read_and_grade_answers(all_ans_df, all_ques_df):
                     # print(user_menu)
                     # continue
                 else:
-                    print("#D while-loop-else-clause: User entered invalid cmd: ", user_cmd)
                     print(user_menu)
                     user_cmd = show_current_q_a(q_id, q_title, q_body, row)
                     continue
@@ -369,6 +368,8 @@ def show_current_q_a(q_id, q_title, q_body, row):
     print("Grade this item: h, m, l, p; [d]etails; [q]uit.")
     print("Scroll the screen to read current question and answer.")
     user_cmd = input("a.branch: Enter a command: a b c d e f g: ")
+    while user_cmd == "":  # Repeat the request if only Enter key is pressed.
+        user_cmd = input("a.branch: Enter a command: a b c d e f g: ")
     #D print("User entered this cmd: ", user_cmd)
     return user_cmd
 
