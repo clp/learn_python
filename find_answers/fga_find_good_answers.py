@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Wed 2017 May 10 12:48:59 PMPM clpoda>
+#   Time-stamp: <Wed 2017 May 10 07:01:45 PMPM clpoda>
 """fga_find_good_answers.py
 
 
@@ -109,7 +109,6 @@ pid_l = [469, 502, 535, 594, 683, 742, 766, 773, 972]
 ## s: skip w/o entering a grade
 ## """
 
-gr_df = pd.DataFrame()  # New df to hold graded answers.
 
 
 def main():
@@ -209,14 +208,13 @@ def read_and_grade_answers(all_ans_df, all_ques_df):
     Read the data file that holds the user grades 
     for each answer.
     If that file does not exist, create it, and begin
-    to fill it by following these steps.
+    to add a grade for each answer by following these steps.
     
-    Show a question and one un-graded answer
-    at a time to the console's stdout stream.
+    Print a question and one un-graded answer to the console.
     
     Prompt the user to evaluate the answer and grade it,
     and to write any additional comments.
-    Save those data into a separate data frame,
+    Save those data into a data frame,
     and include the answer_id field with each record.
     Repeat these steps for each un-evaluated answer,
     until the user terminates the action, or until all
@@ -227,7 +225,7 @@ def read_and_grade_answers(all_ans_df, all_ques_df):
     
     ungr_file = 'outdir/ungraded_answers.csv'
     if not os.path.exists(ungr_file):
-        # Create a new file with no graded answers.
+        # If ungraded_answers.csv file is missing, copy from a master file with no graded answers.
         #TBD Initialize the grade file only if it does not exist, ie,
         # the first time this function runs, or if the file
         # has been lost or deleted.
@@ -238,36 +236,20 @@ def read_and_grade_answers(all_ans_df, all_ques_df):
             #ORG ungraded_answers_df = pd.read_csv(ungr_file, encoding='latin-1', warn_bad_lines=False, error_bad_lines=False, usecols=['Id', 'ParentId', 'Title', 'Body'])
         ungraded_answers_df = pd.read_csv(ungr_file,  warn_bad_lines=False, error_bad_lines=False, usecols=['Id', 'ParentId', 'Title', 'Body'])
 
-        #TBD Create new columns only the first time the file is read.
-        # Don't overwrite any cells that have been edited w/ real grade data.
+        #TBD Create & initlz new columns only the first time the file is read.
         ungraded_answers_df['Grade'] = 'N'
         ungraded_answers_df['Notes'] = 'None'
         outfields_l = ['Id', 'ParentId', 'Grade', 'Notes', 'Title', 'Body']
         ungraded_answers_df[outfields_l].to_csv(ungr_file, header=True, index=None, sep=',', mode='w')
 
-    # The data file exists; read it; it should have some graded answers.
+    # Otherwise:
+    # The data file exists; read it; it might have some graded answers.
     # Removing latin-1 in 2 read_csv() calls  fixed a problem:
     #ORG.Sat2017_0506_14:28   ungraded_answers_df = pd.read_csv(ungr_file, encoding='latin-1', warn_bad_lines=False, error_bad_lines=False)
+    #
     ungraded_answers_df = pd.read_csv(ungr_file, warn_bad_lines=False, error_bad_lines=False)
     
-    # Show Q&A & ask user for grade & notes.
-    #TBD Show count of un-graded A's.
-    #TBD Show list of next 5 Q.Titles & let user choose one.
-    print('Question Titles of some ungraded_answers_df records:\n')
-    a_count = 0
-    for index, row in  ungraded_answers_df.head(22).iterrows():
-        if not pd.isnull(row['Title']):
-            if a_count != 0:
-                print("  Found this many answers for the Q: ", a_count)
-            print()  # Separate new ques w/ blank line.
-            print(row['Id'], row['Title'])
-            a_count = 0
-        else:
-            # Count the answers for each Q.
-            a_count += 1
-    print()
-
-    user_menu = """    The menu items to enter a grade for current item:
+    user_menu = """    The menu choices to grade an answer:
     h: enter a High value
     m: enter a Medium value
     l: enter a Low value
@@ -276,12 +258,14 @@ def read_and_grade_answers(all_ans_df, all_ques_df):
     .........................................................
 
     Other menu items:
+    ?: show help text, the menu
     d: show details of the menu
     n: enter notes for this answer
     q: quit the program
     """
     user_cmd = ''
 
+    # Find first ungraded answer; show Q&A; ask user for input.
     print('Body text of some ungraded_answers_df records that have not been graded:\n')
     for index, row in  ungraded_answers_df.iterrows():
         if row['Grade'] == 'N':
@@ -311,58 +295,52 @@ def read_and_grade_answers(all_ans_df, all_ques_df):
                     continue
                 elif user_cmd.lower() == 'h':
                     # User graded this answer as hi value; save grade, then ask for a note.
-                    save_grade('h', row)
-                    print("#D while-loop-h: Show next item.")
+                    store_grade('H', index, ungraded_answers_df)
+                    #D print("#D while-loop-h: Show next item.")
                     break
                 elif user_cmd.lower() == 'a':
                     print("#D while-loop-a: Show next answer.")
                     break
                 elif user_cmd.lower() == 'q':
                     print("Save data and Quit the program.")
+                    # Save only the needed fields to the file.
+                    outfields_l = ['Id', 'ParentId', 'Grade', 'Notes', 'Title', 'Body']
+                    outfile = open('outdir/ungraded_answers.csv', 'w')
+                    ungraded_answers_df[outfields_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
+                    outfile.flush()
+                    #
                     exit()
                 elif user_cmd == '?':
                     print(user_menu)
+                    # Must now request user_cmd to avoid infinite looping.
                     user_cmd = show_current_q_a(q_id, q_title, q_body, row)
                     continue
                 else:
                     print(user_menu)
                     user_cmd = show_current_q_a(q_id, q_title, q_body, row)
                     continue
-            print("#D End of the if-clause; go to next item.")
-        print("#D End of the for-loop; go to next item.")
+            print("#D Last stmt of the cmd interpretation if-clause; go to next item.")
+        print("#D Last stmt of the for-loop; go to next item.")
     print()
-    print("#D End of read_and_grade_answers(); return.\n")
+    print("#D Last stmt of read_and_grade_answers(); return.\n")
     return
 
 
-def save_grade(grade, row):
-    global gr_df
-    row['Grade'] = grade
+def store_grade(grade, index, df):
+    # Save the grade and notes to the current record.
     note_text = input("Enter text for a note; end with the Enter key: ")
-    row['Notes'] = note_text
-    #
-    print("#D Current row:\n###\n", row)
-    #
-    # Save only the needed fields to the file.
-    outfields_l = ['Id', 'ParentId', 'Grade', 'Notes', 'Title', 'Body']
-    #TMP For testing:
-    outfields_l = ['Id', 'ParentId', 'Grade', 'Notes' ]
-    outfile = open('outdir/graded_answers.csv', 'w')
-    gr_df = gr_df.append(row)
-    #TBD, should I avoid writing to file when every row is saved?
-    #  Only save on demand, or just before quitting the program?
-    #  This func is used for manually viewing data & grading answers-hi perf not needed.
-    gr_df[outfields_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
-    outfile.flush()
-    return
+    df.ix[index, 'Grade'] = 'h'
+    df.ix[index, 'Notes'] = note_text
+    #TBF print("#D Current row:\n###\n", df[index])
+    return 
 
 
 def show_current_q_a(q_id, q_title, q_body, row):
-    print("Q.Id:", q_id, "   Q.Title:\n", q_title, '\n')
+    print("Q.Id:", q_id, "   Q.Title:\n", q_title[:55], '\n')
     print("Q.Body:\n", q_body)
     print("----------------------\n")
     print("A.Id, A.Body:\n")
-    print(row['Id'], "\n", row['Body'][:255])
+    print(row['Id'], "\n", row['Body'][:55])
     print("======================\n")
     print("Grade this item: h, m, l, p; [d]etails; [q]uit.")
     print("Scroll the screen to read current question and answer.")
