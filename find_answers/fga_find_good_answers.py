@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Wed 2017 May 10 07:01:45 PMPM clpoda>
+#   Time-stamp: <Fri 2017 May 19 02:24:56 PMPM clpoda>
 """fga_find_good_answers.py
 
 
@@ -69,8 +69,8 @@ Output data format of q_with_a.csv o/p file from this program.
 # Next steps.
 #
 # Manually review the A's.
-#   Mark the answer w/ value tag: Is it worth reading?: Y or N.
-#     TBD, Consider using Hi-M-Lo or an integer to add to its score.
+#   Mark the answer w/ a grade tag: Is it worth reading?
+#     Use A,B,C,D,F to identify excellent(A), good, fair, poor, useless(F) answers.
 # Build tools to analyze a larger test set.
 # ----------------------------------------------------------
 
@@ -116,7 +116,7 @@ def main():
     a_fname, a_infile, q_infile, indir, outdir = config_data()
     all_ans_df, all_ques_df, progress_msg_factor = read_data(a_infile, q_infile)
     if args['user_eval']:
-        print('Open the data frame for human evaluation of answers.\n')
+        print('Open the data frame for user to evaluate some answers.\n')
         read_and_grade_answers(all_ans_df, all_ques_df)
         exit
     popular_ids = find_popular_ques(all_ans_df, a_fname)
