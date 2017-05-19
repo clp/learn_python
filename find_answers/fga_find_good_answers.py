@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Fri 2017 May 19 02:24:56 PMPM clpoda>
+#   Time-stamp: <Fri 2017 May 19 04:49:22 PMPM clpoda>
 """fga_find_good_answers.py
 
 
@@ -83,7 +83,7 @@ Output data format of q_with_a.csv o/p file from this program.
 # csvcut -c 1,2,3,4,5 -e latin1 indir/Answers.csv > outdir/a21_all_iocps.csv
 # ----------------------------------------------------------
 
-version = '0.0.2'
+version = '0.0.3'
 
 import argparse
 import nltk
@@ -108,8 +108,6 @@ pid_l = [469, 502, 535, 594, 683, 742, 766, 773, 972]
 ## r: rewrite the Q & A on screen
 ## s: skip w/o entering a grade
 ## """
-
-
 
 def main():
     init()
@@ -250,18 +248,20 @@ def read_and_grade_answers(all_ans_df, all_ques_df):
     ungraded_answers_df = pd.read_csv(ungr_file, warn_bad_lines=False, error_bad_lines=False)
     
     user_menu = """    The menu choices to grade an answer:
-    h: enter a High value
-    m: enter a Medium value
-    l: enter a Low value
-    p: enter a Poor value
+    a: excellent value
+    b: good value
+    c: fair value
+    d: poor value
+    f: no value
     i: ignore this item for now; leave its grade 'N' for none
     .........................................................
 
     Other menu items:
-    ?: show help text, the menu
-    d: show details of the menu
+    h, ?: show help text, the menu
+    m: show menu
     n: enter notes for this answer
-    q: quit the program
+    q: save data and quit the program
+    s: show next answer
     """
     user_cmd = ''
 
@@ -271,7 +271,7 @@ def read_and_grade_answers(all_ans_df, all_ques_df):
         if row['Grade'] == 'N':
             # Show Q then A then ask user to grade the A.
             if not pd.isnull(row['Title']):  # Found a question.
-                print("\n###\n#D Found a question.")
+                print("\n##############################\n#D Found a question.")
                 q_id = row['Id']
                 q_title = row['Title']
                 q_body = row['Body']
@@ -282,25 +282,38 @@ def read_and_grade_answers(all_ans_df, all_ques_df):
                 user_cmd = show_current_q_a(q_id, q_title, q_body, row)
             else: # Found a problem
                 print("ERR. Found an unusual record; this branch should not be reached.")
+                print("  Problem found at this ID:")
                 print(row['Id'])
                 exit()
             #
             # Loop to handle user request.
             while user_cmd:
                 print("#D while-loop: User entered this cmd: ", user_cmd)
-                if user_cmd.lower() == 'd':
-                    print("Details of the menu.")
+                if user_cmd.lower() == 'm':
                     print(user_menu)
                     user_cmd = show_current_q_a(q_id, q_title, q_body, row)
                     continue
-                elif user_cmd.lower() == 'h':
-                    # User graded this answer as hi value; save grade, then ask for a note.
-                    store_grade('H', index, ungraded_answers_df)
+                elif user_cmd.lower() == 'a':
+                    # User graded this answer as excellent value; save grade & ask for a note.
+                    store_grade('A', index, ungraded_answers_df)
                     #D print("#D while-loop-h: Show next item.")
                     break
-                elif user_cmd.lower() == 'a':
-                    print("#D while-loop-a: Show next answer.")
+                elif user_cmd.lower() == 'b':  # Good
+                    store_grade('B', index, ungraded_answers_df)
                     break
+                elif user_cmd.lower() == 'c':  # Good
+                    store_grade('C', index, ungraded_answers_df)
+                    break
+                elif user_cmd.lower() == 'd':  # Good
+                    store_grade('D', index, ungraded_answers_df)
+                    break
+                elif user_cmd.lower() == 'f':  # Good
+                    store_grade('F', index, ungraded_answers_df)
+                    break
+                #TBD elif user_cmd.lower() == 'i':
+                    #TBD print("#D while-loop-a: Ignore current answer & Show next.")
+                    #TBD user_cmd = show_current_q_a(q_id, q_title, q_body, row)
+                    #TBD break
                 elif user_cmd.lower() == 'q':
                     print("Save data and Quit the program.")
                     # Save only the needed fields to the file.
@@ -310,9 +323,9 @@ def read_and_grade_answers(all_ans_df, all_ques_df):
                     outfile.flush()
                     #
                     exit()
-                elif user_cmd == '?':
+                elif user_cmd == '?' or user_cmd == 'h':
                     print(user_menu)
-                    # Must now request user_cmd to avoid infinite looping.
+                    # Request user_cmd here to avoid infinite looping.
                     user_cmd = show_current_q_a(q_id, q_title, q_body, row)
                     continue
                 else:
@@ -328,8 +341,9 @@ def read_and_grade_answers(all_ans_df, all_ques_df):
 
 def store_grade(grade, index, df):
     # Save the grade and notes to the current record.
-    note_text = input("Enter text for a note; end with the Enter key: ")
-    df.ix[index, 'Grade'] = 'h'
+    note_text = input("Enter text for a note; end it with the Enter key: ")
+    #ORG df.ix[index, 'Grade'] = 'h'
+    df.ix[index, 'Grade'] = grade
     df.ix[index, 'Notes'] = note_text
     #TBF print("#D Current row:\n###\n", df[index])
     return 
@@ -342,11 +356,11 @@ def show_current_q_a(q_id, q_title, q_body, row):
     print("A.Id, A.Body:\n")
     print(row['Id'], "\n", row['Body'][:55])
     print("======================\n")
-    print("Grade this item: h, m, l, p; [d]etails; [q]uit.")
-    print("Scroll the screen to read current question and answer.")
-    user_cmd = input("a.branch: Enter a command: a b c d e f g: ")
+    print("Scroll up to read current question and answer.")
+    cmd_prompt = "Enter a grade or command: a b c d f ... i [m]enu [h]elp: "
+    user_cmd = ''
     while user_cmd == "":  # Repeat the request if only the Enter key is pressed.
-        user_cmd = input("a.branch: Enter a command: a b c d e f g: ")
+        user_cmd = input(cmd_prompt)
     #D print("User entered this cmd: ", user_cmd)
     return user_cmd
 
@@ -545,7 +559,6 @@ if __name__ == '__main__':
 
     parser = get_parser()
     args = vars(parser.parse_args())
-
 
     main()
 
