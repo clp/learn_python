@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Fri 2017 May 19 04:49:22 PMPM clpoda>
+#   Time-stamp: <Sat 2017 May 20 03:59:21 PMPM clpoda>
 """fga_find_good_answers.py
 
 
@@ -101,13 +101,6 @@ from shutil import copyfile
 pid_l = [469, 502, 535, 594, 683, 742, 766, 773, 972]
 
 # ----------------------------------------------------------
-
-## user_menu = """    g: enter the grade for this answer
-## n: enter notes for this answer
-## q: quit
-## r: rewrite the Q & A on screen
-## s: skip w/o entering a grade
-## """
 
 def main():
     init()
@@ -254,14 +247,14 @@ def read_and_grade_answers(all_ans_df, all_ques_df):
     d: poor value
     f: no value
     i: ignore this item for now; leave its grade 'N' for none
+    u: unknown value; skip it for now, evaluate it later
     .........................................................
 
     Other menu items:
     h, ?: show help text, the menu
     m: show menu
-    n: enter notes for this answer
     q: save data and quit the program
-    s: show next answer
+    TBD s: show next answer
     """
     user_cmd = ''
 
@@ -293,7 +286,7 @@ def read_and_grade_answers(all_ans_df, all_ques_df):
                     print(user_menu)
                     user_cmd = show_current_q_a(q_id, q_title, q_body, row)
                     continue
-                elif user_cmd.lower() == 'a':
+                elif user_cmd.lower() == 'a':  # Excellent
                     # User graded this answer as excellent value; save grade & ask for a note.
                     store_grade('A', index, ungraded_answers_df)
                     #D print("#D while-loop-h: Show next item.")
@@ -301,19 +294,22 @@ def read_and_grade_answers(all_ans_df, all_ques_df):
                 elif user_cmd.lower() == 'b':  # Good
                     store_grade('B', index, ungraded_answers_df)
                     break
-                elif user_cmd.lower() == 'c':  # Good
+                elif user_cmd.lower() == 'c':  # Fair
                     store_grade('C', index, ungraded_answers_df)
                     break
-                elif user_cmd.lower() == 'd':  # Good
+                elif user_cmd.lower() == 'd':  # Poor
                     store_grade('D', index, ungraded_answers_df)
                     break
-                elif user_cmd.lower() == 'f':  # Good
+                elif user_cmd.lower() == 'f':  # Answer is not useful
                     store_grade('F', index, ungraded_answers_df)
                     break
-                #TBD elif user_cmd.lower() == 'i':
-                    #TBD print("#D while-loop-a: Ignore current answer & Show next.")
-                    #TBD user_cmd = show_current_q_a(q_id, q_title, q_body, row)
-                    #TBD break
+                elif user_cmd.lower() == 'u':  # Unknown; no opinion.
+                    # It will not be shown in normal user eval.
+                    store_grade('U', index, ungraded_answers_df)
+                    break
+                elif user_cmd.lower() == 'i':  # Ignore for now; leave grade=N,
+                    # It will be shown in normal user evaluation.
+                    break
                 elif user_cmd.lower() == 'q':
                     print("Save data and Quit the program.")
                     # Save only the needed fields to the file.
