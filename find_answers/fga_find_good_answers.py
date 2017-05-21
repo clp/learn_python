@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Sat 2017 May 20 05:03:33 PMPM clpoda>
+#   Time-stamp: <Sun 2017 May 21 12:50:13 AMAM clpoda>
 """fga_find_good_answers.py
 
 
@@ -276,7 +276,7 @@ def read_and_grade_answers(all_ans_df, all_ques_df):
                 q_title = row['Title']
                 q_body = row['Body']
                 print("Q.Title:\n", q_title)
-                continue  # Finished w/ Q, now look for first A.
+                continue  # Finished w/ Q; jump to next item in for-loop & look for next A.
             elif pd.isnull(row['Title']): # Found an answer.
                 print("#D Found an answer.")
                 user_cmd = show_current_q_a(q_id, q_title, q_body, row)
@@ -291,13 +291,12 @@ def read_and_grade_answers(all_ans_df, all_ques_df):
                 print("#D while-loop: User entered this cmd: ", user_cmd)
                 if user_cmd.lower() == 'm':
                     print(user_menu)
-                    user_cmd = show_current_q_a(q_id, q_title, q_body, row)
-                    continue
+                    user_cmd = ''
                 elif user_cmd.lower() == 'a':  # Excellent
                     # User graded this answer as excellent value; save grade & ask for a note.
                     store_grade('A', index, ungraded_answers_df)
                     #D print("#D while-loop-h: Show next item.")
-                    break
+                    break  # examine next item in ungr*df for-loop
                 elif user_cmd.lower() == 'b':  # Good
                     store_grade('B', index, ungraded_answers_df)
                     break
@@ -311,11 +310,11 @@ def read_and_grade_answers(all_ans_df, all_ques_df):
                     store_grade('F', index, ungraded_answers_df)
                     break
                 elif user_cmd.lower() == 'u':  # Unknown; no opinion.
-                    # It will not be shown in normal user eval.
+                    # Unknown items will not be shown in normal user eval mode.
                     store_grade('U', index, ungraded_answers_df)
                     break
                 elif user_cmd.lower() == 'i':  # Ignore for now; leave grade=N,
-                    # It will be shown in normal user evaluation.
+                    # Ignored items will be shown in normal user evaluation mode.
                     break
                 elif user_cmd.lower() == 'q':
                     print("Save data and Quit the program.")
@@ -328,13 +327,20 @@ def read_and_grade_answers(all_ans_df, all_ques_df):
                     exit()
                 elif user_cmd == '?' or user_cmd == 'h':
                     print(user_menu)
-                    # Request user_cmd here to avoid infinite looping.
+                    #TBD print some detailed help?
+                    #TBD Request user_cmd here to avoid infinite looping.
+                    user_cmd = ''
+                elif user_cmd.lower() == 's':
                     user_cmd = show_current_q_a(q_id, q_title, q_body, row)
-                    continue
                 else:
                     print(user_menu)
-                    user_cmd = show_current_q_a(q_id, q_title, q_body, row)
-                    continue
+                # Show prompt & wait for a cmd.
+                print("======================\n")
+                print("Scroll up to read current question and answer.")
+                cmd_prompt = "Enter a grade or command: a b c d f ... i [m]enu [h]elp: "
+                while user_cmd == "":  # Repeat the request if only the Enter key is pressed.
+                    user_cmd = input(cmd_prompt)
+                #D print("User entered this cmd: ", user_cmd)
             print("#D Last stmt of the cmd interpretation if-clause; go to next item.")
         print("#D Last stmt of the for-loop; go to next item.")
     print()
@@ -354,9 +360,9 @@ def store_grade(grade, index, df):
 
 def show_current_q_a(q_id, q_title, q_body, row):
     print("Q.Id:", q_id, "   Q.Title:\n", q_title[:55], '\n')
-    print("Q.Body:\n", q_body)
+    print("Q.Body[:55]:\n", q_body[:55])
     print("----------------------\n")
-    print("A.Id, A.Body:\n")
+    print("A.Id, A.Body[:55]:\n")
     print(row['Id'], "\n", row['Body'][:55])
     print("======================\n")
     print("Scroll up to read current question and answer.")
