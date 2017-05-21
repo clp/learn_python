@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Sat 2017 May 20 03:59:21 PMPM clpoda>
+#   Time-stamp: <Sat 2017 May 20 05:03:33 PMPM clpoda>
 """fga_find_good_answers.py
 
 
@@ -159,12 +159,12 @@ def config_data():
     #D q_fname = 'Questions.csv'
 
     # Smaller data sets, used for debugging.
-    #D q_fname = 'q6_999994.csv'
-    #D a_fname = 'a6_999999.csv'
+    q_fname = 'q6_999994.csv'
+    a_fname = 'a6_999999.csv'
     # D a_fname = 'a5_99998.csv'
     # D q_fname = 'q30_99993.csv'
-    a_fname = 'a3_986.csv'
-    q_fname = 'q3_992.csv'
+    #D a_fname = 'a3_986.csv'
+    #D q_fname = 'q3_992.csv'
     # D a_fname = 'a2.csv'
     # D q_fname = 'q2.csv'
 
@@ -214,15 +214,22 @@ def read_and_grade_answers(all_ans_df, all_ques_df):
     Write that df to a csv file.
     """
     
+    qa_master_file = 'outdir/q_with_a.csv'
+    # Handle case of the master Q&A data file is missing.
+    if not os.path.exists(qa_master_file):
+        print('WARN: Q&A master file not found: ', qa_master_file)
+        print('  Verify i/p files exist.')
+        print('  Then create master file by running fga*.py w/o "-u" option.')
+        exit()
+    #
     ungr_file = 'outdir/ungraded_answers.csv'
     if not os.path.exists(ungr_file):
         # If ungraded_answers.csv file is missing, copy from a master file with no graded answers.
         #TBD Initialize the grade file only if it does not exist, ie,
         # the first time this function runs, or if the file
         # has been lost or deleted.
-        print('\nWARN: file not found, creating it by copying from q_with_a.csv:' + ungr_file)
+        print('\nWARN: file not found, creating it by copying from q_with_a.csv:' + ungr_file + '\n')
         copyfile('outdir/q_with_a.csv', ungr_file)
-        #TBD, handle case of the source data file is missing.
         #TBD Removing latin-1 in 2 read_csv() calls  fixed a problem:
             #ORG ungraded_answers_df = pd.read_csv(ungr_file, encoding='latin-1', warn_bad_lines=False, error_bad_lines=False, usecols=['Id', 'ParentId', 'Title', 'Body'])
         ungraded_answers_df = pd.read_csv(ungr_file,  warn_bad_lines=False, error_bad_lines=False, usecols=['Id', 'ParentId', 'Title', 'Body'])
