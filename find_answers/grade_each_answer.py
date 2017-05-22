@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Mon 2017 May 22 11:41:12 AMAM clpoda>
+#   Time-stamp: <Mon 2017 May 22 01:27:52 PMPM clpoda>
 """grade_each_answer.py
 
 
@@ -86,14 +86,6 @@ import pandas as pd
 from shutil import copyfile
 
 
-# ----------------------------------------------------------
-# Specify question and parent ID's to find.
-#DBG pid_l = [469, 535, 231767]
-#DBG.many pid_l = [469, 502, 535, 594, 683, 742, 766, 773, 972, 1476, 766, 1734, 1829, 1854, 1983, 2311, 2933, 3061, 3976, 4942, 5102, 5313, 1983, 5909, 5966, 8692, 8948, 10123, 11060, 2933, 1983]
-pid_l = [469, 502, 535, 594, 683, 742, 766, 773, 972]
-
-# ----------------------------------------------------------
-
 def main():
     init()
     a_fname, a_infile, q_infile, indir, outdir = config_data()
@@ -102,31 +94,6 @@ def main():
         print('Open the data frame for user to evaluate some answers.\n')
         read_and_grade_answers(all_ans_df, all_ques_df)
         exit
-    #TBR? popular_ids = find_popular_ques(all_ans_df, a_fname)
-    #TBR? popular_ids_a = popular_ids.index.values
-    #TBR? top_scoring_owners_a = group_data(all_ans_df)
-    #TBR? parent_id_l = find_question_ids(top_scoring_owners_a, all_ans_df)
-    #TBR? #
-    #TBR? # pop_and_top_l:
-    #TBR? # Find parent IDs that are popular (have several answers) and
-    #TBR? # some of those answers come from top owners (owners have high scores).
-    #TBR? #TBD, Set the size of these lists to get enough o/p to analyze.
-    #TBR? pop_and_top_l = list(set(parent_id_l[:20]).intersection(set(popular_ids_a[:40])))
-    #TBR? if args['verbose']:
-        #TBR? print('len(pop_and_top_l) : ', len(pop_and_top_l))
-        #TBR? print('pop_and_top_l, parent id\'s to examine: ', pop_and_top_l[:])
-    #TBR? q_with_a_df = combine_related_q_and_a(pop_and_top_l, all_ques_df, all_ans_df)
-    #TBR? qa_with_keyword_df = select_keyword_recs(keyword, pop_and_top_l, q_with_a_df, all_ques_df, all_ans_df)
-#TBR? 
-    #TBR? # Write qa_with_keyword_df, a subset of the full data set, to a csv file.
-    #TBR? outfields_l = ['Id', 'ParentId', 'OwnerUserId', 'CreationDate', 'Score', 'Title', 'Body']
-    #TBR? outfile = 'outdir/qa_with_keyword.csv'
-    #TBR? qa_with_keyword_df[outfields_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
-#TBR? 
-    #TBR? # Write full data set to a csv file.
-    #TBR? outfile = 'outdir/q_with_a.csv'
-    #TBR? q_with_a_df[outfields_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
-    #TBR? # DBG  write_df_to_file(q_with_a_df, outdir, a_fname)
 
 
 def init():
