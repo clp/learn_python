@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Mon 2017 May 22 02:23:23 PMPM clpoda>
+#   Time-stamp: <Mon 2017 May 22 03:05:40 PMPM clpoda>
 """grade_each_answer.py
 
    A utility program to prepare data files for analysis by the
@@ -85,21 +85,15 @@ Output data format of q_with_a.csv o/p file from this program.
 version = '0.0.1'
 
 import argparse
-#TBR import nltk
-#TBR import numpy as np
 import os
 import pandas as pd
-#TBR import random
 from shutil import copyfile
 
 
 def main():
     init()
-    a_fname, a_infile, q_infile, indir, outdir = config_data()
-    all_ans_df, all_ques_df, progress_msg_factor = read_data(a_infile, q_infile)
     if args['user_eval']:
         print('Open the data frame for user to evaluate some answers.\n')
-        #ORG.OK read_and_grade_answers(all_ans_df, all_ques_df)
         read_and_grade_answers()
         exit
 
@@ -113,51 +107,6 @@ def init():
     # Don't show commas in large numbers.
     # Show OwnerUserId w/o '.0' suffix.
     pd.options.display.float_format = '{:.0f}'.format
-
-
-def config_data():
-    """Configure path and file names for i/o data.
-    """
-    # TBD Make the in & out dirs w/ this program, if they don't exist?
-    # TBD Include the test data files w/ this project.
-    indir = 'indir/'  # Relative to pwd, holds i/p files.
-    outdir = 'outdir/'  # Relative to pwd, holds o/p files.
-    #D a_fname = 'Answers.csv'
-    #D q_fname = 'Questions.csv'
-
-    # Smaller data sets, used for debugging.
-    q_fname = 'q6_999994.csv'
-    a_fname = 'a6_999999.csv'
-    # D a_fname = 'a5_99998.csv'
-    # D q_fname = 'q30_99993.csv'
-    #D a_fname = 'a3_986.csv'
-    #D q_fname = 'q3_992.csv'
-    # D a_fname = 'a2.csv'
-    # D q_fname = 'q2.csv'
-
-    a_infile = indir + a_fname
-    q_infile = indir + q_fname
-
-    print('Input files, q & a:\n' + q_infile + '\n' + a_infile)
-    print()
-
-    return a_fname, a_infile, q_infile, indir, outdir
-
-
-def read_data(ans_file, ques_file):
-    """Read the csv i/p files and store into a pandas data frame.
-    Compute a factor that dictates how progress will be indicated
-    during read operations.
-    """
-    #TBD, Sat2017_0506_15:34  Maybe rm latin-1 encoding here also?
-    ans_df = pd.read_csv(ans_file, encoding='latin-1', warn_bad_lines=False, error_bad_lines=False)
-    ques_df = pd.read_csv(ques_file, encoding='latin-1', warn_bad_lines=False, error_bad_lines=False)
-
-    numlines = len(ans_df)
-    print('Number of answer records in i/p data frame, ans_df: ' + str(numlines))
-    progress_msg_factor = int(round(numlines/10))
-    print()
-    return ans_df, ques_df, progress_msg_factor
 
 
 def read_and_grade_answers():
@@ -191,8 +140,9 @@ def read_and_grade_answers():
     #
     ungr_file = 'outdir/ungraded_answers.csv'
     if not os.path.exists(ungr_file):
-        # If ungraded_answers.csv file is missing, copy from a master file with no graded answers.
-        #TBD Initialize the grade file only if it does not exist, ie,
+        # If ungraded_answers.csv file is missing,
+        # copy from a master file with no graded answers.
+        # Create the grade file only if it does not exist, ie,
         # the first time this function runs, or if the file
         # has been lost or deleted.
         print('\nWARN: file not found, creating it by copying from q_with_a.csv:' + ungr_file + '\n')
@@ -233,7 +183,7 @@ def read_and_grade_answers():
     user_cmd = ''
 
     # Find first ungraded answer; show Q&A; ask user for input.
-    print('Body text of some ungraded_answers_df records that have not been graded:\n')
+    print('Some answer records that have not been graded:\n')
     for index, row in  ungraded_answers_df.iterrows():
         if row['Grade'] == 'N':
             # Show Q then A then ask user to grade the A.
@@ -248,9 +198,7 @@ def read_and_grade_answers():
                 print("#D Found an answer.")
                 user_cmd = show_current_q_a(q_id, q_title, q_body, row)
             else: # Found a problem
-                print("ERR. Found an unusual record; this branch should not be reached.")
-                print("  Problem found at this ID:")
-                print(row['Id'])
+                print("ERR. Bad data, neither Q nor A at ID: " + row['Id'])
                 exit()
             #
             # Loop to handle user request.
@@ -345,12 +293,8 @@ def show_current_q_a(q_id, q_title, q_body, row):
 
 
 def get_parser():
-    parser = argparse.ArgumentParser(description='find good answers hidden in stackoverflow data')
+    parser = argparse.ArgumentParser(description='Grade answers found in stackoverflow data')
 
-    parser.add_argument('-L', '--lo_score_limit', help='lowest score for an answer to be included', default=10, type=int)
-
-    #TBD parser.add_argument('-p', '--popular_questions', help='select questions with many answers', action='store_true')
-    #TBD parser.add_argument('-t', '--top_users', help='find lo-score answers by hi-scoring owners', action='store_true')
     parser.add_argument('-u', '--user_eval', help='user can evaluate answers and add data', action='store_true')
     parser.add_argument('-v', '--verbose', action='store_true')
     return parser
