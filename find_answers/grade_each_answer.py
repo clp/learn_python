@@ -2,22 +2,20 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Sun 2017 May 21 12:50:13 AMAM clpoda>
-"""fga_find_good_answers.py
+#   Time-stamp: <Mon 2017 May 22 11:24:24 AMAM clpoda>
+"""grade_each_answer.py
 
 
-   Find answers in stackoverflow that might be good, but 'hidden'
-   because they have low scores.
-   Look for such answers from contributors who have high scores
-   based on their other questions & answers.
-   Save the o/p to a file for further evaluation & processing.
+   Show the user a question and an answer from the data files;
+   ask user to grade the answer.
+   That grade will be compared to the grade for that answer
+   from the NLP s/w, to measure the quality of the NLP s/w.
+   The NLP s/w is currently implemented in fga_find_good_answers.py.
 
    Usage:
-     pydoc  fga_find_good_answers
-     python fga_find_good_answers.py
+     pydoc  grade_each_answer
+     python grade_each_answer.py
 
-     Set the value of num_owners at the bottom of the file;
-     default is 10.  It determines how much o/p data will be saved.
 
 ------
 
@@ -34,6 +32,8 @@ Input data format of stackoverflow.com python file from kaggle.com.
         from its display name on a Mac?,
         "<p>I am using the Photoshop's javascript API to find the fonts in a given PSD.</p>
 ..."
+
+TBD,Mon2017_0522_10:47 , add Grade and Notes fields.
 
 Output data format of q_with_a.csv o/p file from this program.
     Note: question records have a Title but no ParentId;
@@ -75,22 +75,14 @@ Output data format of q_with_a.csv o/p file from this program.
 # ----------------------------------------------------------
 
 
-# ----------------------------------------------------------
-# Preliminary steps.
-#
-# This csvcut (part of csvkit) operation  may not be needed; used for debug.
-# Build subset of full Answers data set; exclude Body field:
-# csvcut -c 1,2,3,4,5 -e latin1 indir/Answers.csv > outdir/a21_all_iocps.csv
-# ----------------------------------------------------------
-
-version = '0.0.3'
+version = '0.0.1'
 
 import argparse
-import nltk
-import numpy as np
+#TBR import nltk
+#TBR import numpy as np
 import os
 import pandas as pd
-import random
+#TBR import random
 from shutil import copyfile
 
 
@@ -110,31 +102,31 @@ def main():
         print('Open the data frame for user to evaluate some answers.\n')
         read_and_grade_answers(all_ans_df, all_ques_df)
         exit
-    popular_ids = find_popular_ques(all_ans_df, a_fname)
-    popular_ids_a = popular_ids.index.values
-    top_scoring_owners_a = group_data(all_ans_df)
-    parent_id_l = find_question_ids(top_scoring_owners_a, all_ans_df)
-    #
-    # pop_and_top_l:
-    # Find parent IDs that are popular (have several answers) and
-    # some of those answers come from top owners (owners have high scores).
-    #TBD, Set the size of these lists to get enough o/p to analyze.
-    pop_and_top_l = list(set(parent_id_l[:20]).intersection(set(popular_ids_a[:40])))
-    if args['verbose']:
-        print('len(pop_and_top_l) : ', len(pop_and_top_l))
-        print('pop_and_top_l, parent id\'s to examine: ', pop_and_top_l[:])
-    q_with_a_df = combine_related_q_and_a(pop_and_top_l, all_ques_df, all_ans_df)
-    qa_with_keyword_df = select_keyword_recs(keyword, pop_and_top_l, q_with_a_df, all_ques_df, all_ans_df)
-
-    # Write qa_with_keyword_df, a subset of the full data set, to a csv file.
-    outfields_l = ['Id', 'ParentId', 'OwnerUserId', 'CreationDate', 'Score', 'Title', 'Body']
-    outfile = 'outdir/qa_with_keyword.csv'
-    qa_with_keyword_df[outfields_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
-
-    # Write full data set to a csv file.
-    outfile = 'outdir/q_with_a.csv'
-    q_with_a_df[outfields_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
-    # DBG  write_df_to_file(q_with_a_df, outdir, a_fname)
+    #TBR? popular_ids = find_popular_ques(all_ans_df, a_fname)
+    #TBR? popular_ids_a = popular_ids.index.values
+    #TBR? top_scoring_owners_a = group_data(all_ans_df)
+    #TBR? parent_id_l = find_question_ids(top_scoring_owners_a, all_ans_df)
+    #TBR? #
+    #TBR? # pop_and_top_l:
+    #TBR? # Find parent IDs that are popular (have several answers) and
+    #TBR? # some of those answers come from top owners (owners have high scores).
+    #TBR? #TBD, Set the size of these lists to get enough o/p to analyze.
+    #TBR? pop_and_top_l = list(set(parent_id_l[:20]).intersection(set(popular_ids_a[:40])))
+    #TBR? if args['verbose']:
+        #TBR? print('len(pop_and_top_l) : ', len(pop_and_top_l))
+        #TBR? print('pop_and_top_l, parent id\'s to examine: ', pop_and_top_l[:])
+    #TBR? q_with_a_df = combine_related_q_and_a(pop_and_top_l, all_ques_df, all_ans_df)
+    #TBR? qa_with_keyword_df = select_keyword_recs(keyword, pop_and_top_l, q_with_a_df, all_ques_df, all_ans_df)
+#TBR? 
+    #TBR? # Write qa_with_keyword_df, a subset of the full data set, to a csv file.
+    #TBR? outfields_l = ['Id', 'ParentId', 'OwnerUserId', 'CreationDate', 'Score', 'Title', 'Body']
+    #TBR? outfile = 'outdir/qa_with_keyword.csv'
+    #TBR? qa_with_keyword_df[outfields_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
+#TBR? 
+    #TBR? # Write full data set to a csv file.
+    #TBR? outfile = 'outdir/q_with_a.csv'
+    #TBR? q_with_a_df[outfields_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
+    #TBR? # DBG  write_df_to_file(q_with_a_df, outdir, a_fname)
 
 
 def init():
@@ -328,12 +320,15 @@ def read_and_grade_answers(all_ans_df, all_ques_df):
                 elif user_cmd == '?' or user_cmd == 'h':
                     print(user_menu)
                     #TBD print some detailed help?
-                    #TBD Request user_cmd here to avoid infinite looping.
+                    # Clear user_cmd here to avoid infinite repetition of while loop.
                     user_cmd = ''
                 elif user_cmd.lower() == 's':
                     user_cmd = show_current_q_a(q_id, q_title, q_body, row)
                 else:
+                    print("Got bad cmd from user: ", user_cmd)
                     print(user_menu)
+                    # Clear user_cmd here to avoid infinite repetition of while loop.
+                    user_cmd = ''
                 # Show prompt & wait for a cmd.
                 print("======================\n")
                 print("Scroll up to read current question and answer.")
