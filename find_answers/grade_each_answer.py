@@ -2,15 +2,19 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Mon 2017 May 22 01:27:52 PMPM clpoda>
+#   Time-stamp: <Mon 2017 May 22 02:23:23 PMPM clpoda>
 """grade_each_answer.py
 
+   A utility program to prepare data files for analysis by the
+   fga_find_good_answers.py (fga*) program.
 
-   Show the user a question and an answer from the data files;
-   ask user to grade the answer.
-   That grade will be compared to the grade for that answer
-   from the NLP s/w, to measure the quality of the NLP s/w.
-   The NLP s/w is currently implemented in fga_find_good_answers.py.
+   Show the user a question and an answer from a data file;
+   ask user to grade the answer; save the grade.
+
+   In other s/w, that grade will be compared to the grade
+   for that answer from the NLP s/w, to measure the quality
+   of the NLP s/w.  The NLP s/w is currently implemented
+   in fga*.
 
    Usage:
      pydoc  grade_each_answer
@@ -55,6 +59,9 @@ Output data format of q_with_a.csv o/p file from this program.
 
 """
 
+# Note. This code was initially written inside fga*,
+# then moved from there to this separate program.
+
 
 # ----------------------------------------------------------
 # Plan
@@ -92,7 +99,8 @@ def main():
     all_ans_df, all_ques_df, progress_msg_factor = read_data(a_infile, q_infile)
     if args['user_eval']:
         print('Open the data frame for user to evaluate some answers.\n')
-        read_and_grade_answers(all_ans_df, all_ques_df)
+        #ORG.OK read_and_grade_answers(all_ans_df, all_ques_df)
+        read_and_grade_answers()
         exit
 
 
@@ -152,7 +160,7 @@ def read_data(ans_file, ques_file):
     return ans_df, ques_df, progress_msg_factor
 
 
-def read_and_grade_answers(all_ans_df, all_ques_df):
+def read_and_grade_answers():
     """Ask user to enter a quality grade for each answer.
     
     Read the data file that holds the user grades 
@@ -334,8 +342,6 @@ def show_current_q_a(q_id, q_title, q_body, row):
         user_cmd = input(cmd_prompt)
     #D print("User entered this cmd: ", user_cmd)
     return user_cmd
-
-
 
 
 def get_parser():
