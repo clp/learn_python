@@ -43,10 +43,14 @@ Notes
 
 2. The o/p data is saved at outdir/q_with_a.csv.
 
-3. One way to use the data: open the file with LibreOffice Calc
-   or other spreadsheet tool that can show the full content of
-   each cell.  Use that tool to mark records that are valuable,
-   and worth more detailed analysis.
+3. One way to use the data: run the grade_each_answer.py program
+   which uses the q_with_a.csv file.  Read the question & answer
+   and grade the answer.  That grade is saved and available to
+   compare with grades from other analysis tools.
+
+   * Another way to examine the data: open the file with
+     LibreOffice Calc or other spreadsheet tool that can show
+     the full content of each cell.
 
 -------------
 
@@ -95,6 +99,35 @@ Notes
 4. Open the file with LibreOffice Calc
    or other spreadsheet tool to review the data visually.
 
+------------
+
+
+Program: **grade_each_answer.py**
+
+Introduction
+------------
+
+The grade_each_answer program is a utility tool to add new fields
+and their content to each record of the input file,
+which by default is q_with_a.csv.
+
+The o/p is a csv file containing two new fields for each i/p
+record: Grade and Notes.
+
+
+Usage
+------------
+
+``python grade_each_answer.py``
+
+
+Notes
+-----
+
+1. The program uses a simple menu at the command line.  Enter 'm'
+   to show the menu; or 'h' to see help; 'q' to quit.
+
+2. TBD
 
 ------------
 
