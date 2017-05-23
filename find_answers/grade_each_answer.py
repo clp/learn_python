@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Mon 2017 May 22 03:05:40 PMPM clpoda>
+#   Time-stamp: <Tue 2017 May 23 04:43:32 PMPM clpoda>
 """grade_each_answer.py
 
    A utility program to prepare data files for analysis by the
@@ -92,6 +92,14 @@ from shutil import copyfile
 
 def main():
     init()
+
+    global last_char
+    if args['debug']:
+        last_char = 55
+        print('Running in debug mode.')
+        print('  last_char set to: ', last_char)
+        print()
+
     if args['user_eval']:
         print('Open the data frame for user to evaluate some answers.\n')
         read_and_grade_answers()
@@ -131,6 +139,7 @@ def read_and_grade_answers():
     """
     
     qa_master_file = 'outdir/q_with_a.csv'
+
     # Handle case of the master Q&A data file is missing.
     if not os.path.exists(qa_master_file):
         print('WARN: Q&A master file not found: ', qa_master_file)
@@ -178,7 +187,7 @@ def read_and_grade_answers():
     h, ?: show help text, the menu
     m: show menu
     q: save data and quit the program
-    TBD s: show next answer
+    s: show next answer
     """
     user_cmd = ''
 
@@ -188,14 +197,14 @@ def read_and_grade_answers():
         if row['Grade'] == 'N':
             # Show Q then A then ask user to grade the A.
             if not pd.isnull(row['Title']):  # Found a question.
-                print("\n##############################\n#D Found a question.")
                 q_id = row['Id']
                 q_title = row['Title']
                 q_body = row['Body']
-                print("Q.Title:\n", q_title)
+                print("########## #D Found question id: ", q_id)
+                #D print("Q.Title:\n", q_title)
                 continue  # Finished w/ Q; jump to next item in for-loop & look for next A.
             elif pd.isnull(row['Title']): # Found an answer.
-                print("#D Found an answer.")
+                #D print("#D Found an answer.")
                 user_cmd = show_current_q_a(q_id, q_title, q_body, row)
             else: # Found a problem
                 print("ERR. Bad data, neither Q nor A at ID: " + row['Id'])
@@ -204,6 +213,7 @@ def read_and_grade_answers():
             # Loop to handle user request.
             while user_cmd:
                 print("#D while-loop: User entered this cmd: ", user_cmd)
+                print('\n### Next ###################\n')
                 if user_cmd.lower() == 'm':
                     print(user_menu)
                     user_cmd = ''
@@ -259,10 +269,11 @@ def read_and_grade_answers():
                 while user_cmd == "":  # Repeat the request if only the Enter key is pressed.
                     user_cmd = input(cmd_prompt)
                 #D print("User entered this cmd: ", user_cmd)
-            print("#D Last stmt of the cmd interpretation if-clause; go to next item.")
-        print("#D Last stmt of the for-loop; go to next item.")
+            #D print("#D Last stmt of the cmd interpretation if-clause; go to next item.")
+        #D print("#D Last stmt of the for-loop; go to next item.")
     print()
-    print("#D Last stmt of read_and_grade_answers(); return.\n")
+    #D print("#D Last stmt of read_and_grade_answers(); return.\n")
+    print('Finished all Q&A in the file: ', ungr_file, ' ;  Exiting.')
     return
 
 
@@ -277,11 +288,11 @@ def store_grade(grade, index, df):
 
 
 def show_current_q_a(q_id, q_title, q_body, row):
-    print("Q.Id:", q_id, "   Q.Title:\n", q_title[:55], '\n')
-    print("Q.Body[:55]:\n", q_body[:55])
+    print("Q.Id:", q_id, "   Q.Title:\n", q_title[:last_char], '\n')
+    print("Q.Body:\n", q_body[:last_char])
     print("----------------------\n")
-    print("A.Id, A.Body[:55]:\n")
-    print(row['Id'], "\n", row['Body'][:55])
+    print("A.Id, A.Body:\n")
+    print(row['Id'], "\n", row['Body'][:last_char])
     print("======================\n")
     print("Scroll up to read current question and answer.")
     cmd_prompt = "Enter a grade or command: a b c d f ... i [m]enu [h]elp: "
@@ -295,6 +306,7 @@ def show_current_q_a(q_id, q_title, q_body, row):
 def get_parser():
     parser = argparse.ArgumentParser(description='Grade answers found in stackoverflow data')
 
+    parser.add_argument('-d', '--debug', help='Use settings to help with debugging', action='store_true')
     parser.add_argument('-u', '--user_eval', help='user can evaluate answers and add data', action='store_true')
     parser.add_argument('-v', '--verbose', action='store_true')
     return parser
