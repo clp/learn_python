@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Tue 2017 May 23 05:57:29 PMPM clpoda>
+#   Time-stamp: <Tue 2017 May 23 07:29:36 PMPM clpoda>
 """grade_each_answer.py
 
    A utility program to prepare data files for analysis by the
@@ -93,12 +93,12 @@ from shutil import copyfile
 def main():
     init()
 
-    global last_char
-    last_char = 999999
+    global end
+    end = 999999
     if args['debug']:
-        last_char = 55
+        end = 55
         print('Running in debug mode.')
-        print('  last_char set to: ', last_char)
+        print('  end set to: ', end)
         print()
 
     if args['user_eval']:
@@ -188,7 +188,6 @@ def read_and_grade_answers():
     h, ?: show help text, the menu
     m: show menu
     q: save data and quit the program
-    r: reveal entire question and answer, if truncated
     s: show next answer
     """
     user_cmd = ''
@@ -292,15 +291,15 @@ def store_grade(grade, index, df):
 
 
 def show_current_q_a(q_id, q_title, q_body, row):
-    print("Q.Id:", q_id, "   Q.Title:\n", q_title[:last_char], '\n')
-    print("Q.Body:\n", q_body[:last_char])
+    print("Q.Id:", q_id, "   Q.Title:\n", q_title[:end], '\n')
+    print("Q.Body:\n", q_body[:end])
     print("----------------------\n")
     print("A.Id, A.Body:\n")
-    print(row['Id'], "\n", row['Body'][:last_char])
+    print(row['Id'], "\n", row['Body'][:end])
     print("======================\n")
-    if not args['debug'] and len(q_body) > last_char:
+    if not args['debug'] and len(q_body) > end:
         print('WARN, Question body may be truncated; ID: ', q_id)
-    if not args['debug'] and len(row['Body']) > last_char:
+    if not args['debug'] and len(row['Body']) > end:
         print('WARN, Answer body may be truncated; ID: ', row['Id'])
     print("Scroll up to read current question and answer.")
     cmd_prompt = "Enter a grade or command: a b c d f ... i [m]enu [h]elp: "
