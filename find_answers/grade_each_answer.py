@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Tue 2017 May 23 05:27:07 PMPM clpoda>
+#   Time-stamp: <Tue 2017 May 23 05:57:29 PMPM clpoda>
 """grade_each_answer.py
 
    A utility program to prepare data files for analysis by the
@@ -188,6 +188,7 @@ def read_and_grade_answers():
     h, ?: show help text, the menu
     m: show menu
     q: save data and quit the program
+    r: reveal entire question and answer, if truncated
     s: show next answer
     """
     user_cmd = ''
@@ -214,7 +215,6 @@ def read_and_grade_answers():
             # Loop to handle user request.
             while user_cmd:
                 print("#D while-loop: User entered this cmd: ", user_cmd)
-                print('\n### Next ###################\n')
                 if user_cmd.lower() == 'm':
                     print(user_menu)
                     user_cmd = ''
@@ -241,6 +241,7 @@ def read_and_grade_answers():
                     break
                 elif user_cmd.lower() == 'i':  # Ignore for now; leave grade=N,
                     # Ignored items will be shown in normal user evaluation mode.
+                    print('\n### Next ###################\n')
                     break
                 elif user_cmd.lower() == 'q':
                     print("Save data and Quit the program.")
@@ -257,6 +258,7 @@ def read_and_grade_answers():
                     # Clear user_cmd here to avoid infinite repetition of while loop.
                     user_cmd = ''
                 elif user_cmd.lower() == 's':
+                    print('\n### Next ###################\n')
                     user_cmd = show_current_q_a(q_id, q_title, q_body, row)
                 else:
                     print("Got bad cmd from user: ", user_cmd)
@@ -285,6 +287,7 @@ def store_grade(grade, index, df):
     df.ix[index, 'Grade'] = grade
     df.ix[index, 'Notes'] = note_text
     #TBF print("#D Current row:\n###\n", df[index])
+    print('\n### Next ###################\n')
     return 
 
 
@@ -295,10 +298,10 @@ def show_current_q_a(q_id, q_title, q_body, row):
     print("A.Id, A.Body:\n")
     print(row['Id'], "\n", row['Body'][:last_char])
     print("======================\n")
-    if len(q_body) > last_char and not args['debug']:
-        print('WARN, Question body may be truncated; id: ', q_id)
-    if len(row['Body']) > last_char and not args['debug']:
-        print('WARN, Answer body may be truncated; id: ', row['Id'])
+    if not args['debug'] and len(q_body) > last_char:
+        print('WARN, Question body may be truncated; ID: ', q_id)
+    if not args['debug'] and len(row['Body']) > last_char:
+        print('WARN, Answer body may be truncated; ID: ', row['Id'])
     print("Scroll up to read current question and answer.")
     cmd_prompt = "Enter a grade or command: a b c d f ... i [m]enu [h]elp: "
     user_cmd = ''
