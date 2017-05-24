@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Tue 2017 May 23 04:43:32 PMPM clpoda>
+#   Time-stamp: <Tue 2017 May 23 05:27:07 PMPM clpoda>
 """grade_each_answer.py
 
    A utility program to prepare data files for analysis by the
@@ -94,6 +94,7 @@ def main():
     init()
 
     global last_char
+    last_char = 999999
     if args['debug']:
         last_char = 55
         print('Running in debug mode.')
@@ -294,6 +295,10 @@ def show_current_q_a(q_id, q_title, q_body, row):
     print("A.Id, A.Body:\n")
     print(row['Id'], "\n", row['Body'][:last_char])
     print("======================\n")
+    if len(q_body) > last_char and not args['debug']:
+        print('WARN, Question body may be truncated; id: ', q_id)
+    if len(row['Body']) > last_char and not args['debug']:
+        print('WARN, Answer body may be truncated; id: ', row['Id'])
     print("Scroll up to read current question and answer.")
     cmd_prompt = "Enter a grade or command: a b c d f ... i [m]enu [h]elp: "
     user_cmd = ''
