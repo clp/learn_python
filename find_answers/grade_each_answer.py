@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Tue 2017 May 23 07:29:36 PMPM clpoda>
+#   Time-stamp: <Wed 2017 May 24 10:21:06 PMPM clpoda>
 """grade_each_answer.py
 
    A utility program to prepare data files for analysis by the
@@ -104,7 +104,7 @@ def main():
     if args['user_eval']:
         print('Open the data frame for user to evaluate some answers.\n')
         read_and_grade_answers()
-        exit
+        exit()
 
 
 def init():
@@ -275,7 +275,17 @@ def read_and_grade_answers():
         #D print("#D Last stmt of the for-loop; go to next item.")
     print()
     #D print("#D Last stmt of read_and_grade_answers(); return.\n")
-    print('Finished all Q&A in the file: ', ungr_file, ' ;  Exiting.')
+    #
+    # Save df before exit, if quit cmd is not used.
+    #TBD Same code used for 'q' cmd; refactor both.
+    print('Finished all Q&A in the file: ', ungr_file)
+    print("Save data and Quit the program.")
+    # Save only the needed fields to the file.
+    outfields_l = ['Id', 'ParentId', 'Grade', 'Notes', 'Title', 'Body']
+    outfile = open('outdir/ungraded_answers.csv', 'w')
+    ungraded_answers_df[outfields_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
+    outfile.flush()
+    #
     return
 
 
