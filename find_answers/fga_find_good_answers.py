@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Wed 2017 May 24 09:38:23 PMPM clpoda>
+#   Time-stamp: <Wed 2017 May 24 09:58:50 PMPM clpoda>
 """fga_find_good_answers.py
 
 
@@ -88,7 +88,6 @@ import numpy as np
 import os
 import pandas as pd
 import random
-#TBR from shutil import copyfile
 
 
 # ----------------------------------------------------------
@@ -171,7 +170,7 @@ def config_data():
 
 
 def read_data(ans_file, ques_file):
-    """Read the csv i/p files and store into a pandas data frame.
+    """Read the csv i/p files and store data into a pandas data frame.
     Compute a factor that dictates how progress will be indicated
     during read operations.
     """
@@ -187,9 +186,9 @@ def read_data(ans_file, ques_file):
 
 
 def find_popular_ques(all_ans_df, a_fname):
-    # Find the most frequent ParentIds found in the answers df.
+    """Find the most frequent ParentIds in the answers df.
+    """
     popular_ids = pd.value_counts(all_ans_df['ParentId'])
-    #
     outfile = "outdir/fpq_popular_ids."+ a_fname+ ".csv"
     popular_ids.to_csv(outfile)
     return popular_ids
@@ -354,6 +353,8 @@ def write_df_to_file(in_df, wdir, wfile):
 
 
 def get_parser():
+    """Create parser to specify cmd line options for this program.
+    """
     parser = argparse.ArgumentParser(description='find good answers hidden in stackoverflow data')
 
     parser.add_argument('-L', '--lo_score_limit', help='lowest score for an answer to be included', default=10, type=int)
