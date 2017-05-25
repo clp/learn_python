@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Wed 2017 May 24 10:21:06 PMPM clpoda>
+#   Time-stamp: <Thu 2017 May 25 03:14:36 PMPM clpoda>
 """grade_each_answer.py
 
    A utility program to prepare data files for analysis by the
@@ -188,7 +188,7 @@ def read_and_grade_answers():
     h, ?: show help text, the menu
     m: show menu
     q: save data and quit the program
-    s: show next answer
+    s: show question & answer
     """
     user_cmd = ''
 
