@@ -1,34 +1,115 @@
 README
 
-Program: **fga_find_good_answers.py**
+Project: **Find Good Answers**
+----------------------------------------------
 
 Introduction
-------------
+=====================================
 
-This project's goal is to learn Python by building tools 
-that analyze text data to identify good quality answers
-to technical questions.
+One goal of this project is to learn Python by building tools
+that analyze text data.
+The first data sources are 
+questions and answers from stackoverflow.com about Python.
+The software tries
+to identify good but 'hidden' answers
+to the questions.
+Such answers have useful data but a low score.
 
-The first release of the
-fga_find_good_answers program uses pandas and numpy.
-It processes data from stackoverflow.com
-about the Python programming language,
-and formats it for later analysis.
+It includes the following programs.
 
-The o/p is a csv file containing questions followed
-by the related answers.
-Later analysis can be done with tools built
-for natural language processing, NLP.
+ * fga_find_good_answers.py
+ * grade_each_answer.py
+ * nltk_ex25.py
+
+
+Workflow
+=====================================
+
+After installing the software into the 'working_dir',
+follow these steps.
+
+First Run
+~~~~~~~~~~~~~~~~~~~~~~
+
+  #. The software includes sample data files,
+     and the program is hard-coded to use one pair of them.
+
+     TBD, To use the program with a different data set,
+     obtain the data,
+     convert data to the required format if needed,
+     place files in the <working_dir>/indir/ directory,
+     and edit the program to use them.
+
+  #. Run the fga program, which will create the main Q&A file
+     outdir/q_with_a.csv; and may create several other files.
+
+     The main Q&A file can be used by other tools.
+
+Subsequent Runs
+~~~~~~~~~~~~~~~~~~~~~~
+
+  #. Edit the fga program to see how different settings affect
+     the output; see the source code for details.
+
+  #. Run the fga program, which will create a working data file.
+
+  #. Optional: Use grade_each_answer.py to show each question and
+     answer; to prompt the user for a grade; and to save that grade
+     with the record.
+
+     This need be done only once for a data set, and can be done
+     over a period of time; stored grades are recalled each time
+     the program runs, and only ungraded answers are presented
+     for grading by the user.
+
+     TBD, After answers are graded,
+     a tool can compare
+     the evaluation by the program
+     to your opinion of each answer.
+     This is one way
+     to evaluate how well the program finds good answers.
+
+  #. TBD, To find what program settings produce good results:
+     review results; change the program; repeat tests.
+
+
+Input data format
+=====================================
+
+TBD
+
+
+
+Output data format, presentation
+=====================================
+
+TBD
+
+
+
+Program: **fga_find_good_answers.py**
+============================================
+
+Introduction
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The fga_find_good_answers program
+formats the input data from stackoverflow.com
+into each question followed by the related answers.
+
+TBD, It then analyzes the data to find good answers,
+using statistical techniques or
+natural language processing, NLP.
 
 
 Usage
-------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ``python fga_find_good_answers.py``
 
 
 Notes
------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 1. The number of o/p records can be varied by changing
    the num_owners variable.
@@ -41,46 +122,48 @@ Notes
   * With num_owners set to 50 for the same data set, 
     the o/p file was 22023 lines long and was built in 59 sec.
 
-2. The o/p data is saved at outdir/q_with_a.csv.
+2. The main o/p data is saved at outdir/q_with_a.csv.
 
 3. One way to use the data: run the grade_each_answer.py program
    which uses the q_with_a.csv file.  Read the question & answer
-   and grade the answer.  That grade is saved and available to
-   compare with grades from other analysis tools.
+   and give the answer a grade based on its value.  That grade
+   is saved and available to compare with grades from other
+   analysis tools.
 
    * Another way to examine the data: open the file with
      LibreOffice Calc or other spreadsheet tool that can show
      the full content of each cell.
 
--------------
 
 
 
 Program: **nltk_ex25.py**
+================================================
 
 Introduction
-------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The nltk_ex25 program is an experiment to learn about text processing
 using the Natural Language Toolkit, NLTK.
-It processes data for one question with several answers
-from stackoverflow.com.
-It identifies answers that might contain useful data,
+It processes Q & A data from stackoverflow
+(needs more than one answer for a question).
+
+One way that it can identify useful answers is
 based on the terms that they contain
-(terms that are found in high-score answers).
+compared to terms that are found in high-score answers.
 
 The o/p is a csv file containing a question followed
 by the selected answers.
 
 
 Usage
-------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ``python nltk_ex25.py``
 
 
 Notes
------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 1. The number of high-score terms used for comparison can be varied
    by changing
@@ -88,46 +171,108 @@ Notes
    Original setting of num_hi_score_terms is 22.
 
 2. The program is now hard-coded to use a single,
-   specific input file during initial debugging.
-   That file is derived from the output
-   of fga_find_good_answers.py,
-   and is stored in the outdir/ directory of this repository.
+   specific input file during initial debugging,
+   outdir/q_with_a.csv.
 
-3. The o/p data of Answers that contain HiScoreTerms is saved
+3. The o/p data of answers that contain HiScoreTerms is saved
    at tmpdir/ans_with_hst.csv
 
 4. Open the file with LibreOffice Calc
-   or other spreadsheet tool to review the data visually.
+   or other spreadsheet tool to review the data.
 
-------------
 
 
 Program: **grade_each_answer.py**
+================================================
 
 Introduction
-------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The grade_each_answer program is a utility tool to add new fields
-and their content to each record of the input file,
-which by default is q_with_a.csv.
+and their content to each record of the input file
+(q_with_a.csv).
 
 The o/p is a csv file containing two new fields for each i/p
 record: Grade and Notes.
 
 
 Usage
-------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ``python grade_each_answer.py``
 
 
+The program reads the i/p file and
+shows the first answer that is not yet graded,
+with its question.
+It prompts for a command;
+press 'm' to see the menu
+and 'h' for help.
+
+The menu has these choices::
+
+    a: excellent value
+    b: good value
+    c: fair value
+    d: poor value
+    f: no value
+    i: ignore this item for now; leave its grade 'N' for none
+    u: unknown value; skip it for now, evaluate it later
+    .........................................................
+
+    Other menu items:
+    h, ?: show help text, the menu
+    m: show menu
+    q: save data and quit the program
+    s: show question & answer
+
+If you enter a grade (a,b,c,d,f),
+it prompts for a comment and saves that text into the Notes field
+for that record; pressing Enter terminates the note text.
+The next ungraded answer is then shown.
+
+Enter 'i' to ignore this answer for now.
+Its grade remains set to 'N' (for no grade),
+and it can be seen the next time the program is run.
+The next ungraded answer is then shown.
+
+Enter 'u' to mark this answer as 'Unknown value' for now.
+Enter a comment if needed.
+It will not be shown when the program is run and cannot be
+easily changed.
+Use this grade for answers whose value you cannot judge.
+The next ungraded answer is then shown.
+
+Enter 's' to show the current question & answer.
+Use this command after looking at the menu or help,
+to see the Q&A for grading.
+
+Enter 'q' to save data and quit the program.
+The output goes to outdir/graded_q_with_a.csv.
+
+
 Notes
------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-1. The program uses a simple menu at the command line.  Enter 'm'
-   to show the menu; or 'h' to see help; 'q' to quit.
+#. If you finish handling all records in the i/p file,
+   the program saves data and stops.
+   If some answers were ignored and are graded 'N',
+   they will be shown for grading when you next run the program.
 
-2. TBD
+#. To change a grade or note,
+   open the grading file with a tool that can read and write
+   CSV data files, and make the change.
+   Be careful not to corrupt the CSV format.
+
+   If the file is large,
+   you might not be able to easily edit it with a tool
+   that brings the entire file into memory,
+   and it might operate slowly.
+
+   Suggestions to edit large files include LargeFile plugin for vim;
+   the 'split' command to break a large file into smaller chunks,
+   then concatenate them after editing;
+   the 'grep', 'awk', and 'sed' commands.
 
 ------------
 
