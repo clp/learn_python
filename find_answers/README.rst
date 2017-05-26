@@ -185,7 +185,7 @@ Notes
 
 2. The program is now hard-coded to use a single,
    specific input file during initial debugging,
-   outdir/q_with_a.csv.
+   outdir/pid_231767.csv.
 
 3. The o/p data of answers that contain HiScoreTerms is saved
    at tmpdir/ans_with_hst.csv
@@ -344,4 +344,4 @@ For documentation, please visit nltk.org.
 * https://worksheets.codalab.org/
 
 
-Fri2017_0526_11:01 
+Fri2017_0526_12:47 
