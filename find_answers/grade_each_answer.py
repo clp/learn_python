@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Thu 2017 May 25 03:14:36 PMPM clpoda>
+#   Time-stamp: <Thu 2017 May 25 04:21:44 PMPM clpoda>
 """grade_each_answer.py
 
    A utility program to prepare data files for analysis by the
@@ -145,34 +145,34 @@ def read_and_grade_answers():
     if not os.path.exists(qa_master_file):
         print('WARN: Q&A master file not found: ', qa_master_file)
         print('  Verify i/p files exist.')
-        print('  Then create master file by running fga*.py w/o "-u" option.')
+        print('  Then create master file by running fga*.py.')
         exit()
     #
-    ungr_file = 'outdir/ungraded_answers.csv'
-    if not os.path.exists(ungr_file):
-        # If ungraded_answers.csv file is missing,
+    grade_file = 'outdir/graded_q_with_a.csv'
+    if not os.path.exists(grade_file):
+        # If graded_q_with_a.csv file is missing,
         # copy from a master file with no graded answers.
         # Create the grade file only if it does not exist, ie,
         # the first time this function runs, or if the file
         # has been lost or deleted.
-        print('\nWARN: file not found, creating it by copying from q_with_a.csv:' + ungr_file + '\n')
-        copyfile('outdir/q_with_a.csv', ungr_file)
+        print('\nWARN: file not found, creating it by copying from q_with_a.csv:' + grade_file + '\n')
+        copyfile('outdir/q_with_a.csv', grade_file)
         #TBD Removing latin-1 in 2 read_csv() calls  fixed a problem:
-            #ORG ungraded_answers_df = pd.read_csv(ungr_file, encoding='latin-1', warn_bad_lines=False, error_bad_lines=False, usecols=['Id', 'ParentId', 'Title', 'Body'])
-        ungraded_answers_df = pd.read_csv(ungr_file,  warn_bad_lines=False, error_bad_lines=False, usecols=['Id', 'ParentId', 'Title', 'Body'])
+            #ORG graded_df = pd.read_csv(grade_file, encoding='latin-1', warn_bad_lines=False, error_bad_lines=False, usecols=['Id', 'ParentId', 'Title', 'Body'])
+        graded_df = pd.read_csv(grade_file,  warn_bad_lines=False, error_bad_lines=False, usecols=['Id', 'ParentId', 'Title', 'Body'])
 
         #TBD Create & initlz new columns only the first time the file is read.
-        ungraded_answers_df['Grade'] = 'N'
-        ungraded_answers_df['Notes'] = 'None'
+        graded_df['Grade'] = 'N'
+        graded_df['Notes'] = 'None'
         outfields_l = ['Id', 'ParentId', 'Grade', 'Notes', 'Title', 'Body']
-        ungraded_answers_df[outfields_l].to_csv(ungr_file, header=True, index=None, sep=',', mode='w')
+        graded_df[outfields_l].to_csv(grade_file, header=True, index=None, sep=',', mode='w')
 
     # Otherwise:
     # The data file exists; read it; it might have some graded answers.
     # Removing latin-1 in 2 read_csv() calls  fixed a problem:
-    #ORG.Sat2017_0506_14:28   ungraded_answers_df = pd.read_csv(ungr_file, encoding='latin-1', warn_bad_lines=False, error_bad_lines=False)
+    #ORG.Sat2017_0506_14:28   graded_df = pd.read_csv(grade_file, encoding='latin-1', warn_bad_lines=False, error_bad_lines=False)
     #
-    ungraded_answers_df = pd.read_csv(ungr_file, warn_bad_lines=False, error_bad_lines=False)
+    graded_df = pd.read_csv(grade_file, warn_bad_lines=False, error_bad_lines=False)
     
     user_menu = """    The menu choices to grade an answer:
     a: excellent value
@@ -193,8 +193,8 @@ def read_and_grade_answers():
     user_cmd = ''
 
     # Find first ungraded answer; show Q&A; ask user for input.
-    print('Some answer records that have not been graded:\n')
-    for index, row in  ungraded_answers_df.iterrows():
+    print('Show answers that have not been graded:\n')
+    for index, row in  graded_df.iterrows():
         if row['Grade'] == 'N':
             # Show Q then A then ask user to grade the A.
             if not pd.isnull(row['Title']):  # Found a question.
@@ -219,24 +219,24 @@ def read_and_grade_answers():
                     user_cmd = ''
                 elif user_cmd.lower() == 'a':  # Excellent
                     # User graded this answer as excellent value; save grade & ask for a note.
-                    store_grade('A', index, ungraded_answers_df)
+                    store_grade('A', index, graded_df)
                     #D print("#D while-loop-h: Show next item.")
-                    break  # examine next item in ungr*df for-loop
+                    break  # examine next item in graded_df for-loop
                 elif user_cmd.lower() == 'b':  # Good
-                    store_grade('B', index, ungraded_answers_df)
+                    store_grade('B', index, graded_df)
                     break
                 elif user_cmd.lower() == 'c':  # Fair
-                    store_grade('C', index, ungraded_answers_df)
+                    store_grade('C', index, graded_df)
                     break
                 elif user_cmd.lower() == 'd':  # Poor
-                    store_grade('D', index, ungraded_answers_df)
+                    store_grade('D', index, graded_df)
                     break
                 elif user_cmd.lower() == 'f':  # Answer is not useful
-                    store_grade('F', index, ungraded_answers_df)
+                    store_grade('F', index, graded_df)
                     break
                 elif user_cmd.lower() == 'u':  # Unknown; no opinion.
                     # Unknown items will not be shown in normal user eval mode.
-                    store_grade('U', index, ungraded_answers_df)
+                    store_grade('U', index, graded_df)
                     break
                 elif user_cmd.lower() == 'i':  # Ignore for now; leave grade=N,
                     # Ignored items will be shown in normal user evaluation mode.
@@ -246,8 +246,8 @@ def read_and_grade_answers():
                     print("Save data and Quit the program.")
                     # Save only the needed fields to the file.
                     outfields_l = ['Id', 'ParentId', 'Grade', 'Notes', 'Title', 'Body']
-                    outfile = open('outdir/ungraded_answers.csv', 'w')
-                    ungraded_answers_df[outfields_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
+                    outfile = open('outdir/graded_q_with_a.csv', 'w')
+                    graded_df[outfields_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
                     outfile.flush()
                     #
                     exit()
@@ -278,12 +278,12 @@ def read_and_grade_answers():
     #
     # Save df before exit, if quit cmd is not used.
     #TBD Same code used for 'q' cmd; refactor both.
-    print('Finished all Q&A in the file: ', ungr_file)
+    print('Finished all Q&A in the file: ', grade_file)
     print("Save data and Quit the program.")
     # Save only the needed fields to the file.
     outfields_l = ['Id', 'ParentId', 'Grade', 'Notes', 'Title', 'Body']
-    outfile = open('outdir/ungraded_answers.csv', 'w')
-    ungraded_answers_df[outfields_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
+    outfile = open('outdir/graded_q_with_a.csv', 'w')
+    graded_df[outfields_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
     outfile.flush()
     #
     return
