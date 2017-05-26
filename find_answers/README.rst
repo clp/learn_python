@@ -17,7 +17,7 @@ Such answers have useful data but a low score.
 
 It includes the following programs.
 
- * fga_find_good_answers.py
+ * fga_find_good_answers.py (fga)
  * grade_each_answer.py
  * nltk_ex25.py
 
@@ -48,19 +48,29 @@ First Run
 Subsequent Runs
 ~~~~~~~~~~~~~~~~~~~~~~
 
-  #. Edit the fga program to see how different settings affect
-     the output; see the source code for details.
+  #. To study how different settings affect the output,
+     edit the fga program; see the source code for details.
 
-  #. Run the fga program, which will create a working data file.
+  #. Run the fga program, which creates a working data file.
 
-  #. Optional: Use grade_each_answer.py to show each question and
-     answer; to prompt the user for a grade; and to save that grade
-     with the record.
+  #. Optional: Run grade_each_answer.py to show each question and
+     answer on screen;
+     to prompt the user for a grade for the answer;
+     and to save that grade with the record.
 
-     This need be done only once for a data set, and can be done
-     over a period of time; stored grades are recalled each time
-     the program runs, and only ungraded answers are presented
-     for grading by the user.
+     If there are dozens or hundreds of answers in the data set,
+     grading them can take a person many hours.
+     This work need be done only once for a data set, and can be done
+     over a period of time.
+     The stored grades are recalled each time the program runs,
+     and only ungraded answers are presented for grading by the user.
+
+     One approach is to use a small subset of the data for analysis
+     so they can be graded quickly.
+     Maybe start with a subset of high priority questions,
+     based on popularity:
+     questions with many answers or questions and answers with
+     high scores.
 
      TBD, After answers are graded,
      a tool can compare
@@ -68,6 +78,9 @@ Subsequent Runs
      to your opinion of each answer.
      This is one way
      to evaluate how well the program finds good answers.
+
+     TBD, At least one data file in the package includes
+     graded answers.
 
   #. TBD, To find what program settings produce good results:
      review results; change the program; repeat tests.
