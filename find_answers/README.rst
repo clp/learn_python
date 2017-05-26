@@ -32,7 +32,7 @@ First Run
 ~~~~~~~~~~~~~~~~~~~~~~
 
   #. The software includes sample data files,
-     and the program is hard-coded to use one pair of them.
+     and the fga program is hard-coded to use one pair of them.
 
      TBD, To use the program with a different data set,
      obtain the data,
@@ -85,6 +85,8 @@ Subsequent Runs
   #. TBD, To find what program settings produce good results:
      review results; change the program; repeat tests.
 
+  #. TBD, To analyze the text run nltk_ex25.py.
+
 
 Input data format
 =====================================
@@ -124,7 +126,7 @@ Usage
 Notes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-1. The number of o/p records can be varied by changing
+#. The number of o/p records can be varied by changing
    the num_owners variable.
    Original setting of num_owners is 10.
 
@@ -135,9 +137,9 @@ Notes
   * With num_owners set to 50 for the same data set, 
     the o/p file was 22023 lines long and was built in 59 sec.
 
-2. The main o/p data is saved at outdir/q_with_a.csv.
+#. The main o/p data is saved at outdir/q_with_a.csv.
 
-3. One way to use the data: run the grade_each_answer.py program
+#. One way to use the data: run the grade_each_answer.py program
    which uses the q_with_a.csv file.  Read the question & answer
    and give the answer a grade based on its value.  That grade
    is saved and available to compare with grades from other
@@ -178,21 +180,25 @@ Usage
 Notes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-1. The number of high-score terms used for comparison can be varied
+#. The number of high-score terms used for comparison can be varied
    by changing
    the num_hi_score_terms variable.
    Original setting of num_hi_score_terms is 22.
 
-2. The program is now hard-coded to use a single,
+#. The program is now hard-coded to use a single,
    specific input file during initial debugging,
    outdir/pid_231767.csv.
 
-3. The o/p data of answers that contain HiScoreTerms is saved
+#. The o/p data of answers that contain HiScoreTerms is saved
    at tmpdir/ans_with_hst.csv
 
-4. Open the file with LibreOffice Calc
+   Open the file with an editor or with LibreOffice Calc
    or other spreadsheet tool to review the data.
 
+#. The program writes some summary data to the screen,
+   to help with debugging.
+
+#. The program writes some data to the log file, nltk_ex25.log.
 
 
 Program: **grade_each_answer.py**
@@ -224,6 +230,7 @@ and 'h' for help.
 
 The menu has these choices::
 
+    Menu choices to grade an answer:
     a: excellent value
     b: good value
     c: fair value
@@ -344,4 +351,4 @@ For documentation, please visit nltk.org.
 * https://worksheets.codalab.org/
 
 
-Fri2017_0526_12:47 
+Fri2017_0526_15:49 
