@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.6.0 :: Anaconda 4.3.0 (64-bit)
 
-# Time-stamp: <Thu 2017 Apr 20 07:23:13 PMPM clpoda>
+# Time-stamp: <Sat 2017 May 27 04:08:35 PMPM clpoda>
 
 """nltk_ex25.py
     
@@ -81,8 +81,8 @@ def main():
     #TBD, Remove global vars.
     global a_infile, q_infile, tmpdir, a_fname, all_ans_df, all_ques_df, \
             progress_msg_factor, numlines, clean_ans_bodies_l, \
-            vocab, dist, words_sorted_by_count_main_l, df_score, \
-            num_selected_recs, top, df_score_top_n 
+            vocab, dist, words_sorted_by_count_main_l, score_df, \
+            num_selected_recs, top, score_top_n_df 
     
     a_fname, a_infile, q_infile, datadir, tmpdir, outdir = config_data()
     
@@ -99,17 +99,17 @@ def main():
     words_sorted_by_count_main_l = words_sorted_by_count_l
     
     logger.info('Step 4. Sort Answers by Score.')
-    df_score, num_selected_recs = sort_answers_by_score()
+    score_df, num_selected_recs = sort_answers_by_score()
     
     logger.info('Step 5. Find most freq words for top-scoring Answers.')
-    df_score_top_n = df_score[['Id']]
+    score_top_n_df = score_df[['Id']]
     
-    #OK.tbr  print("DBG.103", df_score_top_n.tail(num_selected_recs), '\n')
+    #OK.tbr  print("DBG.103", score_top_n_df.tail(num_selected_recs), '\n')
     #TBD, Maybe convert df to string so logger can print title & data w/ one cmd:
-    #TBD log_msg = "df_score_top_n.tail():" + CONVERT_DF_TO_STRING(df_score_top_n.tail())
+    #TBD log_msg = "score_top_n_df.tail():" + CONVERT_DF_TO_STRING(score_top_n_df.tail())
     #TBD logger.debug(log_msg)
-    logger.debug("df_score_top_n.tail():")
-    logger.debug(df_score_top_n.tail(20)) 
+    logger.debug("score_top_n_df.tail():")
+    logger.debug(score_top_n_df.tail(20)) 
     # Use top_n Answers & count their words.
     logger.info("For top ans: Cleaning and parsing the training set bodies...")
     
@@ -122,10 +122,10 @@ def main():
     logger.info("Step 6. Find most frequent words for bottom-scoring Answers.")
     # Keep these data to compare w/ words for top-scoring Answers; s/b some diff.
     # If they are identical, there may be a logic problem in the code.
-    df_score_bot_n = df_score[['Id']]
-    logger.debug("df_score_bot_n.head():")
-    logger.debug(df_score_bot_n.head(20))
-    #TBR print(df_score_bot_n.head(num_selected_recs), '\n')
+    score_bot_n_df = score_df[['Id']]
+    logger.debug("score_bot_n_df.head():")
+    logger.debug(score_bot_n_df.head(20))
+    #TBR print(score_bot_n_df.head(num_selected_recs), '\n')
     top = False
     bot_n_bodies = find_freq_words()
     logger.info('make_bag_of_words(bot_n_bodies)')
@@ -364,8 +364,8 @@ def sort_answers_by_score():
     """
     Build a sorted dataframe of answers.
     """
-    df_score = all_ans_df.sort_values(['Score'])
-    df_score = df_score[['Id', 'Score']]
+    score_df = all_ans_df.sort_values(['Score'])
+    score_df = score_df[['Id', 'Score']]
     
     # Compute the number of records to use for computation and display.
     rec_selection_ratio = 0.10  # Default 0.01?
@@ -375,13 +375,13 @@ def sort_answers_by_score():
     log_msg = "  rec_selection_ratio,  number of selected recs: " + str(rec_selection_ratio) + ", " + str(num_selected_recs)
     logger.info(log_msg)
     logger.info('Lowest scoring Answers:')
-    logger.info(df_score.head())
-    #D print(df_score.head(num_selected_recs), '\n')
+    logger.info(score_df.head())
+    #D print(score_df.head(num_selected_recs), '\n')
     logger.info('Highest scoring Answers:')
-    logger.info(df_score.tail())
-    #D print(df_score.tail(num_selected_recs), '\n')
+    logger.info(score_df.tail())
+    #D print(score_df.tail(num_selected_recs), '\n')
     
-    return df_score, num_selected_recs
+    return score_df, num_selected_recs
     
     
 def find_freq_words():
@@ -389,15 +389,15 @@ def find_freq_words():
     Build a list of the most frequent terms found in answers.
     """
     top_n_bodies = []
-    df_score_l = []
+    score_df_l = []
     # Convert dataframe to list of Id's, to get the body of each Id.
     if top: # Get the tail of the list, highest-score items.
-        df_score_l = df_score_top_n['Id'].tail(num_selected_recs).tolist()
+        score_df_l = score_top_n_df['Id'].tail(num_selected_recs).tolist()
     else:  # Get the head of the list, lowest-score items.
-        df_score_l = df_score_top_n['Id'].head(num_selected_recs).tolist()
+        score_df_l = score_top_n_df['Id'].head(num_selected_recs).tolist()
     df8 = all_ans_df.set_index('Id')
     progress_count = 0
-    for i in df_score_l:
+    for i in score_df_l:
         progress_count += 1
         top_n_bodies.append( convert_text_to_words( df8["Body"][i] ))
         # Print a progress message for every 10% of i/p data handled.
