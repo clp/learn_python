@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.6.0 :: Anaconda 4.3.0 (64-bit)
 
-# Time-stamp: <Sat 2017 May 27 04:08:35 PMPM clpoda>
+# Time-stamp: <Sun 2017 May 28 03:30:59 PMPM clpoda>
 
 """nltk_ex25.py
     
@@ -71,7 +71,7 @@ log_level = logging.INFO
 logging.basicConfig(filename=log_file, level=log_level, format=' %(asctime)s - %(levelname)s - %(message)s')
 # Sample log cmd: logging.debug('msg text var=' + str(var))
 logger = logging.getLogger(__name__)
-log_msg = log_file + " - Start logging.\n"
+log_msg = '\n' + log_file + ' - Start logging.\n'
 logger.info(log_msg)
 
 a_infile  = ""
@@ -468,7 +468,8 @@ def search_for_terms():
     
     # Print partial data about interesting answers to check.
     print("\nCheck low score Answers for useful data: ")
-    print(ans_with_hst_df[['Id', 'Score', 'CreationDate', 'Title']])
+    print(ans_with_hst_df[['Title']])
+    print(ans_with_hst_df[['Id', 'Score', 'CreationDate']])
     print(ans_with_hst_df[['Id', 'HiScoreTerms']])
     
     # Also write summary data to log.
