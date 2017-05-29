@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.6.0 :: Anaconda 4.3.0 (64-bit)
 
-# Time-stamp: <Sun 2017 May 28 03:30:59 PMPM clpoda>
+# Time-stamp: <Sun 2017 May 28 05:50:22 PMPM clpoda>
 
 """nltk_ex25.py
     
@@ -459,7 +459,8 @@ def search_for_terms():
     all_ans_df.to_csv(outfile)
     
     # Save possible valuable answers to a separate file for review.
-    # Replace empty strings in HiScoreTerms cells with NaN, for easier manipulation.
+    # Replace empty strings in HiScoreTerms cells with NaN,
+    # to drop low value answers easily w/ dropna().
     all_ans_df['HiScoreTerms'].replace('', np.nan, inplace=True)
     # Save a new df with only rows that have data in the HiScoreTerms column.
     ans_with_hst_df = all_ans_df.dropna(subset=['HiScoreTerms'])
@@ -467,15 +468,16 @@ def search_for_terms():
     ans_with_hst_df.to_csv(outfile)
     
     # Print partial data about interesting answers to check.
-    print("\nCheck low score Answers for useful data: ")
-    print(ans_with_hst_df[['Title']])
+    print("\nCheck these low score Answers for useful data: ")
+    for index,row in ans_with_hst_df.iterrows():
+        if np.isnan(row['ParentId']):  # Found a question.
+            print('Id, Title: ', row['Id'], row['Title'])
     print(ans_with_hst_df[['Id', 'Score', 'CreationDate']])
     print(ans_with_hst_df[['Id', 'HiScoreTerms']])
     
     # Also write summary data to log.
     logger.info("Check low score Answers for useful data: ")
-    logger.info(ans_with_hst_df[['Id', 'Score', 'CreationDate', 'Title']])
-    logger.info(ans_with_hst_df[['Id', 'HiScoreTerms']])
+    logger.info(ans_with_hst_df[['Id', 'Score', 'CreationDate', 'Title', 'HiScoreTerms']])
 
 
 if __name__ == '__main__':
