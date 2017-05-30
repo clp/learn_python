@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.6.0 :: Anaconda 4.3.0 (64-bit)
 
-# Time-stamp: <Sun 2017 May 28 06:25:52 PMPM clpoda>
+# Time-stamp: <Tue 2017 May 30 08:39:06 AMAM clpoda>
 
 """nltk_ex25.py
     
@@ -78,10 +78,7 @@ a_infile  = ""
 
 def main():
     init()
-    #TBD, Remove global vars.
-    global tmpdir, a_fname, all_ans_df, all_ques_df, \
-            progress_msg_factor, numlines, clean_ans_bodies_l, \
-            score_df, num_selected_recs
+    global tmpdir, all_ans_df, all_ques_df
     
     a_fname, a_infile, q_infile, datadir, tmpdir, outdir = config_data()
     
@@ -89,16 +86,16 @@ def main():
     all_ans_df, all_ques_df, progress_msg_factor, numlines = read_data(a_infile, q_infile)
     
     logger.info("Step 2. Process the words of each input line.")
-    clean_ans_bodies_l = clean_raw_data()
+    clean_ans_bodies_l = clean_raw_data(a_fname, progress_msg_factor)
     
     logger.info("Step 3. Build a bag of words and their counts.")
     (vocab, dist) = make_bag_of_words(clean_ans_bodies_l)
-    words_sorted_by_count_l = sort_save_vocab('.vocab', vocab, dist)
+    words_sorted_by_count_l = sort_save_vocab('.vocab', vocab, dist, a_fname)
     # Save the original list for later searching.
     words_sorted_by_count_main_l = words_sorted_by_count_l
     
     logger.info('Step 4. Sort Answers by Score.')
-    score_df, num_selected_recs = sort_answers_by_score()
+    score_df, num_selected_recs = sort_answers_by_score(numlines)
     
     logger.info('Step 5. Find most freq words for top-scoring Answers.')
     score_top_n_df = score_df[['Id']]
@@ -113,10 +110,10 @@ def main():
     logger.info("For top ans: Cleaning and parsing the training set bodies...")
     
     top = True
-    top_n_bodies = find_freq_words(top, score_top_n_df )
+    top_n_bodies = find_freq_words(top, score_top_n_df, num_selected_recs, progress_msg_factor)
     logger.info('make_bag_of_words(top_n_bodies)')
     (vocab, dist) = make_bag_of_words(top_n_bodies)
-    sort_save_vocab('.vocab.hiscore', vocab, dist)
+    sort_save_vocab('.vocab.hiscore', vocab, dist, a_fname)
     
     logger.info("Step 6. Find most frequent words for bottom-scoring Answers.")
     # Keep these data to compare w/ words for top-scoring Answers; s/b some diff.
@@ -126,13 +123,13 @@ def main():
     logger.debug(score_bot_n_df.head(20))
     #TBR print(score_bot_n_df.head(num_selected_recs), '\n')
     top = False
-    bot_n_bodies = find_freq_words(top, score_top_n_df )
+    bot_n_bodies = find_freq_words(top, score_top_n_df, num_selected_recs, progress_msg_factor)
     logger.info('make_bag_of_words(bot_n_bodies)')
     (vocab, dist) = make_bag_of_words(bot_n_bodies)
-    sort_save_vocab('.vocab.loscore', vocab, dist)
+    sort_save_vocab('.vocab.loscore', vocab, dist, a_fname)
     
     logger.info("Step 7. Search lo-score A's for hi-score text.")
-    search_for_terms(words_sorted_by_count_main_l)
+    search_for_terms(words_sorted_by_count_main_l, clean_ans_bodies_l)
     
     
 def init():
@@ -246,7 +243,7 @@ def convert_text_to_words( raw_q_a ):
     return( " ".join( meaningful_words ))
     
     
-def clean_raw_data():
+def clean_raw_data(a_fname, progress_msg_factor ):
     """ For all answers: Clean and parse the training set bodies.")
     """
     # Get the number of bodies based on that column's size
@@ -331,7 +328,7 @@ def make_bag_of_words(clean_ans_bodies_l):
     return (vocab, dist)
     
     
-def sort_save_vocab(suffix, vocab, dist):
+def sort_save_vocab(suffix, vocab, dist, a_fname):
     """
     Sort and save vocabulary data to a list and to a file
     with a specified suffix.
@@ -339,7 +336,6 @@ def sort_save_vocab(suffix, vocab, dist):
     For each item in the bag of words, print the vocabulary word and
     the number of times it appears in the training set
     """
-    global words_sorted_by_count_l 
     count_tag_l = []
     word_freq_d = {}
     for tag, count in zip(vocab, dist):
@@ -359,7 +355,7 @@ def sort_save_vocab(suffix, vocab, dist):
     return words_sorted_by_count_l 
     
     
-def sort_answers_by_score():
+def sort_answers_by_score(numlines):
     """
     Build a sorted dataframe of answers.
     """
@@ -383,7 +379,7 @@ def sort_answers_by_score():
     return score_df, num_selected_recs
     
     
-def find_freq_words(top, score_top_n_df ):
+def find_freq_words(top, score_top_n_df, num_selected_recs, progress_msg_factor):
     """
     Build a list of the most frequent terms found in answers.
     """
@@ -408,7 +404,7 @@ def find_freq_words(top, score_top_n_df ):
     return top_n_bodies 
     
     
-def search_for_terms(words_sorted_by_count_main_l):
+def search_for_terms(words_sorted_by_count_main_l, clean_ans_bodies_l):
     """
     Read each answer and save any terms that it has in common
     with (high frequency) text from the high-score answers.
@@ -477,6 +473,7 @@ def search_for_terms(words_sorted_by_count_main_l):
     # Also write summary data to log.
     logger.info("Check low score Answers for useful data: ")
     logger.info(ans_with_hst_df[['Id', 'Score', 'CreationDate', 'Title', 'HiScoreTerms']])
+    #TBD.0 return
 
 
 if __name__ == '__main__':
