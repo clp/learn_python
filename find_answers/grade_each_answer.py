@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Wed 2017 May 31 10:12:46 PMPM clpoda>
+#   Time-stamp: <Wed 2017 May 31 10:30:43 PMPM clpoda>
 """grade_each_answer.py
 
    A utility program to prepare data files for analysis by the
@@ -261,7 +261,7 @@ def read_and_grade_answers():
                 # Show prompt & wait for a cmd.
                 print("======================\n")
                 print("Scroll up to read current question and answer.")
-                cmd_prompt = "Enter a grade or command: a b c d f ... i [m]enu [h]elp: "
+                cmd_prompt = "Enter a grade or command: a b c d e f ... i [m]enu [h]elp: "
                 while user_cmd == "":  # Repeat the request if only the Enter key is pressed.
                     user_cmd = input(cmd_prompt)
                 #D print("User entered this cmd: ", user_cmd)
@@ -306,7 +306,7 @@ def show_current_q_a(q_id, q_title, q_body, row):
     if not args['debug'] and len(row['Body']) > end:
         print('WARN, Answer body may be truncated; ID: ', row['Id'])
     print("Scroll up to read current question and answer.")
-    cmd_prompt = "Enter a grade or command: a b c d f ... i [m]enu [h]elp: "
+    cmd_prompt = "Enter a grade or command: a b c d e f ... i [m]enu [h]elp: "
     user_cmd = ''
     while user_cmd == "":  # Repeat the request if only the Enter key is pressed.
         user_cmd = input(cmd_prompt)
