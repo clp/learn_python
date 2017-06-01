@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Thu 2017 May 25 04:21:44 PMPM clpoda>
+#   Time-stamp: <Wed 2017 May 31 10:12:46 PMPM clpoda>
 """grade_each_answer.py
 
    A utility program to prepare data files for analysis by the
@@ -11,10 +11,10 @@
    Show the user a question and an answer from a data file;
    ask user to grade the answer; save the grade.
 
-   In other s/w, that grade will be compared to the grade
-   for that answer from the NLP s/w, to measure the quality
-   of the NLP s/w.  The NLP s/w is currently implemented
-   in fga*.
+   In other s/w, that grade given by the user, will be
+   compared to the grade from the NLP s/w for the same answer,
+   to measure the quality of that answer.  The NLP s/w is
+   currently implemented in the nltk* program.
 
    Usage:
      pydoc  grade_each_answer
@@ -37,26 +37,21 @@ Input data format of stackoverflow.com python file from kaggle.com.
         "<p>I am using the Photoshop's javascript API to find the fonts in a given PSD.</p>
 ..."
 
-TBD,Mon2017_0522_10:47 , add Grade and Notes fields.
 
-Output data format of q_with_a.csv o/p file from this program.
+Output data format of graded_q_with_a.csv o/p file from this program.
     Note: question records have a Title but no ParentId;
     answer records have a ParentId (which is the related
     question's Id) but no Title.
 
-==> q_with_a.csv <==
-        Id,ParentId,OwnerUserId,CreationDate,Score,Title,Body
-        5313,,680.0,2008-08-07T21:07:24Z,11,"Cross Platform, Language
-        Agnostic GUI Markup Language?",
-        "<p>I learned Swing back in the day but now
+==> graded_q_with_a.csv <==
+        Id,ParentId,Grade,Notes,Title,Body
+        1269795,,N,None,Unusual Speed Difference between Python
+        and C++,"<p>I recently wrote a short algorithm to calculate 
 ..."
-        5319,5313.0,380.0,2008-08-07T21:10:27Z,8,,<p>erm.. HTML?
-        (trying to be funny here... while we wait for real answers..)</p>
-        5320,5313.0,216.0,2008-08-07T21:11:28Z,1,,"<p>The
-        <a href=""http://www.wxwidgets.org/"" rel=""nofollow""
-        title=""wxWidgets"">wxWidgets</a> (formerly known as wxWindows)
+        1269820,1269795.0,N,None,,"<p>I am not an expert at C++
+        optimization, but I believe the speed difference may be 
 ..."
-
+        
 """
 
 # Note. This code was initially written inside fga*,
@@ -65,19 +60,14 @@ Output data format of q_with_a.csv o/p file from this program.
 
 # ----------------------------------------------------------
 # Plan
-# Find top-scoring owners.
-# Find all answers by top-scoring owners.
-# Find the questions for each of those answers.
-# Find all answers for each of those questions.
-# Build a data frame with each question followed by all its answers.
-# Find the subset of Q's and A's that contain a keyword.
-# Save the subset of data to a csv file.
+# TBD
 #
 # Next steps.
 #
 # Manually review the A's.
 #   Mark the answer w/ a grade tag: Is it worth reading?
-#     Use A,B,C,D,F to identify excellent(A), good, fair, poor, useless(F) answers.
+#     Use A,B,C,D,E,F to identify excellent(A), very good, good,
+#     fair, poor, useless(F) answers.
 # Build tools to analyze a larger test set.
 # ----------------------------------------------------------
 
@@ -176,9 +166,10 @@ def read_and_grade_answers():
     
     user_menu = """    The menu choices to grade an answer:
     a: excellent value
-    b: good value
-    c: fair value
-    d: poor value
+    b: very good value
+    c: good value
+    d: fair value
+    e: poor value
     f: no value
     i: ignore this item for now; leave its grade 'N' for none
     u: unknown value; skip it for now, evaluate it later
@@ -230,6 +221,9 @@ def read_and_grade_answers():
                     break
                 elif user_cmd.lower() == 'd':  # Poor
                     store_grade('D', index, graded_df)
+                    break
+                elif user_cmd.lower() == 'e':  # Poor
+                    store_grade('E', index, graded_df)
                     break
                 elif user_cmd.lower() == 'f':  # Answer is not useful
                     store_grade('F', index, graded_df)
