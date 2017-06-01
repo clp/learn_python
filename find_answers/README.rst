@@ -232,9 +232,10 @@ The menu has these choices::
 
     Menu choices to grade an answer:
     a: excellent value
-    b: good value
-    c: fair value
-    d: poor value
+    b: very good value
+    c: good value
+    d: fair value
+    e: poor value
     f: no value
     i: ignore this item for now; leave its grade 'N' for none
     u: unknown value; skip it for now, evaluate it later
@@ -246,7 +247,7 @@ The menu has these choices::
     q: save data and quit the program
     s: show question & answer
 
-If you enter a grade (a,b,c,d,f),
+If you enter a grade (a,b,c,d,e,f),
 it prompts for a comment and saves that text into the Notes field
 for that record; pressing Enter terminates the note text.
 The next ungraded answer is then shown.
@@ -273,6 +274,14 @@ The output goes to outdir/graded_q_with_a.csv.
 
 Notes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+#. Consider opening the csv data file in a separate
+   terminal or window
+   for easier viewing of the Q&A being graded.
+   Eg, using the surf web browser:
+     
+      ``surf outdir/graded_q_with_a.csv``
 
 #. If you finish handling all records in the i/p file,
    the program saves data and stops.
