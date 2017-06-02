@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Thu 2017 Jun 01 07:21:50 PMPM clpoda>
+#   Time-stamp: <Thu 2017 Jun 01 07:30:02 PMPM clpoda>
 """fga_find_good_answers.py
 
 
@@ -118,17 +118,16 @@ def main():
     q_with_a_df = combine_related_q_and_a(pop_and_top_l, all_ques_df, all_ans_df)
     outfields_l = ['Id', 'ParentId', 'OwnerUserId', 'CreationDate', 'Score', 'Title', 'Body']
 
-    # Skip this step if no keyword was provided.
-    if keyword:
-        qa_with_keyword_df = select_keyword_recs(keyword, q_with_a_df, outfields_l)
-        # Write qa_with_keyword_df, a subset of the full data set, to a csv file.
-        outfile = 'outdir/qa_with_keyword.csv'
-        qa_with_keyword_df[outfields_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
-
     # Write full data set to a csv file.
     outfile = 'outdir/q_with_a.csv'
     q_with_a_df[outfields_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
     # DBG  write_df_to_file(q_with_a_df, outdir, a_fname)
+
+    # Write keyword-containing records to a csv file if keyword was provided.
+    if keyword:
+        qa_with_keyword_df = select_keyword_recs(keyword, q_with_a_df, outfields_l)
+        outfile = 'outdir/qa_with_keyword.csv'
+        qa_with_keyword_df[outfields_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
 
 
 def init():
@@ -325,7 +324,7 @@ def select_keyword_recs(keyword, q_with_a_df, outfields_l):
     """
     # Get a pandas series of booleans to find the current question id.
     # Check Question & Answer, both Title and Body columns.
-    qt_sr = q_with_a_df.Title.str.contains(keyword, regex=False)
+    qt_sr  = q_with_a_df.Title.str.contains(keyword, regex=False)
     qab_sr = q_with_a_df.Body.str.contains(keyword, regex=False)
     # Combine two series into one w/ boolean OR.
     qa_contains_sr = qab_sr | qt_sr
