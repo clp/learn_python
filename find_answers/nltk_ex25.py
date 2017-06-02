@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.6.0 :: Anaconda 4.3.0 (64-bit)
 
-# Time-stamp: <Tue 2017 May 30 08:39:06 AMAM clpoda>
+# Time-stamp: <Thu 2017 Jun 01 10:15:17 PMPM clpoda>
 
 """nltk_ex25.py
     
@@ -24,7 +24,7 @@
      pydoc  nltk_ex25
      python nltk_ex25.py
     
-     Set the value of num_hi_score_terms at the bottom of the file;
+     Set the value of num_hi_score_terms at the bottom of the file.
      It determines how many hi-score terms are used to search
      text in low-score answers.  A bigger number will cause the
      program to run longer, and might find more 'hidden' answers

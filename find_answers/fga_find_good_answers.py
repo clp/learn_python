@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Thu 2017 Jun 01 10:06:08 PMPM clpoda>
+#   Time-stamp: <Fri 2017 Jun 02 10:24:18 AMAM clpoda>
 """fga_find_good_answers.py
 
 
