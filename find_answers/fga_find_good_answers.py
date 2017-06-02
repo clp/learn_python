@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Thu 2017 Jun 01 09:13:32 PMPM clpoda>
+#   Time-stamp: <Thu 2017 Jun 01 10:06:08 PMPM clpoda>
 """fga_find_good_answers.py
 
 
@@ -112,22 +112,22 @@ def main():
     # expect that some of those answers come from top owners
     # (owners who have high mean scores).
     # Set the size of these list slices to get enough o/p to analyze.
-    # With slice limits at 40 and 30, got 2Q, 36 A.
+    # With slice limits at 40 and 30, got 2 Q, 36 A.
     # With slice limits at 400 and 300, got 26 Q, 308 A.
     pop_and_top_l = list(set(parent_id_l[:40]).intersection(set(popular_ids_a[:30])))
     print('len(pop_and_top_l) : ', len(pop_and_top_l))
     if args['verbose']:
         print('pop_and_top_l, parent id\'s to examine: ', pop_and_top_l[:])
     q_with_a_df = combine_related_q_and_a(pop_and_top_l, all_ques_df, all_ans_df)
-    outfields_l = ['Id', 'ParentId', 'OwnerUserId', 'CreationDate', 'Score', 'Title', 'Body']
 
     # Write full data set to a csv file.
+    outfields_l = ['Id', 'ParentId', 'OwnerUserId', 'CreationDate', 'Score', 'Title', 'Body']
     outfile = 'outdir/q_with_a.csv'
     q_with_a_df[outfields_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
     # DBG  write_df_to_file(q_with_a_df, outdir, a_fname)
 
-    # Write keyword-containing records to a csv file if keyword was provided.
     if keyword:
+        # Write keyword-containing records to a csv file.
         qa_with_keyword_df = select_keyword_recs(keyword, q_with_a_df, outfields_l)
         outfile = 'outdir/qa_with_keyword.csv'
         qa_with_keyword_df[outfields_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
