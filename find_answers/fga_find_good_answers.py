@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Wed 2017 May 24 09:58:50 PMPM clpoda>
+#   Time-stamp: <Thu 2017 Jun 01 06:50:24 PMPM clpoda>
 """fga_find_good_answers.py
 
 
@@ -116,12 +116,14 @@ def main():
         print('len(pop_and_top_l) : ', len(pop_and_top_l))
         print('pop_and_top_l, parent id\'s to examine: ', pop_and_top_l[:])
     q_with_a_df = combine_related_q_and_a(pop_and_top_l, all_ques_df, all_ans_df)
-    qa_with_keyword_df = select_keyword_recs(keyword, pop_and_top_l, q_with_a_df, all_ques_df, all_ans_df)
-
-    # Write qa_with_keyword_df, a subset of the full data set, to a csv file.
     outfields_l = ['Id', 'ParentId', 'OwnerUserId', 'CreationDate', 'Score', 'Title', 'Body']
-    outfile = 'outdir/qa_with_keyword.csv'
-    qa_with_keyword_df[outfields_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
+
+    # Skip this step if no keyword was provided.
+    if keyword:
+        qa_with_keyword_df = select_keyword_recs(keyword, pop_and_top_l, q_with_a_df, all_ques_df, all_ans_df, outfields_l)
+        # Write qa_with_keyword_df, a subset of the full data set, to a csv file.
+        outfile = 'outdir/qa_with_keyword.csv'
+        qa_with_keyword_df[outfields_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
 
     # Write full data set to a csv file.
     outfile = 'outdir/q_with_a.csv'
@@ -315,7 +317,7 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, all_ans_df):
 # TBD, Thu2017_0504_18:52 . pop_and_top_l is not used here, yet.
 #TBD, all_ques_df, all_ans_df are not used here yet.
 #
-def select_keyword_recs(keyword, pop_and_top_l, q_with_a_df, all_ques_df, all_ans_df):
+def select_keyword_recs(keyword, pop_and_top_l, q_with_a_df, all_ques_df, all_ans_df, outfields_l):
     """Find all Q's that contain the keyword, in Title or Body.
     TBD, Find all A's that contain the keyword; select the corresponding Q's.
     Combine the two sets into one set of unique Q's w/ their A's.
@@ -328,7 +330,7 @@ def select_keyword_recs(keyword, pop_and_top_l, q_with_a_df, all_ques_df, all_an
     qb_sr = q_with_a_df.Body.str.contains(keyword, regex=False)
     # Combine two series into one w/ boolean OR.
     ques_contains_sr = qb_sr | qt_sr
-    qm_df = q_with_a_df[['Id', 'ParentId', 'OwnerUserId',  'CreationDate', 'Score', 'Title', 'Body']][ques_contains_sr]
+    qm_df = q_with_a_df[outfields_l][ques_contains_sr]
 
     # TBD, Now check the Answer Body column in the same way.
     #  See b.2, for future.
@@ -371,8 +373,9 @@ if __name__ == '__main__':
     num_owners = 40  # Default is 10.
     num_owners = 100  # Default is 10.
     print("num_owners: ", num_owners)
-    keyword = 'beginner'
-    keyword = 'yield'
+    keyword = False
+    #D keyword = 'beginner'
+    #D keyword = 'yield'
     # D keyword = 'begin'
     # D keyword = 'pandas'
     #D keyword = 'Python'  # Both Title & Body of data sets have it; for debug
