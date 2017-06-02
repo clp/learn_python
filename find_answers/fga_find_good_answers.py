@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Thu 2017 Jun 01 07:30:02 PMPM clpoda>
+#   Time-stamp: <Thu 2017 Jun 01 09:13:32 PMPM clpoda>
 """fga_find_good_answers.py
 
 
@@ -108,12 +108,15 @@ def main():
     parent_id_l = find_question_ids(top_scoring_owners_a, all_ans_df)
     #
     # pop_and_top_l:
-    # Find parent IDs that are popular (have several answers) and
-    # some of those answers come from top owners (owners have high scores).
-    #TBD, Set the size of these lists to get enough o/p to analyze.
-    pop_and_top_l = list(set(parent_id_l[:20]).intersection(set(popular_ids_a[:40])))
+    # Find parent IDs that are popular (have several answers), and
+    # expect that some of those answers come from top owners
+    # (owners who have high mean scores).
+    # Set the size of these list slices to get enough o/p to analyze.
+    # With slice limits at 40 and 30, got 2Q, 36 A.
+    # With slice limits at 400 and 300, got 26 Q, 308 A.
+    pop_and_top_l = list(set(parent_id_l[:40]).intersection(set(popular_ids_a[:30])))
+    print('len(pop_and_top_l) : ', len(pop_and_top_l))
     if args['verbose']:
-        print('len(pop_and_top_l) : ', len(pop_and_top_l))
         print('pop_and_top_l, parent id\'s to examine: ', pop_and_top_l[:])
     q_with_a_df = combine_related_q_and_a(pop_and_top_l, all_ques_df, all_ans_df)
     outfields_l = ['Id', 'ParentId', 'OwnerUserId', 'CreationDate', 'Score', 'Title', 'Body']
