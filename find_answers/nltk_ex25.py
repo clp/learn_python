@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.6.0 :: Anaconda 4.3.0 (64-bit)
 
-# Time-stamp: <Thu 2017 Jun 08 02:33:56 PMPM clpoda>
+# Time-stamp: <Fri 2017 Jun 09 11:44:42 AMAM clpoda>
 
 """nltk_ex25.py
     
@@ -46,6 +46,7 @@ from six.moves import range
 import os
 import csv
 
+import config as cf
 import logging
 
 
@@ -70,65 +71,64 @@ log_level = logging.INFO
 #TBD log_level = logging.DEBUG
 logging.basicConfig(filename=log_file, level=log_level, format=' %(asctime)s - %(levelname)s - %(message)s')
 # Sample log cmd: logging.debug('msg text var=' + str(var))
-logger = logging.getLogger(__name__)
+cf.logger = logging.getLogger(__name__)
 log_msg = '\n' + log_file + ' - Start logging.\n'
-logger.info(log_msg)
+cf.logger.info(log_msg)
 
 a_infile  = ""
 
 def main():
     init()
-    global tmpdir, all_ans_df, all_ques_df
     
-    a_fname, a_infile, q_infile, datadir, tmpdir, outdir = config_data()
+    a_fname, a_infile, q_infile, datadir, cf.tmpdir, outdir = config_data()
     
-    logger.info("Step 1. Read data from file into dataframes.")
-    all_ans_df, all_ques_df, progress_msg_factor, numlines = read_data(a_infile, q_infile)
+    cf.logger.info("Step 1. Read data from file into dataframes.")
+    cf.all_ans_df, cf.all_ques_df, cf.progress_msg_factor, numlines = read_data(a_infile, q_infile)
     
-    logger.info("Step 2. Process the words of each input line.")
-    clean_ans_bodies_l = clean_raw_data(a_fname, progress_msg_factor)
+    cf.logger.info("Step 2. Process the words of each input line.")
+    clean_ans_bodies_l = clean_raw_data(a_fname, cf.progress_msg_factor)
     
-    logger.info("Step 3. Build a bag of words and their counts.")
+    cf.logger.info("Step 3. Build a bag of words and their counts.")
     (vocab, dist) = make_bag_of_words(clean_ans_bodies_l)
     words_sorted_by_count_l = sort_save_vocab('.vocab', vocab, dist, a_fname)
     # Save the original list for later searching.
     words_sorted_by_count_main_l = words_sorted_by_count_l
     
-    logger.info('Step 4. Sort Answers by Score.')
+    cf.logger.info('Step 4. Sort Answers by Score.')
     score_df, num_selected_recs = sort_answers_by_score(numlines)
     
-    logger.info('Step 5. Find most freq words for top-scoring Answers.')
+    cf.logger.info('Step 5. Find most freq words for top-scoring Answers.')
     score_top_n_df = score_df[['Id']]
     
     #OK.tbr  print("DBG.103", score_top_n_df.tail(num_selected_recs), '\n')
     #TBD, Maybe convert df to string so logger can print title & data w/ one cmd:
     #TBD log_msg = "score_top_n_df.tail():" + CONVERT_DF_TO_STRING(score_top_n_df.tail())
-    #TBD logger.debug(log_msg)
-    logger.debug("score_top_n_df.tail():")
-    logger.debug(score_top_n_df.tail(20)) 
+    #TBD cf.logger.debug(log_msg)
+    cf.logger.debug("score_top_n_df.tail():")
+    cf.logger.debug(score_top_n_df.tail(20)) 
     # Use top_n Answers & count their words.
-    logger.info("For top ans: Cleaning and parsing the training set bodies...")
+    cf.logger.info("For top ans: Cleaning and parsing the training set bodies...")
     
     top = True
-    top_n_bodies = find_freq_words(top, score_top_n_df, num_selected_recs, progress_msg_factor)
-    logger.info('make_bag_of_words(top_n_bodies)')
+    top_n_bodies = find_freq_words(top, score_top_n_df, num_selected_recs, cf.progress_msg_factor)
+    cf.logger.info('make_bag_of_words(top_n_bodies)')
     (vocab, dist) = make_bag_of_words(top_n_bodies)
     sort_save_vocab('.vocab.hiscore', vocab, dist, a_fname)
     
-    logger.info("Step 6. Find most frequent words for bottom-scoring Answers.")
+    cf.logger.info("Step 6. Find most frequent words for bottom-scoring Answers.")
     # Keep these data to compare w/ words for top-scoring Answers; s/b some diff.
     # If they are identical, there may be a logic problem in the code.
     score_bot_n_df = score_df[['Id']]
-    logger.debug("score_bot_n_df.head():")
-    logger.debug(score_bot_n_df.head(20))
+    cf.logger.debug("score_bot_n_df.head():")
+    cf.logger.debug(score_bot_n_df.head(20))
     #TBR print(score_bot_n_df.head(num_selected_recs), '\n')
     top = False
-    bot_n_bodies = find_freq_words(top, score_top_n_df, num_selected_recs, progress_msg_factor)
-    logger.info('make_bag_of_words(bot_n_bodies)')
+    bot_n_bodies = find_freq_words(top, score_top_n_df, num_selected_recs, cf.progress_msg_factor)
+    cf.logger.info('make_bag_of_words(bot_n_bodies)')
     (vocab, dist) = make_bag_of_words(bot_n_bodies)
     sort_save_vocab('.vocab.loscore', vocab, dist, a_fname)
     
-    logger.info("Step 7. Search lo-score A's for hi-score text.")
+    cf.logger.info("Step 7. Search lo-score A's for hi-score text.")
     search_for_terms(words_sorted_by_count_main_l, clean_ans_bodies_l)
     
     
@@ -147,7 +147,7 @@ def config_data():
     """Configure path and file names for i/o data.
     """
     datadir = '/data/datasets/'
-    tmpdir = 'tmpdir/'  # Relative to current dir
+    cf.tmpdir = 'tmpdir/'  # Relative to current dir
     outdir = 'outdir/'  # Relative to current dir
     #D q_fname = 'Questions.csv'
     #D a_fname = 'Answers.csv'
@@ -164,19 +164,19 @@ def config_data():
     q_fname = 'q2.csv'
     #D a_fname = 'a2.csv'
     
-    # Choose tmpdir or datadir:
-    #D a_infile = tmpdir  + a_fname
+    # Choose cf.tmpdir or datadir:
+    #D a_infile = cf.tmpdir  + a_fname
     #D a_infile = datadir + a_fname
     a_infile = outdir + a_fname
     
-    # Choose tmpdir or datadir:
-    #D q_infile = tmpdir  + q_fname
+    # Choose cf.tmpdir or datadir:
+    #D q_infile = cf.tmpdir  + q_fname
     q_infile = datadir + q_fname
     
     print('\nInput files, q & a:\n'  + q_infile + '\n' + a_infile)
-    logger.info('Input files, q & a:\n'  + q_infile + '\n' + a_infile)
+    cf.logger.info('Input files, q & a:\n'  + q_infile + '\n' + a_infile)
     
-    return a_fname, a_infile, q_infile, datadir, tmpdir, outdir
+    return a_fname, a_infile, q_infile, datadir, cf.tmpdir, outdir
     
     
 def read_data(ans_file, ques_file):
@@ -191,10 +191,11 @@ def read_data(ans_file, ques_file):
     
     numlines = len(ans_df)
     print('\nNumber of answer records in i/p data frame, ans_df: ' + str(numlines))
-    logger.info('Number of answer records in i/p data frame, ans_df: ' + str(numlines))
-    progress_msg_factor = int(round(numlines/10))
+    cf.logger.info('Number of answer records in i/p data frame, ans_df: ' + str(numlines))
+    cf.progress_msg_factor = int(round(numlines/10))
+    print('\n#D  cf.progress_msg_factor : ' , cf.progress_msg_factor)
     print()
-    return ans_df, ques_df, progress_msg_factor, numlines
+    return ans_df, ques_df, cf.progress_msg_factor, numlines
 
 
 # Process the words of each input line.
@@ -247,29 +248,29 @@ def clean_raw_data(a_fname, progress_msg_factor ):
     """ For all answers: Clean and parse the training set bodies.")
     """
     # Get the number of bodies based on that column's size
-    num_bodies = all_ans_df["Body"].size
-    logger.info("Number of bodies: " + str(num_bodies))
+    num_bodies = cf.all_ans_df["Body"].size
+    cf.logger.info("Number of bodies: " + str(num_bodies))
     
     clean_ans_bodies_l = []
-    all_ans_df["CleanBody"] = ""
+    cf.all_ans_df["CleanBody"] = ""
     
     # Build a list that holds the cleaned text from each answer's body field.
     # Use it to find terms that match terms found in hi-score Answers.
     for i in range( 0, num_bodies ):
-        clean_body = convert_text_to_words( all_ans_df["Body"][i] )
+        clean_body = convert_text_to_words( cf.all_ans_df["Body"][i] )
         clean_ans_bodies_l.append(clean_body)
         #
         # Add new column to Answers df.
-        all_ans_df.loc[i,"CleanBody"] = clean_body
+        cf.all_ans_df.loc[i,"CleanBody"] = clean_body
         # Print a progress message; default is for every 10% of i/p data handled.
-        if( (i+1) % progress_msg_factor == 0 ):
-            clean_q_a = convert_text_to_words( all_ans_df["Body"][i] )
-            #D logger.debug("Body %d of %d" % ( i+1, num_bodies ))
-            #D logger.debug('  Original text: ' + all_ans_df['Body'][i])
-            #D logger.debug('  Cleaned text:  ' + clean_q_a)
+        if( (i+1) % cf.progress_msg_factor == 0 ):
+            clean_q_a = convert_text_to_words( cf.all_ans_df["Body"][i] )
+            #D cf.logger.debug("Body %d of %d" % ( i+1, num_bodies ))
+            #D cf.logger.debug('  Original text: ' + cf.all_ans_df['Body'][i])
+            #D cf.logger.debug('  Cleaned text:  ' + clean_q_a)
     
     # Write cleaned bodies to a file, one body per line, for visual review.
-    outfile = tmpdir + a_fname + '.out'
+    outfile = cf.tmpdir + a_fname + '.out'
     if os.path.exists(outfile):
         os.rename(outfile, outfile + '.bak')
     with open(outfile, 'w') as f:
@@ -286,7 +287,7 @@ def make_bag_of_words(clean_ans_bodies_l):
     
     This arg includes 1-letter words: 'token_pattern = r'\b\w+\b'.
     """
-    logger.debug("Creating the bag of words for word counts ...")
+    cf.logger.debug("Creating the bag of words for word counts ...")
     from sklearn.feature_extraction.text import CountVectorizer
     
     # Initialize the "CountVectorizer" object, which is scikit-learn's
@@ -315,8 +316,8 @@ def make_bag_of_words(clean_ans_bodies_l):
     train_data_features = train_data_features.toarray()
     
     # Note, w/ q9999 data, got (727, 1550):
-    logger.info('Bag shape: rows (num of records), cols (num of features):')
-    logger.info(train_data_features.shape)
+    cf.logger.info('Bag shape: rows (num of records), cols (num of features):')
+    cf.logger.info(train_data_features.shape)
     
     # Take a look at the words in the vocabulary
     vocab = vectorizer.get_feature_names()
@@ -346,7 +347,7 @@ def sort_save_vocab(suffix, vocab, dist, a_fname):
     words_sorted_by_count_l = sorted(count_tag_l, key=lambda x: x[0])
     
     # Write sorted vocab to a file.
-    outfile = tmpdir + a_fname + suffix
+    outfile = cf.tmpdir + a_fname + suffix
     if os.path.exists(outfile):
         os.rename(outfile, outfile + '.bak')
     with open(outfile, 'w') as f:
@@ -359,7 +360,7 @@ def sort_answers_by_score(numlines):
     """
     Build a sorted dataframe of answers.
     """
-    score_df = all_ans_df.sort_values(['Score'])
+    score_df = cf.all_ans_df.sort_values(['Score'])
     score_df = score_df[['Id', 'Score']]
     
     # Compute the number of records to use for computation and display.
@@ -368,12 +369,12 @@ def sort_answers_by_score(numlines):
     if num_selected_recs < 6:
         num_selected_recs = 5
     log_msg = "  rec_selection_ratio,  number of selected recs: " + str(rec_selection_ratio) + ", " + str(num_selected_recs)
-    logger.info(log_msg)
-    logger.info('Lowest scoring Answers:')
-    logger.info(score_df.head())
+    cf.logger.info(log_msg)
+    cf.logger.info('Lowest scoring Answers:')
+    cf.logger.info(score_df.head())
     #D print(score_df.head(num_selected_recs), '\n')
-    logger.info('Highest scoring Answers:')
-    logger.info(score_df.tail())
+    cf.logger.info('Highest scoring Answers:')
+    cf.logger.info(score_df.tail())
     #D print(score_df.tail(num_selected_recs), '\n')
     
     return score_df, num_selected_recs
@@ -390,17 +391,17 @@ def find_freq_words(top, score_top_n_df, num_selected_recs, progress_msg_factor)
         score_df_l = score_top_n_df['Id'].tail(num_selected_recs).tolist()
     else:  # Get the head of the list, lowest-score items.
         score_df_l = score_top_n_df['Id'].head(num_selected_recs).tolist()
-    df8 = all_ans_df.set_index('Id')
+    df8 = cf.all_ans_df.set_index('Id')
     progress_count = 0
     for i in score_df_l:
         progress_count += 1
         top_n_bodies.append( convert_text_to_words( df8["Body"][i] ))
         # Print a progress message for every 10% of i/p data handled.
-        if( (progress_count+1) % progress_msg_factor == 0 ):
+        if( (progress_count+1) % cf.progress_msg_factor == 0 ):
             clean_q_a = convert_text_to_words( df8["Body"][i] )
-            #D logger.debug("Body for Id %d " % ( i))
-            #D logger.debug('  Original text:\n' + df8['Body'][i][:70])
-            #D logger.debug('  Cleaned text:\n' + clean_q_a[:70])
+            #D cf.logger.debug("Body for Id %d " % ( i))
+            #D cf.logger.debug('  Original text:\n' + df8['Body'][i][:70])
+            #D cf.logger.debug('  Cleaned text:\n' + clean_q_a[:70])
     return top_n_bodies 
     
     
@@ -413,10 +414,10 @@ def search_for_terms(words_sorted_by_count_main_l, clean_ans_bodies_l):
     """
     
     clean_ans_bodies_df = pd.DataFrame(clean_ans_bodies_l)
-    logger.debug("clean_ans_bodies_l, top:") 
-    logger.debug(clean_ans_bodies_l[:1]) 
-    logger.debug("clean_ans_bodies_l, bottom:")
-    logger.debug(clean_ans_bodies_l[-1:]) 
+    cf.logger.debug("clean_ans_bodies_l, top:") 
+    cf.logger.debug(clean_ans_bodies_l[:1]) 
+    cf.logger.debug("clean_ans_bodies_l, bottom:")
+    cf.logger.debug(clean_ans_bodies_l[-1:]) 
     
     #D Use short list cab_l for testing:
     #D cab_l = ['step isprimenumber call', 'foo step isprimenumber call bar', 'yield abc def ghi generators long first string', 'generator', 'foo next function bar', 'short list foo bar baz']
@@ -428,37 +429,37 @@ def search_for_terms(words_sorted_by_count_main_l, clean_ans_bodies_l):
     #  and what was not found in the A's being checked.
     #  Should tmp_df not be a df?  Would a list of lists be better?
     
-    all_ans_df["HiScoreTerms"] = ""
+    cf.all_ans_df["HiScoreTerms"] = ""
     
     print("\nTerms from hi-score Answers.")
-    logger.info("Terms from hi-score Answers.")
+    cf.logger.info("Terms from hi-score Answers.")
     #TBD, Maybe collect these "count,w" data into a single list,
     #   & write it in one step to the log file.
     for count,w in words_sorted_by_count_main_l[-num_hi_score_terms:]:
         print("count, w: ", count, " , ", w)
         log_msg = "count, w: " + str(count) + " , " + w
-        logger.info(log_msg)
+        cf.logger.info(log_msg)
         tmp2_sr = clean_ans_bodies_df[0].str.contains(w)
         for index,row in tmp2_sr.iteritems():
             if row:
                 #TBD, Change string 'w' to list or tuple for better storage in df?
-                #OK all_ans_df.loc[index, "HiScoreTerms"] = all_ans_df.loc[index, "HiScoreTerms"] + w + ' , '
-                all_ans_df.loc[index, "HiScoreTerms"] += ( w + ' , ')
+                #OK cf.all_ans_df.loc[index, "HiScoreTerms"] = cf.all_ans_df.loc[index, "HiScoreTerms"] + w + ' , '
+                cf.all_ans_df.loc[index, "HiScoreTerms"] += ( w + ' , ')
     
     #D print()
-    #D logger.debug("DBG, all_ans_df.head():")
-    #D logger.debug(all_ans_df.head())
+    #D cf.logger.debug("DBG, cf.all_ans_df.head():")
+    #D cf.logger.debug(cf.all_ans_df.head())
     
     # Save full df to a file.
     outfile = "tmpdir/all_ans.csv"
-    all_ans_df.to_csv(outfile)
+    cf.all_ans_df.to_csv(outfile)
     
     # Save possible valuable answers to a separate file for review.
     # Replace empty strings in HiScoreTerms cells with NaN,
     # to drop low value answers easily w/ dropna().
-    all_ans_df['HiScoreTerms'].replace('', np.nan, inplace=True)
+    cf.all_ans_df['HiScoreTerms'].replace('', np.nan, inplace=True)
     # Save a new df with only rows that have data in the HiScoreTerms column.
-    ans_with_hst_df = all_ans_df.dropna(subset=['HiScoreTerms'])
+    ans_with_hst_df = cf.all_ans_df.dropna(subset=['HiScoreTerms'])
     outfile = "tmpdir/ans_with_hst.csv"
     ans_with_hst_df.to_csv(outfile)
     
@@ -471,8 +472,8 @@ def search_for_terms(words_sorted_by_count_main_l, clean_ans_bodies_l):
     print(ans_with_hst_df[['Id', 'HiScoreTerms']])
     
     # Also write summary data to log.
-    logger.info("Check low score Answers for useful data: ")
-    logger.info(ans_with_hst_df[['Id', 'Score', 'CreationDate', 'Title', 'HiScoreTerms']])
+    cf.logger.info("Check low score Answers for useful data: ")
+    cf.logger.info(ans_with_hst_df[['Id', 'Score', 'CreationDate', 'Title', 'HiScoreTerms']])
     #TBD.0 return
 
 
@@ -482,6 +483,6 @@ if __name__ == '__main__':
     print("num_hi_score_terms: ", num_hi_score_terms)
     main()
     log_msg = log_file + " - Finish program & logging.\n\n"
-    logger.warning(log_msg)
+    cf.logger.warning(log_msg)
 
 'bye'

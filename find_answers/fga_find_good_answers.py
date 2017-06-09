@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Fri 2017 Jun 09 12:19:08 AMAM clpoda>
+#   Time-stamp: <Fri 2017 Jun 09 11:49:45 AMAM clpoda>
 """fga_find_good_answers.py
 
 
@@ -90,7 +90,7 @@ import pandas as pd
 import random
 
 import config as cf
-import n25_nltk as nl
+import nltk_ex25 as nl
 
 
 
@@ -193,6 +193,7 @@ def read_data(ans_file, ques_file):
     numlines = len(ans_df)
     print('Number of answer records in i/p data frame, ans_df: ' + str(numlines))
     cf.progress_msg_factor = int(round(numlines/10))
+    print('\n#D  cf.progress_msg_factor : ' , cf.progress_msg_factor)
     print()
     return ans_df, ques_df, cf.progress_msg_factor
 
@@ -328,8 +329,8 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, all_ans_df):
         #
         cf.all_ans_df = qag_df  #TMP to avoid renaming all_ans_df in many places
         clean_ans_bodies_l = nl.clean_raw_data(cf.a_fname, cf.progress_msg_factor )
-        print('\n#D, clean_ans_bodies_l[:2]')
-        print(clean_ans_bodies_l[:2])
+        print('\n#D, clean_ans_bodies_l[:1]')
+        print(clean_ans_bodies_l[:1])
         #
         #TBD.Thu2017_0608_23:58 
         # Analyze qag_df w/ nlp s/w in this loop; 
