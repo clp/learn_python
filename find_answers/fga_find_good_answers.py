@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Fri 2017 Jun 09 01:06:56 PMPM clpoda>
+#   Time-stamp: <Fri 2017 Jun 09 04:17:39 PMPM clpoda>
 """fga_find_good_answers.py
 
 
@@ -106,7 +106,7 @@ pid_l = [469, 502, 535, 594, 683, 742, 766, 773, 972]
 def main():
     init()
     cf.a_fname, a_infile, q_infile, indir, outdir = config_data()
-    cf.all_ans_df, cf.all_ques_df, cf.progress_msg_factor = read_data(a_infile, q_infile)
+    cf.all_ans_df, cf.all_ques_df, cf.progress_msg_factor, numlines = read_data(a_infile, q_infile)
     popular_ids = find_popular_ques(cf.all_ans_df, cf.a_fname)
     popular_ids_a = popular_ids.index.values
     top_scoring_owners_a = group_data(cf.all_ans_df)
@@ -123,7 +123,7 @@ def main():
     print('len(pop_and_top_l) : ', len(pop_and_top_l))
     if args['verbose']:
         print('pop_and_top_l, parent id\'s to examine: ', pop_and_top_l[:])
-    q_with_a_df = combine_related_q_and_a(pop_and_top_l, cf.all_ques_df, cf.all_ans_df)
+    q_with_a_df = combine_related_q_and_a(pop_and_top_l, cf.all_ques_df, cf.all_ans_df, numlines)
     #
     print('fga, End of debug code; exiting.')
     exit()
@@ -195,7 +195,7 @@ def read_data(ans_file, ques_file):
     cf.progress_msg_factor = int(round(numlines/10))
     print('\n#D  cf.progress_msg_factor : ' , cf.progress_msg_factor)
     print()
-    return ans_df, ques_df, cf.progress_msg_factor
+    return ans_df, ques_df, cf.progress_msg_factor, numlines
 
 
 def find_popular_ques(all_ans_df, a_fname):
@@ -296,7 +296,7 @@ def find_question_ids(top_scoring_owners_a, all_ans_df):
     return parent_id_l
 
 
-def combine_related_q_and_a(pop_and_top_l, all_ques_df, all_ans_df):
+def combine_related_q_and_a(pop_and_top_l, all_ques_df, all_ans_df, numlines):
     """Get each Q in the list of ParentId's, and the related A's.
     Loop over all the question Id's and store all Q & A data in a df.
     Return that df.
@@ -328,11 +328,63 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, all_ans_df):
         qag_df = pd.concat([qm_df, am_df]).reset_index(drop=True)
         #D print("\n#D qag_df.head(): ")
         #D print(qag_df.head())
+        cf.logger.info('qag_df.head(1): ')
+        cf.logger.info( qag_df.head(1))
         #
         cf.all_ans_df = qag_df  #TMP to avoid renaming all_ans_df in many places
+        cf.logger.info("Step 2. Process the words of each input line.")
         clean_ans_bodies_l = nl.clean_raw_data(cf.a_fname, cf.progress_msg_factor )
         #D print('\n#D, clean_ans_bodies_l[:1]')
         #D print(clean_ans_bodies_l[:1])
+        #
+        cf.logger.info("Step 3. Build a bag of words and their counts.")
+        (vocab, dist) = nl.make_bag_of_words(clean_ans_bodies_l)
+        #D print('\n#D, vocab[:1]')
+        #D print(vocab[:1])
+        words_sorted_by_count_l = nl.sort_save_vocab('.vocab', vocab, dist, cf.a_fname)
+        # Save the original list for later searching.
+        words_sorted_by_count_main_l = words_sorted_by_count_l
+        #
+        cf.logger.info('Step 4. Sort Answers by Score.')
+        score_df, num_selected_recs = nl.sort_answers_by_score(numlines)
+        #
+        cf.logger.info('Step 5. Find most freq words for top-scoring Answers.')
+        score_top_n_df = score_df[['Id']]
+        
+        #OK.tbr  print("DBG.103", score_top_n_df.tail(num_selected_recs), '\n')
+        #TBD, Maybe convert df to string so logger can print title & data w/ one cmd:
+        #TBD log_msg = "score_top_n_df.tail():" + CONVERT_DF_TO_STRING(score_top_n_df.tail())
+        #TBD cf.logger.debug(log_msg)
+        cf.logger.debug("score_top_n_df.tail():")
+        cf.logger.debug(score_top_n_df.tail(20)) 
+        # Use top_n Answers & count their words.
+        cf.logger.info("For top ans: Cleaning and parsing the training set bodies...")
+        # 
+        top = True
+        top_n_bodies = nl.find_freq_words(top, score_top_n_df, num_selected_recs, cf.progress_msg_factor)
+        cf.logger.info('make_bag_of_words(top_n_bodies)')
+        (vocab, dist) = nl.make_bag_of_words(top_n_bodies)
+        nl.sort_save_vocab('.vocab.hiscore', vocab, dist, cf.a_fname)
+        #
+        cf.logger.info("Step 6. Find most frequent words for bottom-scoring Answers.")
+        # Keep these data to compare w/ words for top-scoring Answers; s/b some diff.
+        # If they are identical, there may be a logic problem in the code.
+        score_bot_n_df = score_df[['Id']]
+        cf.logger.debug("score_bot_n_df.head():")
+        cf.logger.debug(score_bot_n_df.head(20))
+        #TBR print(score_bot_n_df.head(num_selected_recs), '\n')
+        top = False
+        bot_n_bodies = nl.find_freq_words(top, score_top_n_df, num_selected_recs, cf.progress_msg_factor)
+        cf.logger.info('make_bag_of_words(bot_n_bodies)')
+        (vocab, dist) = nl.make_bag_of_words(bot_n_bodies)
+        nl.sort_save_vocab('.vocab.loscore', vocab, dist, cf.a_fname)
+        #
+        cf.logger.info("Step 7. Search lo-score A's for hi-score text.")
+        nl.search_for_terms(words_sorted_by_count_main_l, clean_ans_bodies_l, num_hi_score_terms)
+        #TBF.Fri2017_0609_16:16 , See note at nl.search_for_terms() abt
+        # problem of writing only one df to the o/p file.
+        
+        
         #
         #TBD.Thu2017_0608_23:58 
         # Analyze qag_df w/ nlp s/w in this loop; 
@@ -400,6 +452,7 @@ if __name__ == '__main__':
     num_owners = 40  # Default is 10.
     num_owners = 100  # Default is 10.
     print("num_owners: ", num_owners)
+    #
     keyword = False
     #D keyword = 'beginner'
     #D keyword = 'yield'
@@ -407,6 +460,10 @@ if __name__ == '__main__':
     # D keyword = 'pandas'
     #D keyword = 'Python'  # Both Title & Body of data sets have it; for debug
     print("Keyword: ", keyword)
+    #
+    num_hi_score_terms = 3  # Use 3 for testing; 11 or more for use.
+    print("num_hi_score_terms: ", num_hi_score_terms)
+
 
     parser = get_parser()
     args = vars(parser.parse_args())

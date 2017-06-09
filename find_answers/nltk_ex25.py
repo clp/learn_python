@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.6.0 :: Anaconda 4.3.0 (64-bit)
 
-# Time-stamp: <Fri 2017 Jun 09 12:35:57 PMPM clpoda>
+# Time-stamp: <Fri 2017 Jun 09 04:15:55 PMPM clpoda>
 
 """nltk_ex25.py
     
@@ -285,7 +285,8 @@ def make_bag_of_words(clean_ans_bodies_l):
     specify 'ngram_range = (3,5)' (for example) in the args for
     CountVectorizer.
     
-    This arg includes 1-letter words: 'token_pattern = r'\b\w+\b'.
+    Using this arg & pattern will include 1-letter
+    words: 'token_pattern = r'\b\w+\b'.
     """
     cf.logger.debug("Creating the bag of words for word counts ...")
     from sklearn.feature_extraction.text import CountVectorizer
@@ -405,7 +406,7 @@ def find_freq_words(top, score_top_n_df, num_selected_recs, progress_msg_factor)
     return top_n_bodies 
     
     
-def search_for_terms(words_sorted_by_count_main_l, clean_ans_bodies_l):
+def search_for_terms(words_sorted_by_count_main_l, clean_ans_bodies_l, num_hi_score_terms):
     """
     Read each answer and save any terms that it has in common
     with (high frequency) text from the high-score answers.
@@ -431,12 +432,12 @@ def search_for_terms(words_sorted_by_count_main_l, clean_ans_bodies_l):
     
     cf.all_ans_df["HiScoreTerms"] = ""
     
-    print("\nTerms from hi-score Answers.")
+    #D print("\nTerms from hi-score Answers.")
     cf.logger.info("Terms from hi-score Answers.")
     #TBD, Maybe collect these "count,w" data into a single list,
     #   & write it in one step to the log file.
     for count,w in words_sorted_by_count_main_l[-num_hi_score_terms:]:
-        print("count, w: ", count, " , ", w)
+        #D print("count, w: ", count, " , ", w)
         log_msg = "count, w: " + str(count) + " , " + w
         cf.logger.info(log_msg)
         tmp2_sr = clean_ans_bodies_df[0].str.contains(w)
@@ -454,6 +455,11 @@ def search_for_terms(words_sorted_by_count_main_l, clean_ans_bodies_l):
     outfile = "tmpdir/all_ans.csv"
     cf.all_ans_df.to_csv(outfile)
     
+    #TBF.Fri2017_0609_16:12 , Maybe the o/p file only has last answer 
+    # instead of a group of answers.
+    # Probly b/c we write to the same file each time through the calling loop.
+    # Plan to append each indiv df to a collection, then build o/p file when done.
+    #
     # Save possible valuable answers to a separate file for review.
     # Replace empty strings in HiScoreTerms cells with NaN,
     # to drop low value answers easily w/ dropna().
@@ -463,13 +469,13 @@ def search_for_terms(words_sorted_by_count_main_l, clean_ans_bodies_l):
     outfile = "tmpdir/ans_with_hst.csv"
     ans_with_hst_df.to_csv(outfile)
     
-    # Print partial data about interesting answers to check.
-    print("\nCheck these low score Answers for useful data: ")
-    for index,row in ans_with_hst_df.iterrows():
-        if np.isnan(row['ParentId']):  # Found a question.
-            print('Id, Title: ', row['Id'], row['Title'])
-    print(ans_with_hst_df[['Id', 'Score', 'CreationDate']])
-    print(ans_with_hst_df[['Id', 'HiScoreTerms']])
+    #D # Print partial data about interesting answers to check.
+    #D print("\nCheck these low score Answers for useful data: ")
+    #D for index,row in ans_with_hst_df.iterrows():
+    #D     if np.isnan(row['ParentId']):  # Found a question.
+    #D         print('Id, Title: ', row['Id'], row['Title'])
+    #D print(ans_with_hst_df[['Id', 'Score', 'CreationDate']])
+    #D print(ans_with_hst_df[['Id', 'HiScoreTerms']])
     
     # Also write summary data to log.
     cf.logger.info("Check low score Answers for useful data: ")
