@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Fri 2017 Jun 09 12:40:55 PMPM clpoda>
+#   Time-stamp: <Fri 2017 Jun 09 01:06:56 PMPM clpoda>
 """fga_find_good_answers.py
 
 
@@ -163,14 +163,14 @@ def config_data():
     #D cf.q_fname = 'Questions.csv'
 
     # Smaller data sets, used for debugging.
-    cf.q_fname = 'q6_999994.csv'
-    cf.a_fname = 'a6_999999.csv'
+    #D cf.q_fname = 'q6_999994.csv'
+    #D cf.a_fname = 'a6_999999.csv'
     #D cf.a_fname = 'a5_99998.csv'
     #D cf.q_fname = 'q30_99993.csv'
-    # D cf.a_fname = 'a3_986.csv'
-    # D cf.q_fname = 'q3_992.csv'
-    # D cf.a_fname = 'a2.csv'
-    # D cf.q_fname = 'q2.csv'
+    cf.a_fname = 'a3_986.csv'
+    cf.q_fname = 'q3_992.csv'
+    #D cf.a_fname = 'a2.csv'
+    #D cf.q_fname = 'q2.csv'
 
     a_infile = indir + cf.a_fname
     q_infile = indir + cf.q_fname
