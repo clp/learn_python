@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Fri 2017 Jun 09 11:49:45 AMAM clpoda>
+#   Time-stamp: <Fri 2017 Jun 09 12:19:35 PMPM clpoda>
 """fga_find_good_answers.py
 
 
@@ -119,7 +119,7 @@ def main():
     # Set the size of the following list slices to get enough o/p to analyze.
     # With slice limits at 40 and 30, got 2 Q, 36 A.
     # With slice limits at 400 and 300, got 26 Q, 308 A.
-    pop_and_top_l = list(set(parent_id_l[:40]).intersection(set(popular_ids_a[:30])))
+    pop_and_top_l = list(set(parent_id_l[:400]).intersection(set(popular_ids_a[:300])))
     print('len(pop_and_top_l) : ', len(pop_and_top_l))
     if args['verbose']:
         print('pop_and_top_l, parent id\'s to examine: ', pop_and_top_l[:])
@@ -165,10 +165,10 @@ def config_data():
     # Smaller data sets, used for debugging.
     #D q_fname = 'q6_999994.csv'
     #D a_fname = 'a6_999999.csv'
-    # D a_fname = 'a5_99998.csv'
-    # D q_fname = 'q30_99993.csv'
-    cf.a_fname = 'a3_986.csv'
-    cf.q_fname = 'q3_992.csv'
+    cf.a_fname = 'a5_99998.csv'
+    cf.q_fname = 'q30_99993.csv'
+    # D cf.a_fname = 'a3_986.csv'
+    # D cf.q_fname = 'q3_992.csv'
     # D a_fname = 'a2.csv'
     # D q_fname = 'q2.csv'
 
@@ -320,7 +320,9 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, all_ans_df):
         # Do I need those 'intermediate' results?
     for qid in pop_and_top_l:
         i += 1
-        print("#D for-qid-loop count i: ", i)
+        #OK if(i % cf.progress_msg_factor == 0):
+        if(i % 20 == 0):
+            print("#D combine_related_q_and_a:for-qid-loop count i: ", i)
         qm_df = ques_match_df[ques_match_df['Id'] == qid]
         am_df = ans_match_df[ans_match_df['ParentId'] == qid]
         qag_df = pd.concat([qm_df, am_df]).reset_index(drop=True)
@@ -329,8 +331,8 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, all_ans_df):
         #
         cf.all_ans_df = qag_df  #TMP to avoid renaming all_ans_df in many places
         clean_ans_bodies_l = nl.clean_raw_data(cf.a_fname, cf.progress_msg_factor )
-        print('\n#D, clean_ans_bodies_l[:1]')
-        print(clean_ans_bodies_l[:1])
+        #D print('\n#D, clean_ans_bodies_l[:1]')
+        #D print(clean_ans_bodies_l[:1])
         #
         #TBD.Thu2017_0608_23:58 
         # Analyze qag_df w/ nlp s/w in this loop; 
