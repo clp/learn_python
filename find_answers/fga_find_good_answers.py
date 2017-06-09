@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Fri 2017 Jun 09 12:19:35 PMPM clpoda>
+#   Time-stamp: <Fri 2017 Jun 09 12:40:55 PMPM clpoda>
 """fga_find_good_answers.py
 
 
@@ -159,18 +159,18 @@ def config_data():
     # TBD Include the test data files w/ this project.
     indir = 'indir/'  # Relative to pwd, holds i/p files.
     outdir = 'outdir/'  # Relative to pwd, holds o/p files.
-    #D a_fname = 'Answers.csv'
-    #D q_fname = 'Questions.csv'
+    #D cf.a_fname = 'Answers.csv'
+    #D cf.q_fname = 'Questions.csv'
 
     # Smaller data sets, used for debugging.
-    #D q_fname = 'q6_999994.csv'
-    #D a_fname = 'a6_999999.csv'
-    cf.a_fname = 'a5_99998.csv'
-    cf.q_fname = 'q30_99993.csv'
+    cf.q_fname = 'q6_999994.csv'
+    cf.a_fname = 'a6_999999.csv'
+    #D cf.a_fname = 'a5_99998.csv'
+    #D cf.q_fname = 'q30_99993.csv'
     # D cf.a_fname = 'a3_986.csv'
     # D cf.q_fname = 'q3_992.csv'
-    # D a_fname = 'a2.csv'
-    # D q_fname = 'q2.csv'
+    # D cf.a_fname = 'a2.csv'
+    # D cf.q_fname = 'q2.csv'
 
     a_infile = indir + cf.a_fname
     q_infile = indir + cf.q_fname

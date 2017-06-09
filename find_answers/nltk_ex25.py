@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.6.0 :: Anaconda 4.3.0 (64-bit)
 
-# Time-stamp: <Fri 2017 Jun 09 11:44:42 AMAM clpoda>
+# Time-stamp: <Fri 2017 Jun 09 12:35:57 PMPM clpoda>
 
 """nltk_ex25.py
     
@@ -72,7 +72,7 @@ log_level = logging.INFO
 logging.basicConfig(filename=log_file, level=log_level, format=' %(asctime)s - %(levelname)s - %(message)s')
 # Sample log cmd: logging.debug('msg text var=' + str(var))
 cf.logger = logging.getLogger(__name__)
-log_msg = '\n' + log_file + ' - Start logging.\n'
+log_msg = log_file + ' - Start logging.\n'
 cf.logger.info(log_msg)
 
 a_infile  = ""
@@ -267,7 +267,7 @@ def clean_raw_data(a_fname, progress_msg_factor ):
             clean_q_a = convert_text_to_words( cf.all_ans_df["Body"][i] )
             #D cf.logger.debug("Body %d of %d" % ( i+1, num_bodies ))
             #D cf.logger.debug('  Original text: ' + cf.all_ans_df['Body'][i])
-            #D cf.logger.debug('  Cleaned text:  ' + clean_q_a)
+            cf.logger.debug('  Cleaned text:  ' + clean_q_a)
     
     # Write cleaned bodies to a file, one body per line, for visual review.
     outfile = cf.tmpdir + a_fname + '.out'
@@ -401,7 +401,7 @@ def find_freq_words(top, score_top_n_df, num_selected_recs, progress_msg_factor)
             clean_q_a = convert_text_to_words( df8["Body"][i] )
             #D cf.logger.debug("Body for Id %d " % ( i))
             #D cf.logger.debug('  Original text:\n' + df8['Body'][i][:70])
-            #D cf.logger.debug('  Cleaned text:\n' + clean_q_a[:70])
+            cf.logger.debug('  Partial slice of cleaned text:\n' + clean_q_a[:70])
     return top_n_bodies 
     
     
