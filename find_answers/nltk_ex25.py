@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.6.0 :: Anaconda 4.3.0 (64-bit)
 
-# Time-stamp: <Fri 2017 Jun 09 04:15:55 PMPM clpoda>
+# Time-stamp: <Fri 2017 Jun 09 06:48:12 PMPM clpoda>
 
 """nltk_ex25.py
     
@@ -129,7 +129,7 @@ def main():
     sort_save_vocab('.vocab.loscore', vocab, dist, a_fname)
     
     cf.logger.info("Step 7. Search lo-score A's for hi-score text.")
-    search_for_terms(words_sorted_by_count_main_l, clean_ans_bodies_l)
+    ans_with_hst_df = search_for_terms(words_sorted_by_count_main_l, clean_ans_bodies_l)
     
     
 def init():
@@ -480,7 +480,7 @@ def search_for_terms(words_sorted_by_count_main_l, clean_ans_bodies_l, num_hi_sc
     # Also write summary data to log.
     cf.logger.info("Check low score Answers for useful data: ")
     cf.logger.info(ans_with_hst_df[['Id', 'Score', 'CreationDate', 'Title', 'HiScoreTerms']])
-    #TBD.0 return
+    return ans_with_hst_df
 
 
 if __name__ == '__main__':

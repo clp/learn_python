@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Fri 2017 Jun 09 04:17:39 PMPM clpoda>
+#   Time-stamp: <Fri 2017 Jun 09 06:49:21 PMPM clpoda>
 """fga_find_good_answers.py
 
 
@@ -119,7 +119,7 @@ def main():
     # Set the size of the following list slices to get enough o/p to analyze.
     # With slice limits at 40 and 30, got 2 Q, 36 A.
     # With slice limits at 400 and 300, got 26 Q, 308 A.
-    pop_and_top_l = list(set(parent_id_l[:400]).intersection(set(popular_ids_a[:300])))
+    pop_and_top_l = list(set(parent_id_l[:500]).intersection(set(popular_ids_a[:500])))
     print('len(pop_and_top_l) : ', len(pop_and_top_l))
     if args['verbose']:
         print('pop_and_top_l, parent id\'s to examine: ', pop_and_top_l[:])
@@ -163,12 +163,12 @@ def config_data():
     #D cf.q_fname = 'Questions.csv'
 
     # Smaller data sets, used for debugging.
-    #D cf.q_fname = 'q6_999994.csv'
-    #D cf.a_fname = 'a6_999999.csv'
+    cf.q_fname = 'q6_999994.csv'
+    cf.a_fname = 'a6_999999.csv'
     #D cf.a_fname = 'a5_99998.csv'
     #D cf.q_fname = 'q30_99993.csv'
-    cf.a_fname = 'a3_986.csv'
-    cf.q_fname = 'q3_992.csv'
+    #D cf.a_fname = 'a3_986.csv'
+    #D cf.q_fname = 'q3_992.csv'
     #D cf.a_fname = 'a2.csv'
     #D cf.q_fname = 'q2.csv'
 
@@ -300,6 +300,10 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, all_ans_df, numlines):
     """Get each Q in the list of ParentId's, and the related A's.
     Loop over all the question Id's and store all Q & A data in a df.
     Return that df.
+    Update, Fri2017_0609_18:28 : This function now includes calls
+    to the routines that perform the natural language processing
+    of the text data.  The code will probably be reorganized into
+    other functions.
     """
     ques_match_df = all_ques_df[all_ques_df['Id'].isin(pop_and_top_l)]
     ans_match_df = all_ans_df[all_ans_df['ParentId'].isin(pop_and_top_l)]
@@ -317,7 +321,7 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, all_ans_df, numlines):
     # Build each Q&A group: one Q w/ all its A.'s
     #TBD, How to do this w/o explicit loop, using df tools?
     #TBD, Combine or replace the ques_match_df & ans*df code above w/ this?
-        # Do I need those 'intermediate' results?
+        # Maybe delete those 'intermediate' results?
     for qid in pop_and_top_l:
         i += 1
         #OK if(i % cf.progress_msg_factor == 0):
@@ -380,7 +384,7 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, all_ans_df, numlines):
         nl.sort_save_vocab('.vocab.loscore', vocab, dist, cf.a_fname)
         #
         cf.logger.info("Step 7. Search lo-score A's for hi-score text.")
-        nl.search_for_terms(words_sorted_by_count_main_l, clean_ans_bodies_l, num_hi_score_terms)
+        ans_with_hst_df = nl.search_for_terms(words_sorted_by_count_main_l, clean_ans_bodies_l, num_hi_score_terms)
         #TBF.Fri2017_0609_16:16 , See note at nl.search_for_terms() abt
         # problem of writing only one df to the o/p file.
         
@@ -393,8 +397,8 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, all_ans_df, numlines):
         # or move this code to the nlp processing section of the program.
         #
     #
-    print('\n#D fga, End of debug code; exiting.')
-    exit()
+    #D print('\n#D fga, End of debug code; exiting.')
+    #D exit()
 
     return q_with_a_df
 
@@ -450,7 +454,7 @@ if __name__ == '__main__':
     # Set the number of top scoring owners to select from the data.
     num_owners = 10  # Default is 10.
     num_owners = 40  # Default is 10.
-    num_owners = 100  # Default is 10.
+    num_owners = 200  # Default is 10.
     print("num_owners: ", num_owners)
     #
     keyword = False
@@ -461,7 +465,7 @@ if __name__ == '__main__':
     #D keyword = 'Python'  # Both Title & Body of data sets have it; for debug
     print("Keyword: ", keyword)
     #
-    num_hi_score_terms = 3  # Use 3 for testing; 11 or more for use.
+    num_hi_score_terms = 22  # Use 3 for testing; 11 or more for use.
     print("num_hi_score_terms: ", num_hi_score_terms)
 
 
