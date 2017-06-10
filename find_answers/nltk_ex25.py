@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.6.0 :: Anaconda 4.3.0 (64-bit)
 
-# Time-stamp: <Fri 2017 Jun 09 06:48:12 PMPM clpoda>
+# Time-stamp: <Fri 2017 Jun 09 07:33:06 PMPM clpoda>
 
 """nltk_ex25.py
     
@@ -455,19 +455,12 @@ def search_for_terms(words_sorted_by_count_main_l, clean_ans_bodies_l, num_hi_sc
     outfile = "tmpdir/all_ans.csv"
     cf.all_ans_df.to_csv(outfile)
     
-    #TBF.Fri2017_0609_16:12 , Maybe the o/p file only has last answer 
-    # instead of a group of answers.
-    # Probly b/c we write to the same file each time through the calling loop.
-    # Plan to append each indiv df to a collection, then build o/p file when done.
-    #
     # Save possible valuable answers to a separate file for review.
     # Replace empty strings in HiScoreTerms cells with NaN,
     # to drop low value answers easily w/ dropna().
     cf.all_ans_df['HiScoreTerms'].replace('', np.nan, inplace=True)
     # Save a new df with only rows that have data in the HiScoreTerms column.
     ans_with_hst_df = cf.all_ans_df.dropna(subset=['HiScoreTerms'])
-    outfile = "tmpdir/ans_with_hst.csv"
-    ans_with_hst_df.to_csv(outfile)
     
     #D # Print partial data about interesting answers to check.
     #D print("\nCheck these low score Answers for useful data: ")

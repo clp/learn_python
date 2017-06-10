@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Fri 2017 Jun 09 06:49:21 PMPM clpoda>
+#   Time-stamp: <Fri 2017 Jun 09 08:11:27 PMPM clpoda>
 """fga_find_good_answers.py
 
 
@@ -123,10 +123,16 @@ def main():
     print('len(pop_and_top_l) : ', len(pop_and_top_l))
     if args['verbose']:
         print('pop_and_top_l, parent id\'s to examine: ', pop_and_top_l[:])
-    q_with_a_df = combine_related_q_and_a(pop_and_top_l, cf.all_ques_df, cf.all_ans_df, numlines)
+    q_with_a_df, all_ans_with_hst_df = combine_related_q_and_a(pop_and_top_l, cf.all_ques_df, cf.all_ans_df, numlines)
     #
-    print('fga, End of debug code; exiting.')
-    exit()
+    #TBD Save the df to a file for review & debug; later processing may
+    # use the df & the file is not needed.
+    outfile = "tmpdir/all_ans_with_hst.csv"
+    all_ans_with_hst_df.to_csv(outfile)
+    
+    #D print('#D fga, End of debug code; exiting.')
+    #D exit()
+
 
     # Write full data set to a csv file.
     outfields_l = ['Id', 'ParentId', 'OwnerUserId', 'CreationDate', 'Score', 'Title', 'Body']
@@ -163,12 +169,12 @@ def config_data():
     #D cf.q_fname = 'Questions.csv'
 
     # Smaller data sets, used for debugging.
-    cf.q_fname = 'q6_999994.csv'
-    cf.a_fname = 'a6_999999.csv'
+    #D cf.q_fname = 'q6_999994.csv'
+    #D cf.a_fname = 'a6_999999.csv'
     #D cf.a_fname = 'a5_99998.csv'
     #D cf.q_fname = 'q30_99993.csv'
-    #D cf.a_fname = 'a3_986.csv'
-    #D cf.q_fname = 'q3_992.csv'
+    cf.a_fname = 'a3_986.csv'
+    cf.q_fname = 'q3_992.csv'
     #D cf.a_fname = 'a2.csv'
     #D cf.q_fname = 'q2.csv'
 
@@ -305,6 +311,8 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, all_ans_df, numlines):
     of the text data.  The code will probably be reorganized into
     other functions.
     """
+    all_ans_with_hst_df = pd.DataFrame()
+
     ques_match_df = all_ques_df[all_ques_df['Id'].isin(pop_and_top_l)]
     ans_match_df = all_ans_df[all_ans_df['ParentId'].isin(pop_and_top_l)]
     q_with_a_df = pd.concat([ques_match_df, ans_match_df]).reset_index(drop=True)
@@ -385,8 +393,8 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, all_ans_df, numlines):
         #
         cf.logger.info("Step 7. Search lo-score A's for hi-score text.")
         ans_with_hst_df = nl.search_for_terms(words_sorted_by_count_main_l, clean_ans_bodies_l, num_hi_score_terms)
-        #TBF.Fri2017_0609_16:16 , See note at nl.search_for_terms() abt
-        # problem of writing only one df to the o/p file.
+        all_ans_with_hst_df = pd.concat([all_ans_with_hst_df, ans_with_hst_df]).reset_index(drop=True)
+
         
         
         #
@@ -400,8 +408,7 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, all_ans_df, numlines):
     #D print('\n#D fga, End of debug code; exiting.')
     #D exit()
 
-    return q_with_a_df
-
+    return q_with_a_df, all_ans_with_hst_df
 
 # TBD.1 Sat2017_0211_22:55 , should this func be called before combine_related*()?
 # Use it to make the final pop_and_top_l?
