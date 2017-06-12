@@ -18,8 +18,8 @@ Such answers have useful data but a low score.
 It includes the following programs.
 
  * fga_find_good_answers.py (fga)
- * grade_each_answer.py
- * nltk_ex25.py
+ * grade_each_answer.py, manually grade answers, from A to F.
+ * nltk_ex25.py, analyze text with natural language toolkit.
 
 
 Workflow
@@ -112,7 +112,7 @@ The fga_find_good_answers program
 formats the input data from stackoverflow.com
 into each question followed by the related answers.
 
-TBD, It then analyzes the data to find good answers,
+It then analyzes the data to find good answers,
 using statistical techniques or
 natural language processing, NLP.
 

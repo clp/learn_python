@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
+# Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit), or later
 
-#   Time-stamp: <Fri 2017 Jun 09 08:11:27 PMPM clpoda>
+#   Time-stamp: <Sun 2017 Jun 11 05:25:42 PMPM clpoda>
 """fga_find_good_answers.py
 
 
@@ -458,6 +458,9 @@ def get_parser():
 
 
 if __name__ == '__main__':
+    parser = get_parser()
+    args = vars(parser.parse_args())
+
     # Set the number of top scoring owners to select from the data.
     num_owners = 10  # Default is 10.
     num_owners = 40  # Default is 10.
@@ -475,9 +478,6 @@ if __name__ == '__main__':
     num_hi_score_terms = 22  # Use 3 for testing; 11 or more for use.
     print("num_hi_score_terms: ", num_hi_score_terms)
 
-
-    parser = get_parser()
-    args = vars(parser.parse_args())
 
     main()
 
