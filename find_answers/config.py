@@ -1,10 +1,11 @@
 #
 #TBD, Can I do all imports here?  Should I?
 import pandas as pd
+import pdb 
 import logging 
 
 # Global variables for the project.
-tmpdir = ''  #TBD 'tmpdir/'
+tmpdir = 'tmpdir/'
 all_ans_df = pd.DataFrame()
 all_ques_df = pd.DataFrame()
 a_fname = ''

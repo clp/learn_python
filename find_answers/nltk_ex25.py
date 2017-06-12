@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.6.0 :: Anaconda 4.3.0 (64-bit)
 
-# Time-stamp: <Fri 2017 Jun 09 07:33:06 PMPM clpoda>
+# Time-stamp: <Sun 2017 Jun 11 07:22:24 PMPM clpoda>
 
 """nltk_ex25.py
     
@@ -47,7 +47,7 @@ import os
 import csv
 
 import config as cf
-import logging
+#TBD import logging
 
 
 # ----------------------------------------------------------
@@ -57,22 +57,7 @@ import logging
 # ----------------------------------------------------------
 
 
-
-# Configure basic logging.
-# Set logging level to DEBUG, INFO, WARNING, ERROR, CRITICAL
-# Set level to ERROR for normal use; set to INFO or DEBUG for development.
-#
-# logging.basicConfig(level=logging.INFO, format=' %(asctime)s - %(levelname)s - %(message)s')
-# logging.basicConfig(level=logging.DEBUG, format=' %(asctime)s - %(levelname)s - %(message)s')
-
-# Redirect STDERR or specify a log file:
-log_file = "nltk_ex25.log"
-log_level = logging.INFO
-#TBD log_level = logging.DEBUG
-logging.basicConfig(filename=log_file, level=log_level, format=' %(asctime)s - %(levelname)s - %(message)s')
-# Sample log cmd: logging.debug('msg text var=' + str(var))
-cf.logger = logging.getLogger(__name__)
-log_msg = log_file + ' - Start logging.\n'
+log_msg = cf.log_file + ' - Start logging.\n'
 cf.logger.info(log_msg)
 
 a_infile  = ""
@@ -269,6 +254,7 @@ def clean_raw_data(a_fname, progress_msg_factor ):
             #D cf.logger.debug('  Original text: ' + cf.all_ans_df['Body'][i])
             cf.logger.debug('  Cleaned text:  ' + clean_q_a)
     
+    #TBR cf.pdb.set_trace()
     # Write cleaned bodies to a file, one body per line, for visual review.
     outfile = cf.tmpdir + a_fname + '.out'
     if os.path.exists(outfile):
@@ -481,7 +467,7 @@ if __name__ == '__main__':
     num_hi_score_terms = 22  # Use 3 for testing; 11 or more for use.
     print("num_hi_score_terms: ", num_hi_score_terms)
     main()
-    log_msg = log_file + " - Finish program & logging.\n\n"
+    log_msg = cf.log_file + " - Finish program & logging.\n\n"
     cf.logger.warning(log_msg)
 
 'bye'
