@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit), or later
 
-#   Time-stamp: <Sun 2017 Jun 11 07:19:59 PMPM clpoda>
+#   Time-stamp: <Sun 2017 Jun 11 09:47:39 PMPM clpoda>
 """fga_find_good_answers.py
 
 
@@ -102,7 +102,7 @@ pid_l = [469, 502, 535, 594, 683, 742, 766, 773, 972]
 
 # ----------------------------------------------------------
 
-log_msg = cf.log_file + ' - Start logging.\n'
+log_msg = cf.log_file + ' - Start logging for ' + os.path.basename(__file__)
 cf.logger.info(log_msg)
 
 
@@ -482,6 +482,6 @@ if __name__ == '__main__':
     print("num_hi_score_terms: ", num_hi_score_terms)
 
     main()
-    log_msg = cf.log_file + " - Finish program & logging.\n\n"
-    cf.logger.warning(log_msg)
 
+    log_msg = cf.log_file + ' - Finish logging for ' + os.path.basename(__file__) + '\n\n'
+    cf.logger.warning(log_msg)

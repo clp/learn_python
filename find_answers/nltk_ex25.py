@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.6.0 :: Anaconda 4.3.0 (64-bit)
 
-# Time-stamp: <Sun 2017 Jun 11 07:22:24 PMPM clpoda>
+# Time-stamp: <Sun 2017 Jun 11 09:47:45 PMPM clpoda>
 
 """nltk_ex25.py
     
@@ -57,7 +57,7 @@ import config as cf
 # ----------------------------------------------------------
 
 
-log_msg = cf.log_file + ' - Start logging.\n'
+log_msg = cf.log_file + ' - Start logging for ' + os.path.basename(__file__)
 cf.logger.info(log_msg)
 
 a_infile  = ""
@@ -466,8 +466,10 @@ if __name__ == '__main__':
     # Set initial values of some important variables.
     num_hi_score_terms = 22  # Use 3 for testing; 11 or more for use.
     print("num_hi_score_terms: ", num_hi_score_terms)
+
     main()
-    log_msg = cf.log_file + " - Finish program & logging.\n\n"
+
+    log_msg = cf.log_file + ' - Finish logging for ' + os.path.basename(__file__) + '\n\n'
     cf.logger.warning(log_msg)
 
 'bye'
