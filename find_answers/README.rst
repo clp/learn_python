@@ -51,6 +51,10 @@ Start the program with one of these commands:
   * ``./fga_find_good_answers.sh``
   * ``python fga_find_good_answers.py``
 
+Respond to the prompt with 'm' to see the menu.
+Enter 'r' to run the program.
+Enter 'q' to quit the program.
+
 
 Notes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
