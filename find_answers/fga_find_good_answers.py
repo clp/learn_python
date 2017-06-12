@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit), or later
 
-#   Time-stamp: <Sun 2017 Jun 11 09:47:39 PMPM clpoda>
+#   Time-stamp: <Sun 2017 Jun 11 10:52:44 PMPM clpoda>
 """fga_find_good_answers.py
 
 
@@ -108,6 +108,7 @@ cf.logger.info(log_msg)
 
 def main():
     init()
+
     cf.a_fname, a_infile, q_infile, indir, outdir = config_data()
     cf.all_ans_df, cf.all_ques_df, cf.progress_msg_factor, numlines = read_data(a_infile, q_infile)
     popular_ids = find_popular_ques(cf.all_ans_df, cf.a_fname)
@@ -159,6 +160,77 @@ def init():
     # Don't show commas in large numbers.
     # Show OwnerUserId w/o '.0' suffix.
     pd.options.display.float_format = '{:.0f}'.format
+
+
+def show_menu():
+    user_menu = """    The menu choices:
+    h, ?: show help text, the menu
+    m: show menu
+    q: save data and quit the program
+    r: run the program
+    tbd, s: show question & answer
+    """
+    user_cmd = ''
+    
+    # Show prompt & wait for a cmd.
+    print("======================\n")
+    #TBD print("Scroll up to read current question and answer.")
+    cmd_prompt = "Enter a command: q[uit] r[un]  ...   [m]enu [h]elp: "
+    while user_cmd == "":  # Repeat the request if only the Enter key is pressed.
+        user_cmd = input(cmd_prompt)
+    print("User entered this cmd: ", user_cmd)
+    
+    # Loop to handle user request.
+    while user_cmd:
+        print("#D while-loop: User entered this cmd: ", user_cmd)
+        if user_cmd.lower() == 'm':
+            print(user_menu)
+            user_cmd = ''
+        elif user_cmd.lower() == 'r':
+            print("Run the program with current config.")
+            main()
+            user_cmd = ''  # Re-init to avoid continuously running.
+        elif user_cmd.lower() == 'q':
+            print("Save data and Quit the program.")
+            #TBD, show summary & quit?
+            #TBD outfile.flush()
+            exit()
+        elif user_cmd == '?' or user_cmd == 'h':
+            print(user_menu)
+            #TBD print some detailed help?
+            # Clear user_cmd here to avoid infinite repetition of while loop.
+            user_cmd = ''
+        elif user_cmd.lower() == 's':
+            #TBD print('\n### Next ###################\n')
+            #TBD user_cmd = show_current_q_a(q_id, q_title, q_body, row)
+            user_cmd = ''
+        else:
+            print("Got bad cmd from user: ", user_cmd)
+            print(user_menu)
+            # Clear user_cmd here to avoid infinite repetition of while loop.
+            user_cmd = ''
+        # Show prompt & wait for a cmd.
+        print("======================\n")
+        #TBD print("Scroll up to read current question and answer.")
+        cmd_prompt = "Enter a command: q[uit]  ...   [m]enu [h]elp: "
+        while user_cmd == "":  # Repeat the request if only the Enter key is pressed.
+            user_cmd = input(cmd_prompt)
+        #D print("User entered this cmd: ", user_cmd)
+    print("#D End of the cmd interpretation loop; return.")
+    print()
+    #D print("#D Last stmt of show_menu(); return.\n")
+    #
+    # Save df before exit, if quit cmd is not used.
+    #TBD Same code used for 'q' cmd; refactor both.
+    #TBD print("Save data and Quit the program.")
+    # Save only the needed fields to the file.
+    #TBD outfields_l = ['Id', 'ParentId', 'Grade', 'Notes', 'Title', 'Body']
+    #TBD outfile = open('outdir/graded_q_with_a.csv', 'w')
+    #TBD graded_df[outfields_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
+    #TBD outfile.flush()
+    #
+    return
+
 
 
 def config_data():
@@ -467,7 +539,7 @@ if __name__ == '__main__':
     # Set the number of top scoring owners to select from the data.
     num_owners = 10  # Default is 10.
     num_owners = 40  # Default is 10.
-    num_owners = 200  # Default is 10.
+    #D num_owners = 200  # Default is 10.
     print("num_owners: ", num_owners)
     #
     keyword = False
@@ -478,10 +550,13 @@ if __name__ == '__main__':
     #D keyword = 'Python'  # Both Title & Body of data sets have it; for debug
     print("Keyword: ", keyword)
     #
-    num_hi_score_terms = 22  # Use 3 for testing; 11 or more for use.
+    num_hi_score_terms = 3  # Use 3 for testing; 11 or more for use.
     print("num_hi_score_terms: ", num_hi_score_terms)
+
+    show_menu()
 
     main()
 
     log_msg = cf.log_file + ' - Finish logging for ' + os.path.basename(__file__) + '\n\n'
     cf.logger.warning(log_msg)
+
