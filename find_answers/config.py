@@ -23,7 +23,10 @@ progress_msg_factor = 1
 log_file = "fl_fga.log"
 log_level = logging.INFO
 #TBD log_level = logging.DEBUG
-logging.basicConfig(filename=log_file, level=log_level, format=' %(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+        filename=log_file,
+        level=log_level,
+        format=' %(asctime)s - %(levelname)s - %(message)s')
 # Sample log cmd: logging.debug('msg text var=' + str(var))
 logger = logging.getLogger(__name__)
 
