@@ -1,7 +1,7 @@
 README_2
 
 | Some details about the project and code.
-| See `README <README.html>`_ for basic data.
+| See README for basic data.
 
 
 Project: **Find Good Answers**
@@ -258,4 +258,4 @@ Notes
 
 
 
-Mon2017_0612_14:18 
+Tue2017_0613_20:22 

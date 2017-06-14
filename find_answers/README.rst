@@ -1,7 +1,7 @@
 README
 
 | Basic data about the project and code.
-| See `README_2 <README_2.html>`_ for more details.
+| See README_2 for more details.
 
 Project: **Find Good Answers**
 ----------------------------------------------
@@ -134,7 +134,7 @@ Usage
 
 ``python grade_each_answer.py``
 
-See `README_2 <README_2.html>`_ for more details.
+See README_2 for more details.
 
 
 Notes
@@ -210,4 +210,4 @@ For documentation, please visit nltk.org.
 * https://worksheets.codalab.org/
 
 
-Mon2017_0612_14:17 
+Tue2017_0613_20:22 
