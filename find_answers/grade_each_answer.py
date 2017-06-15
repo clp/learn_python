@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Wed 2017 May 31 10:30:43 PMPM clpoda>
+#   Time-stamp: <Wed 2017 Jun 14 04:06:01 PMPM clpoda>
 """grade_each_answer.py
 
    A utility program to prepare data files for analysis by the
@@ -78,6 +78,10 @@ import argparse
 import os
 import pandas as pd
 from shutil import copyfile
+
+#TBD import config w/ global vars.
+#TBD Add 'cf.' prefix to all global vars & other names.
+#TBD Remove unneeded 'global' statements now here.
 
 
 def main():
