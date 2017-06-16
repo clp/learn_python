@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit), or later
 
-#   Time-stamp: <Thu 2017 Jun 15 01:29:30 PMPM clpoda>
+#   Time-stamp: <Thu 2017 Jun 15 06:24:42 PMPM clpoda>
 """fga_find_good_answers.py
 
 
@@ -162,7 +162,9 @@ def init():
     """
     # Initialize settings for pandas.
     pd.set_option('display.width', 0)  # 0=no limit, use for debugging
-
+    #TBD pd.set_option('display.max_colwidth', -1)  # -1=no limit, use for debugging
+    #TBD pd.set_option('display.max_colwidth', 100)  # -1=no limit, use for debugging
+    
     # Don't show commas in large numbers.
     # Show OwnerUserId w/o '.0' suffix.
     pd.options.display.float_format = '{:.0f}'.format
@@ -209,14 +211,14 @@ def show_menu(qa_df):
             #TBD user_cmd = show_current_q_a(q_id, q_title, q_body, row)
             user_cmd = ''
             if qa_df.empty:
-                print("Warn: No data found; try entering 'r' to run, then 's'.")
+                print("Warn: dataframe empty or not found; try restarting.")
             else:
                 #D print('Show current Q&A at this saved_index: ', saved_index)
                 print(qa_df[['Id', 'Title', 'Body']].iloc[[saved_index ]])
         elif user_cmd.lower() == 'sn':  # show next item
             user_cmd = ''
             if qa_df.empty:
-                print("Warn: No data found; try entering 'r' to run, then 's'.")
+                print("Warn: dataframe empty or not found; try restarting.")
             else:
                 saved_index += 1
                 #D print('#D Show current Q&A at this saved_index: ', saved_index)
@@ -224,7 +226,7 @@ def show_menu(qa_df):
         elif user_cmd.lower() == 'sp':  # show prior item
             user_cmd = ''
             if qa_df.empty:
-                print("Warn: No data found; try entering 'r' to run, then 's'.")
+                print("Warn: dataframe empty or not found; try restarting.")
             else:
                 saved_index -= 1
                 #D print('#D Show current Q&A at this saved_index: ', saved_index)

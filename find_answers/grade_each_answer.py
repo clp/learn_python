@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Wed 2017 Jun 14 04:06:01 PMPM clpoda>
+#   Time-stamp: <Thu 2017 Jun 15 02:50:54 PMPM clpoda>
 """grade_each_answer.py
 
    A utility program to prepare data files for analysis by the
@@ -105,8 +105,9 @@ def init():
     """Initialize some settings for the program.
     """
     # Initialize settings for pandas.
-    pd.set_option('display.width', 0)  # 0=no limit, use for debugging
-
+    pd.set_option('display.width', 70)  # 0=no limit, use for debugging
+    pd.set_option('display.max_colwidth', -1)  # -1=no limit, use for debugging
+    
     # Don't show commas in large numbers.
     # Show OwnerUserId w/o '.0' suffix.
     pd.options.display.float_format = '{:.0f}'.format
