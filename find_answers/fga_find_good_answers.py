@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit), or later
 
-#   Time-stamp: <Thu 2017 Jun 15 06:24:42 PMPM clpoda>
+#   Time-stamp: <Mon 2017 Jun 19 01:26:31 PMPM clpoda>
 """fga_find_good_answers.py
 
 
@@ -139,6 +139,8 @@ def main():
     # use the df & the file is not needed.
     outfile = "tmpdir/all_ans_with_hst.csv"
     all_ans_with_hst_df.to_csv(outfile)
+    outfile = "tmpdir/all_ans_with_hst.html"
+    all_ans_with_hst_df[['Id', 'Title', 'OwnerUserId', 'ParentId', 'Score']].to_html(outfile)
     
     #D print('#D fga, End of debug code; exiting.')
     #D exit()
@@ -495,7 +497,6 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, all_ans_df, numlines):
         cf.logger.info("Step 7. Search lo-score A's for hi-score text.")
         ans_with_hst_df = nl.search_for_terms(words_sorted_by_count_main_l, clean_ans_bodies_l, num_hi_score_terms)
         all_ans_with_hst_df = pd.concat([all_ans_with_hst_df, ans_with_hst_df]).reset_index(drop=True)
-
         
         
         #
