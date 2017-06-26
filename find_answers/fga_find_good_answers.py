@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit), or later
 
-#   Time-stamp: <Mon 2017 Jun 19 01:26:31 PMPM clpoda>
+#   Time-stamp: <Sun 2017 Jun 25 11:16:00 PMPM clpoda>
 """fga_find_good_answers.py
 
 
@@ -84,6 +84,9 @@ version = '0.0.5'
 
 import argparse
 import nltk
+import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.style.use('ggplot')
 import numpy as np
 import os
 import pandas as pd
@@ -105,8 +108,11 @@ pid_l = [469, 502, 535, 594, 683, 742, 766, 773, 972]
 log_msg = cf.log_file + ' - Start logging for ' + os.path.basename(__file__)
 cf.logger.info(log_msg)
 
+q_with_a_df = pd.DataFrame()
+all_ans_with_hst_df = pd.DataFrame()
 
-def main():
+def main(q_with_a_df):
+
     init()
 
     if args['debug']:
@@ -133,28 +139,24 @@ def main():
     print('len(pop_and_top_l) : ', len(pop_and_top_l))
     if args['verbose']:
         print('pop_and_top_l, parent id\'s to examine: ', pop_and_top_l[:])
-    cf.q_with_a_df, all_ans_with_hst_df = combine_related_q_and_a(pop_and_top_l, cf.all_ques_df, cf.all_ans_df, numlines)
+    q_with_a_df, all_ans_with_hst_df = combine_related_q_and_a(pop_and_top_l, cf.all_ques_df, cf.all_ans_df, numlines)
     #
     #TBD Save the df to a file for review & debug; later processing may
     # use the df & the file is not needed.
     outfile = "tmpdir/all_ans_with_hst.csv"
     all_ans_with_hst_df.to_csv(outfile)
     outfile = "tmpdir/all_ans_with_hst.html"
-    all_ans_with_hst_df[['Id', 'Title', 'OwnerUserId', 'ParentId', 'Score']].to_html(outfile)
-    
-    #D print('#D fga, End of debug code; exiting.')
-    #D exit()
-
+    all_ans_with_hst_df[['Id', 'Title', 'Score', 'hstCount',  'HiScoreTerms', 'OwnerUserId', 'ParentId' ]].to_html(outfile)
 
     # Write full data set to a csv file.
     outfields_l = ['Id', 'ParentId', 'OwnerUserId', 'CreationDate', 'Score', 'Title', 'Body']
     outfile = 'outdir/q_with_a.csv'
-    cf.q_with_a_df[outfields_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
-    # DBG  write_df_to_file(cf.q_with_a_df, outdir, cf.a_fname)
-
+    q_with_a_df[outfields_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
+    # DBG  write_df_to_file(q_with_a_df, outdir, cf.a_fname)
+    
     if keyword:
         # Write keyword-containing records to a csv file.
-        qa_with_keyword_df = select_keyword_recs(keyword, cf.q_with_a_df, outfields_l)
+        qa_with_keyword_df = select_keyword_recs(keyword, q_with_a_df, outfields_l)
         outfile = 'outdir/qa_with_keyword.csv'
         qa_with_keyword_df[outfields_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
 
@@ -165,7 +167,7 @@ def init():
     # Initialize settings for pandas.
     pd.set_option('display.width', 0)  # 0=no limit, use for debugging
     #TBD pd.set_option('display.max_colwidth', -1)  # -1=no limit, use for debugging
-    #TBD pd.set_option('display.max_colwidth', 100)  # -1=no limit, use for debugging
+    pd.set_option('display.max_colwidth', 100)  # -1=no limit, use for debugging
     
     # Don't show commas in large numbers.
     # Show OwnerUserId w/o '.0' suffix.
@@ -174,12 +176,14 @@ def init():
 
 def show_menu(qa_df):
     user_menu = """    The menu choices:
+    d: draw default plot of current data
+    dh: draw default histogram plot of current data
     h, ?: show help text, the menu
     m: show menu
     q: save data and quit the program
-    s: show current item, question or answer
-    sn: show next item, question or answer
-    sp: show prior item, question or answer
+    s: show current item: question or answer
+    sn: show next item: question or answer
+    sp: show prior item: question or answer
     """
     user_cmd = ''
     saved_index = 0
@@ -187,7 +191,7 @@ def show_menu(qa_df):
     # Show prompt & wait for a cmd.
     print("======================\n")
     #TBD print("Scroll up to read current question and answer.")
-    cmd_prompt = "Enter a command: q[uit] r[un]  ...   [m]enu [h]elp: "
+    cmd_prompt = "Enter a command: q[uit] [m]enu  ...  [h]elp: "
     while user_cmd == "":  # Repeat the request if only the Enter key is pressed.
         user_cmd = input(cmd_prompt)
     print("User entered this cmd: ", user_cmd)
@@ -202,6 +206,7 @@ def show_menu(qa_df):
             print("Save data and Quit the program.")
             #TBD, show summary & quit?
             #TBD outfile.flush()
+            #TBD, save more data?
             exit()
         elif user_cmd == '?' or user_cmd == 'h':
             print(user_menu)
@@ -233,6 +238,20 @@ def show_menu(qa_df):
                 saved_index -= 1
                 #D print('#D Show current Q&A at this saved_index: ', saved_index)
                 print(qa_df[['Id', 'Title', 'Body']].iloc[[saved_index ]])
+        elif user_cmd.lower() == 'd':
+            user_cmd = ''
+            if qa_df.empty:
+                print("Warn: dataframe empty or not found; try restarting.")
+            else:
+                print("Drawing the default plot.")
+                draw_scatter_plot(all_ans_with_hst_df)
+        elif user_cmd.lower() == 'dh':
+            user_cmd = ''
+            if all_ans_with_hst_df.empty:
+                print("Warn: dataframe empty or not found; try restarting.")
+            else:
+                print("Drawing the default histogram plot.")
+                draw_histogram_plot(all_ans_with_hst_df)
         else:
             print("Got bad cmd from user: ", user_cmd)
             print(user_menu)
@@ -240,11 +259,8 @@ def show_menu(qa_df):
             user_cmd = ''
         # Show prompt & wait for a cmd.
         print("======================\n")
-        #TBD print("Scroll up to read current question and answer.")
-        cmd_prompt = "Enter a command: q[uit]  ...   [m]enu [h]elp: "
         while user_cmd == "":  # Repeat the request if only the Enter key is pressed.
             user_cmd = input(cmd_prompt)
-        #D print("User entered this cmd: ", user_cmd)
     print("#D End of the cmd interpretation loop; return.")
     print()
     #D print("#D Last stmt of show_menu(); return.\n")
@@ -414,11 +430,12 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, all_ans_df, numlines):
     of the text data.  The code will probably be reorganized into
     other functions.
     """
-    all_ans_with_hst_df = pd.DataFrame()
+    global q_with_a_df 
+    global all_ans_with_hst_df 
 
     ques_match_df = all_ques_df[all_ques_df['Id'].isin(pop_and_top_l)]
     ans_match_df = all_ans_df[all_ans_df['ParentId'].isin(pop_and_top_l)]
-    cf.q_with_a_df = pd.concat([ques_match_df, ans_match_df]).reset_index(drop=True)
+    q_with_a_df = pd.concat([ques_match_df, ans_match_df]).reset_index(drop=True)
         # Full list w/ all Q's at top, A's after.
     #
     print('#D len of ques_match_df: ', len(ques_match_df ))
@@ -446,6 +463,7 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, all_ans_df, numlines):
         cf.logger.info('qag_df.head(1): ')
         cf.logger.info( qag_df.head(1))
         #
+        #TBD.0 Why 'cf.' used here inside func? it's in arg list! test & rm cf..
         cf.all_ans_df = qag_df  #TMP to avoid renaming all_ans_df in many places
         cf.logger.info("Step 2. Process the words of each input line.")
         clean_ans_bodies_l = nl.clean_raw_data(cf.a_fname, cf.progress_msg_factor )
@@ -510,7 +528,7 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, all_ans_df, numlines):
     #D print('\n#D fga, End of debug code; exiting.')
     #D exit()
 
-    return cf.q_with_a_df, all_ans_with_hst_df
+    return q_with_a_df, all_ans_with_hst_df
 
 # TBD.1 Sat2017_0211_22:55 , should this func be called before combine_related*()?
 # Use it to make the final pop_and_top_l?
@@ -531,6 +549,33 @@ def select_keyword_recs(keyword, qa_df, outfields_l):
     qa_contains_sr = qab_sr | qt_sr
     qak_df = qa_df[outfields_l][qa_contains_sr]
     return qak_df
+
+
+def draw_histogram_plot(plot_df):
+    """Draw a simple histogram plot using pandas tools.
+    """
+    fig, ax = plt.subplots(1,1)
+    ax.get_xaxis().set_visible(True) 
+    plot_df = plot_df[['Score']]
+    histo_bins = [-10,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,25,30,35,40,45,50] 
+    plot_df.plot.hist( ax=ax, figsize=(6,6), bins=histo_bins ) 
+    plt.show(block=False)
+    
+    # Write data set to a csv file.
+    outfile = 'tmpdir/tmp_plot.csv'
+    plot_df['Score'].to_csv(outfile, header=True, index=None, sep=',', mode='w')
+    
+    # Print data used for histogram
+    count, division = np.histogram(plot_df['Score'], bins=histo_bins )
+    print("#D histogram data: count[:5]: ", count[:5])
+    print("#D histogram data: division[:5]: ", division[:5])
+
+
+def draw_scatter_plot(plot_df):
+    """Draw a simple scatter plot using pandas tools.
+    """
+    ax = plot_df[['hstCount', 'Score']].plot.scatter(x='Score', y='hstCount', table=False)
+    plt.show(block=False)
 
 
 def write_df_to_file(in_df, wdir, wfile):
@@ -562,13 +607,14 @@ def get_parser():
 
 
 if __name__ == '__main__':
+
     parser = get_parser()
     args = vars(parser.parse_args())
 
     # Set the number of top scoring owners to select from the data.
     num_owners = 10  # Default is 10.
     num_owners = 40  # Default is 10.
-    #D num_owners = 200  # Default is 10.
+    num_owners = 100  # Default is 10.
     print("num_owners: ", num_owners)
     #
     keyword = False
@@ -579,13 +625,14 @@ if __name__ == '__main__':
     #D keyword = 'Python'  # Both Title & Body of data sets have it; for debug
     print("Keyword: ", keyword)
     #
-    num_hi_score_terms = 3  # Use 3 for testing; 11 or more for use.
+    num_hi_score_terms = 21  # Use 3 for testing; 11 or more for use.
     print("num_hi_score_terms: ", num_hi_score_terms)
 
-    main()
+    main(q_with_a_df)
 
-    show_menu(cf.q_with_a_df)
+    show_menu(q_with_a_df)
 
     log_msg = cf.log_file + ' - Finish logging for ' + os.path.basename(__file__) + '\n\n'
     cf.logger.warning(log_msg)
+
 

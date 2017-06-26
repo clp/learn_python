@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.6.0 :: Anaconda 4.3.0 (64-bit)
 
-# Time-stamp: <Sun 2017 Jun 11 09:47:45 PMPM clpoda>
+# Time-stamp: <Mon 2017 Jun 19 04:44:38 PMPM clpoda>
 
 """nltk_ex25.py
     
@@ -417,6 +417,7 @@ def search_for_terms(words_sorted_by_count_main_l, clean_ans_bodies_l, num_hi_sc
     #  Should tmp_df not be a df?  Would a list of lists be better?
     
     cf.all_ans_df["HiScoreTerms"] = ""
+    cf.all_ans_df["hstCount"] = 0
     
     #D print("\nTerms from hi-score Answers.")
     cf.logger.info("Terms from hi-score Answers.")
@@ -432,6 +433,11 @@ def search_for_terms(words_sorted_by_count_main_l, clean_ans_bodies_l, num_hi_sc
                 #TBD, Change string 'w' to list or tuple for better storage in df?
                 #OK cf.all_ans_df.loc[index, "HiScoreTerms"] = cf.all_ans_df.loc[index, "HiScoreTerms"] + w + ' , '
                 cf.all_ans_df.loc[index, "HiScoreTerms"] += ( w + ' , ')
+                #TBD, increment hst counter each time one is found.
+                #TBD, How to handle multiple instances of hst? count each occurrence?
+                #TBD, use df func to simply count number of HiScoreTerms in each row?
+                cf.all_ans_df.loc[index, "hstCount"] += 1
+
     
     #D print()
     #D cf.logger.debug("DBG, cf.all_ans_df.head():")
@@ -458,7 +464,7 @@ def search_for_terms(words_sorted_by_count_main_l, clean_ans_bodies_l, num_hi_sc
     
     # Also write summary data to log.
     cf.logger.info("Check low score Answers for useful data: ")
-    cf.logger.info(ans_with_hst_df[['Id', 'Score', 'CreationDate', 'Title', 'HiScoreTerms']])
+    cf.logger.info(ans_with_hst_df[['Id', 'Score', 'hstCount', 'CreationDate', 'Title', 'HiScoreTerms']])
     return ans_with_hst_df
 
 
