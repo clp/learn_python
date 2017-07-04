@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit), or later
 
-#   Time-stamp: <Mon 2017 Jun 26 04:33:34 PMPM clpoda>
+#   Time-stamp: <Tue 2017 Jul 04 03:39:04 PMPM clpoda>
 """fga_find_good_answers.py
 
 
@@ -208,7 +208,7 @@ def show_menu(qa_df):
             #TBD, show summary & quit?
             #TBD outfile.flush()
             #TBD, save more data?
-            exit()
+            raise SystemExit()
         elif user_cmd == '?' or user_cmd == 'h':
             print(user_menu)
             #TBD print some detailed help?
@@ -335,15 +335,16 @@ def find_popular_ques(all_ans_df, a_fname):
 
 def group_data(all_ans_df):
     """Group the contents of the answers df by a specific column.
-    Group by OwnerUserId, and sort by mean score for each owner.
+    Group by OwnerUserId, and sort by mean score for answers only
+    for each owner (question scores are not counted).
     Make a numpy array of owners w/ highest mean scores.
-    TBD.1, Find low scores for these hi-score owners;
-    then mark the low score records for evaluation.
+    TBD.1, Find low score answers for these hi-score owners;
+    then mark the low score  answers for evaluation.
     Low score is any score below lo_score_limit.
     """
     print('=== owner_grouped_df: Group by owner and sort by mean score for each owner.')
-    owner_grouped_df = all_ans_df.groupby('OwnerUserId').mean()
-    owner_grouped_df = owner_grouped_df[['Score']].sort_values(['Score'])
+    owner_grouped_df = all_ans_df.groupby('OwnerUserId')
+    owner_grouped_df = owner_grouped_df[['Score']].mean().sort_values(['Score'])
 
     # Copy index column into owner column; Change index column to integer
     owner_grouped_df['OwnerUserId'] = owner_grouped_df.index
@@ -527,7 +528,7 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, all_ans_df, numlines):
         #
     #
     #D print('\n#D fga, End of debug code; exiting.')
-    #D exit()
+    #D raise SystemExit()
 
     return q_with_a_df, all_ans_with_hst_df
 
@@ -636,4 +637,4 @@ if __name__ == '__main__':
     log_msg = cf.log_file + ' - Finish logging for ' + os.path.basename(__file__) + '\n\n'
     cf.logger.warning(log_msg)
 
-
+'bye'
