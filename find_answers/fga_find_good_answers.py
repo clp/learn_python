@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit), or later
 
-#   Time-stamp: <Sun 2017 Jun 25 11:16:00 PMPM clpoda>
+#   Time-stamp: <Mon 2017 Jun 26 04:33:34 PMPM clpoda>
 """fga_find_good_answers.py
 
 
@@ -13,6 +13,7 @@
    Save the o/p to a file for further evaluation & processing.
 
    Usage:
+     ./fga_find_good_answers.sh
      pydoc  fga_find_good_answers
      python fga_find_good_answers.py
 
@@ -463,7 +464,7 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, all_ans_df, numlines):
         cf.logger.info('qag_df.head(1): ')
         cf.logger.info( qag_df.head(1))
         #
-        #TBD.0 Why 'cf.' used here inside func? it's in arg list! test & rm cf..
+        #TBD Assign the global var cf.all_ans_df here.  Find a better soln w/o global.
         cf.all_ans_df = qag_df  #TMP to avoid renaming all_ans_df in many places
         cf.logger.info("Step 2. Process the words of each input line.")
         clean_ans_bodies_l = nl.clean_raw_data(cf.a_fname, cf.progress_msg_factor )
