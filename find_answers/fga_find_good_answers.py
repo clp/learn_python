@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit), or later
 
-#   Time-stamp: <Fri 2017 Jul 07 01:14:44 PMPM clpoda>
+#   Time-stamp: <Fri 2017 Jul 07 01:41:21 PMPM clpoda>
 """fga_find_good_answers.py
 
 
@@ -181,6 +181,7 @@ def show_menu(qa_df):
     user_menu = """    The menu choices:
     d: draw default plot of current data
     dh: draw default histogram plot of current data
+    dm: draw scatter matrix plot of current data
     h, ?: show help text, the menu
     m: show menu
     q: save data and quit the program
