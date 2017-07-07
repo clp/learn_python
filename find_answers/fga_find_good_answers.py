@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit), or later
 
-#   Time-stamp: <Tue 2017 Jul 04 03:39:04 PMPM clpoda>
+#   Time-stamp: <Fri 2017 Jul 07 01:14:44 PMPM clpoda>
 """fga_find_good_answers.py
 
 
@@ -92,6 +92,7 @@ import numpy as np
 import os
 import pandas as pd
 import random
+from pandas.tools.plotting import scatter_matrix
 
 import config as cf
 import nltk_ex25 as nl
@@ -111,6 +112,7 @@ cf.logger.info(log_msg)
 
 q_with_a_df = pd.DataFrame()
 all_ans_with_hst_df = pd.DataFrame()
+owner_grouped_df = pd.DataFrame()
 
 def main(q_with_a_df):
 
@@ -126,7 +128,7 @@ def main(q_with_a_df):
     cf.all_ans_df, cf.all_ques_df, cf.progress_msg_factor, numlines = read_data(a_infile, q_infile)
     popular_ids = find_popular_ques(cf.all_ans_df, cf.a_fname)
     popular_ids_a = popular_ids.index.values
-    top_scoring_owners_a = group_data(cf.all_ans_df)
+    top_scoring_owners_a, owner_grouped_df = group_data(cf.all_ans_df)
     parent_id_l = find_question_ids(top_scoring_owners_a, cf.all_ans_df)
     #
     # pop_and_top_l:
@@ -168,7 +170,7 @@ def init():
     # Initialize settings for pandas.
     pd.set_option('display.width', 0)  # 0=no limit, use for debugging
     #TBD pd.set_option('display.max_colwidth', -1)  # -1=no limit, use for debugging
-    pd.set_option('display.max_colwidth', 100)  # -1=no limit, use for debugging
+    pd.set_option('display.max_colwidth', 20)  # -1=no limit, use for debugging
     
     # Don't show commas in large numbers.
     # Show OwnerUserId w/o '.0' suffix.
@@ -245,7 +247,7 @@ def show_menu(qa_df):
                 print("Warn: dataframe empty or not found; try restarting.")
             else:
                 print("Drawing the default plot.")
-                draw_scatter_plot(all_ans_with_hst_df)
+                draw_scatter_plot(all_ans_with_hst_df, 'Score', 'hstCount', 'Score', 'hstCount')
         elif user_cmd.lower() == 'dh':
             user_cmd = ''
             if all_ans_with_hst_df.empty:
@@ -253,6 +255,21 @@ def show_menu(qa_df):
             else:
                 print("Drawing the default histogram plot.")
                 draw_histogram_plot(all_ans_with_hst_df)
+        elif user_cmd.lower() == 'dm':  # Scatter matrix plot
+            user_cmd = ''
+            if qa_df.empty:
+                print("Warn: dataframe empty or not found; try restarting.")
+            else:
+                print("Drawing the default scatter matrix plot.")
+                draw_scatter_matrix_plot(all_ans_with_hst_df)
+        elif user_cmd.lower() == 'dr':  # rma: Reputation, mean, answers only; scatter.
+            user_cmd = ''
+            if qa_df.empty:
+                print("Warn: dataframe empty or not found; try restarting.")
+            else:
+                print("TBD, Drawing the default reputation scatter plot. NOT READY.\n")
+                #TBD Prepare data to plot: owner reputation (mean or total score), answer score.
+                # TBD, draw_scatter_plot(owner_grouped_df, xaxis, yaxis, xname, yname)
         else:
             print("Got bad cmd from user: ", user_cmd)
             print(user_menu)
@@ -393,7 +410,7 @@ def group_data(all_ans_df):
         print(lo_scores_for_top_users_df)
     print()
 
-    return top_scoring_owners_a
+    return top_scoring_owners_a, owner_grouped_df
 
 
 def find_question_ids(top_scoring_owners_a, all_ans_df):
@@ -486,7 +503,6 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, all_ans_df, numlines):
         cf.logger.info('Step 5. Find most freq words for top-scoring Answers.')
         score_top_n_df = score_df[['Id']]
         
-        #OK.tbr  print("DBG.103", score_top_n_df.tail(num_selected_recs), '\n')
         #TBD, Maybe convert df to string so logger can print title & data w/ one cmd:
         #TBD log_msg = "score_top_n_df.tail():" + CONVERT_DF_TO_STRING(score_top_n_df.tail())
         #TBD cf.logger.debug(log_msg)
@@ -507,7 +523,6 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, all_ans_df, numlines):
         score_bot_n_df = score_df[['Id']]
         cf.logger.debug("score_bot_n_df.head():")
         cf.logger.debug(score_bot_n_df.head(20))
-        #TBR print(score_bot_n_df.head(num_selected_recs), '\n')
         top = False
         bot_n_bodies = nl.find_freq_words(top, score_top_n_df, num_selected_recs, cf.progress_msg_factor)
         cf.logger.info('make_bag_of_words(bot_n_bodies)')
@@ -573,11 +588,29 @@ def draw_histogram_plot(plot_df):
     print("#D histogram data: division[:5]: ", division[:5])
 
 
-def draw_scatter_plot(plot_df):
+def draw_scatter_matrix_plot(plot_df):
+    axs = scatter_matrix(plot_df, alpha=0.2, diagonal='hist')
+    plt.show(block=False)
+    wdir = 'outdir/'
+    wfile = 'scat_mat_plot.pdf'
+    save_prior_file(wdir, wfile)
+    plt.savefig(wdir + wfile)
+
+
+def draw_scatter_plot(plot_df, xaxis, yaxis, xname, yname):
     """Draw a simple scatter plot using pandas tools.
     """
-    ax = plot_df[['hstCount', 'Score']].plot.scatter(x='Score', y='hstCount', table=False)
+    ax = plot_df[[yname, xname]].plot.scatter(x=xaxis, y=yaxis, table=False)
     plt.show(block=False)
+
+
+def save_prior_file(wdir, wfile):
+    """Save backup copy of a file w/ same name.
+    """
+    outfile = wdir + wfile 
+    if os.path.exists(outfile):
+        os.rename(outfile, outfile + '.bak')
+        print('\nWARN: renamed o/p file to *.bak; save it manually if needed:' + outfile)
 
 
 def write_df_to_file(in_df, wdir, wfile):
