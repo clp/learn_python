@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit), or later
 
-#   Time-stamp: <Fri 2017 Jul 07 01:41:21 PMPM clpoda>
+#   Time-stamp: <Sun 2017 Jul 09 03:51:43 PMPM clpoda>
 """fga_find_good_answers.py
 
 
@@ -115,6 +115,8 @@ all_ans_with_hst_df = pd.DataFrame()
 owner_grouped_df = pd.DataFrame()
 
 def main(q_with_a_df):
+    """Analyze input data and produce o/p by calling functions.
+    """
 
     init()
 
@@ -149,6 +151,7 @@ def main(q_with_a_df):
     outfile = "tmpdir/all_ans_with_hst.csv"
     all_ans_with_hst_df.to_csv(outfile)
     outfile = "tmpdir/all_ans_with_hst.html"
+    save_prior_file('', outfile)
     all_ans_with_hst_df[['Id', 'Title', 'Score', 'hstCount',  'HiScoreTerms', 'OwnerUserId', 'ParentId' ]].to_html(outfile)
 
     # Write full data set to a csv file.
@@ -170,7 +173,7 @@ def init():
     # Initialize settings for pandas.
     pd.set_option('display.width', 0)  # 0=no limit, use for debugging
     #TBD pd.set_option('display.max_colwidth', -1)  # -1=no limit, use for debugging
-    pd.set_option('display.max_colwidth', 20)  # -1=no limit, use for debugging
+    pd.set_option('display.max_colwidth', 100)  # -1=no limit, use for debugging
     
     # Don't show commas in large numbers.
     # Show OwnerUserId w/o '.0' suffix.
@@ -178,6 +181,8 @@ def init():
 
 
 def show_menu(qa_df):
+    """Show prompt to user; get and handle their request.
+    """
     user_menu = """    The menu choices:
     d: draw default plot of current data
     dh: draw default histogram plot of current data
@@ -590,6 +595,9 @@ def draw_histogram_plot(plot_df):
 
 
 def draw_scatter_matrix_plot(plot_df):
+    """Draw a set of scatter plots showing each feature vs
+    every other feature.
+    """
     axs = scatter_matrix(plot_df, alpha=0.2, diagonal='hist')
     plt.show(block=False)
     wdir = 'outdir/'
@@ -606,7 +614,7 @@ def draw_scatter_plot(plot_df, xaxis, yaxis, xname, yname):
 
 
 def save_prior_file(wdir, wfile):
-    """Save backup copy of a file w/ same name.
+    """Save backup copy of a file w/ same name and '.bak' extension.
     """
     outfile = wdir + wfile 
     if os.path.exists(outfile):
