@@ -52,7 +52,6 @@ Start the program with one of these commands:
   * ``python fga_find_good_answers.py``
 
 Respond to the prompt with 'm' to see the menu.
-Enter 'r' to run the program.
 Enter 'q' to quit the program.
 
 
@@ -106,7 +105,7 @@ you can run this program directly, eg:
 Notes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#. The o/p data of answers that contain high score terms is saved
+#. The o/p data of answers that contain high score terms (hst) is saved
    at tmpdir/all_ans_with_hst.csv
 
 #. The program writes some summary data to the screen,
@@ -182,7 +181,7 @@ and answers from stackoverflow about python.
 
 Use the Python pandas module, read_csv().
 
-``ans_df = pd.read_csv('Answers.csv', encoding='latin-1', warn_bad_lines=False, error_bad_lines=False)``
+``ans_df = pandas.read_csv('Answers.csv', encoding='latin-1', warn_bad_lines=False, error_bad_lines=False)``
 
 
 **How to find answers with low scores that are high quality?**
@@ -210,4 +209,4 @@ For documentation, please visit nltk.org.
 * https://worksheets.codalab.org/
 
 
-Tue2017_0613_20:22 
+Mon2017_0710_11:40 
