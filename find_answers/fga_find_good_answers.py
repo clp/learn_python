@@ -3,7 +3,7 @@
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit),
 # or later
 
-#   Time-stamp: <Sun 2017 Jul 09 10:42:47 PMPM clpoda>
+#   Time-stamp: <Mon 2017 Jul 10 01:22:15 PMPM clpoda>
 """fga_find_good_answers.py
 
 
@@ -283,7 +283,7 @@ def show_menu(qa_df):
                 print(qa_df[['Id', 'Title', 'Body']].iloc[[saved_index]])
         elif user_cmd.lower() == 'd':
             user_cmd = ''
-            if qa_df.empty:
+            if all_ans_with_hst_df.empty:
                 print("Warn: dataframe empty or not found; try restarting.")
             else:
                 print("Drawing the default plot.")
@@ -302,7 +302,7 @@ def show_menu(qa_df):
                 draw_histogram_plot(all_ans_with_hst_df)
         elif user_cmd.lower() == 'dm':  # Scatter matrix plot
             user_cmd = ''
-            if qa_df.empty:
+            if all_ans_with_hst_df.empty:
                 print("Warn: dataframe empty or not found; try restarting.")
             else:
                 print("Drawing the default scatter matrix plot.")
@@ -310,6 +310,7 @@ def show_menu(qa_df):
         # rma: Reputation, mean, answers only; scatter.
         elif user_cmd.lower() == 'dr':
             user_cmd = ''
+            # TBD.1 use right df in both branches:
             if qa_df.empty:
                 print("Warn: dataframe empty or not found; try restarting.")
             else:
