@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit), or later
+# Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit),
+# or later
 
-#   Time-stamp: <Sun 2017 Jul 09 03:51:43 PMPM clpoda>
+#   Time-stamp: <Sun 2017 Jul 09 10:42:47 PMPM clpoda>
 """fga_find_good_answers.py
 
 
@@ -98,11 +99,12 @@ import config as cf
 import nltk_ex25 as nl
 
 
-
 # ----------------------------------------------------------
 # Specify question and parent ID's to find.
-#DBG pid_l = [469, 535, 231767]
-#DBG.many pid_l = [469, 502, 535, 594, 683, 742, 766, 773, 972, 1476, 766, 1734, 1829, 1854, 1983, 2311, 2933, 3061, 3976, 4942, 5102, 5313, 1983, 5909, 5966, 8692, 8948, 10123, 11060, 2933, 1983]
+# DBG pid_l = [469, 535, 231767]
+# DBG.many pid_l = [469, 502, 535, 594, 683, 742, 766, 773, 972, 1476,
+# 766, 1734, 1829, 1854, 1983, 2311, 2933, 3061, 3976, 4942, 5102, 5313,
+# 1983, 5909, 5966, 8692, 8948, 10123, 11060, 2933, 1983]
 pid_l = [469, 502, 535, 594, 683, 742, 766, 773, 972]
 
 # ----------------------------------------------------------
@@ -113,6 +115,7 @@ cf.logger.info(log_msg)
 q_with_a_df = pd.DataFrame()
 all_ans_with_hst_df = pd.DataFrame()
 owner_grouped_df = pd.DataFrame()
+
 
 def main(q_with_a_df):
     """Analyze input data and produce o/p by calling functions.
@@ -125,13 +128,20 @@ def main(q_with_a_df):
         print('Running in debug mode.')
         print('  end set to: ', cf.end)
         print()
-    
-    cf.a_fname, a_infile, q_infile, indir, outdir = config_data()
-    cf.all_ans_df, cf.all_ques_df, cf.progress_msg_factor, numlines = read_data(a_infile, q_infile)
-    popular_ids = find_popular_ques(cf.all_ans_df, cf.a_fname)
-    popular_ids_a = popular_ids.index.values
-    top_scoring_owners_a, owner_grouped_df = group_data(cf.all_ans_df)
-    parent_id_l = find_question_ids(top_scoring_owners_a, cf.all_ans_df)
+
+    cf.a_fname, a_infile, q_infile, indir, outdir = \
+        config_data()
+    cf.all_ans_df, cf.all_ques_df, cf.progress_msg_factor, numlines = \
+        read_data(
+            a_infile, q_infile)
+    popular_ids = \
+        find_popular_ques(cf.all_ans_df, cf.a_fname)
+    popular_ids_a = \
+        popular_ids.index.values
+    top_scoring_owners_a, owner_grouped_df = \
+        group_data(cf.all_ans_df)
+    parent_id_l = \
+        find_question_ids(top_scoring_owners_a, cf.all_ans_df)
     #
     # pop_and_top_l:
     # Find parent IDs that are popular (have several answers), and
@@ -140,31 +150,50 @@ def main(q_with_a_df):
     # Set the size of the following list slices to get enough o/p to analyze.
     # With slice limits at 40 and 30, got 2 Q, 36 A.
     # With slice limits at 400 and 300, got 26 Q, 308 A.
-    pop_and_top_l = list(set(parent_id_l[:500]).intersection(set(popular_ids_a[:500])))
+    pop_and_top_l = list(
+        set(parent_id_l[:500]).intersection(set(popular_ids_a[:500])))
     print('len(pop_and_top_l) : ', len(pop_and_top_l))
     if args['verbose']:
         print('pop_and_top_l, parent id\'s to examine: ', pop_and_top_l[:])
-    q_with_a_df, all_ans_with_hst_df = combine_related_q_and_a(pop_and_top_l, cf.all_ques_df, cf.all_ans_df, numlines)
+    q_with_a_df, all_ans_with_hst_df = \
+        combine_related_q_and_a(
+            pop_and_top_l, cf.all_ques_df, cf.all_ans_df, numlines)
     #
-    #TBD Save the df to a file for review & debug; later processing may
+    # TBD Save the df to a file for review & debug; later processing may
     # use the df & the file is not needed.
     outfile = "tmpdir/all_ans_with_hst.csv"
     all_ans_with_hst_df.to_csv(outfile)
     outfile = "tmpdir/all_ans_with_hst.html"
     save_prior_file('', outfile)
-    all_ans_with_hst_df[['Id', 'Title', 'Score', 'hstCount',  'HiScoreTerms', 'OwnerUserId', 'ParentId' ]].to_html(outfile)
+    all_ans_with_hst_df[['Id',
+                         'Title',
+                         'Score',
+                         'hstCount',
+                         'HiScoreTerms',
+                         'OwnerUserId',
+                         'ParentId']].to_html(outfile)
 
     # Write full data set to a csv file.
-    outfields_l = ['Id', 'ParentId', 'OwnerUserId', 'CreationDate', 'Score', 'Title', 'Body']
+    outfields_l = [
+        'Id',
+        'ParentId',
+        'OwnerUserId',
+        'CreationDate',
+        'Score',
+        'Title',
+        'Body']
     outfile = 'outdir/q_with_a.csv'
-    q_with_a_df[outfields_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
+    q_with_a_df[outfields_l].to_csv(
+        outfile, header=True, index=None, sep=',', mode='w')
     # DBG  write_df_to_file(q_with_a_df, outdir, cf.a_fname)
-    
+
     if keyword:
         # Write keyword-containing records to a csv file.
-        qa_with_keyword_df = select_keyword_recs(keyword, q_with_a_df, outfields_l)
+        qa_with_keyword_df = select_keyword_recs(
+            keyword, q_with_a_df, outfields_l)
         outfile = 'outdir/qa_with_keyword.csv'
-        qa_with_keyword_df[outfields_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
+        qa_with_keyword_df[outfields_l].to_csv(
+            outfile, header=True, index=None, sep=',', mode='w')
 
 
 def init():
@@ -172,9 +201,11 @@ def init():
     """
     # Initialize settings for pandas.
     pd.set_option('display.width', 0)  # 0=no limit, use for debugging
-    #TBD pd.set_option('display.max_colwidth', -1)  # -1=no limit, use for debugging
-    pd.set_option('display.max_colwidth', 100)  # -1=no limit, use for debugging
-    
+    # TBD pd.set_option('display.max_colwidth', -1)  # -1=no limit, use for
+    # debugging
+    # -1=no limit, use for debugging
+    pd.set_option('display.max_colwidth', 100)
+
     # Don't show commas in large numbers.
     # Show OwnerUserId w/o '.0' suffix.
     pd.options.display.float_format = '{:.0f}'.format
@@ -196,64 +227,72 @@ def show_menu(qa_df):
     """
     user_cmd = ''
     saved_index = 0
-    
+
     # Show prompt & wait for a cmd.
     print("======================\n")
-    #TBD print("Scroll up to read current question and answer.")
+    # TBD print("Scroll up to read current question and answer.")
     cmd_prompt = "Enter a command: q[uit] [m]enu  ...  [h]elp: "
     while user_cmd == "":  # Repeat the request if only the Enter key is pressed.
         user_cmd = input(cmd_prompt)
     print("User entered this cmd: ", user_cmd)
-    
+
     # Loop to handle user request.
     while user_cmd:
-        #D print("#D while-loop: User entered this cmd: ", user_cmd)
+        # D print("#D while-loop: User entered this cmd: ", user_cmd)
         if user_cmd.lower() == 'm':
             print(user_menu)
             user_cmd = ''
         elif user_cmd.lower() == 'q':
             print("Save data and Quit the program.")
-            #TBD, show summary & quit?
-            #TBD outfile.flush()
-            #TBD, save more data?
+            # TBD, show summary & quit?
+            # TBD outfile.flush()
+            # TBD, save more data?
             raise SystemExit()
         elif user_cmd == '?' or user_cmd == 'h':
             print(user_menu)
-            #TBD print some detailed help?
+            # TBD print some detailed help?
             # Clear user_cmd here to avoid infinite repetition of while loop.
             user_cmd = ''
         elif user_cmd.lower() == 's':
-            #TBD print('\n### Next ###################\n')
-            #TBD user_cmd = show_current_q_a(q_id, q_title, q_body, row)
+            # TBD print('\n### Next ###################\n')
+            # TBD user_cmd = show_current_q_a(q_id, q_title, q_body, row)
             user_cmd = ''
             if qa_df.empty:
                 print("Warn: dataframe empty or not found; try restarting.")
             else:
-                #D print('Show current Q&A at this saved_index: ', saved_index)
-                print(qa_df[['Id', 'Title', 'Body']].iloc[[saved_index ]])
+                # D print('Show current Q&A at this saved_index: ',
+                # saved_index)
+                print(qa_df[['Id', 'Title', 'Body']].iloc[[saved_index]])
         elif user_cmd.lower() == 'sn':  # show next item
             user_cmd = ''
             if qa_df.empty:
                 print("Warn: dataframe empty or not found; try restarting.")
             else:
                 saved_index += 1
-                #D print('#D Show current Q&A at this saved_index: ', saved_index)
-                print(qa_df[['Id', 'Title', 'Body']].iloc[[saved_index ]])
+                # D print('#D Show current Q&A at this saved_index: ',
+                # saved_index)
+                print(qa_df[['Id', 'Title', 'Body']].iloc[[saved_index]])
         elif user_cmd.lower() == 'sp':  # show prior item
             user_cmd = ''
             if qa_df.empty:
                 print("Warn: dataframe empty or not found; try restarting.")
             else:
                 saved_index -= 1
-                #D print('#D Show current Q&A at this saved_index: ', saved_index)
-                print(qa_df[['Id', 'Title', 'Body']].iloc[[saved_index ]])
+                # D print('#D Show current Q&A at this saved_index: ',
+                # saved_index)
+                print(qa_df[['Id', 'Title', 'Body']].iloc[[saved_index]])
         elif user_cmd.lower() == 'd':
             user_cmd = ''
             if qa_df.empty:
                 print("Warn: dataframe empty or not found; try restarting.")
             else:
                 print("Drawing the default plot.")
-                draw_scatter_plot(all_ans_with_hst_df, 'Score', 'hstCount', 'Score', 'hstCount')
+                draw_scatter_plot(
+                    all_ans_with_hst_df,
+                    'Score',
+                    'hstCount',
+                    'Score',
+                    'hstCount')
         elif user_cmd.lower() == 'dh':
             user_cmd = ''
             if all_ans_with_hst_df.empty:
@@ -268,13 +307,14 @@ def show_menu(qa_df):
             else:
                 print("Drawing the default scatter matrix plot.")
                 draw_scatter_matrix_plot(all_ans_with_hst_df)
-        elif user_cmd.lower() == 'dr':  # rma: Reputation, mean, answers only; scatter.
+        # rma: Reputation, mean, answers only; scatter.
+        elif user_cmd.lower() == 'dr':
             user_cmd = ''
             if qa_df.empty:
                 print("Warn: dataframe empty or not found; try restarting.")
             else:
                 print("TBD, Drawing the default reputation scatter plot. NOT READY.\n")
-                #TBD Prepare data to plot: owner reputation (mean or total score), answer score.
+                # TBD Prepare data to plot: owner reputation (mean or total score), answer score.
                 # TBD, draw_scatter_plot(owner_grouped_df, xaxis, yaxis, xname, yname)
         else:
             print("Got bad cmd from user: ", user_cmd)
@@ -287,16 +327,16 @@ def show_menu(qa_df):
             user_cmd = input(cmd_prompt)
     print("#D End of the cmd interpretation loop; return.")
     print()
-    #D print("#D Last stmt of show_menu(); return.\n")
+    # D print("#D Last stmt of show_menu(); return.\n")
     #
     # Save df before exit, if quit cmd is not used.
-    #TBD Same code used for 'q' cmd; refactor both.
-    #TBD print("Save data and Quit the program.")
+    # TBD Same code used for 'q' cmd; refactor both.
+    # TBD print("Save data and Quit the program.")
     # Save only the needed fields to the file.
-    #TBD outfields_l = ['Id', 'ParentId', 'Grade', 'Notes', 'Title', 'Body']
-    #TBD outfile = open('outdir/graded_q_with_a.csv', 'w')
-    #TBD graded_df[outfields_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
-    #TBD outfile.flush()
+    # TBD outfields_l = ['Id', 'ParentId', 'Grade', 'Notes', 'Title', 'Body']
+    # TBD outfile = open('outdir/graded_q_with_a.csv', 'w')
+    # TBD graded_df[outfields_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
+    # TBD outfile.flush()
     #
     return
 
@@ -308,18 +348,18 @@ def config_data():
     # TBD Include the test data files w/ this project.
     indir = 'indir/'  # Relative to pwd, holds i/p files.
     outdir = 'outdir/'  # Relative to pwd, holds o/p files.
-    #D cf.a_fname = 'Answers.csv'
-    #D cf.q_fname = 'Questions.csv'
+    # D cf.a_fname = 'Answers.csv'
+    # D cf.q_fname = 'Questions.csv'
 
     # Smaller data sets, used for debugging.
-    #D cf.q_fname = 'q6_999994.csv'
-    #D cf.a_fname = 'a6_999999.csv'
-    #D cf.a_fname = 'a5_99998.csv'
-    #D cf.q_fname = 'q30_99993.csv'
+    # D cf.q_fname = 'q6_999994.csv'
+    # D cf.a_fname = 'a6_999999.csv'
+    # D cf.a_fname = 'a5_99998.csv'
+    # D cf.q_fname = 'q30_99993.csv'
     cf.a_fname = 'a3_986.csv'
     cf.q_fname = 'q3_992.csv'
-    #D cf.a_fname = 'a2.csv'
-    #D cf.q_fname = 'q2.csv'
+    # D cf.a_fname = 'a2.csv'
+    # D cf.q_fname = 'q2.csv'
 
     a_infile = indir + cf.a_fname
     q_infile = indir + cf.q_fname
@@ -335,14 +375,22 @@ def read_data(ans_file, ques_file):
     Compute a factor that dictates how progress will be indicated
     during read operations.
     """
-    #TBD, Sat2017_0506_15:34  Maybe rm latin-1 encoding here also?
-    ans_df = pd.read_csv(ans_file, encoding='latin-1', warn_bad_lines=False, error_bad_lines=False)
-    ques_df = pd.read_csv(ques_file, encoding='latin-1', warn_bad_lines=False, error_bad_lines=False)
+    # TBD, Sat2017_0506_15:34  Maybe rm latin-1 encoding here also?
+    ans_df = pd.read_csv(
+        ans_file,
+        encoding='latin-1',
+        warn_bad_lines=False,
+        error_bad_lines=False)
+    ques_df = pd.read_csv(
+        ques_file,
+        encoding='latin-1',
+        warn_bad_lines=False,
+        error_bad_lines=False)
 
     numlines = len(ans_df)
     print('Number of answer records in i/p data frame, ans_df: ' + str(numlines))
-    cf.progress_msg_factor = int(round(numlines/10))
-    print('\n#D  cf.progress_msg_factor : ' , cf.progress_msg_factor)
+    cf.progress_msg_factor = int(round(numlines / 10))
+    print('\n#D  cf.progress_msg_factor : ', cf.progress_msg_factor)
     print()
     return ans_df, ques_df, cf.progress_msg_factor, numlines
 
@@ -351,7 +399,7 @@ def find_popular_ques(all_ans_df, a_fname):
     """Find the most frequent ParentIds in the answers df.
     """
     popular_ids = pd.value_counts(all_ans_df['ParentId'])
-    outfile = "outdir/fpq_popular_ids."+ a_fname+ ".csv"
+    outfile = "outdir/fpq_popular_ids." + a_fname + ".csv"
     popular_ids.to_csv(outfile)
     return popular_ids
 
@@ -367,7 +415,8 @@ def group_data(all_ans_df):
     """
     print('=== owner_grouped_df: Group by owner and sort by mean score for each owner.')
     owner_grouped_df = all_ans_df.groupby('OwnerUserId')
-    owner_grouped_df = owner_grouped_df[['Score']].mean().sort_values(['Score'])
+    owner_grouped_df = owner_grouped_df[[
+        'Score']].mean().sort_values(['Score'])
 
     # Copy index column into owner column; Change index column to integer
     owner_grouped_df['OwnerUserId'] = owner_grouped_df.index
@@ -375,11 +424,13 @@ def group_data(all_ans_df):
     owner_grouped_df.rename(columns={'Score': 'MeanScore'}, inplace=True)
 
     print()
-    print('len(owner_grouped_df): number of unique OwnerUserId values: ' + str(len(owner_grouped_df)))
+    print('len(owner_grouped_df): number of unique OwnerUserId values: ' +
+          str(len(owner_grouped_df)))
     print()
     if args['verbose']:
         print('Show owners with ', str(num_owners), ' highest MeanScores.')
-        print(owner_grouped_df.tail(num_owners))  # See highest scores at bottom:
+        # See highest scores at bottom:
+        print(owner_grouped_df.tail(num_owners))
         print()
 
     # Take slice of owners w/ highest mean scores; convert to int.
@@ -394,23 +445,27 @@ def group_data(all_ans_df):
         # Get a pandas series of booleans for filtering:
         answered_by_o2_sr = (all_ans_df.OwnerUserId == owner)
         # Get a pandas df with rows for all answers of one user:
-        answers_df = all_ans_df[['Id', 'OwnerUserId', 'Score']][answered_by_o2_sr]
+        answers_df = all_ans_df[[
+            'Id', 'OwnerUserId', 'Score']][answered_by_o2_sr]
 
         # Get a pandas series of booleans for filtering:
         lo_score_by_o2_sr = (answers_df.Score < lo_score_limit)
         # Get a pandas df with rows for all low-score answers of one user:
-        lo_score_answers_by_o2_df = answers_df[['Id', 'OwnerUserId', 'Score']][lo_score_by_o2_sr]
+        lo_score_answers_by_o2_df = answers_df[[
+            'Id', 'OwnerUserId', 'Score']][lo_score_by_o2_sr]
         owners_df_l.append(lo_score_answers_by_o2_df)
 
-    #TBD These are the answers to examine for useful data, even though
+    # TBD These are the answers to examine for useful data, even though
     # they have low scores.
     # View these answers and evaluate them manually; and analyze them
     # with other s/w.
     lo_scores_for_top_users_df = pd.concat(owners_df_l)
     print('lo_score_limit: ', lo_score_limit)
-    print('Length of lo_scores_for_top_users_df: ', len(lo_scores_for_top_users_df))
+    print('Length of lo_scores_for_top_users_df: ',
+          len(lo_scores_for_top_users_df))
     outfile = 'outdir/lo_scores_for_top_users.csv'
-    lo_scores_for_top_users_df.to_csv(outfile, header=True, index=None, sep=',', mode='w')
+    lo_scores_for_top_users_df.to_csv(
+        outfile, header=True, index=None, sep=',', mode='w')
     if args['verbose']:
         print('lo_scores_for_top_users_df: ')
         print(lo_scores_for_top_users_df)
@@ -430,7 +485,8 @@ def find_question_ids(top_scoring_owners_a, all_ans_df):
         # Get a pandas series of booleans for filtering:
         answered_by_owner_sr = (all_ans_df.OwnerUserId == owner)
         # Get a pandas df with rows for all answers of one user:
-        answers_df = all_ans_df[['Id', 'OwnerUserId', 'ParentId', 'Score']][answered_by_owner_sr]
+        answers_df = all_ans_df[['Id', 'OwnerUserId',
+                                 'ParentId', 'Score']][answered_by_owner_sr]
         owners_df_l.append(answers_df)
 
     hi_scoring_users_df = pd.concat(owners_df_l)
@@ -455,51 +511,55 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, all_ans_df, numlines):
     of the text data.  The code will probably be reorganized into
     other functions.
     """
-    global q_with_a_df 
-    global all_ans_with_hst_df 
+    global q_with_a_df
+    global all_ans_with_hst_df
 
     ques_match_df = all_ques_df[all_ques_df['Id'].isin(pop_and_top_l)]
     ans_match_df = all_ans_df[all_ans_df['ParentId'].isin(pop_and_top_l)]
-    q_with_a_df = pd.concat([ques_match_df, ans_match_df]).reset_index(drop=True)
-        # Full list w/ all Q's at top, A's after.
+    q_with_a_df = pd.concat(
+        [ques_match_df, ans_match_df]).reset_index(drop=True)
+    # Full list w/ all Q's at top, A's after.
     #
-    print('#D len of ques_match_df: ', len(ques_match_df ))
-    print('#D len of ans_match_df: ', len(ans_match_df ))
+    print('#D len of ques_match_df: ', len(ques_match_df))
+    print('#D len of ans_match_df: ', len(ans_match_df))
     print('\n#D ques_match_df.head() & ans_match_df: ')
-    print(ques_match_df.head() )
+    print(ques_match_df.head())
     print('#D')
-    print(ans_match_df.head() )
+    print(ans_match_df.head())
     #
     i = 0
     # Build each Q&A group: one Q w/ all its A.'s
-    #TBD, How to do this w/o explicit loop, using df tools?
-    #TBD, Combine or replace the ques_match_df & ans*df code above w/ this?
-        # Maybe delete those 'intermediate' results?
+    # TBD, How to do this w/o explicit loop, using df tools?
+    # TBD, Combine or replace the ques_match_df & ans*df code above w/ this?
+    # Maybe delete those 'intermediate' results?
     for qid in pop_and_top_l:
         i += 1
-        #OK if(i % cf.progress_msg_factor == 0):
+        # OK if(i % cf.progress_msg_factor == 0):
         if(i % 20 == 0):
             print("#D combine_related_q_and_a:for-qid-loop count i: ", i)
         qm_df = ques_match_df[ques_match_df['Id'] == qid]
         am_df = ans_match_df[ans_match_df['ParentId'] == qid]
         qag_df = pd.concat([qm_df, am_df]).reset_index(drop=True)
-        #D print("\n#D qag_df.head(): ")
-        #D print(qag_df.head())
+        # D print("\n#D qag_df.head(): ")
+        # D print(qag_df.head())
         cf.logger.info('qag_df.head(1): ')
-        cf.logger.info( qag_df.head(1))
+        cf.logger.info(qag_df.head(1))
         #
-        #TBD Assign the global var cf.all_ans_df here.  Find a better soln w/o global.
-        cf.all_ans_df = qag_df  #TMP to avoid renaming all_ans_df in many places
+        # TBD Assign the global var cf.all_ans_df here.  Find a better soln w/o
+        # global.
+        cf.all_ans_df = qag_df  # TMP to avoid renaming all_ans_df in many places
         cf.logger.info("Step 2. Process the words of each input line.")
-        clean_ans_bodies_l = nl.clean_raw_data(cf.a_fname, cf.progress_msg_factor )
-        #D print('\n#D, clean_ans_bodies_l[:1]')
-        #D print(clean_ans_bodies_l[:1])
+        clean_ans_bodies_l = nl.clean_raw_data(
+            cf.a_fname, cf.progress_msg_factor)
+        # D print('\n#D, clean_ans_bodies_l[:1]')
+        # D print(clean_ans_bodies_l[:1])
         #
         cf.logger.info("Step 3. Build a bag of words and their counts.")
         (vocab, dist) = nl.make_bag_of_words(clean_ans_bodies_l)
-        #D print('\n#D, vocab[:1]')
-        #D print(vocab[:1])
-        words_sorted_by_count_l = nl.sort_save_vocab('.vocab', vocab, dist, cf.a_fname)
+        # D print('\n#D, vocab[:1]')
+        # D print(vocab[:1])
+        words_sorted_by_count_l = nl.sort_save_vocab(
+            '.vocab', vocab, dist, cf.a_fname)
         # Save the original list for later searching.
         words_sorted_by_count_main_l = words_sorted_by_count_l
         #
@@ -508,54 +568,63 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, all_ans_df, numlines):
         #
         cf.logger.info('Step 5. Find most freq words for top-scoring Answers.')
         score_top_n_df = score_df[['Id']]
-        
-        #TBD, Maybe convert df to string so logger can print title & data w/ one cmd:
-        #TBD log_msg = "score_top_n_df.tail():" + CONVERT_DF_TO_STRING(score_top_n_df.tail())
-        #TBD cf.logger.debug(log_msg)
+
+        # TBD, Maybe convert df to string so logger can print title & data w/ one cmd:
+        # TBD log_msg = "score_top_n_df.tail():" + CONVERT_DF_TO_STRING(score_top_n_df.tail())
+        # TBD cf.logger.debug(log_msg)
         cf.logger.debug("score_top_n_df.tail():")
-        cf.logger.debug(score_top_n_df.tail(20)) 
+        cf.logger.debug(score_top_n_df.tail(20))
         # Use top_n Answers & count their words.
-        cf.logger.info("For top ans: Cleaning and parsing the training set bodies...")
-        # 
+        cf.logger.info(
+            "For top ans: Cleaning and parsing the training set bodies...")
+        #
         top = True
-        top_n_bodies = nl.find_freq_words(top, score_top_n_df, num_selected_recs, cf.progress_msg_factor)
+        top_n_bodies = nl.find_freq_words(
+            top, score_top_n_df, num_selected_recs, cf.progress_msg_factor)
         cf.logger.info('make_bag_of_words(top_n_bodies)')
         (vocab, dist) = nl.make_bag_of_words(top_n_bodies)
         nl.sort_save_vocab('.vocab.hiscore', vocab, dist, cf.a_fname)
         #
-        cf.logger.info("Step 6. Find most frequent words for bottom-scoring Answers.")
+        cf.logger.info(
+            "Step 6. Find most frequent words for bottom-scoring Answers.")
         # Keep these data to compare w/ words for top-scoring Answers; s/b some diff.
         # If they are identical, there may be a logic problem in the code.
         score_bot_n_df = score_df[['Id']]
         cf.logger.debug("score_bot_n_df.head():")
         cf.logger.debug(score_bot_n_df.head(20))
         top = False
-        bot_n_bodies = nl.find_freq_words(top, score_top_n_df, num_selected_recs, cf.progress_msg_factor)
+        bot_n_bodies = nl.find_freq_words(
+            top, score_top_n_df, num_selected_recs, cf.progress_msg_factor)
         cf.logger.info('make_bag_of_words(bot_n_bodies)')
         (vocab, dist) = nl.make_bag_of_words(bot_n_bodies)
         nl.sort_save_vocab('.vocab.loscore', vocab, dist, cf.a_fname)
         #
         cf.logger.info("Step 7. Search lo-score A's for hi-score text.")
-        ans_with_hst_df = nl.search_for_terms(words_sorted_by_count_main_l, clean_ans_bodies_l, num_hi_score_terms)
-        all_ans_with_hst_df = pd.concat([all_ans_with_hst_df, ans_with_hst_df]).reset_index(drop=True)
-        
-        
+        ans_with_hst_df = nl.search_for_terms(
+            words_sorted_by_count_main_l,
+            clean_ans_bodies_l,
+            num_hi_score_terms)
+        all_ans_with_hst_df = pd.concat(
+            [all_ans_with_hst_df, ans_with_hst_df]).reset_index(drop=True)
+
         #
-        #TBD.Thu2017_0608_23:58 
-        # Analyze qag_df w/ nlp s/w in this loop; 
+        # TBD.Thu2017_0608_23:58
+        # Analyze qag_df w/ nlp s/w in this loop;
         # or save each qag_df to a separate df for later processing;
         # or save each qag_df to a disk file for later processing;
         # or move this code to the nlp processing section of the program.
         #
     #
-    #D print('\n#D fga, End of debug code; exiting.')
-    #D raise SystemExit()
+    # D print('\n#D fga, End of debug code; exiting.')
+    # D raise SystemExit()
 
     return q_with_a_df, all_ans_with_hst_df
 
-# TBD.1 Sat2017_0211_22:55 , should this func be called before combine_related*()?
+# TBD.1 Sat2017_0211_22:55 , should select_keyword_recs()
+# be called before combine_related*()?
 # Use it to make the final pop_and_top_l?
-#
+
+
 def select_keyword_recs(keyword, qa_df, outfields_l):
     """Find the Q's & A's from the filtered df that contain the keyword,
     in Title or Body.
@@ -566,7 +635,7 @@ def select_keyword_recs(keyword, qa_df, outfields_l):
     """
     # Get a pandas series of booleans to find the current question id.
     # Check Question & Answer, both Title and Body columns.
-    qt_sr  = qa_df.Title.str.contains(keyword, regex=False)
+    qt_sr = qa_df.Title.str.contains(keyword, regex=False)
     qab_sr = qa_df.Body.str.contains(keyword, regex=False)
     # Combine two series into one w/ boolean OR.
     qa_contains_sr = qab_sr | qt_sr
@@ -577,19 +646,25 @@ def select_keyword_recs(keyword, qa_df, outfields_l):
 def draw_histogram_plot(plot_df):
     """Draw a simple histogram plot using pandas tools.
     """
-    fig, ax = plt.subplots(1,1)
-    ax.get_xaxis().set_visible(True) 
+    fig, ax = plt.subplots(1, 1)
+    ax.get_xaxis().set_visible(True)
     plot_df = plot_df[['Score']]
-    histo_bins = [-10,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,25,30,35,40,45,50] 
-    plot_df.plot.hist( ax=ax, figsize=(6,6), bins=histo_bins ) 
+    histo_bins = [-10, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
+                  13, 14, 15, 16, 17, 18, 19, 20, 25, 30, 35, 40, 45, 50]
+    plot_df.plot.hist(ax=ax, figsize=(6, 6), bins=histo_bins)
     plt.show(block=False)
-    
+
     # Write data set to a csv file.
     outfile = 'tmpdir/tmp_plot.csv'
-    plot_df['Score'].to_csv(outfile, header=True, index=None, sep=',', mode='w')
-    
+    plot_df['Score'].to_csv(
+        outfile,
+        header=True,
+        index=None,
+        sep=',',
+        mode='w')
+
     # Print data used for histogram
-    count, division = np.histogram(plot_df['Score'], bins=histo_bins )
+    count, division = np.histogram(plot_df['Score'], bins=histo_bins)
     print("#D histogram data: count[:5]: ", count[:5])
     print("#D histogram data: division[:5]: ", division[:5])
 
@@ -616,10 +691,12 @@ def draw_scatter_plot(plot_df, xaxis, yaxis, xname, yname):
 def save_prior_file(wdir, wfile):
     """Save backup copy of a file w/ same name and '.bak' extension.
     """
-    outfile = wdir + wfile 
+    outfile = wdir + wfile
     if os.path.exists(outfile):
         os.rename(outfile, outfile + '.bak')
-        print('\nWARN: renamed o/p file to *.bak; save it manually if needed:' + outfile)
+        print(
+            '\nWARN: renamed o/p file to *.bak; save it manually if needed:' +
+            outfile)
 
 
 def write_df_to_file(in_df, wdir, wfile):
@@ -629,7 +706,9 @@ def write_df_to_file(in_df, wdir, wfile):
     outfile = wdir + wfile + '.qanda'
     if os.path.exists(outfile):
         os.rename(outfile, outfile + '.bak')
-        print('\nWARN: renamed o/p file to *.bak; save it manually if needed:' + outfile)
+        print(
+            '\nWARN: renamed o/p file to *.bak; save it manually if needed:' +
+            outfile)
     with open(outfile, 'w') as f:
         print('\nWriting Q and A to outfile: ' + outfile)
         print(in_df['Body'], file=f)
@@ -638,14 +717,25 @@ def write_df_to_file(in_df, wdir, wfile):
 def get_parser():
     """Create parser to specify cmd line options for this program.
     """
-    parser = argparse.ArgumentParser(description='find good answers hidden in stackoverflow data')
+    parser = argparse.ArgumentParser(
+        description='find good answers hidden in stackoverflow data')
 
-    parser.add_argument('-d', '--debug', help='Use settings to help with debugging', action='store_true')
-    
-    parser.add_argument('-L', '--lo_score_limit', help='lowest score for an answer to be included', default=10, type=int)
+    parser.add_argument(
+        '-d',
+        '--debug',
+        help='Use settings to help with debugging',
+        action='store_true')
 
-    #TBD parser.add_argument('-p', '--popular_questions', help='select questions with many answers', action='store_true')
-    #TBD parser.add_argument('-t', '--top_users', help='find lo-score answers by hi-scoring owners', action='store_true')
+    parser.add_argument(
+        '-L',
+        '--lo_score_limit',
+        help='lowest score for an answer to be included',
+        default=10,
+        type=int)
+
+    # TBD parser.add_argument('-p', '--popular_questions', help='select questions with many answers', action='store_true')
+    # TBD parser.add_argument('-t', '--top_users', help='find lo-score answers
+    # by hi-scoring owners', action='store_true')
     parser.add_argument('-v', '--verbose', action='store_true')
     return parser
 
@@ -662,11 +752,11 @@ if __name__ == '__main__':
     print("num_owners: ", num_owners)
     #
     keyword = False
-    #D keyword = 'beginner'
-    #D keyword = 'yield'
+    # D keyword = 'beginner'
+    # D keyword = 'yield'
     # D keyword = 'begin'
     # D keyword = 'pandas'
-    #D keyword = 'Python'  # Both Title & Body of data sets have it; for debug
+    # D keyword = 'Python'  # Both Title & Body of data sets have it; for debug
     print("Keyword: ", keyword)
     #
     num_hi_score_terms = 21  # Use 3 for testing; 11 or more for use.
@@ -676,7 +766,8 @@ if __name__ == '__main__':
 
     show_menu(q_with_a_df)
 
-    log_msg = cf.log_file + ' - Finish logging for ' + os.path.basename(__file__) + '\n\n'
+    log_msg = cf.log_file + ' - Finish logging for ' + \
+        os.path.basename(__file__) + '\n\n'
     cf.logger.warning(log_msg)
 
 'bye'
