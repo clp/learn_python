@@ -3,7 +3,7 @@
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 # Using Python 3.4.5 :: Anaconda 4.3.0 (64-bit), since Tue2017_0710
 
-#   Time-stamp: <Tue 2017 Jul 11 04:00:17 PMPM clpoda>
+#   Time-stamp: <Tue 2017 Jul 11 04:49:44 PMPM clpoda>
 """fga_find_good_answers.py
 
 
@@ -292,7 +292,7 @@ def show_menu(qa_df):
     print("#D End of the cmd interpretation loop; return.")
     print()
     # D print("#D Last stmt of show_menu(); return.\n")
-    #
+
     # Save df before exit, if quit cmd is not used.
     # TBD Same code used for 'q' cmd; refactor both.
     # TBD print("Save data and Quit the program.")
@@ -301,7 +301,7 @@ def show_menu(qa_df):
     # TBD outfile = open('outdir/graded_q_with_a.csv', 'w')
     # TBD graded_df[outfields_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
     # TBD outfile.flush()
-    #
+
     return
 
 
@@ -503,14 +503,14 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, all_ans_df, numlines):
     q_with_a_df = pd.concat(
         [ques_match_df, ans_match_df]).reset_index(drop=True)
     # Full list w/ all Q's at top, A's after.
-    #
+
     print('#D len of ques_match_df: ', len(ques_match_df))
     print('#D len of ans_match_df: ', len(ans_match_df))
     print('\n#D ques_match_df.head() & ans_match_df: ')
     print(ques_match_df.head())
     print('#D')
     print(ans_match_df.head())
-    #
+
     i = 0
     # Build each Q&A group: one Q w/ all its A.'s
     # TBD, How to do this w/o explicit loop, using df tools?
@@ -528,16 +528,17 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, all_ans_df, numlines):
         # D print(qag_df.head())
         cf.logger.info('qag_df.head(1): ')
         cf.logger.info(qag_df.head(1))
-        #
+
         # TBD Assign the global var cf.all_ans_df here.  Find a better soln w/o
         # global.
+        # TBD.1, Does this stmt belong inside this loop, if needed at all?
         cf.all_ans_df = qag_df  # TMP to avoid renaming all_ans_df in many places
         cf.logger.info("Step 2. Process the words of each input line.")
         clean_ans_bodies_l = nl.clean_raw_data(
             cf.a_fname, cf.progress_msg_factor)
         # D print('\n#D, clean_ans_bodies_l[:1]')
         # D print(clean_ans_bodies_l[:1])
-        #
+
         cf.logger.info("Step 3. Build a bag of words and their counts.")
         (vocab, dist) = nl.make_bag_of_words(clean_ans_bodies_l)
         # D print('\n#D, vocab[:1]')
@@ -546,10 +547,10 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, all_ans_df, numlines):
             '.vocab', vocab, dist, cf.a_fname)
         # Save the original list for later searching.
         words_sorted_by_count_main_l = words_sorted_by_count_l
-        #
+
         cf.logger.info('Step 4. Sort Answers by Score.')
         score_df, num_selected_recs = nl.sort_answers_by_score(numlines)
-        #
+
         cf.logger.info('Step 5. Find most freq words for top-scoring Answers.')
         score_top_n_df = score_df[['Id']]
 
@@ -561,28 +562,31 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, all_ans_df, numlines):
         # Use top_n Answers & count their words.
         cf.logger.info(
             "For top ans: Cleaning and parsing the training set bodies...")
-        #
+
         top = True
         top_n_bodies = nl.find_freq_words(
             top, score_top_n_df, num_selected_recs, cf.progress_msg_factor)
         cf.logger.info('make_bag_of_words(top_n_bodies)')
         (vocab, dist) = nl.make_bag_of_words(top_n_bodies)
         nl.sort_save_vocab('.vocab.hiscore', vocab, dist, cf.a_fname)
-        #
+
         cf.logger.info(
-            "Step 6. Find most frequent words for bottom-scoring Answers.")
-        # Keep these data to compare w/ words for top-scoring Answers; s/b some diff.
-        # If they are identical, there may be a logic problem in the code.
-        score_bot_n_df = score_df[['Id']]
-        cf.logger.debug("score_bot_n_df.head():")
-        cf.logger.debug(score_bot_n_df.head(20))
-        top = False
-        bot_n_bodies = nl.find_freq_words(
-            top, score_top_n_df, num_selected_recs, cf.progress_msg_factor)
-        cf.logger.info('make_bag_of_words(bot_n_bodies)')
-        (vocab, dist) = nl.make_bag_of_words(bot_n_bodies)
-        nl.sort_save_vocab('.vocab.loscore', vocab, dist, cf.a_fname)
-        #
+            "Step 6. Find most freq words for low-score Answers, "
+            "if program started in debug mode.")
+        if args['debug']:
+            # Keep these data to compare w/ words for top-scoring Answers; s/b some diff.
+            # If they are identical, there may be a logic problem in the code,
+            # or the data set may be too small.
+            score_bot_n_df = score_df[['Id']]
+            cf.logger.debug("score_bot_n_df.head():")
+            cf.logger.debug(score_bot_n_df.head(20))
+            top = False
+            bot_n_bodies = nl.find_freq_words(
+                top, score_top_n_df, num_selected_recs, cf.progress_msg_factor)
+            cf.logger.info('make_bag_of_words(bot_n_bodies)')
+            (vocab, dist) = nl.make_bag_of_words(bot_n_bodies)
+            nl.sort_save_vocab('.vocab.loscore', vocab, dist, cf.a_fname)
+
         cf.logger.info("Step 7. Search lo-score A's for hi-score text.")
         ans_with_hst_df = nl.search_for_terms(
             words_sorted_by_count_main_l,
@@ -598,7 +602,7 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, all_ans_df, numlines):
         # or save each qag_df to a disk file for later processing;
         # or move this code to the nlp processing section of the program.
         #
-    #
+
     # D print('\n#D fga, End of debug code; exiting.')
     # D raise SystemExit()
 
@@ -734,7 +738,7 @@ if __name__ == '__main__':
     num_owners = 40  # Default is 10.
     num_owners = 100  # Default is 10.
     print("num_owners: ", num_owners)
-    #
+
     keyword = False
     # D keyword = 'beginner'
     # D keyword = 'yield'
@@ -742,7 +746,7 @@ if __name__ == '__main__':
     # D keyword = 'pandas'
     # D keyword = 'Python'  # Both Title & Body of data sets have it; for debug
     print("Keyword: ", keyword)
-    #
+
     num_hi_score_terms = 21  # Use 3 for testing; 11 or more for use.
     print("num_hi_score_terms: ", num_hi_score_terms)
 
