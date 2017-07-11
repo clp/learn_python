@@ -3,7 +3,7 @@
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 # Using Python 3.4.5 :: Anaconda 4.3.0 (64-bit), since Tue2017_0710
 
-#   Time-stamp: <Tue 2017 Jul 11 10:55:17 AMAM clpoda>
+#   Time-stamp: <Tue 2017 Jul 11 11:14:34 AMAM clpoda>
 """fga_find_good_answers.py
 
 
@@ -123,12 +123,6 @@ def main(q_with_a_df):
 
     init()
 
-    if args['debug']:
-        cf.end = 55
-        print('Running in debug mode.')
-        print('  cf.end set to: ', cf.end)
-        print()
-
     cf.a_fname, a_infile, q_infile, indir, outdir = \
         config_data()
     cf.all_ans_df, cf.all_ques_df, cf.progress_msg_factor, numlines = \
@@ -190,6 +184,12 @@ def main(q_with_a_df):
 def init():
     """Initialize some settings for the program.
     """
+    if args['debug']:
+        cf.end = 55
+        print('Running in debug mode.')
+        print('  cf.end set to: ', cf.end)
+        print()
+
     # Initialize settings for pandas.
     pd.set_option('display.width', 0)  # 0=no limit, use for debugging
     # TBD pd.set_option('display.max_colwidth', -1)  # -1=no limit, use for
@@ -506,7 +506,6 @@ def select_questions(parent_id_l, popular_ids_a):
     With slice limits at 400 and 300, got 26 Q, 308 A.
     TBD, what data set was used?
     """
-    #TBD global pop_and_top_l
     pop_and_top_l = list(
         set(parent_id_l[:500]).intersection(set(popular_ids_a[:500])))
     print('len(pop_and_top_l) : ', len(pop_and_top_l))
