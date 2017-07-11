@@ -3,7 +3,7 @@
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 # Using Python 3.4.5 :: Anaconda 4.3.0 (64-bit), since Tue2017_0710
 
-#   Time-stamp: <Tue 2017 Jul 11 10:07:28 AMAM clpoda>
+#   Time-stamp: <Tue 2017 Jul 11 10:55:17 AMAM clpoda>
 """fga_find_good_answers.py
 
 
@@ -136,25 +136,16 @@ def main(q_with_a_df):
             a_infile, q_infile)
     popular_ids = \
         find_popular_ques(cf.all_ans_df, cf.a_fname)
-    popular_ids_a = \
-        popular_ids.index.values
+    popular_ids_a = popular_ids.index.values
+    #
     top_scoring_owners_a, owner_grouped_df = \
         group_data(cf.all_ans_df)
     parent_id_l = \
         find_question_ids(top_scoring_owners_a, cf.all_ans_df)
     #
-    # pop_and_top_l:
-    # Find parent IDs that are popular (have several answers), and
-    # assume that some of those answers come from top owners
-    # (owners who have high mean scores).
-    # Set the size of the following list slices to get enough o/p to analyze.
-    # With slice limits at 40 and 30, got 2 Q, 36 A.
-    # With slice limits at 400 and 300, got 26 Q, 308 A.
-    pop_and_top_l = list(
-        set(parent_id_l[:500]).intersection(set(popular_ids_a[:500])))
-    print('len(pop_and_top_l) : ', len(pop_and_top_l))
-    if args['verbose']:
-        print('pop_and_top_l, parent id\'s to examine: ', pop_and_top_l[:])
+    pop_and_top_l = \
+        select_questions(parent_id_l, popular_ids_a)
+    #
     q_with_a_df, all_ans_with_hst_df = \
         combine_related_q_and_a(
             pop_and_top_l, cf.all_ques_df, cf.all_ans_df, numlines)
@@ -501,6 +492,27 @@ def find_question_ids(top_scoring_owners_a, all_ans_df):
     # D print(parent_id_l)
     # D print()
     return parent_id_l
+
+
+def select_questions(parent_id_l, popular_ids_a):
+    """Make a list of questions to use in further processing.
+    pop_and_top_l:
+    Find parent IDs that are popular (have several answers), and
+    assume that some of those answers come from top owners
+    (owners who have high mean scores).
+
+    Set the size of the following list slices to get enough o/p to analyze.
+    With slice limits at 40 and 30, got 2 Q, 36 A.
+    With slice limits at 400 and 300, got 26 Q, 308 A.
+    TBD, what data set was used?
+    """
+    #TBD global pop_and_top_l
+    pop_and_top_l = list(
+        set(parent_id_l[:500]).intersection(set(popular_ids_a[:500])))
+    print('len(pop_and_top_l) : ', len(pop_and_top_l))
+    if args['verbose']:
+        print('pop_and_top_l, parent id\'s to examine: ', pop_and_top_l[:])
+    return pop_and_top_l
 
 
 def combine_related_q_and_a(pop_and_top_l, all_ques_df, all_ans_df, numlines):
