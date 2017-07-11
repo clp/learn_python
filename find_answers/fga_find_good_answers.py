@@ -3,7 +3,7 @@
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 # Using Python 3.4.5 :: Anaconda 4.3.0 (64-bit), since Tue2017_0710
 
-#   Time-stamp: <Tue 2017 Jul 11 12:31:00 PMPM clpoda>
+#   Time-stamp: <Tue 2017 Jul 11 03:36:38 PMPM clpoda>
 """fga_find_good_answers.py
 
 
@@ -120,30 +120,30 @@ owner_grouped_df = pd.DataFrame()
 def main(q_with_a_df):
     """Analyze input data and produce o/p by calling functions.
     """
-
     init()
 
     cf.a_fname, a_infile, q_infile, indir, outdir = \
         config_data()
+
     cf.all_ans_df, cf.all_ques_df, cf.progress_msg_factor, numlines = \
-        read_data(
-            a_infile, q_infile)
+        read_data( a_infile, q_infile)
+
     popular_ids = \
         find_popular_ques(cf.all_ans_df, cf.a_fname)
     popular_ids_a = popular_ids.index.values
-    #
+
     top_scoring_owners_a, owner_grouped_df = \
         group_data(cf.all_ans_df)
     parent_id_l = \
         find_question_ids(top_scoring_owners_a, cf.all_ans_df)
-    #
+
     pop_and_top_l = \
         select_questions(parent_id_l, popular_ids_a)
-    #
+
     q_with_a_df, all_ans_with_hst_df = \
         combine_related_q_and_a(
             pop_and_top_l, cf.all_ques_df, cf.all_ans_df, numlines)
-    #
+
     # TBD Save the df to a file for review & debug; later processing may
     # use the df & the file is not needed.
     outfile = "tmpdir/all_ans_with_hst.csv"
