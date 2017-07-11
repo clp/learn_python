@@ -3,7 +3,7 @@
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 # Using Python 3.4.5 :: Anaconda 4.3.0 (64-bit), since Tue2017_0710
 
-#   Time-stamp: <Tue 2017 Jul 11 03:50:37 PMPM clpoda>
+#   Time-stamp: <Tue 2017 Jul 11 04:00:17 PMPM clpoda>
 """fga_find_good_answers.py
 
 
@@ -83,16 +83,6 @@ from pandas.tools.plotting import scatter_matrix
 import config as cf
 import nltk_ex25 as nl
 
-
-# ----------------------------------------------------------
-# Specify question and parent ID's to find.
-# DBG pid_l = [469, 535, 231767]
-# DBG.many pid_l = [469, 502, 535, 594, 683, 742, 766, 773, 972, 1476,
-# 766, 1734, 1829, 1854, 1983, 2311, 2933, 3061, 3976, 4942, 5102, 5313,
-# 1983, 5909, 5966, 8692, 8948, 10123, 11060, 2933, 1983]
-pid_l = [469, 502, 535, 594, 683, 742, 766, 773, 972]
-
-# ----------------------------------------------------------
 
 log_msg = cf.log_file + ' - Start logging for ' + os.path.basename(__file__)
 cf.logger.info(log_msg)
