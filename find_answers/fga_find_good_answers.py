@@ -3,7 +3,7 @@
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 # Using Python 3.4.5 :: Anaconda 4.3.0 (64-bit), since Tue2017_0710
 
-#   Time-stamp: <Tue 2017 Jul 11 03:36:38 PMPM clpoda>
+#   Time-stamp: <Tue 2017 Jul 11 03:50:37 PMPM clpoda>
 """fga_find_good_answers.py
 
 
@@ -55,32 +55,17 @@ Output data format of q_with_a.csv o/p file from this program.
         title=""wxWidgets"">wxWidgets</a> (formerly known as wxWindows)
 ..."
 
+----------------------------------------------------------
+Plan
+    Find top-scoring owners.
+    Find all answers by top-scoring owners.
+    Find the questions for each of those answers.
+    Find all answers for each of those questions.
+    Build a data frame with each question followed by all its answers.
+    Find the subset of Q's and A's that contain a keyword.
+    Save the subset of data to a csv file.
+----------------------------------------------------------
 """
-
-
-# ----------------------------------------------------------
-# Plan
-# Find top-scoring owners.
-# Find all answers by top-scoring owners.
-# Find the questions for each of those answers.
-# Find all answers for each of those questions.
-# Build a data frame with each question followed by all its answers.
-# Find the subset of Q's and A's that contain a keyword.
-# Save the subset of data to a csv file.
-#
-# Next steps.
-#
-# Build tools to analyze a larger test set.
-# ----------------------------------------------------------
-
-
-# ----------------------------------------------------------
-# Preliminary steps.
-#
-# This csvcut (part of csvkit) operation  may not be needed; used for debug.
-# Build subset of full Answers data set; exclude Body field:
-# csvcut -c 1,2,3,4,5 -e latin1 indir/Answers.csv > outdir/a21_all_iocps.csv
-# ----------------------------------------------------------
 
 version = '0.0.5'
 
