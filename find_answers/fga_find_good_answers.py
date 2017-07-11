@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit),
-# or later
+# Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
+# Using Python 3.4.5 :: Anaconda 4.3.0 (64-bit), since Tue2017_0710
 
-#   Time-stamp: <Mon 2017 Jul 10 01:22:15 PMPM clpoda>
+#   Time-stamp: <Tue 2017 Jul 11 10:07:28 AMAM clpoda>
 """fga_find_good_answers.py
 
 
@@ -126,7 +126,7 @@ def main(q_with_a_df):
     if args['debug']:
         cf.end = 55
         print('Running in debug mode.')
-        print('  end set to: ', cf.end)
+        print('  cf.end set to: ', cf.end)
         print()
 
     cf.a_fname, a_infile, q_infile, indir, outdir = \
