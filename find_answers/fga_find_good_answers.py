@@ -3,7 +3,7 @@
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 # Using Python 3.4.5 :: Anaconda 4.3.0 (64-bit), since Tue2017_0710
 
-#   Time-stamp: <Tue 2017 Jul 11 11:14:34 AMAM clpoda>
+#   Time-stamp: <Tue 2017 Jul 11 12:31:00 PMPM clpoda>
 """fga_find_good_answers.py
 
 
@@ -191,11 +191,8 @@ def init():
         print()
 
     # Initialize settings for pandas.
-    pd.set_option('display.width', 0)  # 0=no limit, use for debugging
-    # TBD pd.set_option('display.max_colwidth', -1)  # -1=no limit, use for
-    # debugging
-    # -1=no limit, use for debugging
-    pd.set_option('display.max_colwidth', 100)
+    pd.set_option('display.width', 0)  # 0=no limit, for debug
+    pd.set_option('display.max_colwidth', 100) # -1=no limit, for debug
 
     # Don't show commas in large numbers.
     # Show OwnerUserId w/o '.0' suffix.
