@@ -1,0 +1,9 @@
+indir/*
+outdir/*
+tmpdir/*
+sav/*
+old/*
+*.png
+*.html
+*.tgz
+*.log
