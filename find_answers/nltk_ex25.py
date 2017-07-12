@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.6.0 :: Anaconda 4.3.0 (64-bit)
 
-# Time-stamp: <Mon 2017 Jun 19 04:44:38 PMPM clpoda>
+# Time-stamp: <Tue 2017 Jul 11 08:20:00 PMPM clpoda>
 
 """nltk_ex25.py
     
