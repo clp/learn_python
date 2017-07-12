@@ -3,7 +3,7 @@
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 # Using Python 3.4.5 :: Anaconda 4.3.0 (64-bit), since Tue2017_0710
 
-#   Time-stamp: <Tue 2017 Jul 11 08:26:46 PMPM clpoda>
+#   Time-stamp: <Tue 2017 Jul 11 10:24:38 PMPM clpoda>
 """fga_find_good_answers.py
 
 
@@ -359,16 +359,16 @@ def read_data(ans_file, ques_file):
     return ans_df, ques_df, cf.progress_msg_factor, numlines
 
 
-def find_popular_ques(all_ans_df, a_fname):
+def find_popular_ques(aa_df, a_fname):
     """Find the most frequent ParentIds in the answers df.
     """
-    popular_ids = pd.value_counts(all_ans_df['ParentId'])
+    popular_ids = pd.value_counts(aa_df['ParentId'])
     outfile = "outdir/fpq_popular_ids." + a_fname + ".csv"
     popular_ids.to_csv(outfile)
     return popular_ids
 
 
-def group_data(all_ans_df):
+def group_data(aa_df):
     """Group the contents of the answers df by a specific column.
     Group by OwnerUserId, and sort by mean score for answers only
     for each owner (question scores are not counted).
@@ -378,7 +378,7 @@ def group_data(all_ans_df):
     Low score is any score below lo_score_limit.
     """
     print('=== owner_grouped_df: Group by owner and sort by mean score for each owner.')
-    owner_grouped_df = all_ans_df.groupby('OwnerUserId')
+    owner_grouped_df = aa_df.groupby('OwnerUserId')
     owner_grouped_df = owner_grouped_df[[
         'Score']].mean().sort_values(['Score'])
 
@@ -407,9 +407,9 @@ def group_data(all_ans_df):
     lo_score_limit = args['lo_score_limit']
     for owner in top_scoring_owners_a:
         # Get a pandas series of booleans for filtering:
-        answered_by_o2_sr = (all_ans_df.OwnerUserId == owner)
+        answered_by_o2_sr = (aa_df.OwnerUserId == owner)
         # Get a pandas df with rows for all answers of one user:
-        answers_df = all_ans_df[[
+        answers_df = aa_df[[
             'Id', 'OwnerUserId', 'Score']][answered_by_o2_sr]
 
         # Get a pandas series of booleans for filtering:
@@ -438,7 +438,8 @@ def group_data(all_ans_df):
     return top_scoring_owners_a, owner_grouped_df
 
 
-def find_question_ids(top_scoring_owners_a, all_ans_df):
+
+def find_question_ids(top_scoring_owners_a, aa_df):
     """Make a list of all answer records by the high-score owners.
     Use that list to build a list of Question Id's (= ParentId)
     to collect for evaluation.
@@ -447,9 +448,9 @@ def find_question_ids(top_scoring_owners_a, all_ans_df):
     owners_df_l = []
     for owner in top_scoring_owners_a:
         # Get a pandas series of booleans for filtering:
-        answered_by_owner_sr = (all_ans_df.OwnerUserId == owner)
+        answered_by_owner_sr = (aa_df.OwnerUserId == owner)
         # Get a pandas df with rows for all answers of one user:
-        answers_df = all_ans_df[['Id', 'OwnerUserId',
+        answers_df = aa_df[['Id', 'OwnerUserId',
                                  'ParentId', 'Score']][answered_by_owner_sr]
         owners_df_l.append(answers_df)
 
@@ -486,20 +487,19 @@ def select_questions(parent_id_l, popular_ids_a):
     return pop_and_top_l
 
 
-def combine_related_q_and_a(pop_and_top_l, all_ques_df, all_ans_df, numlines):
+def combine_related_q_and_a(pop_and_top_l, all_ques_df, aa_df, numlines):
     """Get each Q in the list of ParentId's, and the related A's.
     Loop over all the question Id's and store all Q & A data in a df.
-    Return that df.
-    Update, Fri2017_0609_18:28 : This function now includes calls
-    to the routines that perform the natural language processing
-    of the text data.  The code will probably be reorganized into
-    other functions.
+    
+    Then call analyze_text() on each group of Q with A's,
+    which calls the routines that perform the natural language processing
+    of the text data.
     """
     global q_with_a_df
     global all_ans_with_hst_df
 
     ques_match_df = all_ques_df[all_ques_df['Id'].isin(pop_and_top_l)]
-    ans_match_df = all_ans_df[all_ans_df['ParentId'].isin(pop_and_top_l)]
+    ans_match_df = aa_df[aa_df['ParentId'].isin(pop_and_top_l)]
     q_with_a_df = pd.concat(
         [ques_match_df, ans_match_df]).reset_index(drop=True)
     # Full list w/ all Q's at top, A's after.
@@ -524,76 +524,12 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, all_ans_df, numlines):
         qm_df = ques_match_df[ques_match_df['Id'] == qid]
         am_df = ans_match_df[ans_match_df['ParentId'] == qid]
         qag_df = pd.concat([qm_df, am_df]).reset_index(drop=True)
-        # D print("\n#D qag_df.head(): ")
-        # D print(qag_df.head())
+        print("\n#D qag_df.head(): ")
+        print(qag_df.head())
         cf.logger.info('qag_df.head(1): ')
         cf.logger.info(qag_df.head(1))
 
-        # TBD Assign the global var cf.all_ans_df here.  Find a better soln w/o
-        # global.
-        # TBD.1, Does this stmt belong inside this loop, if needed at all?
-        cf.all_ans_df = qag_df  # TMP to avoid renaming all_ans_df in many places
-        cf.logger.info("Step 2. Process the words of each input line.")
-        clean_ans_bodies_l = nl.clean_raw_data(
-            cf.a_fname, cf.progress_msg_factor)
-        # D print('\n#D, clean_ans_bodies_l[:1]')
-        # D print(clean_ans_bodies_l[:1])
-
-        cf.logger.info("Step 3. Build a bag of words and their counts.")
-        (vocab, dist) = nl.make_bag_of_words(clean_ans_bodies_l)
-        # D print('\n#D, vocab[:1]')
-        # D print(vocab[:1])
-        words_sorted_by_count_l = nl.sort_save_vocab(
-            '.vocab', vocab, dist, cf.a_fname)
-        # Save the original list for later searching.
-        words_sorted_by_count_main_l = words_sorted_by_count_l
-
-        cf.logger.info('Step 4. Sort Answers by Score.')
-        score_df, num_selected_recs = nl.sort_answers_by_score(numlines)
-
-        cf.logger.info('Step 5. Find most freq words for top-scoring Answers.')
-        score_top_n_df = score_df[['Id']]
-
-        # TBD, Maybe convert df to string so logger can print title & data w/ one cmd:
-        # TBD log_msg = "score_top_n_df.tail():" + CONVERT_DF_TO_STRING(score_top_n_df.tail())
-        # TBD cf.logger.debug(log_msg)
-        cf.logger.debug("score_top_n_df.tail():")
-        cf.logger.debug(score_top_n_df.tail(20))
-        # Use top_n Answers & count their words.
-        cf.logger.info(
-            "For top ans: Cleaning and parsing the training set bodies...")
-
-        top = True
-        top_n_bodies = nl.find_freq_words(
-            top, score_top_n_df, num_selected_recs, cf.progress_msg_factor)
-        cf.logger.info('make_bag_of_words(top_n_bodies)')
-        (vocab, dist) = nl.make_bag_of_words(top_n_bodies)
-        nl.sort_save_vocab('.vocab.hiscore', vocab, dist, cf.a_fname)
-
-        cf.logger.info(
-            "Step 6. Find most freq words for low-score Answers, "
-            "if program started in debug mode.")
-        if args['debug']:
-            # Keep these data to compare w/ words for top-scoring Answers; s/b some diff.
-            # If they are identical, there may be a logic problem in the code,
-            # or the data set may be too small.
-            score_bot_n_df = score_df[['Id']]
-            cf.logger.debug("score_bot_n_df.head():")
-            cf.logger.debug(score_bot_n_df.head(20))
-            top = False
-            bot_n_bodies = nl.find_freq_words(
-                top, score_top_n_df, num_selected_recs, cf.progress_msg_factor)
-            cf.logger.info('make_bag_of_words(bot_n_bodies)')
-            (vocab, dist) = nl.make_bag_of_words(bot_n_bodies)
-            nl.sort_save_vocab('.vocab.loscore', vocab, dist, cf.a_fname)
-
-        cf.logger.info("Step 7. Search lo-score A's for hi-score text.")
-        ans_with_hst_df = nl.search_for_terms(
-            words_sorted_by_count_main_l,
-            clean_ans_bodies_l,
-            num_hi_score_terms)
-        all_ans_with_hst_df = pd.concat(
-            [all_ans_with_hst_df, ans_with_hst_df]).reset_index(drop=True)
+        all_ans_with_hst_df = analyze_text(qag_df, numlines)
 
         #
         # TBD.Thu2017_0608_23:58
@@ -607,6 +543,81 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, all_ans_df, numlines):
     # D raise SystemExit()
 
     return q_with_a_df, all_ans_with_hst_df
+
+
+def analyze_text(qag_df, numlines):
+    """Get a group of one Q w/ its A's.
+    Call the routines that perform the natural language processing
+    of the text data.
+    """
+    global all_ans_with_hst_df
+
+    # TBD Assign the global var cf.all_ans_df here.  Find a better soln w/o
+    # global.
+    cf.all_ans_df = qag_df  # TMP to avoid renaming all_ans_df in many places
+    cf.logger.info("NLP Step 2. Process the words of each input line.")
+    clean_ans_bodies_l = nl.clean_raw_data(
+        cf.a_fname, cf.progress_msg_factor)
+    print('\n#D, clean_ans_bodies_l[:1]')
+    print(clean_ans_bodies_l[:1])
+
+    cf.logger.info("NLP Step 3. Build a bag of words and their counts.")
+    (vocab, dist) = nl.make_bag_of_words(clean_ans_bodies_l)
+    print('\n#D, vocab[:1]')
+    print(vocab[:1])
+    words_sorted_by_count_l = nl.sort_save_vocab(
+        '.vocab', vocab, dist, cf.a_fname)
+    # Save the original list for later searching.
+    words_sorted_by_count_main_l = words_sorted_by_count_l
+
+    cf.logger.info('NLP Step 4. Sort Answers by Score.')
+    score_df, num_selected_recs = nl.sort_answers_by_score(numlines)
+
+    cf.logger.info('NLP Step 5. Find most freq words for top-scoring Answers.')
+    score_top_n_df = score_df[['Id']]
+
+    # TBD, Maybe convert df to string so logger can print title & data w/ one cmd:
+    # TBD log_msg = "score_top_n_df.tail():" + CONVERT_DF_TO_STRING(score_top_n_df.tail())
+    # TBD cf.logger.debug(log_msg)
+    cf.logger.debug("score_top_n_df.tail():")
+    cf.logger.debug(score_top_n_df.tail(20))
+    # Use top_n Answers & count their words.
+    cf.logger.info(
+        "For top ans: Cleaning and parsing the training set bodies...")
+
+    top = True
+    top_n_bodies = nl.find_freq_words(
+        top, score_top_n_df, num_selected_recs, cf.progress_msg_factor)
+    cf.logger.info('make_bag_of_words(top_n_bodies)')
+    (vocab, dist) = nl.make_bag_of_words(top_n_bodies)
+    nl.sort_save_vocab('.vocab.hiscore', vocab, dist, cf.a_fname)
+
+    cf.logger.info(
+        "NLP Step 6. Find most freq words for low-score Answers, "
+        "if program started in debug mode.")
+    if args['debug']:
+        # Keep these data to compare w/ words for top-scoring Answers; s/b some diff.
+        # If they are identical, there may be a logic problem in the code,
+        # or the data set may be too small.
+        score_bot_n_df = score_df[['Id']]
+        cf.logger.debug("score_bot_n_df.head():")
+        cf.logger.debug(score_bot_n_df.head(20))
+        top = False
+        bot_n_bodies = nl.find_freq_words(
+            top, score_top_n_df, num_selected_recs, cf.progress_msg_factor)
+        cf.logger.info('make_bag_of_words(bot_n_bodies)')
+        (vocab, dist) = nl.make_bag_of_words(bot_n_bodies)
+        nl.sort_save_vocab('.vocab.loscore', vocab, dist, cf.a_fname)
+
+    cf.logger.info("NLP Step 7. Search lo-score A's for hi-score text.")
+    ans_with_hst_df = nl.search_for_terms(
+        words_sorted_by_count_main_l,
+        clean_ans_bodies_l,
+        num_hi_score_terms)
+    all_ans_with_hst_df = pd.concat(
+        [all_ans_with_hst_df, ans_with_hst_df]).reset_index(drop=True)
+    return all_ans_with_hst_df
+
 
 # TBD.1 Sat2017_0211_22:55 , should select_keyword_recs()
 # be called before combine_related*()?
@@ -721,9 +732,18 @@ def get_parser():
         default=10,
         type=int)
 
-    # TBD parser.add_argument('-p', '--popular_questions', help='select questions with many answers', action='store_true')
-    # TBD parser.add_argument('-t', '--top_users', help='find lo-score answers
-    # by hi-scoring owners', action='store_true')
+    """
+    parser.add_argument(
+        '-p',
+        '--popular_questions',
+        help='select questions with many answers',
+        action='store_true')
+    parser.add_argument(
+        '-t',
+        '--top_users',
+        help='find lo-score answers by hi-scoring owners',
+        action='store_true')
+    """
     parser.add_argument('-v', '--verbose', action='store_true')
     return parser
 
