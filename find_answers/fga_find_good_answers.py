@@ -3,7 +3,7 @@
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 # Using Python 3.4.5 :: Anaconda 4.3.0 (64-bit), since Tue2017_0710
 
-#   Time-stamp: <Tue 2017 Jul 11 10:24:38 PMPM clpoda>
+#   Time-stamp: <Wed 2017 Jul 12 03:20:18 PMPM clpoda>
 """fga_find_good_answers.py
 
 
@@ -490,7 +490,7 @@ def select_questions(parent_id_l, popular_ids_a):
 def combine_related_q_and_a(pop_and_top_l, all_ques_df, aa_df, numlines):
     """Get each Q in the list of ParentId's, and the related A's.
     Loop over all the question Id's and store all Q & A data in a df.
-    
+
     Then call analyze_text() on each group of Q with A's,
     which calls the routines that perform the natural language processing
     of the text data.
@@ -546,14 +546,14 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, aa_df, numlines):
 
 
 def analyze_text(qag_df, numlines):
-    """Get a group of one Q w/ its A's.
-    Call the routines that perform the natural language processing
-    of the text data.
+    """Use a Q&A group of one Q w/ its A's for i/p.
+    Process the text data w/ the routines in the nltk module, which use
+    natural language tools.
     """
     global all_ans_with_hst_df
 
-    # TBD Assign the global var cf.all_ans_df here.  Find a better soln w/o
-    # global.
+    # TBD.1 Assign the global var cf.all_ans_df here.  Find a better soln w/o
+    # global.  cf.all_ans_df is used in the nltk module.
     cf.all_ans_df = qag_df  # TMP to avoid renaming all_ans_df in many places
     cf.logger.info("NLP Step 2. Process the words of each input line.")
     clean_ans_bodies_l = nl.clean_raw_data(

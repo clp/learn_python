@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.6.0 :: Anaconda 4.3.0 (64-bit)
 
-# Time-stamp: <Tue 2017 Jul 11 08:20:00 PMPM clpoda>
+# Time-stamp: <Wed 2017 Jul 12 02:19:50 PMPM clpoda>
 
 """nltk_ex25.py
     
@@ -445,6 +445,8 @@ def search_for_terms(words_sorted_by_count_main_l, clean_ans_bodies_l, num_hi_sc
     
     # Save full df to a file.
     outfile = "tmpdir/all_ans.csv"
+    # TBD.1 This overwrites the preceding file each time this func is called.
+    #   Must change the code to save data from each time this func is called.
     cf.all_ans_df.to_csv(outfile)
     
     # Save possible valuable answers to a separate file for review.
