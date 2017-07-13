@@ -3,7 +3,7 @@
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 # Using Python 3.4.5 :: Anaconda 4.3.0 (64-bit), since Tue2017_0710
 
-#   Time-stamp: <Thu 2017 Jul 13 03:28:58 PMPM clpoda>
+#   Time-stamp: <Thu 2017 Jul 13 03:51:43 PMPM clpoda>
 """fga_find_good_answers.py
 
 
@@ -523,19 +523,19 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, aa_df, numlines):
             print("#D combine_related_q_and_a:for-qid-loop count i: ", i)
         qm_df = ques_match_df[ques_match_df['Id'] == qid]
         am_df = ans_match_df[ans_match_df['ParentId'] == qid]
-        qag_df = pd.concat([qm_df, am_df]).reset_index(drop=True)
-        print("\n#D qag_df.head(): ")
-        print(qag_df.head())
-        cf.logger.info('qag_df.head(1): ')
-        cf.logger.info(qag_df.head(1))
+        qagroup_df = pd.concat([qm_df, am_df]).reset_index(drop=True)
+        print("\n#D qagroup_df.head(): ")
+        print(qagroup_df.head())
+        cf.logger.info('qagroup_df.head(1): ')
+        cf.logger.info(qagroup_df.head(1))
 
-        all_ans_with_hst_df = analyze_text(qag_df, numlines)
+        all_ans_with_hst_df = analyze_text(qagroup_df, numlines)
 
         #
         # TBD.Thu2017_0608_23:58
-        # Analyze qag_df w/ nlp s/w in this loop;
-        # or save each qag_df to a separate df for later processing;
-        # or save each qag_df to a disk file for later processing;
+        # Analyze qagroup_df w/ nlp s/w in this loop;
+        # or save each qagroup_df to a separate df for later processing;
+        # or save each qagroup_df to a disk file for later processing;
         # or move this code to the nlp processing section of the program.
         #
 
@@ -545,7 +545,7 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, aa_df, numlines):
     return q_with_a_df, all_ans_with_hst_df
 
 
-def analyze_text(qag_df, numlines):
+def analyze_text(qagroup_df, numlines):
     """Use a Q&A group of one Q w/ its A's for i/p.
     Process the text data w/ the routines in the nltk module, which use
     natural language tools.
@@ -554,16 +554,16 @@ def analyze_text(qag_df, numlines):
 
     # TBD.1 Assign the global var cf.all_ans_df here.  Find a better soln w/o
     # global.  cf.all_ans_df is used in the nltk module.
-    #TBD.1 cf.all_ans_df = qag_df  # TMP to avoid renaming all_ans_df in many places
+    #TBD.1 cf.all_ans_df = qagroup_df  # TMP to avoid renaming all_ans_df in many places
     # TBD.1.Thu2017_0713_15:08 :
-    #   Fix: Chg global cf.all_ans_df to local qag_df wherever it is needed;
+    #   Fix: Chg global cf.all_ans_df to local qagroup_df wherever it is needed;
     #   Add it to func arg list where needed.
     #   These will be chgs in nltk program; Don't chg earlier uses of cf.all_ans_df in fga.
     #   Then chg global cf.all*df to local all_ans_df.
     #
     cf.logger.info("NLP Step 2. Process the words of each input line.")
     clean_ans_bodies_l = nl.clean_raw_data(
-        cf.a_fname, cf.progress_msg_factor, qag_df)
+        cf.a_fname, cf.progress_msg_factor, qagroup_df)
     print('\n#D, clean_ans_bodies_l[:1]')
     print(clean_ans_bodies_l[:1])
 
@@ -577,7 +577,7 @@ def analyze_text(qag_df, numlines):
     words_sorted_by_count_main_l = words_sorted_by_count_l
 
     cf.logger.info('NLP Step 4. Sort Answers by Score.')
-    score_df, num_selected_recs = nl.sort_answers_by_score(numlines, qag_df)
+    score_df, num_selected_recs = nl.sort_answers_by_score(numlines, qagroup_df)
 
     cf.logger.info('NLP Step 5. Find most freq words for top-scoring Answers.')
     score_top_n_df = score_df[['Id']]
@@ -593,7 +593,7 @@ def analyze_text(qag_df, numlines):
 
     top = True
     top_n_bodies = nl.find_freq_words(
-        top, score_top_n_df, num_selected_recs, cf.progress_msg_factor, qag_df)
+        top, score_top_n_df, num_selected_recs, cf.progress_msg_factor, qagroup_df)
     cf.logger.info('make_bag_of_words(top_n_bodies)')
     (vocab, dist) = nl.make_bag_of_words(top_n_bodies)
     nl.sort_save_vocab('.vocab.hiscore', vocab, dist, cf.a_fname)
@@ -610,7 +610,7 @@ def analyze_text(qag_df, numlines):
         cf.logger.debug(score_bot_n_df.head(20))
         top = False
         bot_n_bodies = nl.find_freq_words(
-            top, score_top_n_df, num_selected_recs, cf.progress_msg_factor, qag_df)
+            top, score_top_n_df, num_selected_recs, cf.progress_msg_factor, qagroup_df)
         cf.logger.info('make_bag_of_words(bot_n_bodies)')
         (vocab, dist) = nl.make_bag_of_words(bot_n_bodies)
         nl.sort_save_vocab('.vocab.loscore', vocab, dist, cf.a_fname)
@@ -619,7 +619,7 @@ def analyze_text(qag_df, numlines):
     ans_with_hst_df = nl.search_for_terms(
         words_sorted_by_count_main_l,
         clean_ans_bodies_l,
-        num_hi_score_terms, qag_df)
+        num_hi_score_terms, qagroup_df)
     all_ans_with_hst_df = pd.concat(
         [all_ans_with_hst_df, ans_with_hst_df]).reset_index(drop=True)
     return all_ans_with_hst_df

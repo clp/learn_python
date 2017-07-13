@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.6.0 :: Anaconda 4.3.0 (64-bit)
 
-# Time-stamp: <Thu 2017 Jul 13 03:28:43 PMPM clpoda>
+# Time-stamp: <Thu 2017 Jul 13 03:51:45 PMPM clpoda>
 
 """nltk_ex25.py
     
@@ -67,7 +67,7 @@ def main():
     pass
 
 """
-#TBD.713  Calls to some funcs don't include qag_df: mismatch w/ def of func.
+#TBD.713  Calls to some funcs don't include qagroup_df: mismatch w/ def of func.
 
 def main():
     init()
@@ -78,7 +78,7 @@ def main():
     cf.all_ans_df, cf.all_ques_df, cf.progress_msg_factor, numlines = read_data(a_infile, q_infile)
     
     cf.logger.info("Step 2. Process the words of each input line.")
-    clean_ans_bodies_l = clean_raw_data(a_fname, cf.progress_msg_factor, qag_df)
+    clean_ans_bodies_l = clean_raw_data(a_fname, cf.progress_msg_factor, qagroup_df)
     
     cf.logger.info("Step 3. Build a bag of words and their counts.")
     (vocab, dist) = make_bag_of_words(clean_ans_bodies_l)
@@ -237,30 +237,30 @@ def convert_text_to_words( raw_q_a ):
     return( " ".join( meaningful_words ))
     
     
-def clean_raw_data(a_fname, progress_msg_factor, qag_df ):
+def clean_raw_data(a_fname, progress_msg_factor, qagroup_df ):
     """ For all answers: Clean and parse the training set bodies.")
     """
     # Get the number of bodies based on that column's size
     #ORG.713 num_bodies = cf.all_ans_df["Body"].size
-    num_bodies = qag_df["Body"].size
+    num_bodies = qagroup_df["Body"].size
     cf.logger.info("Number of bodies: " + str(num_bodies))
     
     clean_ans_bodies_l = []
-    qag_df["CleanBody"] = ""
+    qagroup_df["CleanBody"] = ""
     
     # Build a list that holds the cleaned text from each answer's body field.
     # Use it to find terms that match terms found in hi-score Answers.
     for i in range( 0, num_bodies ):
-        clean_body = convert_text_to_words( qag_df["Body"][i] )
+        clean_body = convert_text_to_words( qagroup_df["Body"][i] )
         clean_ans_bodies_l.append(clean_body)
         #
         # Add new column to Answers df.
-        qag_df.loc[i,"CleanBody"] = clean_body
+        qagroup_df.loc[i,"CleanBody"] = clean_body
         # Print a progress message; default is for every 10% of i/p data handled.
         if( (i+1) % cf.progress_msg_factor == 0 ):
-            clean_q_a = convert_text_to_words( qag_df["Body"][i] )
+            clean_q_a = convert_text_to_words( qagroup_df["Body"][i] )
             #D cf.logger.debug("Body %d of %d" % ( i+1, num_bodies ))
-            #D cf.logger.debug('  Original text: ' + qag_df['Body'][i])
+            #D cf.logger.debug('  Original text: ' + qagroup_df['Body'][i])
             cf.logger.debug('  Cleaned text:  ' + clean_q_a)
     
     #TBR cf.pdb.set_trace()
@@ -352,11 +352,11 @@ def sort_save_vocab(suffix, vocab, dist, a_fname):
     return words_sorted_by_count_l 
     
     
-def sort_answers_by_score(numlines, qag_df):
+def sort_answers_by_score(numlines, qagroup_df):
     """
     Build a sorted dataframe of answers.
     """
-    score_df = qag_df.sort_values(['Score'])
+    score_df = qagroup_df.sort_values(['Score'])
     score_df = score_df[['Id', 'Score']]
     
     # Compute the number of records to use for computation and display.
@@ -376,7 +376,7 @@ def sort_answers_by_score(numlines, qag_df):
     return score_df, num_selected_recs
     
     
-def find_freq_words(top, score_top_n_df, num_selected_recs, progress_msg_factor, qag_df):
+def find_freq_words(top, score_top_n_df, num_selected_recs, progress_msg_factor, qagroup_df):
     """
     Build a list of the most frequent terms found in answers.
     """
@@ -387,7 +387,7 @@ def find_freq_words(top, score_top_n_df, num_selected_recs, progress_msg_factor,
         score_df_l = score_top_n_df['Id'].tail(num_selected_recs).tolist()
     else:  # Get the head of the list, lowest-score items.
         score_df_l = score_top_n_df['Id'].head(num_selected_recs).tolist()
-    df8 = qag_df.set_index('Id')
+    df8 = qagroup_df.set_index('Id')
     progress_count = 0
     for i in score_df_l:
         progress_count += 1
@@ -401,7 +401,7 @@ def find_freq_words(top, score_top_n_df, num_selected_recs, progress_msg_factor,
     return top_n_bodies 
     
     
-def search_for_terms(words_sorted_by_count_main_l, clean_ans_bodies_l, num_hi_score_terms, qag_df):
+def search_for_terms(words_sorted_by_count_main_l, clean_ans_bodies_l, num_hi_score_terms, qagroup_df):
     """
     Read each answer and save any terms that it has in common
     with (high frequency) text from the high-score answers.
@@ -425,8 +425,8 @@ def search_for_terms(words_sorted_by_count_main_l, clean_ans_bodies_l, num_hi_sc
     #  and what was not found in the A's being checked.
     #  Should tmp_df not be a df?  Would a list of lists be better?
     
-    qag_df["HiScoreTerms"] = ""
-    qag_df["hstCount"] = 0
+    qagroup_df["HiScoreTerms"] = ""
+    qagroup_df["hstCount"] = 0
     
     #D print("\nTerms from hi-score Answers.")
     cf.logger.info("Terms from hi-score Answers.")
@@ -440,30 +440,30 @@ def search_for_terms(words_sorted_by_count_main_l, clean_ans_bodies_l, num_hi_sc
         for index,row in tmp2_sr.iteritems():
             if row:
                 #TBD, Change string 'w' to list or tuple for better storage in df?
-                #OK qag_df.loc[index, "HiScoreTerms"] = qag_df.loc[index, "HiScoreTerms"] + w + ' , '
-                qag_df.loc[index, "HiScoreTerms"] += ( w + ' , ')
+                #OK qagroup_df.loc[index, "HiScoreTerms"] = qagroup_df.loc[index, "HiScoreTerms"] + w + ' , '
+                qagroup_df.loc[index, "HiScoreTerms"] += ( w + ' , ')
                 #TBD, increment hst counter each time one is found.
                 #TBD, How to handle multiple instances of hst? count each occurrence?
                 #TBD, use df func to simply count number of HiScoreTerms in each row?
-                qag_df.loc[index, "hstCount"] += 1
+                qagroup_df.loc[index, "hstCount"] += 1
 
     
     #D print()
-    #D cf.logger.debug("DBG, qag_df.head():")
-    #D cf.logger.debug(qag_df.head())
+    #D cf.logger.debug("DBG, qagroup_df.head():")
+    #D cf.logger.debug(qagroup_df.head())
     
     # Save full df to a file.
     outfile = "tmpdir/all_ans.csv"
     # TBD.1 This overwrites the preceding file each time this func is called.
     #   Must change the code to save data from each time this func is called.
-    qag_df.to_csv(outfile)
+    qagroup_df.to_csv(outfile)
     
     # Save possible valuable answers to a separate file for review.
     # Replace empty strings in HiScoreTerms cells with NaN,
     # to drop low value answers easily w/ dropna().
-    qag_df['HiScoreTerms'].replace('', np.nan, inplace=True)
+    qagroup_df['HiScoreTerms'].replace('', np.nan, inplace=True)
     # Save a new df with only rows that have data in the HiScoreTerms column.
-    ans_with_hst_df = qag_df.dropna(subset=['HiScoreTerms'])
+    ans_with_hst_df = qagroup_df.dropna(subset=['HiScoreTerms'])
     
     #D # Print partial data about interesting answers to check.
     #D print("\nCheck these low score Answers for useful data: ")
