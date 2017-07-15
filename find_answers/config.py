@@ -1,16 +1,6 @@
-#
-#TBD, Can I do all imports here?  Should I?
-import pandas as pd
-import pdb 
 import logging 
 
 # Global variables for the project.
-tmpdir = 'tmpdir/'
-a_fname = ''
-q_fname = ''
-progress_msg_factor = 1
-end = 999999
-
 
 # Configure basic logging.
 # Set logging level to DEBUG, INFO, WARNING, ERROR, CRITICAL

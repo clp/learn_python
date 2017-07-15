@@ -3,7 +3,7 @@
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 # Using Python 3.4.5 :: Anaconda 4.3.0 (64-bit), since Tue2017_0710
 
-#   Time-stamp: <Fri 2017 Jul 14 06:49:34 PMPM clpoda>
+#   Time-stamp: <Fri 2017 Jul 14 07:38:07 PMPM clpoda>
 """fga_find_good_answers.py
 
 
@@ -89,6 +89,7 @@ from pandas.tools.plotting import scatter_matrix
 import config as cf
 import nltk_ex25 as nl
 
+tmpdir = 'tmpdir/'
 
 log_msg = cf.log_file + ' - Start logging for ' + os.path.basename(__file__)
 cf.logger.info(log_msg)
@@ -103,14 +104,14 @@ def main(q_with_a_df):
     """
     init()
 
-    cf.a_fname, a_infile, q_infile, indir, outdir = \
+    a_fname, a_infile, q_infile, indir, outdir = \
         config_data()
 
-    all_ans_df, all_ques_df, cf.progress_msg_factor, numlines = \
+    all_ans_df, all_ques_df, progress_msg_factor, numlines = \
         read_data( a_infile, q_infile)
 
     popular_ids = \
-        find_popular_ques(all_ans_df, cf.a_fname)
+        find_popular_ques(all_ans_df, a_fname)
     popular_ids_a = popular_ids.index.values
 
     top_scoring_owners_a, owner_grouped_df = \
@@ -123,7 +124,7 @@ def main(q_with_a_df):
 
     q_with_a_df, all_ans_with_hst_df = \
         combine_related_q_and_a(
-            pop_and_top_l, all_ques_df, all_ans_df, numlines)
+            pop_and_top_l, all_ques_df, all_ans_df, numlines, a_fname, progress_msg_factor)
 
     # TBD Save the df to a file for review & debug; later processing may
     # use the df & the file is not needed.
@@ -151,7 +152,7 @@ def main(q_with_a_df):
     outfile = 'outdir/q_with_a.csv'
     q_with_a_df[outfields_l].to_csv(
         outfile, header=True, index=None, sep=',', mode='w')
-    # DBG  write_df_to_file(q_with_a_df, outdir, cf.a_fname)
+    # DBG  write_df_to_file(q_with_a_df, outdir, a_fname)
 
     if keyword:
         # Write keyword-containing records to a csv file.
@@ -166,9 +167,9 @@ def init():
     """Initialize some settings for the program.
     """
     if args['debug']:
-        cf.end = 55
+        end = 55
         print('Running in debug mode.')
-        print('  cf.end set to: ', cf.end)
+        print('  end set to: ', end)
         print()
 
     # Initialize settings for pandas.
@@ -318,26 +319,26 @@ def config_data():
     # TBD Include the test data files w/ this project.
     indir = 'indir/'  # Relative to pwd, holds i/p files.
     outdir = 'outdir/'  # Relative to pwd, holds o/p files.
-    # D cf.a_fname = 'Answers.csv'
-    # D cf.q_fname = 'Questions.csv'
+    # D a_fname = 'Answers.csv'
+    # D q_fname = 'Questions.csv'
 
     # Smaller data sets, used for debugging.
-    # D cf.q_fname = 'q6_999994.csv'
-    # D cf.a_fname = 'a6_999999.csv'
-    # D cf.a_fname = 'a5_99998.csv'
-    # D cf.q_fname = 'q30_99993.csv'
-    cf.a_fname = 'a3_986.csv'
-    cf.q_fname = 'q3_992.csv'
-    # D cf.a_fname = 'a2.csv'
-    # D cf.q_fname = 'q2.csv'
+    # D q_fname = 'q6_999994.csv'
+    # D a_fname = 'a6_999999.csv'
+    # D a_fname = 'a5_99998.csv'
+    # D q_fname = 'q30_99993.csv'
+    a_fname = 'a3_986.csv'
+    q_fname = 'q3_992.csv'
+    # D a_fname = 'a2.csv'
+    # D q_fname = 'q2.csv'
 
-    a_infile = indir + cf.a_fname
-    q_infile = indir + cf.q_fname
+    a_infile = indir + a_fname
+    q_infile = indir + q_fname
 
     print('Input files, q & a:\n' + q_infile + '\n' + a_infile)
     print()
 
-    return cf.a_fname, a_infile, q_infile, indir, outdir
+    return a_fname, a_infile, q_infile, indir, outdir
 
 
 def read_data(ans_file, ques_file):
@@ -359,10 +360,10 @@ def read_data(ans_file, ques_file):
 
     numlines = len(ans_df)
     print('Number of answer records in i/p data frame, ans_df: ' + str(numlines))
-    cf.progress_msg_factor = int(round(numlines / 10))
-    print('\n#D  cf.progress_msg_factor : ', cf.progress_msg_factor)
+    progress_msg_factor = int(round(numlines / 10))
+    print('\n#D  progress_msg_factor : ', progress_msg_factor)
     print()
-    return ans_df, ques_df, cf.progress_msg_factor, numlines
+    return ans_df, ques_df, progress_msg_factor, numlines
 
 
 def find_popular_ques(aa_df, a_fname):
@@ -493,7 +494,7 @@ def select_questions(parent_id_l, popular_ids_a):
     return pop_and_top_l
 
 
-def combine_related_q_and_a(pop_and_top_l, all_ques_df, aa_df, numlines):
+def combine_related_q_and_a(pop_and_top_l, all_ques_df, aa_df, numlines, a_fname, progress_msg_factor):
     """Get each Q in the list of ParentId's, and the related A's.
     Loop over all the question Id's and store all Q & A data in a df.
 
@@ -524,7 +525,7 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, aa_df, numlines):
     # Maybe delete those 'intermediate' results?
     for qid in pop_and_top_l:
         i += 1
-        # OK if(i % cf.progress_msg_factor == 0):
+        # OK if(i % progress_msg_factor == 0):
         if(i % 20 == 0):
             print("#D combine_related_q_and_a:for-qid-loop count i: ", i)
         qm_df = ques_match_df[ques_match_df['Id'] == qid]
@@ -535,7 +536,7 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, aa_df, numlines):
         cf.logger.info('qagroup_df.head(1): ')
         cf.logger.info(qagroup_df.head(1))
 
-        all_ans_with_hst_df = analyze_text(qagroup_df, numlines)
+        all_ans_with_hst_df = analyze_text(qagroup_df, numlines, a_fname, progress_msg_factor)
 
         #
         # TBD.Thu2017_0608_23:58
@@ -551,27 +552,16 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, aa_df, numlines):
     return q_with_a_df, all_ans_with_hst_df
 
 
-def analyze_text(qagroup_df, numlines):
+def analyze_text(qagroup_df, numlines, a_fname, progress_msg_factor):
     """Use a Q&A group of one Q w/ its A's for i/p.
     Process the text data w/ the routines in the nltk module, which use
     natural language tools.
     """
     global all_ans_with_hst_df
 
-    # TBD.1.Fri2017_0714_18:44  Rename cf.all_ans_df to all_ans_df.
-    #
-    # TBD.1 Assign the global var cf.all_ans_df here.  Find a better soln w/o
-    # global.  cf.all_ans_df is used in the nltk module.
-    #TBD.1 cf.all_ans_df = qagroup_df  # TMP to avoid renaming all_ans_df in many places
-    # TBD.1.Thu2017_0713_15:08 :
-    #   Fix: Chg global cf.all_ans_df to local qagroup_df wherever it is needed;
-    #   Add it to func arg list where needed.
-    #   These will be chgs in nltk program; Don't chg earlier uses of cf.all_ans_df in fga.
-    #   Then chg global cf.all*df to local all_ans_df.
-    #
     cf.logger.info("NLP Step 2. Process the words of each input line.")
     clean_ans_bodies_l = nl.clean_raw_data(
-        cf.a_fname, cf.progress_msg_factor, qagroup_df)
+        a_fname, progress_msg_factor, qagroup_df, tmpdir)
     print('\n#D, clean_ans_bodies_l[:1]')
     print(clean_ans_bodies_l[:1])
 
@@ -580,7 +570,7 @@ def analyze_text(qagroup_df, numlines):
     print('\n#D, vocab[:1]')
     print(vocab[:1])
     words_sorted_by_count_l = nl.sort_save_vocab(
-        '.vocab', vocab, dist, cf.a_fname)
+        '.vocab', vocab, dist, a_fname, tmpdir)
     # Save the original list for later searching.
     words_sorted_by_count_main_l = words_sorted_by_count_l
 
@@ -601,10 +591,10 @@ def analyze_text(qagroup_df, numlines):
 
     top = True
     top_n_bodies = nl.find_freq_words(
-        top, score_top_n_df, num_selected_recs, cf.progress_msg_factor, qagroup_df)
+        top, score_top_n_df, num_selected_recs, progress_msg_factor, qagroup_df)
     cf.logger.info('make_bag_of_words(top_n_bodies)')
     (vocab, dist) = nl.make_bag_of_words(top_n_bodies)
-    nl.sort_save_vocab('.vocab.hiscore', vocab, dist, cf.a_fname)
+    nl.sort_save_vocab('.vocab.hiscore', vocab, dist, a_fname, tmpdir)
 
     cf.logger.info(
         "NLP Step 6. Find most freq words for low-score Answers, "
@@ -618,10 +608,10 @@ def analyze_text(qagroup_df, numlines):
         cf.logger.debug(score_bot_n_df.head(20))
         top = False
         bot_n_bodies = nl.find_freq_words(
-            top, score_top_n_df, num_selected_recs, cf.progress_msg_factor, qagroup_df)
+            top, score_top_n_df, num_selected_recs, progress_msg_factor, qagroup_df)
         cf.logger.info('make_bag_of_words(bot_n_bodies)')
         (vocab, dist) = nl.make_bag_of_words(bot_n_bodies)
-        nl.sort_save_vocab('.vocab.loscore', vocab, dist, cf.a_fname)
+        nl.sort_save_vocab('.vocab.loscore', vocab, dist, a_fname, tmpdir)
 
     cf.logger.info("NLP Step 7. Search lo-score A's for hi-score text.")
     ans_with_hst_df = nl.search_for_terms(

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.6.0 :: Anaconda 4.3.0 (64-bit)
 
-# Time-stamp: <Thu 2017 Jul 13 04:04:42 PMPM clpoda>
+# Time-stamp: <Fri 2017 Jul 14 07:27:53 PMPM clpoda>
 
 """nltk_ex25.py
     
@@ -63,6 +63,7 @@ cf.logger.info(log_msg)
 
 a_infile  = ""
 
+'''
 #TBD.713
 def main():
     pass
@@ -132,6 +133,7 @@ def read_data(ans_file, ques_file):
     print('\n#D  cf.progress_msg_factor : ' , cf.progress_msg_factor)
     print()
     return ans_df, ques_df, cf.progress_msg_factor, numlines
+'''
 
 
 # Process the words of each input line.
@@ -180,7 +182,7 @@ def convert_text_to_words( raw_q_a ):
     return( " ".join( meaningful_words ))
     
     
-def clean_raw_data(a_fname, progress_msg_factor, qagroup_df ):
+def clean_raw_data(a_fname, progress_msg_factor, qagroup_df, tmpdir ):
     """ For all answers: Clean and parse the training set bodies.")
     """
     # Get the number of bodies based on that column's size
@@ -199,7 +201,7 @@ def clean_raw_data(a_fname, progress_msg_factor, qagroup_df ):
         # Add new column to Answers df.
         qagroup_df.loc[i,"CleanBody"] = clean_body
         # Print a progress message; default is for every 10% of i/p data handled.
-        if( (i+1) % cf.progress_msg_factor == 0 ):
+        if( (i+1) % progress_msg_factor == 0 ):
             clean_q_a = convert_text_to_words( qagroup_df["Body"][i] )
             #D cf.logger.debug("Body %d of %d" % ( i+1, num_bodies ))
             #D cf.logger.debug('  Original text: ' + qagroup_df['Body'][i])
@@ -207,7 +209,7 @@ def clean_raw_data(a_fname, progress_msg_factor, qagroup_df ):
     
     #TBR cf.pdb.set_trace()
     # Write cleaned bodies to a file, one body per line, for visual review.
-    outfile = cf.tmpdir + a_fname + '.out'
+    outfile = tmpdir + a_fname + '.out'
     if os.path.exists(outfile):
         os.rename(outfile, outfile + '.bak')
     with open(outfile, 'w') as f:
@@ -267,7 +269,7 @@ def make_bag_of_words(clean_ans_bodies_l):
     return (vocab, dist)
     
     
-def sort_save_vocab(suffix, vocab, dist, a_fname):
+def sort_save_vocab(suffix, vocab, dist, a_fname, tmpdir):
     """
     Sort and save vocabulary data to a list and to a file
     with a specified suffix.
@@ -285,7 +287,7 @@ def sort_save_vocab(suffix, vocab, dist, a_fname):
     words_sorted_by_count_l = sorted(count_tag_l, key=lambda x: x[0])
     
     # Write sorted vocab to a file.
-    outfile = cf.tmpdir + a_fname + suffix
+    outfile = tmpdir + a_fname + suffix
     if os.path.exists(outfile):
         os.rename(outfile, outfile + '.bak')
     with open(outfile, 'w') as f:
@@ -335,7 +337,7 @@ def find_freq_words(top, score_top_n_df, num_selected_recs, progress_msg_factor,
         progress_count += 1
         top_n_bodies.append( convert_text_to_words( df8["Body"][i] ))
         # Print a progress message for every 10% of i/p data handled.
-        if( (progress_count+1) % cf.progress_msg_factor == 0 ):
+        if( (progress_count+1) % progress_msg_factor == 0 ):
             clean_q_a = convert_text_to_words( df8["Body"][i] )
             #D cf.logger.debug("Body for Id %d " % ( i))
             #D cf.logger.debug('  Original text:\n' + df8['Body'][i][:70])
