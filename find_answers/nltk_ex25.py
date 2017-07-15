@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.6.0 :: Anaconda 4.3.0 (64-bit)
 
-# Time-stamp: <Fri 2017 Jul 14 07:27:53 PMPM clpoda>
+# Time-stamp: <Fri 2017 Jul 14 07:53:38 PMPM clpoda>
 
 """nltk_ex25.py
     
@@ -22,6 +22,7 @@
     
    Usage:
      pydoc  nltk_ex25
+
      See fga_find_good_answers.py for an example that calls
      the functions in this module.
     
@@ -60,81 +61,6 @@ import config as cf
 
 log_msg = cf.log_file + ' - Start logging for ' + os.path.basename(__file__)
 cf.logger.info(log_msg)
-
-a_infile  = ""
-
-'''
-#TBD.713
-def main():
-    pass
-    
-    
-def init():
-    """Initialize some settings for the program.
-    """
-    # Initialize settings for pandas.
-    pd.set_option('display.width', 0)  # 0=no limit, use for debugging; try 120.
-    
-    # Don't show commas in large numbers.
-    # Show OwnerUserId w/o '.0' suffix.
-    pd.options.display.float_format = '{:.0f}'.format
-    
-    
-def config_data():
-    """Configure path and file names for i/o data.
-    """
-    datadir = '/data/datasets/'
-    cf.tmpdir = 'tmpdir/'  # Relative to current dir
-    outdir = 'outdir/'  # Relative to current dir
-    #D q_fname = 'Questions.csv'
-    #D a_fname = 'Answers.csv'
-    
-    # Smaller data sets, used for debugging.
-    #D a_fname = 'a6_999999.csv'  
-    #D a_fname = 'a5_99998.csv'  # Bag has 7903 rows.
-    #D q_fname = 'q3_992.csv'
-    #D a_fname = 'a3_986.csv'
-    #D a_fname = 'q_with_a.csv'  # O/p from fga*.py
-    a_fname = 'pid_231767.csv'  # TBD Temp hard-coded i/p file
-    #D a_fname = 'q_with_a.0211_1308.csv'  # 2729 lines; O/p from fga*.py
-    #D a_fname = 'q_with_a.40_owners_a5_9998.csv'  # 800 lines; O/p from fga*.py
-    q_fname = 'q2.csv'
-    #D a_fname = 'a2.csv'
-    
-    # Choose cf.tmpdir or datadir:
-    #D a_infile = cf.tmpdir  + a_fname
-    #D a_infile = datadir + a_fname
-    a_infile = outdir + a_fname
-    
-    # Choose cf.tmpdir or datadir:
-    #D q_infile = cf.tmpdir  + q_fname
-    q_infile = datadir + q_fname
-    
-    print('\nInput files, q & a:\n'  + q_infile + '\n' + a_infile)
-    cf.logger.info('Input files, q & a:\n'  + q_infile + '\n' + a_infile)
-    
-    return a_fname, a_infile, q_infile, datadir, cf.tmpdir, outdir
-    
-    
-def read_data(ans_file, ques_file):
-    """Read the csv i/p files and store into a pandas data frame.
-    Compute a factor that dictates how progress will be indicated
-    during read operations.
-    """
-    ans_df = pd.read_csv(ans_file, encoding='latin-1', warn_bad_lines=False, error_bad_lines=False)
-    #TBD question file is not used now. Use empty df for ques_df now.
-    #D ques_df = pd.read_csv(ques_file, encoding='latin-1', warn_bad_lines=False, error_bad_lines=False)
-    ques_df = pd.DataFrame()
-    
-    numlines = len(ans_df)
-    print('\nNumber of answer records in i/p data frame, ans_df: ' + str(numlines))
-    cf.logger.info('Number of answer records in i/p data frame, ans_df: ' + str(numlines))
-    cf.progress_msg_factor = int(round(numlines/10))
-    print('\n#D  cf.progress_msg_factor : ' , cf.progress_msg_factor)
-    print()
-    return ans_df, ques_df, cf.progress_msg_factor, numlines
-'''
-
 
 # Process the words of each input line.
 
