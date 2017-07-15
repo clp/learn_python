@@ -3,7 +3,6 @@
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 # Using Python 3.4.5 :: Anaconda 4.3.0 (64-bit), since Tue2017_0710
 
-#   Time-stamp: <Fri 2017 Jul 14 07:38:07 PMPM clpoda>
 """fga_find_good_answers.py
 
 
@@ -26,7 +25,7 @@
      text in low-score answers.  A bigger number will cause the
      program to run longer, and might find more 'hidden' answers
      that could be valuable.
-     
+
 ------
 
 Input data format of stackoverflow.com python file from kaggle.com.
@@ -89,11 +88,11 @@ from pandas.tools.plotting import scatter_matrix
 import config as cf
 import nltk_ex25 as nl
 
-tmpdir = 'tmpdir/'
 
 log_msg = cf.log_file + ' - Start logging for ' + os.path.basename(__file__)
 cf.logger.info(log_msg)
 
+tmpdir = 'tmpdir/'
 q_with_a_df = pd.DataFrame()
 all_ans_with_hst_df = pd.DataFrame()
 owner_grouped_df = pd.DataFrame()
@@ -580,9 +579,6 @@ def analyze_text(qagroup_df, numlines, a_fname, progress_msg_factor):
     cf.logger.info('NLP Step 5. Find most freq words for top-scoring Answers.')
     score_top_n_df = score_df[['Id']]
 
-    # TBD, Maybe convert df to string so logger can print title & data w/ one cmd:
-    # TBD log_msg = "score_top_n_df.tail():" + CONVERT_DF_TO_STRING(score_top_n_df.tail())
-    # TBD cf.logger.debug(log_msg)
     cf.logger.debug("score_top_n_df.tail():")
     cf.logger.debug(score_top_n_df.tail(20))
     # Use top_n Answers & count their words.
