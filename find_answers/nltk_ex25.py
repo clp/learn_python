@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.6.0 :: Anaconda 4.3.0 (64-bit)
 
-# Time-stamp: <Sat 2017 Jul 15 12:42:11 PMPM clpoda>
+# Time-stamp: <Sat 2017 Jul 15 01:15:54 PMPM clpoda>
 
 """nltk_ex25.py
 
@@ -334,22 +334,20 @@ def search_for_terms(words_sorted_by_count_main_l, clean_ans_bodies_l, num_hi_sc
     qagroup_df['HiScoreTerms'].replace('', np.nan, inplace=True)
     #
     # Save a new df with only rows that have data in the HiScoreTerms column.
-    # TBD, Remove this statement to fix bug that deletes many Q&A of value.
-    # Consider other workarounds if this is a problem.
-    # ans_with_hst_df = qagroup_df.dropna(subset=['HiScoreTerms'])
-    #
-    ans_with_hst_df = qagroup_df
+    #   TBD, Remove this statement to fix bug that deletes many Q&A of value.
+    #   Consider other workarounds if this is a problem.
+    # qagroup_df = qagroup_df.dropna(subset=['HiScoreTerms'])
 
     #D # Print partial data about interesting answers to check.
     #D print("\nCheck these low score Answers for useful data: ")
-    #D for index,row in ans_with_hst_df.iterrows():
+    #D for index,row in qagroup_df.iterrows():
     #D     if np.isnan(row['ParentId']):  # Found a question.
     #D         print('Id, Title: ', row['Id'], row['Title'])
-    #D print(ans_with_hst_df[['Id', 'Score', 'CreationDate']])
-    #D print(ans_with_hst_df[['Id', 'HiScoreTerms']])
+    #D print(qagroup_df[['Id', 'Score', 'CreationDate']])
+    #D print(qagroup_df[['Id', 'HiScoreTerms']])
 
     # Also write summary data to log.
     cf.logger.info("Check low score Answers for useful data: ")
-    cf.logger.info(ans_with_hst_df[['Id', 'Score', 'hstCount', 'CreationDate', 'Title', 'HiScoreTerms']])
-    return ans_with_hst_df
+    cf.logger.info(qagroup_df[['Id', 'Score', 'hstCount', 'CreationDate', 'Title', 'HiScoreTerms']])
+    return qagroup_df
 

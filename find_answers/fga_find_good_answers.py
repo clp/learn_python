@@ -94,7 +94,7 @@ cf.logger.info(log_msg)
 
 tmpdir = 'tmpdir/'
 q_with_a_df = pd.DataFrame()
-all_ans_with_hst_df = pd.DataFrame()
+all_qa_with_hst_df = pd.DataFrame()
 owner_grouped_df = pd.DataFrame()
 
 
@@ -121,17 +121,17 @@ def main(q_with_a_df):
     pop_and_top_l = \
         select_questions(parent_id_l, popular_ids_a)
 
-    q_with_a_df, all_ans_with_hst_df = \
+    q_with_a_df, all_qa_with_hst_df = \
         combine_related_q_and_a(
             pop_and_top_l, all_ques_df, all_ans_df, numlines, a_fname, progress_msg_factor)
 
     # TBD Save the df to a file for review & debug; later processing may
     # use the df & the file is not needed.
     outfile = "tmpdir/all_ans_with_hst.csv"
-    all_ans_with_hst_df.to_csv(outfile)
+    all_qa_with_hst_df.to_csv(outfile)
     outfile = "tmpdir/all_ans_with_hst.html"
     save_prior_file('', outfile)
-    all_ans_with_hst_df[['Id',
+    all_qa_with_hst_df[['Id',
                          'Title',
                          'Score',
                          'hstCount',
@@ -252,30 +252,30 @@ def show_menu(qa_df):
                 print(qa_df[['Id', 'Title', 'Body']].iloc[[saved_index]])
         elif user_cmd.lower() == 'd':
             user_cmd = ''
-            if all_ans_with_hst_df.empty:
+            if all_qa_with_hst_df.empty:
                 print("Warn: dataframe empty or not found; try restarting.")
             else:
                 print("Drawing the default plot.")
                 draw_scatter_plot(
-                    all_ans_with_hst_df,
+                    all_qa_with_hst_df,
                     'Score',
                     'hstCount',
                     'Score',
                     'hstCount')
         elif user_cmd.lower() == 'dh':
             user_cmd = ''
-            if all_ans_with_hst_df.empty:
+            if all_qa_with_hst_df.empty:
                 print("Warn: dataframe empty or not found; try restarting.")
             else:
                 print("Drawing the default histogram plot.")
-                draw_histogram_plot(all_ans_with_hst_df)
+                draw_histogram_plot(all_qa_with_hst_df)
         elif user_cmd.lower() == 'dm':  # Scatter matrix plot
             user_cmd = ''
-            if all_ans_with_hst_df.empty:
+            if all_qa_with_hst_df.empty:
                 print("Warn: dataframe empty or not found; try restarting.")
             else:
                 print("Drawing the default scatter matrix plot.")
-                draw_scatter_matrix_plot(all_ans_with_hst_df)
+                draw_scatter_matrix_plot(all_qa_with_hst_df)
         # rma: Reputation, mean, answers only; scatter.
         elif user_cmd.lower() == 'dr':
             user_cmd = ''
@@ -502,7 +502,7 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, aa_df, numlines, a_fname
     of the text data.
     """
     global q_with_a_df
-    global all_ans_with_hst_df
+    global all_qa_with_hst_df
 
     ques_match_df = all_ques_df[all_ques_df['Id'].isin(pop_and_top_l)]
     ans_match_df = aa_df[aa_df['ParentId'].isin(pop_and_top_l)]
@@ -535,7 +535,7 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, aa_df, numlines, a_fname
         cf.logger.info('qagroup_df.head(1): ')
         cf.logger.info(qagroup_df.head(1))
 
-        all_ans_with_hst_df = analyze_text(qagroup_df, numlines, a_fname, progress_msg_factor)
+        all_qa_with_hst_df = analyze_text(qagroup_df, numlines, a_fname, progress_msg_factor)
 
         #
         # TBD.Thu2017_0608_23:58
@@ -548,7 +548,7 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, aa_df, numlines, a_fname
     # D print('\n#D fga, End of debug code; exiting.')
     # D raise SystemExit()
 
-    return q_with_a_df, all_ans_with_hst_df
+    return q_with_a_df, all_qa_with_hst_df
 
 
 def analyze_text(qagroup_df, numlines, a_fname, progress_msg_factor):
@@ -556,7 +556,7 @@ def analyze_text(qagroup_df, numlines, a_fname, progress_msg_factor):
     Process the text data w/ the routines in the nltk module, which use
     natural language tools.
     """
-    global all_ans_with_hst_df
+    global all_qa_with_hst_df
 
     cf.logger.info("NLP Step 2. Process the words of each input line.")
     clean_ans_bodies_l = nl.clean_raw_data(
@@ -610,13 +610,13 @@ def analyze_text(qagroup_df, numlines, a_fname, progress_msg_factor):
         nl.sort_save_vocab('.vocab.loscore', vocab, dist, a_fname, tmpdir)
 
     cf.logger.info("NLP Step 7. Search lo-score A's for hi-score text.")
-    ans_with_hst_df = nl.search_for_terms(
+    qa_with_hst_df = nl.search_for_terms(
         words_sorted_by_count_main_l,
         clean_ans_bodies_l,
         num_hi_score_terms, qagroup_df)
-    all_ans_with_hst_df = pd.concat(
-        [all_ans_with_hst_df, ans_with_hst_df]).reset_index(drop=True)
-    return all_ans_with_hst_df
+    all_qa_with_hst_df = pd.concat(
+        [all_qa_with_hst_df, qa_with_hst_df]).reset_index(drop=True)
+    return all_qa_with_hst_df
 
 
 # TBD.1 Sat2017_0211_22:55 , should select_keyword_recs()
