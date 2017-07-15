@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Using ~/anaconda3/bin/python: Python 3.6.0 :: Anaconda 4.3.0 (64-bit)
 
-# Time-stamp: <Thu 2017 Jul 13 03:51:45 PMPM clpoda>
+# Time-stamp: <Thu 2017 Jul 13 04:04:42 PMPM clpoda>
 
 """nltk_ex25.py
     
@@ -22,9 +22,10 @@
     
    Usage:
      pydoc  nltk_ex25
-     python nltk_ex25.py
+     See fga_find_good_answers.py for an example that calls
+     the functions in this module.
     
-     Set the value of num_hi_score_terms at the bottom of the file.
+     Set the value of num_hi_score_terms in the calling program.
      It determines how many hi-score terms are used to search
      text in low-score answers.  A bigger number will cause the
      program to run longer, and might find more 'hidden' answers
@@ -65,64 +66,6 @@ a_infile  = ""
 #TBD.713
 def main():
     pass
-
-"""
-#TBD.713  Calls to some funcs don't include qagroup_df: mismatch w/ def of func.
-
-def main():
-    init()
-    
-    a_fname, a_infile, q_infile, datadir, cf.tmpdir, outdir = config_data()
-    
-    cf.logger.info("Step 1. Read data from file into dataframes.")
-    cf.all_ans_df, cf.all_ques_df, cf.progress_msg_factor, numlines = read_data(a_infile, q_infile)
-    
-    cf.logger.info("Step 2. Process the words of each input line.")
-    clean_ans_bodies_l = clean_raw_data(a_fname, cf.progress_msg_factor, qagroup_df)
-    
-    cf.logger.info("Step 3. Build a bag of words and their counts.")
-    (vocab, dist) = make_bag_of_words(clean_ans_bodies_l)
-    words_sorted_by_count_l = sort_save_vocab('.vocab', vocab, dist, a_fname)
-    # Save the original list for later searching.
-    words_sorted_by_count_main_l = words_sorted_by_count_l
-    
-    cf.logger.info('Step 4. Sort Answers by Score.')
-    score_df, num_selected_recs = sort_answers_by_score(numlines)
-    
-    cf.logger.info('Step 5. Find most freq words for top-scoring Answers.')
-    score_top_n_df = score_df[['Id']]
-    
-    #OK.tbr  print("DBG.103", score_top_n_df.tail(num_selected_recs), '\n')
-    #TBD, Maybe convert df to string so logger can print title & data w/ one cmd:
-    #TBD log_msg = "score_top_n_df.tail():" + CONVERT_DF_TO_STRING(score_top_n_df.tail())
-    #TBD cf.logger.debug(log_msg)
-    cf.logger.debug("score_top_n_df.tail():")
-    cf.logger.debug(score_top_n_df.tail(20)) 
-    # Use top_n Answers & count their words.
-    cf.logger.info("For top ans: Cleaning and parsing the training set bodies...")
-    
-    top = True
-    top_n_bodies = find_freq_words(top, score_top_n_df, num_selected_recs, cf.progress_msg_factor)
-    cf.logger.info('make_bag_of_words(top_n_bodies)')
-    (vocab, dist) = make_bag_of_words(top_n_bodies)
-    sort_save_vocab('.vocab.hiscore', vocab, dist, a_fname)
-    
-    cf.logger.info("Step 6. Find most frequent words for bottom-scoring Answers.")
-    # Keep these data to compare w/ words for top-scoring Answers; s/b some diff.
-    # If they are identical, there may be a logic problem in the code.
-    score_bot_n_df = score_df[['Id']]
-    cf.logger.debug("score_bot_n_df.head():")
-    cf.logger.debug(score_bot_n_df.head(20))
-    #TBR print(score_bot_n_df.head(num_selected_recs), '\n')
-    top = False
-    bot_n_bodies = find_freq_words(top, score_top_n_df, num_selected_recs, cf.progress_msg_factor)
-    cf.logger.info('make_bag_of_words(bot_n_bodies)')
-    (vocab, dist) = make_bag_of_words(bot_n_bodies)
-    sort_save_vocab('.vocab.loscore', vocab, dist, a_fname)
-    
-    cf.logger.info("Step 7. Search lo-score A's for hi-score text.")
-    ans_with_hst_df = search_for_terms(words_sorted_by_count_main_l, clean_ans_bodies_l)
-"""
     
     
 def init():
@@ -241,7 +184,6 @@ def clean_raw_data(a_fname, progress_msg_factor, qagroup_df ):
     """ For all answers: Clean and parse the training set bodies.")
     """
     # Get the number of bodies based on that column's size
-    #ORG.713 num_bodies = cf.all_ans_df["Body"].size
     num_bodies = qagroup_df["Body"].size
     cf.logger.info("Number of bodies: " + str(num_bodies))
     
@@ -478,15 +420,3 @@ def search_for_terms(words_sorted_by_count_main_l, clean_ans_bodies_l, num_hi_sc
     cf.logger.info(ans_with_hst_df[['Id', 'Score', 'hstCount', 'CreationDate', 'Title', 'HiScoreTerms']])
     return ans_with_hst_df
 
-
-if __name__ == '__main__':
-    # Set initial values of some important variables.
-    num_hi_score_terms = 22  # Use 3 for testing; 11 or more for use.
-    print("num_hi_score_terms: ", num_hi_score_terms)
-
-    main()
-
-    log_msg = cf.log_file + ' - Finish logging for ' + os.path.basename(__file__) + '\n\n'
-    cf.logger.warning(log_msg)
-
-'bye'

@@ -3,7 +3,7 @@
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 # Using Python 3.4.5 :: Anaconda 4.3.0 (64-bit), since Tue2017_0710
 
-#   Time-stamp: <Thu 2017 Jul 13 03:51:43 PMPM clpoda>
+#   Time-stamp: <Fri 2017 Jul 14 06:49:34 PMPM clpoda>
 """fga_find_good_answers.py
 
 
@@ -21,6 +21,12 @@
      Set the value of num_owners at the bottom of the file;
      default is 10.  It determines how much o/p data will be saved.
 
+     Set the value of num_hi_score_terms at the bottom of the file;
+     It determines how many hi-score terms are used to search
+     text in low-score answers.  A bigger number will cause the
+     program to run longer, and might find more 'hidden' answers
+     that could be valuable.
+     
 ------
 
 Input data format of stackoverflow.com python file from kaggle.com.
@@ -100,24 +106,24 @@ def main(q_with_a_df):
     cf.a_fname, a_infile, q_infile, indir, outdir = \
         config_data()
 
-    cf.all_ans_df, cf.all_ques_df, cf.progress_msg_factor, numlines = \
+    all_ans_df, all_ques_df, cf.progress_msg_factor, numlines = \
         read_data( a_infile, q_infile)
 
     popular_ids = \
-        find_popular_ques(cf.all_ans_df, cf.a_fname)
+        find_popular_ques(all_ans_df, cf.a_fname)
     popular_ids_a = popular_ids.index.values
 
     top_scoring_owners_a, owner_grouped_df = \
-        group_data(cf.all_ans_df)
+        group_data(all_ans_df)
     parent_id_l = \
-        find_question_ids(top_scoring_owners_a, cf.all_ans_df)
+        find_question_ids(top_scoring_owners_a, all_ans_df)
 
     pop_and_top_l = \
         select_questions(parent_id_l, popular_ids_a)
 
     q_with_a_df, all_ans_with_hst_df = \
         combine_related_q_and_a(
-            pop_and_top_l, cf.all_ques_df, cf.all_ans_df, numlines)
+            pop_and_top_l, all_ques_df, all_ans_df, numlines)
 
     # TBD Save the df to a file for review & debug; later processing may
     # use the df & the file is not needed.
@@ -552,6 +558,8 @@ def analyze_text(qagroup_df, numlines):
     """
     global all_ans_with_hst_df
 
+    # TBD.1.Fri2017_0714_18:44  Rename cf.all_ans_df to all_ans_df.
+    #
     # TBD.1 Assign the global var cf.all_ans_df here.  Find a better soln w/o
     # global.  cf.all_ans_df is used in the nltk module.
     #TBD.1 cf.all_ans_df = qagroup_df  # TMP to avoid renaming all_ans_df in many places
