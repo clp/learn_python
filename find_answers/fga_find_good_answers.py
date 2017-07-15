@@ -127,9 +127,9 @@ def main(q_with_a_df):
 
     # TBD Save the df to a file for review & debug; later processing may
     # use the df & the file is not needed.
-    outfile = "tmpdir/all_ans_with_hst.csv"
+    outfile = "tmpdir/all_qa_with_hst.csv"
     all_qa_with_hst_df.to_csv(outfile)
-    outfile = "tmpdir/all_ans_with_hst.html"
+    outfile = "tmpdir/all_qa_with_hst.html"
     save_prior_file('', outfile)
     all_qa_with_hst_df[['Id',
                          'Title',

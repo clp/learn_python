@@ -21,8 +21,8 @@ Such answers have useful data but a low score.
 It includes the following programs.
 
  * fga_find_good_answers.py (fga), main control program.
- * grade_each_answer.py, a user can read & grade answers, from A to F.
  * nltk_ex25.py, analyze text with natural language toolkit.
+ * grade_each_answer.py, a user can read & grade answers, from A to F.
 
 
 
@@ -94,19 +94,14 @@ Usage
 At this time, the natural language processing routines
 included in the nltk_ex25.py program
 are called from the main fga*.py program.
-You need not run the nltk*.py program separately.
-
-For debugging and development,
-you can run this program directly, eg:
-
- * ``python nltk_ex25.py``
+You do not run the nltk*.py program directly.
 
 
 Notes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #. The o/p data of answers that contain high score terms (hst) is saved
-   at tmpdir/all_ans_with_hst.csv
+   at tmpdir/all_qa_with_hst.csv
 
 #. The program writes some summary data to the screen,
    to help with debugging.
@@ -121,7 +116,7 @@ Introduction
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The grade_each_answer program is a utility tool to add new fields
-and their content to each record of the input file
+and their content to each record of its input file
 (q_with_a.csv).
 
 The o/p is a csv file containing two new fields for each i/p
@@ -139,8 +134,7 @@ See README_2 for more details.
 Notes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#. Consider opening the i/p csv data file in a separate
-   terminal or window
+#. Consider opening the i/p csv data file in a separate window
    for easier viewing of the Q&A being graded.
    Eg, using the surf web browser:
      
@@ -209,4 +203,4 @@ For documentation, please visit nltk.org.
 * https://worksheets.codalab.org/
 
 
-Mon2017_0710_11:40 
+Sat2017_0715_13:37 
