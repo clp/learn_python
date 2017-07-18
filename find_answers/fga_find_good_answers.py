@@ -126,17 +126,20 @@ def main(q_with_a_df):
         combine_related_q_and_a(
             pop_and_top_l, all_ques_df, all_ans_df, numlines, a_fname, progress_msg_factor)
 
-    # TBD Save the df to a file for review & debug; later processing may
+    # TBD Save a df to a file for review & debug; later processing may
     # use the df & the file is not needed.
     write_full_df_to_csv_file(all_qa_with_hst_df, TMPDIR, 'all_qa_with_hst.csv')
-    write_full_df_to_html_file(all_qa_with_hst_df, TMPDIR, 'all_qa_with_hst.html')
+
+    columns_l = []
+    # D columns_l = ['Id', 'Title', 'Body']
+    write_full_df_to_html_file(all_qa_with_hst_df, TMPDIR, 'all_qa_with_hst.html', columns_l)
 
 
     # Write full data set to a csv file.
     #TBF.Mon2017_0717_16:58  , This does not write full data set.
     #  Tue2017_0718_11:58 , maybe it does write all data, but in
     #  wrong fmt: All Q, then all A.
-    outfields_l = [
+    columns_l = [
         'Id',
         'ParentId',
         'OwnerUserId',
@@ -144,16 +147,16 @@ def main(q_with_a_df):
         'Score',
         'Title',
         'Body']
-    write_full_df_to_csv_file(q_with_a_df[outfields_l], outdir, 'q_with_a.csv')
+    write_full_df_to_csv_file(q_with_a_df[columns_l], outdir, 'q_with_a.csv')
 
 
     #TBD Chg this if needed; or remove.
     if keyword:
         # Write keyword-containing records to a csv file.
         qa_with_keyword_df = select_keyword_recs(
-            keyword, q_with_a_df, outfields_l)
+            keyword, q_with_a_df, columns_l)
         outfile = 'outdir/qa_with_keyword.csv'
-        qa_with_keyword_df[outfields_l].to_csv(
+        qa_with_keyword_df[columns_l].to_csv(
             outfile, header=True, index=None, sep=',', mode='w')
 
 
@@ -327,9 +330,9 @@ def show_menu(qa_df):
     # TBD Same code used for 'q' cmd; refactor both.
     # TBD print("Save data and Quit the program.")
     # Save only the needed fields to the file.
-    # TBD outfields_l = ['Id', 'ParentId', 'Grade', 'Notes', 'Title', 'Body']
+    # TBD columns_l = ['Id', 'ParentId', 'Grade', 'Notes', 'Title', 'Body']
     # TBD outfile = open('outdir/graded_q_with_a.csv', 'w')
-    # TBD graded_df[outfields_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
+    # TBD graded_df[columns_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
     # TBD outfile.flush()
 
     return
@@ -528,8 +531,8 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, aa_df, numlines, a_fname
         qm_df = ques_match_df[ques_match_df['Id'] == qid]
         am_df = ans_match_df[ans_match_df['ParentId'] == qid]
         qagroup_df = pd.concat([qm_df, am_df]).reset_index(drop=True)
-        #D print("\n#D qagroup_df.head(): ")
-        #D print(qagroup_df.head())
+        # D print("\n#D qagroup_df.head(): ")
+        # D print(qagroup_df.head())
         cf.logger.info('qagroup_df.head(1): ')
         cf.logger.info(qagroup_df.head(1))
 
@@ -560,13 +563,13 @@ def analyze_text(qagroup_df, numlines, a_fname, progress_msg_factor):
     cf.logger.info("NLP Step 2. Process the words of each input line.")
     clean_ans_bodies_l = nl.clean_raw_data(
         a_fname, progress_msg_factor, qagroup_df, TMPDIR)
-    #D print('\n#D, clean_ans_bodies_l[:1]')
-    #D print(clean_ans_bodies_l[:1])
+    # D print('\n#D, clean_ans_bodies_l[:1]')
+    # D print(clean_ans_bodies_l[:1])
 
     cf.logger.info("NLP Step 3. Build a bag of words and their counts.")
     (vocab, dist) = nl.make_bag_of_words(clean_ans_bodies_l)
-    #D print('\n#D, vocab[:1]')
-    #D print(vocab[:1])
+    # D print('\n#D, vocab[:1]')
+    # D print(vocab[:1])
     words_sorted_by_count_l = nl.sort_save_vocab(
         '.vocab', vocab, dist, a_fname, TMPDIR)
     # Save the original list for later searching.
@@ -623,7 +626,7 @@ def analyze_text(qagroup_df, numlines, a_fname, progress_msg_factor):
 # Use it to make the final pop_and_top_l?
 
 
-def select_keyword_recs(keyword, qa_df, outfields_l):
+def select_keyword_recs(keyword, qa_df, columns_l):
     """Find the Q's & A's from the filtered df that contain the keyword,
     in Title or Body.
     Combine the sets into one set of unique Q's w/ their A's.
@@ -637,7 +640,7 @@ def select_keyword_recs(keyword, qa_df, outfields_l):
     qab_sr = qa_df.Body.str.contains(keyword, regex=False)
     # Combine two series into one w/ boolean OR.
     qa_contains_sr = qab_sr | qt_sr
-    qak_df = qa_df[outfields_l][qa_contains_sr]
+    qak_df = qa_df[columns_l][qa_contains_sr]
     return qak_df
 
 
@@ -716,7 +719,7 @@ def write_full_df_to_csv_file(in_df, wdir, wfile):
     return
 
 
-def write_full_df_to_html_file(in_df, wdir, wfile):
+def write_full_df_to_html_file(in_df, wdir, wfile, columns_l):
     """Write full contents of some columns of a data frame to an html file.
 
     Use the list of columns included in this function.
@@ -724,18 +727,21 @@ def write_full_df_to_html_file(in_df, wdir, wfile):
     pd.set_option('display.max_colwidth', -1) # -1=no limit, for debug
     outfile = wdir + wfile
     save_prior_file(wdir, wfile)
+    # Specify default output fields to use.
+    if not columns_l:
+        columns_l = ['Id',
+                       'Title',
+                       'Body',
+                       'Score',
+                       'hstCount',
+                       'HiScoreTerms',
+                       'OwnerUserId',
+                       'ParentId']
+    #TBR else:
+        #TBR columns_l = columns_l
     # Use 'escape=False' to render embedded HTML when outfile
-    # is opened in a browser:
-    #TBR outfields_l = []
-    outfields_l = ['Id',
-                   'Title',
-                   'Body',
-                   'Score',
-                   'hstCount',
-                   'HiScoreTerms',
-                   'OwnerUserId',
-                   'ParentId']
-    in_df[outfields_l].to_html(outfile, escape=False)
+    # is viewed in a browser:
+    in_df[columns_l].to_html(outfile, escape=False)
     pd.set_option('display.max_colwidth', MAXCOLWID) # -1=no limit, for debug
     return
 
@@ -799,7 +805,7 @@ if __name__ == '__main__':
     # Set the number of top scoring owners to select from the data.
     num_owners = 10  # Default is 10.
     num_owners = 40  # Default is 10.
-    #D num_owners = 100  # Default is 10.
+    # D num_owners = 100  # Default is 10.
     print("num_owners: ", num_owners)
 
     keyword = False
