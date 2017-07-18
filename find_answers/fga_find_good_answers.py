@@ -726,14 +726,16 @@ def write_full_df_to_html_file(in_df, wdir, wfile):
     save_prior_file(wdir, wfile)
     # Use 'escape=False' to render embedded HTML when outfile
     # is opened in a browser:
-    in_df[['Id',
-       'Title',
-       'Body',
-       'Score',
-       'hstCount',
-       'HiScoreTerms',
-       'OwnerUserId',
-       'ParentId']].to_html(outfile, escape=False)
+    #TBR outfields_l = []
+    outfields_l = ['Id',
+                   'Title',
+                   'Body',
+                   'Score',
+                   'hstCount',
+                   'HiScoreTerms',
+                   'OwnerUserId',
+                   'ParentId']
+    in_df[outfields_l].to_html(outfile, escape=False)
     pd.set_option('display.max_colwidth', MAXCOLWID) # -1=no limit, for debug
     return
 
