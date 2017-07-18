@@ -187,6 +187,35 @@ def init():
     pd.options.display.float_format = '{:.0f}'.format
 
 
+def config_data():
+    """Configure path and file names for i/o data.
+    """
+    # TBD Make the in & out dirs w/ this program, if they don't exist?
+    # TBD Include the test data files w/ this project.
+    indir = 'indir/'  # Relative to pwd, holds i/p files.
+    outdir = 'outdir/'  # Relative to pwd, holds o/p files.
+    # D a_fname = 'Answers.csv'
+    # D q_fname = 'Questions.csv'
+
+    # Smaller data sets, used for debugging.
+    # D q_fname = 'q6_999994.csv'
+    # D a_fname = 'a6_999999.csv'
+    # D a_fname = 'a5_99998.csv'
+    # D q_fname = 'q30_99993.csv'
+    a_fname = 'a3_986.csv'
+    q_fname = 'q3_992.csv'
+    # D a_fname = 'a2.csv'
+    # D q_fname = 'q2.csv'
+
+    a_infile = indir + a_fname
+    q_infile = indir + q_fname
+
+    print('Input files, q & a:\n' + q_infile + '\n' + a_infile)
+    print()
+
+    return a_fname, a_infile, q_infile, indir, outdir
+
+
 def show_menu(qa_df):
     """Show prompt to user; get and handle their request.
     """
@@ -316,35 +345,6 @@ def show_menu(qa_df):
     # TBD outfile.flush()
 
     return
-
-
-def config_data():
-    """Configure path and file names for i/o data.
-    """
-    # TBD Make the in & out dirs w/ this program, if they don't exist?
-    # TBD Include the test data files w/ this project.
-    indir = 'indir/'  # Relative to pwd, holds i/p files.
-    outdir = 'outdir/'  # Relative to pwd, holds o/p files.
-    # D a_fname = 'Answers.csv'
-    # D q_fname = 'Questions.csv'
-
-    # Smaller data sets, used for debugging.
-    # D q_fname = 'q6_999994.csv'
-    # D a_fname = 'a6_999999.csv'
-    # D a_fname = 'a5_99998.csv'
-    # D q_fname = 'q30_99993.csv'
-    a_fname = 'a3_986.csv'
-    q_fname = 'q3_992.csv'
-    # D a_fname = 'a2.csv'
-    # D q_fname = 'q2.csv'
-
-    a_infile = indir + a_fname
-    q_infile = indir + q_fname
-
-    print('Input files, q & a:\n' + q_infile + '\n' + a_infile)
-    print()
-
-    return a_fname, a_infile, q_infile, indir, outdir
 
 
 def read_data(ans_file, ques_file):
