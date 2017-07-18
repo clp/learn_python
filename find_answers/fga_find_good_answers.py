@@ -737,8 +737,6 @@ def write_full_df_to_html_file(in_df, wdir, wfile, columns_l):
                        'HiScoreTerms',
                        'OwnerUserId',
                        'ParentId']
-    #TBR else:
-        #TBR columns_l = columns_l
     # Use 'escape=False' to render embedded HTML when outfile
     # is viewed in a browser:
     in_df[columns_l].to_html(outfile, escape=False)
