@@ -92,7 +92,8 @@ import nltk_ex25 as nl
 log_msg = cf.log_file + ' - Start logging for ' + os.path.basename(__file__)
 cf.logger.info(log_msg)
 
-tmpdir = 'tmpdir/'
+MAXCOLWID = 80
+TMPDIR = 'tmpdir/'
 q_with_a_df = pd.DataFrame()
 all_qa_with_hst_df = pd.DataFrame()
 owner_grouped_df = pd.DataFrame()
@@ -127,26 +128,14 @@ def main(q_with_a_df):
 
     # TBD Save the df to a file for review & debug; later processing may
     # use the df & the file is not needed.
-    # Set max_colwidth to -1 to store entire Title, Body, & other text.
-    pd.set_option('display.max_colwidth', -1) # -1=no limit, for debug
-    outfile = "tmpdir/all_qa_with_hst.csv"
-    all_qa_with_hst_df.to_csv(outfile)
-    outfile = "tmpdir/all_qa_with_hst.html"
-    save_prior_file('', outfile)
-    # Use 'escape=False' to render embedded HTML when outfile
-    # is opened in a browser:
-    all_qa_with_hst_df[['Id',
-                         'Title',
-                         'Body',
-                         'Score',
-                         'hstCount',
-                         'HiScoreTerms',
-                         'OwnerUserId',
-                         'ParentId']].to_html(outfile, escape=False)
-    pd.set_option('display.max_colwidth', 100) # -1=no limit, for debug
+    write_full_df_to_csv_file(all_qa_with_hst_df, TMPDIR, 'all_qa_with_hst.csv')
+    write_full_df_to_html_file(all_qa_with_hst_df, TMPDIR, 'all_qa_with_hst.html')
+
 
     # Write full data set to a csv file.
     #TBF.Mon2017_0717_16:58  , This does not write full data set.
+    #  Tue2017_0718_11:58 , maybe it does write all data, but in
+    #  wrong fmt: All Q, then all A.
     outfields_l = [
         'Id',
         'ParentId',
@@ -155,11 +144,10 @@ def main(q_with_a_df):
         'Score',
         'Title',
         'Body']
-    outfile = 'outdir/q_with_a.csv'
-    q_with_a_df[outfields_l].to_csv(
-        outfile, header=True, index=None, sep=',', mode='w')
-    # DBG  write_df_to_file(q_with_a_df, outdir, a_fname)
+    write_full_df_to_csv_file(q_with_a_df[outfields_l], outdir, 'q_with_a.csv')
 
+
+    #TBD Chg this if needed; or remove.
     if keyword:
         # Write keyword-containing records to a csv file.
         qa_with_keyword_df = select_keyword_recs(
@@ -180,7 +168,7 @@ def init():
 
     # Initialize settings for pandas.
     pd.set_option('display.width', 0)  # 0=no limit, for debug
-    pd.set_option('display.max_colwidth', 100) # -1=no limit, for debug
+    pd.set_option('display.max_colwidth', MAXCOLWID) # -1=no limit, for debug
 
     # Don't show commas in large numbers.
     # Show OwnerUserId w/o '.0' suffix.
@@ -571,7 +559,7 @@ def analyze_text(qagroup_df, numlines, a_fname, progress_msg_factor):
 
     cf.logger.info("NLP Step 2. Process the words of each input line.")
     clean_ans_bodies_l = nl.clean_raw_data(
-        a_fname, progress_msg_factor, qagroup_df, tmpdir)
+        a_fname, progress_msg_factor, qagroup_df, TMPDIR)
     #D print('\n#D, clean_ans_bodies_l[:1]')
     #D print(clean_ans_bodies_l[:1])
 
@@ -580,7 +568,7 @@ def analyze_text(qagroup_df, numlines, a_fname, progress_msg_factor):
     #D print('\n#D, vocab[:1]')
     #D print(vocab[:1])
     words_sorted_by_count_l = nl.sort_save_vocab(
-        '.vocab', vocab, dist, a_fname, tmpdir)
+        '.vocab', vocab, dist, a_fname, TMPDIR)
     # Save the original list for later searching.
     words_sorted_by_count_main_l = words_sorted_by_count_l
 
@@ -601,7 +589,7 @@ def analyze_text(qagroup_df, numlines, a_fname, progress_msg_factor):
         top, score_top_n_df, num_selected_recs, progress_msg_factor, qagroup_df)
     cf.logger.info('make_bag_of_words(top_n_bodies)')
     (vocab, dist) = nl.make_bag_of_words(top_n_bodies)
-    nl.sort_save_vocab('.vocab.hiscore', vocab, dist, a_fname, tmpdir)
+    nl.sort_save_vocab('.vocab.hiscore', vocab, dist, a_fname, TMPDIR)
 
     cf.logger.info(
         "NLP Step 6. Find most freq words for low-score Answers, "
@@ -618,7 +606,7 @@ def analyze_text(qagroup_df, numlines, a_fname, progress_msg_factor):
             top, score_top_n_df, num_selected_recs, progress_msg_factor, qagroup_df)
         cf.logger.info('make_bag_of_words(bot_n_bodies)')
         (vocab, dist) = nl.make_bag_of_words(bot_n_bodies)
-        nl.sort_save_vocab('.vocab.loscore', vocab, dist, a_fname, tmpdir)
+        nl.sort_save_vocab('.vocab.loscore', vocab, dist, a_fname, TMPDIR)
 
     cf.logger.info("NLP Step 7. Search lo-score A's for hi-score text.")
     qa_with_hst_df = nl.search_for_terms(
@@ -665,7 +653,7 @@ def draw_histogram_plot(plot_df):
     plt.show(block=False)
 
     # Write data set to a csv file.
-    outfile = 'tmpdir/tmp_plot.csv'
+    outfile = TMPDIR + 'tmp_plot.csv'
     plot_df['Score'].to_csv(
         outfile,
         header=True,
@@ -677,6 +665,7 @@ def draw_histogram_plot(plot_df):
     count, division = np.histogram(plot_df['Score'], bins=histo_bins)
     print("#D histogram data: count[:5]: ", count[:5])
     print("#D histogram data: division[:5]: ", division[:5])
+    return
 
 
 def draw_scatter_matrix_plot(plot_df):
@@ -689,6 +678,7 @@ def draw_scatter_matrix_plot(plot_df):
     wfile = 'scat_mat_plot.pdf'
     save_prior_file(wdir, wfile)
     plt.savefig(wdir + wfile)
+    return
 
 
 def draw_scatter_plot(plot_df, xaxis, yaxis, xname, yname):
@@ -696,10 +686,14 @@ def draw_scatter_plot(plot_df, xaxis, yaxis, xname, yname):
     """
     ax = plot_df[[yname, xname]].plot.scatter(x=xaxis, y=yaxis, table=False)
     plt.show(block=False)
+    return
 
 
 def save_prior_file(wdir, wfile):
-    """Save backup copy of a file w/ same name and '.bak' extension.
+    """Save backup copy of a file w/ same name; add '.bak' extension.
+
+    Input wdir should have trailing slash, eg, outdir/.
+    Input wfile should have trailing extension name, eg, .csv.
     """
     outfile = wdir + wfile
     if os.path.exists(outfile):
@@ -707,6 +701,41 @@ def save_prior_file(wdir, wfile):
         print(
             '\nWARN: renamed o/p file to *.bak; save it manually if needed:' +
             outfile)
+    return
+
+
+def write_full_df_to_csv_file(in_df, wdir, wfile):
+    """Write full contents of all columns of a data frame to a csv file.
+    """
+    # Used for testing and debugging.
+    pd.set_option('display.max_colwidth', -1) # -1=no limit, for debug
+    save_prior_file(wdir, wfile)
+    outfile = wdir + wfile 
+    in_df.to_csv(outfile)
+    pd.set_option('display.max_colwidth', MAXCOLWID) # -1=no limit, for debug
+    return
+
+
+def write_full_df_to_html_file(in_df, wdir, wfile):
+    """Write full contents of some columns of a data frame to an html file.
+
+    Use the list of columns included in this function.
+    """
+    pd.set_option('display.max_colwidth', -1) # -1=no limit, for debug
+    outfile = wdir + wfile
+    save_prior_file(wdir, wfile)
+    # Use 'escape=False' to render embedded HTML when outfile
+    # is opened in a browser:
+    in_df[['Id',
+       'Title',
+       'Body',
+       'Score',
+       'hstCount',
+       'HiScoreTerms',
+       'OwnerUserId',
+       'ParentId']].to_html(outfile, escape=False)
+    pd.set_option('display.max_colwidth', MAXCOLWID) # -1=no limit, for debug
+    return
 
 
 def write_df_to_file(in_df, wdir, wfile):
@@ -722,6 +751,7 @@ def write_df_to_file(in_df, wdir, wfile):
     with open(outfile, 'w') as f:
         print('\nWriting Q and A to outfile: ' + outfile)
         print(in_df['Body'], file=f)
+    return
 
 
 def get_parser():
