@@ -127,19 +127,26 @@ def main(q_with_a_df):
 
     # TBD Save the df to a file for review & debug; later processing may
     # use the df & the file is not needed.
+    # Set max_colwidth to -1 to store entire Title, Body, & other text.
+    pd.set_option('display.max_colwidth', -1) # -1=no limit, for debug
     outfile = "tmpdir/all_qa_with_hst.csv"
     all_qa_with_hst_df.to_csv(outfile)
     outfile = "tmpdir/all_qa_with_hst.html"
     save_prior_file('', outfile)
+    # Use 'escape=False' to render embedded HTML when outfile
+    # is opened in a browser:
     all_qa_with_hst_df[['Id',
                          'Title',
+                         'Body',
                          'Score',
                          'hstCount',
                          'HiScoreTerms',
                          'OwnerUserId',
-                         'ParentId']].to_html(outfile)
+                         'ParentId']].to_html(outfile, escape=False)
+    pd.set_option('display.max_colwidth', 100) # -1=no limit, for debug
 
     # Write full data set to a csv file.
+    #TBF.Mon2017_0717_16:58  , This does not write full data set.
     outfields_l = [
         'Id',
         'ParentId',
@@ -481,12 +488,14 @@ def select_questions(parent_id_l, popular_ids_a):
     (owners who have high mean scores).
 
     Set the size of the following list slices to get enough o/p to analyze.
+    For i/p data files q6 and a6:
     With slice limits at 40 and 30, got 2 Q, 36 A.
     With slice limits at 400 and 300, got 26 Q, 308 A.
-    TBD, what data set was used?
     """
     pop_and_top_l = list(
-        set(parent_id_l[:500]).intersection(set(popular_ids_a[:500])))
+        # For q6 & a6 data: set(parent_id_l[:500])...(set(popular_ids_a[:500])))
+        # For q3 & a3 data: set(parent_id_l[:40])...(set(popular_ids_a[:10])))
+        set(parent_id_l[:40]).intersection(set(popular_ids_a[:10])))
     print('len(pop_and_top_l) : ', len(pop_and_top_l))
     if args['verbose']:
         print('pop_and_top_l, parent id\'s to examine: ', pop_and_top_l[:])
@@ -512,6 +521,7 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, aa_df, numlines, a_fname
 
     print('#D len of ques_match_df: ', len(ques_match_df))
     print('#D len of ans_match_df: ', len(ans_match_df))
+    print('#D len of q_with_a_df: ', len(q_with_a_df))
     print('\n#D ques_match_df.head() & ans_match_df: ')
     print(ques_match_df.head())
     print('#D')
@@ -530,12 +540,13 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, aa_df, numlines, a_fname
         qm_df = ques_match_df[ques_match_df['Id'] == qid]
         am_df = ans_match_df[ans_match_df['ParentId'] == qid]
         qagroup_df = pd.concat([qm_df, am_df]).reset_index(drop=True)
-        print("\n#D qagroup_df.head(): ")
-        print(qagroup_df.head())
+        #D print("\n#D qagroup_df.head(): ")
+        #D print(qagroup_df.head())
         cf.logger.info('qagroup_df.head(1): ')
         cf.logger.info(qagroup_df.head(1))
 
-        all_qa_with_hst_df = analyze_text(qagroup_df, numlines, a_fname, progress_msg_factor)
+        all_qa_with_hst_df = analyze_text(
+             qagroup_df, numlines, a_fname, progress_msg_factor)
 
         #
         # TBD.Thu2017_0608_23:58
@@ -561,13 +572,13 @@ def analyze_text(qagroup_df, numlines, a_fname, progress_msg_factor):
     cf.logger.info("NLP Step 2. Process the words of each input line.")
     clean_ans_bodies_l = nl.clean_raw_data(
         a_fname, progress_msg_factor, qagroup_df, tmpdir)
-    print('\n#D, clean_ans_bodies_l[:1]')
-    print(clean_ans_bodies_l[:1])
+    #D print('\n#D, clean_ans_bodies_l[:1]')
+    #D print(clean_ans_bodies_l[:1])
 
     cf.logger.info("NLP Step 3. Build a bag of words and their counts.")
     (vocab, dist) = nl.make_bag_of_words(clean_ans_bodies_l)
-    print('\n#D, vocab[:1]')
-    print(vocab[:1])
+    #D print('\n#D, vocab[:1]')
+    #D print(vocab[:1])
     words_sorted_by_count_l = nl.sort_save_vocab(
         '.vocab', vocab, dist, a_fname, tmpdir)
     # Save the original list for later searching.
@@ -756,7 +767,7 @@ if __name__ == '__main__':
     # Set the number of top scoring owners to select from the data.
     num_owners = 10  # Default is 10.
     num_owners = 40  # Default is 10.
-    num_owners = 100  # Default is 10.
+    #D num_owners = 100  # Default is 10.
     print("num_owners: ", num_owners)
 
     keyword = False
