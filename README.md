@@ -19,6 +19,6 @@ see its
 and see its
 [web site here](https://clp.github.io/learn_python/find_answers).
 
-See some doc & links here:
-[web site here](https://clp.github.io/learn_python/find_answers.md).
+See some doc & links:
+[here](https://clp.github.io/learn_python/find_answers.md).
 
