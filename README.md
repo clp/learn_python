@@ -19,5 +19,5 @@ see its
 and see its
 [web site here](https://clp.github.io/learn_python/find_answers).
 See some docs & links
-[here](https://clp.github.io/learn_python/tree/master/find_answers.md).
+[here](https://clp.github.io/learn_python/tree/master/find_answers/find_answers.md).
 
