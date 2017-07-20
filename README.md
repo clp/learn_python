@@ -17,7 +17,7 @@ project,
 see its
 [source at github here](https://github.com/clp/learn_python/tree/master/find_answers);
 and see its
-[web site here](https://clp.github.io/learn_python/find_answers).
+[web site here](https://clp.github.io/learn_python/find_answers/README.rst).
 See some docs & links
-[here](https://clp.github.io/learn_python/tree/master/find_answers/find_answers.md).
+[here](https://clp.github.io/learn_python/find_answers/find_answers.md).
 
