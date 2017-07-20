@@ -18,7 +18,6 @@ see its
 [source at github here](https://github.com/clp/learn_python/tree/master/find_answers);
 and see its
 [web site here](https://clp.github.io/learn_python/find_answers).
-
-See some doc & links:
-[here](https://clp.github.io/learn_python/find_answers.md).
+See some docs & links
+[here](https://clp.github.io/learn_python/tree/master/find_answers.md).
 
