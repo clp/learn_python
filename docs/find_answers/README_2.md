@@ -42,6 +42,7 @@ After installing the software into the 'working\_dir', follow these steps.
 >
 > 5.  TBD, To analyze the text run nltk\_ex25.py.
 >
+
 Input data format
 -----------------
 
