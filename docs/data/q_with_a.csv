@@ -1,0 +1,580 @@
+,Id,ParentId,OwnerUserId,CreationDate,Score,Title,Body
+0,683,,199.0,2008-08-03T13:19:16Z,28,Using 'in' to match an attribute of Python objects in an array,"<p>I don't remember whether I was dreaming or not but I seem to recall there being a function which allowed something like,</p>
+
+<pre><code>foo in iter_attr(array of python objects, attribute name)</code></pre>
+
+<p>I've looked over the docs but this kind of thing doesn't fall under any obvious listed headers</p>"
+1,766,,1384652.0,2008-08-03T17:44:07Z,20,Python and MySQL,"<p>I can get Python to work with Postgresql but I cannot get it to work with MySQL. The main problem is that on the shared hosting account I have I do not have the ability to install things such as Django or PySQL, I generally fail when installing them on my computer so maybe it's good I can't install on the host.</p>
+
+<p>I found <a href=""http://barryp.org/software/bpgsql/"">bpgsql</a> really good because it does not require an install, it's a single file that I can look at, read and then call the functions of. Does anybody know of something like this for MySQL?</p>"
+2,1829,,30.0,2008-08-05T02:39:23Z,12,How do I make a menu that does not require the user to press [enter] to make a selection?,"<p>I've got a menu in Python. That part was easy. I'm using <code>raw_input()</code> to get the selection from the user. </p>
+
+<p>The problem is that <code>raw_input</code> (and input) require the user to press <kbd>Enter</kbd> after they make a selection. Is there any way to make the program act immediately upon a keystroke? Here's what I've got so far:</p>
+
+<pre><code>import sys
+print """"""Menu
+1) Say Foo
+2) Say Bar""""""
+answer = raw_input(""Make a selection&gt; "")
+
+if ""1"" in answer: print ""foo""
+elif ""2"" in answer: print ""bar""
+</code></pre>
+
+<p>It would be great to have something like</p>
+
+<pre><code>print menu
+while lastKey = """":
+    lastKey = check_for_recent_keystrokes()
+if ""1"" in lastKey: #do stuff...
+</code></pre>
+"
+3,1983,,116.0,2008-08-05T07:18:55Z,31,"Python: what is the difference between (1,2,3) and [1,2,3], and when should I use each?","<p>In many places, <code>(1,2,3)</code> and <code>[1,2,3]</code> can be used interchangeably.</p>
+
+<p>When should I use one or the other, and why?</p>
+"
+4,2933,,1384652.0,2008-08-05T22:26:00Z,171,How can I create a directly-executable cross-platform GUI app using Python?,"<p>Python works on multiple platforms and can be used for desktop and web applications, thus I conclude that there is some way to compile it into an executable for Mac, Windows and Linux.</p>
+
+<p>The problem being I have no idea where to start or how to write a GUI with it, can anybody shed some light on this and point me in the right direction please?</p>"
+5,5313,,680.0,2008-08-07T21:07:24Z,11,"Cross Platform, Language Agnostic GUI Markup Language?","<p>I learned Swing back in the day but now I've moved to Python and want to make some apps with GUIs. I haven't had the time to learn a new GUI API so I've been using Jython, but I would prefer to use CPython. </p>
+
+<p>It would be great if I can have one simple markup that allows me to switch GUI libraries. It would be even better if I can use the same markup language across languages so I can quickly make GUIs for any language I'm using. Does anyone know of such a markup/library?</p>
+
+<p>I've seen markups like Glade and wxWidget's markup (I forget the name). They're partly what I'm looking for (making a GUI without coding it in a language) but they're intertwined with a specific library. And neither are really nice looking or friendly to human editting.</p>"
+6,5909,,394.0,2008-08-08T13:35:19Z,28,Get size of a file before downloading in Python,"<p>I'm downloading an entire directory from a web server. It works OK, but I can't figure how to get the file size before download to compare if it was updated on the server or not. Can this be done as if I was downloading the file from a FTP server?</p>
+
+<pre><code>import urllib
+import re
+
+url = ""http://www.someurl.com""
+
+# Download the page locally
+f = urllib.urlopen(url)
+html = f.read()
+f.close()
+
+f = open (""temp.htm"", ""w"")
+f.write (html)
+f.close()
+
+# List only the .TXT / .ZIP files
+fnames = re.findall('^.*&lt;a href=""(\w+(?:\.txt|.zip)?)"".*$', html, re.MULTILINE)
+
+for fname in fnames:
+    print fname, ""...""
+
+    f = urllib.urlopen(url + ""/"" + fname)
+
+    #### Here I want to check the filesize to download or not #### 
+    file = f.read()
+    f.close()
+
+    f = open (fname, ""w"")
+    f.write (file)
+    f.close()
+</code></pre>
+
+<hr>
+
+<p>@Jon: thank for your quick answer. It works, but the filesize on the web server is slightly less than the filesize of the downloaded file. </p>
+
+<p>Examples:</p>
+
+<pre><code>Local Size  Server Size
+ 2.223.533  2.115.516
+   664.603    662.121
+</code></pre>
+
+<p>It has anything to do with the CR/LF conversion?</p>
+"
+7,5966,,745.0,2008-08-08T14:05:45Z,10,Best way to abstract season/show/episode data,"<p>Basically, I've written an API to www.thetvdb.com in Python. The current code can be found <a href=""http://github.com/dbr/tvdb_api/tree/master/tvdb_api.py"">here</a>.</p>
+
+<p>It grabs data from the API as requested, and has to store the data somehow, and make it available by doing:</p>
+
+<pre><code>print tvdbinstance[1][23]['episodename'] # get the name of episode 23 of season 1<br></code></pre>
+
+<p>What is the ""best"" way to abstract this data within the Tvdb() class?</p>
+
+<p>I originally used a extended Dict() that automatically created sub-dicts (so you could do <code>x[1][2][3][4] = ""something""</code> without having to do <code>if x[1].has_key(2): x[1][2] = []</code> and so on)</p>
+
+<p>Then I just stored the data by doing <code>self.data[show_id][season_number][episode_number][attribute_name] = ""something""</code></p>
+
+<p>This worked okay, but there was no easy way of checking if x[3][24] was supposed to exist or not (so I couldn't raise the season_not_found exception)</p>
+
+<p>Currently it's using four classes. ShowContainer, Show, Season and Episode. Each one is a very basic dict, which I can easily add extra functionality in (the search() function on Show() for example). Each has a <code>__setitem__</code>, <code>__getitem_</code> and <code>has_key</code></p>
+
+<p>This works mostly fine, I can check in Shows if it has that season in it's self.data dict, if not, raise season_not_found. Check in Season() if it has that episode and so on.</p>
+
+<p>The problem now is it's presenting itself as a dict, but doesn't have all the functionality, and because I'm overriding the <em>_getitem_</em> and <em>_setitem_</em> functions, it's easy to accidently recursively call <em>_getitem_</em> (so I'm not sure if extending the Dict class will cause problems)</p>
+
+<p>The other slight problem is adding data into the dict is a lot more work than the old Ddict method (which was <code>self.data[seas_no][ep_no]['attribute'] = 'something'</code>). See _setItem and _setData. It's not too bad, since it's currently only a read-only API interface (so the users of the API should only ever retrieve data, not add more), but it's hardly.. elegant..</p>
+
+<p>I think the series-of-classes system is probably the best way, but does anyone have a better idea for storing the data? And would extending the ShowContainer/etc classes with Dict cause problems?</p>"
+8,8948,,145.0,2008-08-12T15:16:00Z,81,Accessing mp3 Meta-Data with Python,"<p>What is the best way to retrieve mp3 metadata in python?  I've seen a couple frameworks out there, but I'm unsure as to which would be the best to use.... Any ideas?</p>
+"
+9,10123,,742.0,2008-08-13T17:46:41Z,8,How do I treat an integer as an array of bytes in Python?,"<p>I'm trying to decode the result of the Python os.wait() function. This returns, according to the Python docs:</p>
+
+<blockquote>
+  <p>a tuple containing its pid and exit status indication: a 16-bit number, whose low byte is the signal number that killed the process, and whose high byte is the exit status (if the signal number is zero); the high bit of the low byte is set if a core file was produced.</p>
+</blockquote>
+
+<p>How do I decode the exit status indication (which is an integer) to obtain the high and low byte? To be specific, how do I implement the decode function used in the following code snippet:</p>
+
+<pre><code>(pid,status) = os.wait()
+(exitstatus, signum) = decode(status)
+</code></pre>
+"
+10,701,683.0,111.0,2008-08-03T14:30:50Z,3,,"<p>No, you were not dreaming.  Python has a pretty excellent list comprehension system that lets you manipulate lists pretty elegantly, and depending on exactly what you want to accomplish, this can be done a couple of ways.  In essence, what you're doing is saying ""For item in list if criteria.matches"", and from that you can just iterate through the results or dump the results into a new list.</p>
+
+<p>I'm going to crib an example from <a href=""http://diveintopython.net/functional_programming/filtering_lists.html"" rel=""nofollow"">Dive Into Python</a> here, because it's pretty elegant and they're smarter than I am.  Here they're getting a list of files in a directory, then filtering the list for all files that match a regular expression criteria.</p>
+
+<blockquote>
+<pre><code>    files = os.listdir(path)                               
+    test = re.compile(""test\.py$"", re.IGNORECASE)          
+    files = [f for f in files if test.search(f)]
+</code></pre>
+</blockquote>
+
+<p>You could do this without regular expressions, for your example, for anything where your expression at the end returns true for a match.  There are other options like using the filter() function, but if I were going to choose, I'd go with this.</p>
+
+<p>Eric Sipple</p>
+"
+11,735,683.0,145.0,2008-08-03T15:47:22Z,-2,,"<p>I think:</p>
+
+<pre><code>#!/bin/python<br>bar in dict(Foo)<br></code></pre>
+
+<p>Is what you are thinking of.  When trying to see if a certain key exists within a dictionary in python (python's version of a hash table) there are two ways to check.  First is the <strong><code>has_key()</code></strong> method attached to the dictionary and second is the example given above.  It will return a boolean value.</p>
+
+<p>That should answer your question.</p>
+
+<p>And now a little off topic to tie this in to the <em>list comprehension</em> answer previously given (for a bit more clarity).  <em>List Comprehensions</em> construct a list from a basic <em>for loop</em> with modifiers.  As an example (to clarify slightly), a way to use the <code>in dict</code> language construct in a _list comprehension_:</p>
+
+<p>Say you have a two dimensional dictionary <strong><code>foo</code></strong> and you only want the second dimension dictionaries which contain the key <strong><code>bar</code></strong>.  A relatively straightforward way to do so would be to use a <em>list comprehension</em> with a conditional as follows:</p>
+
+<pre><code>#!/bin/python<br>baz = dict([(key, value) for key, value in foo if bar in value])<br></code></pre>
+
+<p>Note the <strong><code>if bar in value</code></strong> at the end of the statement<strong>, this is a modifying clause which tells the <em>list comprehension</em> to only keep those key-value pairs which meet the conditional.</strong>  In this case <strong><code>baz</code></strong> is a new dictionary which contains only the dictionaries from foo which contain bar (Hopefully I didn't miss anything in that code example... you may have to take a look at the list comprehension documentation found in <a href=""http://docs.python.org/tut/node7.html#SECTION007140000000000000000"" rel=""nofollow"">docs.python.org tutorials</a> and at <a href=""http://www.secnetix.de/olli/Python/list_comprehensions.hawk"" rel=""nofollow"">secnetix.de</a>, both sites are good references if you have questions in the future.).</p>"
+12,745,683.0,154.0,2008-08-03T15:59:19Z,8,,"<p>Are you looking to get a list of objects that have a certain attribute? If so, a <a href=""http://docs.python.org/tut/node7.html#SECTION007140000000000000000"">list comprehension</a> is the right way to do this.</p>
+
+<pre><code>result = [obj for obj in listOfObjs if hasattr(obj, 'attributeName')]<br></code></pre>"
+13,750,683.0,199.0,2008-08-03T16:13:29Z,2,,"<p>What I was thinking of can be achieved using list comprehensions, but I thought that there was a function that did this in a slightly neater way.</p>
+
+<p>i.e. 'bar' is a list of objects, all of which have the attribute 'id'</p>
+
+<p>The mythical functional way:</p>
+
+<pre><code>foo = 12<br>foo in iter_attr(bar, 'id')</code></pre>
+
+<p>The list comprehension way:</p>
+
+<pre><code>foo = 12<br>foo in [obj.id for obj in bar]</code></pre>
+
+<p>In retrospect the list comprehension way is pretty neat anyway.</p>"
+14,777,766.0,150.0,2008-08-03T18:32:27Z,5,,"<p>I don't have any experience with <a href=""http://www.SiteGround.com"" rel=""nofollow"">http://www.SiteGround.com</a> as a web host personally.  </p>
+
+<p>This is just a guess, but it's common for a shared host to support Python and MySQL with the MySQLdb module (e.g., GoDaddy does this).  Try the following CGI script to see if MySQLdb is installed.</p>
+
+<pre><code>#!/usr/bin/python<br><br>module_name = 'MySQLdb'<br>head = '''Content-Type: text/html<br><br>%s is ''' % module_name<br><br>try:<br>    __import__(module_name)<br>    print head + 'installed'<br>except ImportError:<br>    print head + 'not installed'<br></code></pre>"
+15,802,766.0,1384652.0,2008-08-03T20:07:05Z,4,,"<p>I uploaded it and got an internal error</p>
+
+<pre><code>Premature end of script headers<br></code></pre>
+
+<p>After much playing around, I found that if I had</p>
+
+<pre><code>import cgi<br>import cgitb; cgitb.enable()<br>import MySQLdb<br></code></pre>
+
+<p>It would give me a much more useful answer and say that it was not installed, you can see it yourself -> <a href=""http://woarl.com/db.py"" rel=""nofollow"">http://woarl.com/db.py</a></p>
+
+<p>Oddly enough, this would produce an error</p>
+
+<pre><code>import MySQLdb<br>import cgi<br>import cgitb; cgitb.enable()<br></code></pre>
+
+<p>I looked at some of the other files I had up there and it seems that library was one of the ones I had already tried.</p>"
+16,1619,766.0,92.0,2008-08-04T21:54:11Z,17,,"<p>MySQLdb is what I have used before.</p>
+
+<p>If you host is using Python version 2.5 or higher, support for sqlite3 databases is built in (sqlite allows you to have a relational database that is simply a file in your filesystem).  But buyer beware, sqlite is not suited for production, so it may depend what you are trying to do with it.</p>
+
+<p>Another option may be to call your host and complain, or change hosts.  Honestly these days, any self respecting web host that supports python and mysql ought to have MySQLdb pre installed.</p>"
+17,1840,1829.0,116.0,2008-08-05T02:54:54Z,8,,"<p><strong>On Linux:</strong></p>
+
+<ul>
+<li>set raw mode</li>
+<li>select and read the keystroke</li>
+<li>restore normal settings</li>
+</ul>
+
+<pre>
+import sys
+import select
+import termios
+import tty
+
+def getkey():
+    old_settings = termios.tcgetattr(sys.stdin)
+    tty.setraw(sys.stdin.fileno())
+    select.select([sys.stdin], [], [], 0)
+    answer = sys.stdin.read(1)
+    termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
+    return answer
+
+print """"""Menu
+1) Say Foo
+2) Say Bar""""""
+
+answer=getkey()
+
+if ""1"" in answer: print ""foo""
+elif ""2"" in answer: print ""bar""
+
+</pre>
+"
+18,1852,1829.0,116.0,2008-08-05T03:11:55Z,6,,"<p><strong>On Windows:</strong></p>
+
+<pre><code>import msvcrt
+answer=msvcrt.getch()
+</code></pre>
+"
+19,1870,1829.0,30.0,2008-08-05T03:51:57Z,2,,"<p>Wow, that took forever. Ok, here's what I've ended up with </p>
+
+<pre><code>#!C:\python25\python.exe<br>import msvcrt<br>print """"""Menu<br>1) Say Foo <br>2) Say Bar""""""<br>while 1:<br>    char = msvcrt.getch()<br>    if char == chr(27): #escape<br>        break<br>    if char == ""1"":<br>        print ""foo""<br>        break<br>    if char == ""2"":<br>        print ""Bar""<br>        break<br></code></pre>
+
+<p>It fails hard using IDLE, the python...thing...that comes with python. But once I tried it in DOS (er, CMD.exe), as a real program, then it ran fine.</p>
+
+<p>No one try it in IDLE, unless you have Task Manager handy.</p>
+
+<p>I've already forgotten how I lived with menus that arn't super-instant responsive.</p>"
+20,1885,1829.0,50.0,2008-08-05T04:28:03Z,0,,"<p>The  reason msvcrt fails in IDLE is because IDLE is not accessing the library that runs msvcrt. Whereas when you run the program natively in cmd.exe it works nicely. For the same reason that your program blows up on Mac and Linux terminals.</p>
+
+<p>But I guess if you're going to be using this specifically for windows, more power to ya.</p>"
+21,1987,1983.0,269.0,2008-08-05T07:27:40Z,19,,"<p>The list [1,2,3] is dynamic and flexible but that flexibility comes at a speed cost.</p>
+
+<p>The tuple (1,2,3) is fixed (immutable) and therefore faster.</p>
+"
+22,2277,1983.0,156.0,2008-08-05T13:22:43Z,26,,"<p>From the <a href=""http://www.python.org/doc/faq/general/#why-are-there-separate-tuple-and-list-data-types"">Python FAQ</a>:</p>
+
+<blockquote>
+  <p>Lists and tuples, while similar in many respects, are generally used in fundamentally different ways. Tuples can be thought of as being similar to Pascal records or C structs; they're small collections of related data which may be of different types which are operated on as a group. For example, a Cartesian coordinate is appropriately represented as a tuple of two or three numbers.</p>
+  
+  <p>Lists, on the other hand, are more like arrays in other languages. They tend to hold a varying number of objects all of which have the same type and which are operated on one-by-one.</p>
+</blockquote>
+
+<p>Generally by convention you wouldn't choose a list or a tuple just based on its (im)mutability.  You would choose a tuple for small collections of completely different pieces of data in which a full-blown class would be too heavyweight, and a list for collections of any reasonable size where you have a homogeneous set of data.</p>"
+23,2937,2933.0,275.0,2008-08-05T22:34:25Z,189,,"<p>First you will need some GUI library with Python bindings and then (if you want) some program that will convert your python scripts into standalone executables.</p>
+
+<p><strong>Cross-platform GUI libraries with Python bindings (Windows, Linux, Mac)</strong></p>
+
+<p>Of course, there are many, but the most popular that I've seen in wild are:</p>
+
+<ul>
+<li><a href=""http://wiki.python.org/moin/TkInter"">Tkinter</a>  - based on <a href=""http://www.tcl.tk/"">Tk GUI toolkit</a> (de-facto standard GUI library for python, free for commercial projects)</li>
+<li><a href=""http://www.wxpython.org/"">WxPython</a> - based on <a href=""http://www.wxwidgets.org/"">WxWidgets</a> (very popular, free for commercial projects)</li>
+<li><a href=""http://www.riverbankcomputing.co.uk/news"">PyQt</a> - based on <a href=""http://trolltech.com/products/qt/"">Qt</a> (also very popular and more stable than WxWidgets but costly license for commercial projects)</li>
+</ul>
+
+<p>Complete list is at <a href=""http://wiki.python.org/moin/GuiProgramming"">http://wiki.python.org/moin/GuiProgramming</a></p>
+
+<p><strong>Single executable (Windows)</strong></p>
+
+<ul>
+<li><a href=""http://www.py2exe.org/"">py2exe</a> - Probably the most popular out there (<a href=""http://stackoverflow.com/questions/2933/an-executable-python-app/31859#31859"">PyInstaller</a> is also gaining in popularity)</li>
+</ul>
+
+<p><strong>Single executable (Linux)</strong></p>
+
+<ul>
+<li><a href=""http://wiki.python.org/moin/Freeze"">Freeze</a> - works the same way like py2exe but targets Linux platform</li>
+</ul>
+
+<p><strong>Single executable (Mac)</strong></p>
+
+<ul>
+<li><a href=""https://pythonhosted.org/py2app/"">py2app</a> - again, works like py2exe but targets Mac OS</li>
+</ul>
+"
+24,2941,2933.0,92.0,2008-08-05T22:40:17Z,0,,"<p>You don't need to <em>compile</em> python for Mac/Windows/Linux.  It is an interpreted language, so you simply need to have the Python interpreter installed on the system of your choice (it is available for all three platforms).</p>
+
+<p>As for a GUI library that works cross platform, Python's <a href=""http://www.tcl.tk/"" rel=""nofollow"">Tk/Tcl</a> widget library works very well, and I believe is sufficiently cross platform.</p>
+
+<p><a href=""http://docs.python.org/lib/module-Tkinter.html"" rel=""nofollow"">Tkinter</a> is the python interface to Tk/Tcl</p>
+
+<p>From the python project webpage: </p>
+
+<blockquote>
+  <p>Tkinter is not the only GuiProgramming
+  toolkit for Python.  It is however the
+  most commonly used one, and almost the
+  only  one that is portable between
+  Unix, Mac and Windows</p>
+</blockquote>"
+25,2980,2933.0,188.0,2008-08-06T00:29:36Z,2,,"<p>Since python is installed on nearly every non-Windows OS by default now, the only thing you really need to make sure of is that all of the non-standard libraries you use are installed.</p>
+
+<p>Having said that, it is possible to build executables that include the python interpreter, and any libraries you use.  This is likely to create a large executable, however.</p>
+
+<p>MacOS X even includes support in the Xcode IDE for creating full standalone GUI apps.  These can be run by any user running OS X.</p>"
+26,4595,1983.0,618.0,2008-08-07T11:21:56Z,10,,"<p>Tuples are a quick\flexible way to create <em>composite</em> data-types.
+Lists are containers for, well, lists of objects.</p>
+
+<p>For example, you would use a List to store a list of student details in a class.</p>
+
+<p>Each student detail in that list may be a 3-tuple containing their roll number, name and test score.</p>
+
+<pre><code> `[(1,'Mark',86),(2,'John',34)...]`<br></code></pre>
+
+<p>Also, because tuples are immutable they can be used as keys in dictionaries.</p>"
+27,5319,5313.0,380.0,2008-08-07T21:10:27Z,8,,<p>erm.. HTML? (trying to be funny here... while we wait for real answers..)</p>
+28,5320,5313.0,216.0,2008-08-07T21:11:28Z,1,,"<p>The <a href=""http://www.wxwidgets.org/"" rel=""nofollow"" title=""wxWidgets"">wxWidgets</a> (formerly known as wxWindows) library might be what you're looking for. There's a particularly good port for Python, <a href=""http://wxpython.org/"" rel=""nofollow"" title=""wxPython"">wxPython</a>, as well as versions for different languages -- C#, C++, Perl and Ruby come to mind -- and for various GUIs: Win32, Mac OS X, GTK+, X11, Motif, WinCE. The library's been around for a while and is pretty solid.</p>"
+29,5340,5313.0,108.0,2008-08-07T21:24:26Z,3,,"<P>Not sure if this is what you're looking for, but there's <A href=""http://glade.gnome.org/"" rel=""nofollow"">Glade</A> (or <A href=""http://gladewin32.sourceforge.net/"" rel=""nofollow"">Windows download</A>) which is a designer for GTK+. It generates an XML file which can then be used to build the GUI in a number of different languages.</P>"
+30,5343,5313.0,25.0,2008-08-07T21:25:26Z,5,,"<p><a href=""http://en.wikipedia.org/wiki/Qt_%28toolkit%29"">Qt</a> (pronounced ""cute"" by its creators[1]) is a cross-platform application development framework, widely used for the development of GUI programs.</p>
+
+<p>Qt uses <strong>C++</strong> with several non-standard extensions implemented by an additional pre-processor that generates standard C++ code before compilation. Qt can also be used in several other programming languages; bindings exist for <strong>Ada</strong> (QtAda)[4], C<strong>#</strong> (Qyoto/Kimono)[5], <strong>Java</strong> (Qt Jambi)[6], <strong>Pascal</strong>, <strong>Perl</strong>, <strong>PHP</strong> (PHP-Qt), <strong>Ruby</strong> (RubyQt), and <strong>Python</strong> (PyQt). It runs on all major platforms, and has extensive internationalization support. Non-GUI features include SQL database access, XML parsing, thread management, network support and a unified cross-platform API for file handling.</p>"
+31,5719,1983.0,108465.0,2008-08-08T06:06:33Z,1,,"<P>As others have mentioned, Lists and tuples are both containers which can be used to store python objects. Lists are extensible and their contents can change by assignment, on the other hand tuples are immutable.</P>
+<P>Also, lists cannot be used as keys in a dictionary whereas tuples can. </P>"
+32,5746,1983.0,699.0,2008-08-08T06:48:52Z,1,,"<p>If you can find a solution that works with tuples, use them, as it forces immutability which kind of drives you down a more functional path. You almost never regret going down the functional/immutable path.</p>"
+33,5927,5909.0,309844.0,2008-08-08T13:41:43Z,6,,"<p>The size of the file is sent as the Content-Length header. Here is how to get it with urllib:</p>
+
+<pre><code>&gt;&gt;&gt; site = urllib.urlopen(""http://python.org"")<br>&gt;&gt;&gt; meta = site.info()<br>&gt;&gt;&gt; print meta.getheaders(""Content-Length"")<br>['16535']<br>&gt;&gt;&gt;<br></code></pre>"
+34,5935,5909.0,745.0,2008-08-08T13:47:26Z,16,,"<p>Using the returned-urllib-object method <code>info()</code>, you can get various information on the retrived document. Example of grabbing the current Google logo:</p>
+
+<pre><code>&gt;&gt;&gt; import urllib<br>&gt;&gt;&gt; d = urllib.urlopen(""http://www.google.co.uk/logos/olympics08_opening.gif"")<br>&gt;&gt;&gt; print d.info()<br><br>Content-Type: image/gif<br>Last-Modified: Thu, 07 Aug 2008 16:20:19 GMT  <br>Expires: Sun, 17 Jan 2038 19:14:07 GMT <br>Cache-Control: public <br>Date: Fri, 08 Aug 2008 13:40:41 GMT <br>Server: gws <br>Content-Length: 20172 <br>Connection: Close<br></code></pre>
+
+<p>It's a dict, so to get the size of the file, you do <code>urllibobject.info()['Content-Length']</code></p>
+
+<pre><code>print f.info()['Content-Length']<br></code></pre>
+
+<p>And to get the size of the local file (for comparison), you can use the os.stat() command:</p>
+
+<pre><code>os.stat(""/the/local/file.zip"").st_size<br></code></pre>"
+35,5938,5909.0,309844.0,2008-08-08T13:51:23Z,4,,"<p>Also if the server you are connecting to supports it, look at <a href=""http://en.wikipedia.org/wiki/HTTP_ETag"" rel=""nofollow"">Etags</a> and the <a href=""http://en.wikipedia.org/wiki/List_of_HTTP_headers#Requests"" rel=""nofollow"">If-Modified-Since</a> and <a href=""http://en.wikipedia.org/wiki/List_of_HTTP_headers#Requests"" rel=""nofollow"">If-None-Match</a> headers.</p>
+
+<p>Using these will take advantage of the webserver's caching rules and will return a <a href=""http://en.wikipedia.org/wiki/List_of_HTTP_status_codes#3xx_Redirection"" rel=""nofollow"">304 Not Modified</a> status code if the content hasn't changed.</p>"
+36,5985,5909.0,309844.0,2008-08-08T14:21:51Z,19,,"<p>I have reproduced what you are seeing:</p>
+
+<pre><code>import urllib, os<br>link = ""http://python.org""<br>print ""opening url:"", link<br>site = urllib.urlopen(link)<br>meta = site.info()<br>print ""Content-Length:"", meta.getheaders(""Content-Length"")[0]<br><br>f = open(""out.txt"", ""r"")<br>print ""File on disk:"",len(f.read())<br>f.close()<br><br><br>f = open(""out.txt"", ""w"")<br>f.write(site.read())<br>site.close()<br>f.close()<br><br>f = open(""out.txt"", ""r"")<br>print ""File on disk after download:"",len(f.read())<br>f.close()<br><br>print ""os.stat().st_size returns:"", os.stat(""out.txt"").st_size<br></code></pre>
+
+<p>Outputs this:</p>
+
+<pre><code>opening url: http://python.org<br>Content-Length: 16535<br>File on disk: 16535<br>File on disk after download: 16535<br>os.stat().st_size returns: 16861<br></code></pre>
+
+<p>What am I doing wrong here? Is os.stat().st_size not returning the correct size?</p>
+
+<hr>
+
+<p>Edit:
+OK, I figured out what the problem was:</p>
+
+<pre><code>import urllib, os<br>link = ""http://python.org""<br>print ""opening url:"", link<br>site = urllib.urlopen(link)<br>meta = site.info()<br>print ""Content-Length:"", meta.getheaders(""Content-Length"")[0]<br><br>f = open(""out.txt"", ""rb"")<br>print ""File on disk:"",len(f.read())<br>f.close()<br><br><br>f = open(""out.txt"", ""wb"")<br>f.write(site.read())<br>site.close()<br>f.close()<br><br>f = open(""out.txt"", ""rb"")<br>print ""File on disk after download:"",len(f.read())<br>f.close()<br><br>print ""os.stat().st_size returns:"", os.stat(""out.txt"").st_size<br></code></pre>
+
+<p>this outputs:</p>
+
+<pre><code>$ python test.py<br>opening url: http://python.org<br>Content-Length: 16535<br>File on disk: 16535<br>File on disk after download: 16535<br>os.stat().st_size returns: 16535<br></code></pre>
+
+<p>Make sure you are opening both files for binary read/write.</p>
+
+<pre><code>// open for binary write<br>open(filename, ""wb"")<br>// open for binary read<br>open(filename, ""rb"")<br></code></pre>"
+37,6125,5966.0,309844.0,2008-08-08T16:45:50Z,3,,"<p>Why not use SQLite? There is good support in Python and you can write SQL queries to get the data out. Here is the Python docs for <a href=""http://docs.python.org/lib/module-sqlite3.html"" rel=""nofollow"">sqlite3</a></p>
+
+<hr>
+
+<p>If you don't want to use SQLite you could do an array of dicts.</p>
+
+<pre><code>episodes = []<br>episodes.append({'season':1, 'episode': 2, 'name':'Something'})<br>episodes.append({'season':1, 'episode': 2, 'name':'Something', 'actors':['Billy Bob', 'Sean Penn']})<br></code></pre>
+
+<p>That way you add metadata to any record and search it very easily</p>
+
+<pre><code>season_1 = [e for e in episodes if e['season'] == 1]<br>billy_bob = [e for e in episodes if 'actors' in e and 'Billy Bob' in e['actors']]<br><br>for episode in billy_bob:<br>    print ""Billy bob was in Season %s Episode %s"" % (episode['season'], episode['episode'])<br></code></pre>"
+38,6616,5313.0,488.0,2008-08-09T04:44:41Z,3,,"<p><a href=""http://www.mozilla.org/projects/xul/"" rel=""nofollow"">XML User Interface Language</a>. Don't know much about it so not sure if it meets your desires. Post back with your experience if you play with it.</p>"
+39,6805,5966.0,358.0,2008-08-09T15:13:14Z,0,,"<P>I have done something similar in the past and used an in-memory XML document as a quick and dirty hierachical database for storage. You can store each show/season/episode as an element (nested appropriately) and attributes of these things as xml attributes on the elements. Then you can use XQuery to get info back out.</P>
+<P><STRONG>NOTE:</STRONG> I'm not a Python guy so I don't know what your xml support is like.</P>
+<P><STRONG>NOTE 2:</STRONG> You'll want to profile this because it'll be bigger and slower than the solution you've already got. Likely enough if you are doing some high-volume processing then XML is probably not going to be your friend.</P>"
+40,7496,5313.0,680.0,2008-08-11T03:11:55Z,0,,"<p>I read a little on XML User Interface Language (XUL) and it looks really robust and well supported. The main problem for me is it's tied to the Gecko rendering engine so it's cross platform the way wxWidgets, QT and GTK+ are cross platform. Also, there Python bindings don't seem as good as those other libraries.</p>
+
+<p>GladeXML and XRC seem like better markups</p>
+"
+41,8109,5313.0,1026.0,2008-08-11T19:17:41Z,1,,"<p>@Cristian and Antony Cramp: while XUL is a nice choice for UI development (cross-platform, open-source licensed, used in Firefox and other major software), it's certainly not language agnostic. You're tied to Gecko, with JS for scripting. There is experimental support for Python scripting, but it's only experimental, AFAIK.</p>
+
+<p>You can define the UI in XUL+JS and use back-end components written in C++ though (there are Python and Java bridges available too).</p>
+"
+42,8114,5313.0,872.0,2008-08-11T19:21:14Z,4,,"<p>I seriously doubt you're going to find a markup language for GIU's that's <em>not</em> tied to a specific library.  For such a thing to exist, there would need to be a standardized GUI markup language, with several implementations.</p>
+"
+43,8165,5966.0,985.0,2008-08-11T20:07:59Z,0,,"<p>I don't get this part here:</p>
+
+<blockquote>
+  <p>This worked okay, but there was no easy way of checking if x[3][24] was supposed to exist or not (so I couldn't raise the season<em>not</em>found exception)</p>
+</blockquote>
+
+<p>There is a way to do it - called <strong>in</strong>:</p>
+
+<pre><code>&gt;&gt;&gt;x={}
+&gt;&gt;&gt;x[1]={}
+&gt;&gt;&gt;x[1][2]={}
+&gt;&gt;&gt;x
+{1: {2: {}}}
+&gt;&gt;&gt; 2 in x[1]
+True
+&gt;&gt;&gt; 3 in x[1]
+False
+</code></pre>
+
+<p>what seems to be the problem with that?</p>
+"
+44,8332,766.0,1057.0,2008-08-11T23:16:33Z,4,,"<p>You could try setting up your own python installation using <a href=""http://peak.telecommunity.com/DevCenter/EasyInstall#creating-a-virtual-python"" rel=""nofollow"">Virtual Python</a>.  Check out how to setup Django using it <a href=""http://forums.site5.com/showthread.php?t=10236"" rel=""nofollow"">here</a>.  That was written a long time ago, but it shows how I got MySQLdb setup without having root access or anything like it.  Once you've got the basics going, you can install any python library you want.</p>
+"
+45,8972,8948.0,722.0,2008-08-12T15:32:05Z,1,,"<p><a href=""http://www.dotfunk.com/projects/mp3/"" rel=""nofollow"">This toolkit</a> may do what you need. I can't say if it's the ""best"", but really, if it does what you need, that's all that matters, right?</p>
+
+<p>HTH</p>
+"
+46,8974,8948.0,394.0,2008-08-12T15:37:24Z,6,,"<p>A simple example from the book Dive Into Python works ok for me, <a href=""http://www.diveintopython.org/download/diveintopython-examples-5.4.zip"" rel=""nofollow"">this</a> is the download link, the example is fileinfo.py. Don't know if it's the best, but it can do the basic job.</p>
+
+<p>The entire book is available online <a href=""http://www.diveintopython.org/"" rel=""nofollow"">here</a>.</p>
+"
+47,8976,8948.0,1087.0,2008-08-12T15:37:59Z,1,,"<p>It can depend on exactly what you want to do in addition to reading the metadata. If it is just simply the bitrate / name etc. that you need, and nothing else, something lightweight is probably best.</p>
+
+<p>If you're manipulating the mp3 past that PyMedia may be suitable.</p>
+
+<p>There are quite a few, whatever you do get, make sure and test it out on plenty of sample media. There are a few different versions of ID3 tags in particular, so make sure it's not too out of date. </p>
+
+<p>Personally I've used this small MP3Info class with luck. It is quite old though.</p>
+
+<p><a href=""http://www.omniscia.org/~vivake/python/MP3Info.py"" rel=""nofollow"">http://www.omniscia.org/~vivake/python/MP3Info.py</a></p>
+"
+48,9080,5966.0,745.0,2008-08-12T17:55:22Z,0,,"<p>Bartosz/To clarify ""This worked okay, but there was no easy way of checking if x[3][24] was supposed to exist or not""</p>
+
+<p><code>x['some show'][3][24]</code> would return season 3, episode 24 of ""some show"". If there was no season 3, I want the pseudo-dict to raise tvdb<em>seasonnotfound, if ""some show"" doesn't exist, then raise tvdb</em>shownotfound</p>
+
+<p>The current system of a series of classes, each with a <code>__getitem__</code> - Show checks <code>if self.seasons.has_key(requested_season_number)</code>, the Season class checks <code>if self.episodes.has_key(requested_episode_number)</code> and so on.</p>
+
+<p>It works, but it there seems to be a lot of repeated code (each class is basically the same, but raises a different error)</p>
+"
+49,9358,8948.0,1057.0,2008-08-13T00:44:26Z,11,,"<p>What you're after is the <a href=""http://id3-py.sourceforge.net/"">ID3</a> module.  It's very simple and will give you exactly what you need.  Just copy the ID3.py file into your site-packages directory and you'll be able to do something like the following:</p>
+
+<pre><code>from ID3 import *
+try:
+  id3info = ID3('file.mp3')
+  print id3info
+  # Change the tags
+  id3info['TITLE'] = ""Green Eggs and Ham""
+  id3info['ARTIST'] = ""Dr. Seuss""
+  for k, v in id3info.items():
+    print k, "":"", v
+except InvalidTagError, message:
+  print ""Invalid ID3 tag:"", message
+</code></pre>
+"
+50,10129,10123.0,116.0,2008-08-13T17:56:34Z,10,,"<p>This will do what you want:</p>
+
+<pre><code>signum = status &amp; 0xff
+exitstatus = (status &amp; 0xff00) &gt;&gt; 8
+</code></pre>
+"
+51,10132,10123.0,872.0,2008-08-13T17:58:27Z,1,,"<p>You can unpack the status using <a href=""http://docs.python.org/ref/shifting.html"" rel=""nofollow"">bit-shifting</a> and <a href=""http://docs.python.org/ref/bitwise.html"" rel=""nofollow"">masking</a> operators.</p>
+
+<pre><code>low = status &amp; 0x00FF
+high = (status &amp; 0xFF00) &gt;&gt; 8
+</code></pre>
+
+<p>I'm not a Python programmer, so I hope got the syntax correct.</p>
+"
+52,10148,10123.0,429.0,2008-08-13T18:14:10Z,0,,"<p>The folks before me've nailed it, but if you really want it on one line, you can do this:</p>
+
+<pre><code>(signum, exitstatus) = (status &amp; 0xFF, (status &gt;&gt; 8) &amp; 0xFF)
+</code></pre>
+
+<p>EDIT: Had it backwards.</p>
+"
+53,10213,10123.0,99.0,2008-08-13T18:52:36Z,10,,"<p>To answer your general question, you can use <a href=""http://en.wikipedia.org/wiki/Bit_twiddling"" rel=""nofollow"">bit manipulation</a> techniques:</p>
+
+<pre><code>pid, status = os.wait()
+exitstatus, signum = status &amp; 0xFF, (status &amp; 0xFF00) &gt;&gt; 8
+</code></pre>
+
+<p>However, there are also <a href=""http://docs.python.org/lib/os-process.html#l2h-2780"" rel=""nofollow"">built-in functions</a> for interpreting exit status values:</p>
+
+<pre><code>pid, status = os.wait()
+exitstatus, signum = os.WEXITSTATUS( status ), os.WTERMSIG( status )
+</code></pre>
+
+<p>See also:</p>
+
+<ul>
+<li>os.WCOREDUMP()</li>
+<li>os.WIFCONTINUED()</li>
+<li>os.WIFSTOPPED()</li>
+<li>os.WIFSIGNALED()</li>
+<li>os.WIFEXITED()</li>
+<li>os.WSTOPSIG()</li>
+</ul>
+"
+54,10778,5966.0,985.0,2008-08-14T07:08:19Z,5,,"<p>OK, what you need is <code>classobj</code> from new module. That would allow you to construct exception classes dynamically (<code>classobj</code> takes a string as an argument for the class name). </p>
+
+<pre><code>import new
+myexc=new.classobj(""ExcName"",(Exception,),{})
+i=myexc(""This is the exc msg!"")
+raise i
+</code></pre>
+
+<p>this gives you:</p>
+
+<pre><code>Traceback (most recent call last):
+File ""&lt;stdin&gt;"", line 1, in &lt;module&gt;
+__main__.ExcName: This is the exc msg!
+</code></pre>
+
+<p>remember that you can always get the class name through:</p>
+
+<pre><code>self.__class__.__name__
+</code></pre>
+
+<p>So, after some string mangling and concatenation, you should be able to obtain appropriate exception class name and construct a class object using that name and then raise that exception.</p>
+
+<p>P.S. - you can also raise strings, but this is deprecated.</p>
+
+<pre><code>raise(self.__class__.__name__+""Exception"")
+</code></pre>
+"
+55,10845,8948.0,912.0,2008-08-14T09:46:21Z,25,,"<p>I've used <a href=""https://bitbucket.org/lazka/mutagen"">mutagen</a> to edit tags in media files before.  The nice thing about mutagen is that it can handle other formats, such as mp4, FLAC etc.  I've written several scripts with a lot of success using this API.</p>
+"
+56,12166,2933.0,995.0,2008-08-15T11:56:02Z,13,,"<p>An alternative tool to py2exe is <a href=""http://pypi.python.org/pypi/bbfreeze/"">bbfreeze</a> which generates executables for windows and linux. It's newer than py2exe and handles eggs quite well. I've found it magically works better without configuration for a wide variety of applications.</p>
+"
+57,12167,2933.0,1344.0,2008-08-15T12:00:37Z,2,,"<p>I'm not sure that this is the best way to do it, but when I'm deploying Ruby GUI apps (not Python, but has the same ""problem"" as far as .exe's are concerned) on Windows, I just write a short launcher in C# that calls on my main script. It compiles to an executable, and I then have an application executable.</p>
+"
+58,12454,1983.0,1448.0,2008-08-15T16:38:59Z,2,,"<p>Whenever I need to pass in a collection of items to a function, if I want the function to not change the values passed in - I use tuples. </p>
+
+<p>Else if I want to have the function to alter the values, I use list. </p>
+
+<p>Always if you are using external libraries and need to pass in a list of values to a function and are unsure about the integrity of the data, use a tuple. </p>
+"
+59,12557,1983.0,1416.0,2008-08-15T18:00:37Z,7,,"<p>The notion of tuples are highly expressive:</p>
+
+<ul>
+<li><p>Pragmatically, they are great for packing and unpacking values (<code>x,y=coord</code>).</p></li>
+<li><p>In combination with dictionaries (hash tables), they allow forms of mapping that would otherwise require many levels of association.  For example, consider marking that (x,y) has been found.</p>
+
+<pre><code>// PHP
+if (!isset($found[$x])) {
+    $found[$x] = Array();
+    $found[$x][$y] = true;
+} else if (!isset($found[$x][$y])) {
+    $found[$x][$y] = true;
+}
+
+
+# Python
+found[(x,y)] = True # parens added for clarity
+</code></pre></li>
+<li><p>Lists should be used with the expectation of operations on its contents (hence the various mentions of immutability).  One will want to pop, push, splice, slice, search, insert before, insert after, etc with a list.</p></li>
+<li><p>Tuples should be a low-level representation of an object, where simple comparisons are made, or operations such as extracting the n'th element or n elements in a predictable fashion, such as the coordinates example given earlier.</p></li>
+<li><p>Lastly, lists are not hashable, so the type of mapping done with dictionaries (hash tables in Perl, associative arrays in PHP) must be done with tuples.</p>
+
+<p>Here's a simple example of tuples and dictionaries, together at last:</p>
+
+<pre><code>""""""
+couple is a tuple of two people
+doesLike is a dictionary mapping couples to True or False
+""""""
+couple = ""john"", ""jane""
+doesLike = dict()
+doesLike[couple] = True
+doesLike[""jane"", ""john""] = False # unrequited love :'(
+</code></pre></li>
+</ul>
+"
