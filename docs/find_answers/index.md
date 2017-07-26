@@ -37,7 +37,6 @@ and
   Question followed by its Answers; then next Q&A.  Includes High Score Terms
   found for each record.
 
-
 * [q_with_a.csv](/data/q_with_a.csv)
 
   All Questions followed by all Answers.

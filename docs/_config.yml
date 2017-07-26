@@ -30,5 +30,6 @@ defaults:
   - values:
       layout: "default"
 
+include:  ['data']
 include:  ['find_answers']
 
