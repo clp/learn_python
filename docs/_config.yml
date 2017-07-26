@@ -1,0 +1,34 @@
+# ----------- CONFIGURABLE START -----------
+title:            "Learn Python"
+description:      "Learn Python by processing English language data."
+url:              https://clp.github.io/learn_python/TBD # Site url, without a slash at the end.
+signoff:          "clp" # Your name
+# facebook_appid:   # APP ID for like button, remove from /_includes/share.html if unwanted.
+# google_analytics: # Set tracking, remove from /javascripts/basic.js if unwanted.
+share:            false # Turn on twitter and facebook share buttons
+
+links:
+  - name:         Q&A Groups
+    url:          /data/all_qa_with_hst.html
+    external:     false
+  - name:         q_with_a.csv
+    url:          /data/q_with_a.csv
+    external:     false
+  - name:         learn_python
+    url:          /
+    external:     false
+  - name:         find_answers
+    url:          /find_answers
+    external:     false
+  - name:         About me
+    url:          /about
+    external:     false
+# ------------ CONFIGURABLE END ------------
+
+permalink:        :title
+defaults:
+  - values:
+      layout: "default"
+
+include:  ['find_answers']
+
