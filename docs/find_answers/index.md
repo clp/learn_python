@@ -32,12 +32,12 @@ and
 
 ## Some data files.
 
-* [all_qa_with_hst.html](/data/all_qa_with_hst.html)
+* [all_qa_with_hst.html](/find_answers/all_qa_with_hst.html)
 
   Question followed by its Answers; then next Q&A.  Includes High Score Terms
   found for each record.
 
-* [q_with_a.csv](/data/q_with_a.csv)
+* [q_with_a.csv](/find_answers/q_with_a.csv)
 
   All Questions followed by all Answers.
 

@@ -9,10 +9,10 @@ share:            false # Turn on twitter and facebook share buttons
 
 links:
   - name:         Q&A Groups
-    url:          /data/all_qa_with_hst.html
+    url:          /find_answers/all_qa_with_hst.html
     external:     false
   - name:         q_with_a.csv
-    url:          /data/q_with_a.csv
+    url:          /find_answers/q_with_a.csv
     external:     false
   - name:         learn_python
     url:          /
