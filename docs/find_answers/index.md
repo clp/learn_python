@@ -22,23 +22,11 @@ To learn more about the find_answers project,
 see
 [github.](https://github.com/clp/learn_python/tree/master/find_answers)
 
-<!--
-See short documentation files:
-[README](README)
-and
-[README_2.](README_2)
--->
-
-
 ## Some data files.
 
 * [all_qa_with_hst.html](all_qa_with_hst.html)
 
   Question followed by its Answers; then next Q&A.  Includes High Score Terms
   found for each record.
-
-* [q_with_a.csv](q_with_a.csv)
-
-  All Questions followed by all Answers.
 
 
