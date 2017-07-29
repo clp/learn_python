@@ -32,7 +32,7 @@ and
 
 ## Some data files.
 
-* [all_qa_with_hst.html](/find_answers/all_qa_with_hst.html)
+* [all_qa_with_hst.html](all_qa_with_hst.html)
 
   Question followed by its Answers; then next Q&A.  Includes High Score Terms
   found for each record.
