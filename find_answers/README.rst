@@ -48,6 +48,7 @@ Usage
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Start the program with one of these commands:
+
   * ``./fga_find_good_answers.sh``
   * ``python fga_find_good_answers.py``
 
