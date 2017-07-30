@@ -8,19 +8,16 @@ signoff:          "clp" # Your name
 share:            false # Turn on twitter and facebook share buttons
 
 links:
-  - name:         Q&A Groups
-    url:          /find_answers/all_qa_with_hst.html
-    external:     false
-  - name:         q_with_a.csv
-    url:          /find_answers/q_with_a.csv
-    external:     false
   - name:         learn_python
     url:          /
     external:     false
+  - name:         learn_python wiki
+    url:          https://github.com/clp/learn_python/wiki
+    external:     true
   - name:         find_answers
     url:          /find_answers
     external:     false
-  - name:         About me
+  - name:         About
     url:          /about
     external:     false
 # ------------ CONFIGURABLE END ------------

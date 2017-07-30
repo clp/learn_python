@@ -18,8 +18,7 @@ provides good access to NLP tools.
 This site contains some data files that were built
 from the software.
 
-To learn more about the find_answers project,
-see
+See the software for the find_answers project at
 [github.](https://github.com/clp/learn_python/tree/master/find_answers)
 
 ## Some data files.
@@ -32,4 +31,5 @@ see
 
 * [all_qa_title_body.html](all_qa_title_body.html)
 
-  TBD, Question followed by its Answers.
+  Each Question followed by its Answers; only shows ID, Title, and Body
+  columns.
