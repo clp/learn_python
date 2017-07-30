@@ -152,7 +152,7 @@ def main(q_with_a_df):
 
     #TBD Chg this if needed; or remove.
     if keyword:
-        # Write keyword-containing records to a csv file.
+        # Write records containing keywords to a csv file.
         qa_with_keyword_df = select_keyword_recs(
             keyword, q_with_a_df, columns_l)
         outfile = 'outdir/qa_with_keyword.csv'
@@ -422,7 +422,7 @@ def group_data(aa_df):
     then mark the low score  answers for evaluation.
     Low score is any score below lo_score_limit.
     """
-    print('=== owner_grouped_df: Group by owner and sort by mean score for each owner.')
+    print('owner_grouped_df: Group by owner and sort by mean score for each owner.')
     owner_grouped_df = aa_df.groupby('OwnerUserId')
     owner_grouped_df = owner_grouped_df[[
         'Score']].mean().sort_values(['Score'])
