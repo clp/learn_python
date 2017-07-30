@@ -160,6 +160,44 @@ def main(q_with_a_df):
             outfile, header=True, index=None, sep=',', mode='w')
 
 
+
+    # Save the Q&A df so HTML can be rendered in a browser.
+    #
+    # Set max_colwidth to -1 to store entire Title, Body, & other text.
+    pd.set_option('display.max_colwidth', -1) # -1=no limit, for debug
+    outfile = "tmpdir/all_qa_title_body.html"
+    save_prior_file('', outfile)
+    #
+    # Use 'escape=False' to render HTML when outfile is opened in a browser.
+    #TBD.1 'line_width=50' fails w/ unexpected keyword arg.
+    # pandas line_width is deprecated; use display.width instead.
+    # That does not affect width of text in the o/p HTML file from to_html().
+    #
+    # Save o/p to a string and do not specify an output file in
+    # calling to_html(); then clean the newlines in the string
+    # so the HTML inside each table cell renders properly on screen.
+    a4_all_qa_with_hst_df_s = all_qa_with_hst_df[['Id',
+                                             #TBD.1 'ParentId',
+                                             #TBD.1 'Score',
+                                             #TBD.1 'hstCount',
+                                             #TBD.1 'OwnerUserId',
+                                             'Title',
+                                             'Body',
+                                             ]].to_html(escape=False)
+    #
+    a4_all_qa_with_hst_df_s = replace_line_breaks(a4_all_qa_with_hst_df_s)
+    with open(outfile, 'w') as f:
+        print('\nWriting Q and A to outfile: ' + outfile)
+        print(a4_all_qa_with_hst_df_s, file=f)
+    pd.set_option('display.width', 0)  # 0=no limit, for debug
+    pd.set_option('display.max_colwidth', 100) # -1=no limit, for debug
+
+def replace_line_breaks(in_s):
+    out_s = in_s.replace('\\r\\n', '\n')
+    out_s = out_s.replace('\\n\\n', '\n')
+    out_s = out_s.replace('\\n', '\n')
+    return out_s
+
 def init():
     """Initialize some settings for the program.
     """
