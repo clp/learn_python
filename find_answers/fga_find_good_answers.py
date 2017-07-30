@@ -92,7 +92,7 @@ import nltk_ex25 as nl
 log_msg = cf.log_file + ' - Start logging for ' + os.path.basename(__file__)
 cf.logger.info(log_msg)
 
-MAXCOLWID = 80
+MAXCOLWID = 20
 TMPDIR = 'tmpdir/'
 q_with_a_df = pd.DataFrame()
 all_qa_with_hst_df = pd.DataFrame()
@@ -100,7 +100,7 @@ owner_grouped_df = pd.DataFrame()
 
 
 def main(q_with_a_df):
-    """Analyze input data and produce o/p by calling functions.
+    """Analyze input data and produce o/p by calling various functions.
     """
     init()
 
@@ -112,10 +112,12 @@ def main(q_with_a_df):
 
     popular_ids = \
         find_popular_ques(all_ans_df, a_fname)
+
     popular_ids_a = popular_ids.index.values
 
     top_scoring_owners_a, owner_grouped_df = \
         group_data(all_ans_df)
+
     parent_id_l = \
         find_question_ids(top_scoring_owners_a, all_ans_df)
 
@@ -126,8 +128,7 @@ def main(q_with_a_df):
         combine_related_q_and_a(
             pop_and_top_l, all_ques_df, all_ans_df, numlines, a_fname, progress_msg_factor)
 
-    # TBD Save a df to a file for review & debug; later processing may
-    # use the df & the file is not needed.
+    # TBD Save a df to a file for review & debug.
     write_full_df_to_csv_file(all_qa_with_hst_df, TMPDIR, 'all_qa_with_hst.csv')
 
     columns_l = []
@@ -136,9 +137,8 @@ def main(q_with_a_df):
 
 
     # Write full data set to a csv file.
-    #TBF.Mon2017_0717_16:58  , This does not write full data set.
-    #  Tue2017_0718_11:58 , maybe it does write all data, but in
-    #  wrong fmt: All Q, then all A.
+    #  TBD, maybe this does write all data, but in
+    #  wrong fmt: all Q, then all A.
     columns_l = [
         'Id',
         'ParentId',
@@ -160,7 +160,6 @@ def main(q_with_a_df):
             outfile, header=True, index=None, sep=',', mode='w')
 
 
-
     # Save the Q&A df so HTML can be rendered in a browser.
     #
     # Set max_colwidth to -1 to store entire Title, Body, & other text.
@@ -176,7 +175,7 @@ def main(q_with_a_df):
     # Save o/p to a string and do not specify an output file in
     # calling to_html(); then clean the newlines in the string
     # so the HTML inside each table cell renders properly on screen.
-    a4_all_qa_with_hst_df_s = all_qa_with_hst_df[['Id',
+    all_qa_with_hst_s = all_qa_with_hst_df[['Id',
                                              #TBD.1 'ParentId',
                                              #TBD.1 'Score',
                                              #TBD.1 'hstCount',
@@ -185,14 +184,18 @@ def main(q_with_a_df):
                                              'Body',
                                              ]].to_html(escape=False)
     #
-    a4_all_qa_with_hst_df_s = replace_line_breaks(a4_all_qa_with_hst_df_s)
+    all_qa_with_hst_s = replace_line_breaks(all_qa_with_hst_s)
     with open(outfile, 'w') as f:
         print('\nWriting Q and A to outfile: ' + outfile)
-        print(a4_all_qa_with_hst_df_s, file=f)
+        print(all_qa_with_hst_s, file=f)
     pd.set_option('display.width', 0)  # 0=no limit, for debug
-    pd.set_option('display.max_colwidth', 100) # -1=no limit, for debug
+    pd.set_option('display.max_colwidth', MAXCOLWID) # -1=no limit, for debug
 
 def replace_line_breaks(in_s):
+    """Replace escaped line break chars so text inside HTML
+    pre-blocks and code-blocks (inside HTML table cells)
+    is rendered properly on screen.
+    """
     out_s = in_s.replace('\\r\\n', '\n')
     out_s = out_s.replace('\\n\\n', '\n')
     out_s = out_s.replace('\\n', '\n')
