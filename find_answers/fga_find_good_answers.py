@@ -72,7 +72,7 @@ Plan
 ----------------------------------------------------------
 """
 
-version = '0.0.5'
+version = '0.0.6'
 
 import argparse
 import nltk
@@ -101,9 +101,9 @@ all_qa_with_hst_df = pd.DataFrame()
 def main(q_with_a_df):
     """Analyze input data and produce o/p by calling various functions.
     """
-    #TBR # all_ans_df must be global to calculate reputations of owners, because
-    #TBR # it is changed here in main(), and used outside main().
-    #TBR global all_ans_df
+    #TBD all_ans_df must be global to calculate reputations of owners, because
+    # it is changed here in main(), and used outside main().
+    #TBD global all_ans_df
 
     init()
 
@@ -235,8 +235,8 @@ def config_data():
     # D q_fname = 'Questions.csv'
 
     # Smaller data sets, used for debugging.
-    # D q_fname = 'q6_999994.csv'
-    # D a_fname = 'a6_999999.csv'
+    #D q_fname = 'q6_999994.csv'
+    #D a_fname = 'a6_999999.csv'
     # D a_fname = 'a5_99998.csv'
     # D q_fname = 'q30_99993.csv'
     a_fname = 'a3_986.csv'
@@ -386,8 +386,7 @@ def show_menu(qa_df):
         # cs: Calculate and plot statistics
         elif user_cmd.lower() == 'cs':
             user_cmd = ''
-            print("Note: Calculate stats, work in progress, Sun2017_0730_21:23 .")
-            print("Note: Must run 'cr' before 'cs' to populate own rep df.")
+            print("NOTE: Must run 'cr' before 'cs' to populate owner_reputation_df.")
                 #TBD.1 Add code to fix this.
             #
             qa_stats_df = build_stats(all_qa_with_hst_df, owner_reputation_df)
@@ -396,7 +395,7 @@ def show_menu(qa_df):
                 print("Warn: qa_stats_df empty or not found.")
             else:
                 print("Drawing the qa_stats_df scatter matrix plot.")
-                draw_scatter_matrix_plot(qa_stats_df)
+                draw_scatter_matrix_plot(qa_stats_df[['Score', 'BodyLength', 'OwnerRep',  'hstCount' ]])
         else:
             print("Got bad cmd from user: ", user_cmd)
             print(user_menu)
@@ -437,8 +436,6 @@ def build_stats(qa_df, or_df):
     Plot data in scatter matrix.
     Visually look for records with high Reputation and low Score.
     """
-    #ORG qa_stats_df = qa_df
-    #TBD qa_stats_df = qa_df[CreationDate,Id,OwnerUserId,ParentId,Score,Title,CleanBody,HiScoreTerms,hstCount,OwnerRep
     qa_stats_df = qa_df[['Id','OwnerUserId','ParentId','Score','hstCount']]
 
     for index, row in qa_df.iterrows():
@@ -454,8 +451,12 @@ def build_stats(qa_df, or_df):
             # This should only be an issue when using small data sets.
             print("build_stats: did not find ouid in owner reputation df: ", ouid)
 
+        # Save length of body text of each answer.
+        qa_stats_df.loc[index, 'BodyLength'] = len(row['Body'])
+
     #D print('#D qa_stats_df.head(5):')
     #D print(qa_stats_df.head(5))
+    qa_stats_df = qa_stats_df[['Id', 'ParentId', 'OwnerUserId', 'Score', 'BodyLength', 'OwnerRep', 'hstCount']]
 
     orfile = 'outdir/qa_stats.csv'
     save_prior_file('', orfile)
@@ -474,9 +475,11 @@ def calculate_owner_reputation():
     Save the data to a disk file and use it when needed, so the
     calculation need not be done every time this program runs.
     """
+    #TBD.1, Use all_ans_df vs re-reading the file.
+    #
     # TBD Read all answers data file
-    # TBD, Sat2017_0506_15:34  Maybe rm latin-1 encoding here also?
-    # D ans_file = 'indir/a6_999999.csv'
+    # TBD, Maybe rm latin-1 encoding here also?
+    #D ans_file = 'indir/a6_999999.csv'
     ans_file = 'indir/a3_986.csv'
     ans_df = pd.read_csv(
         ans_file,
@@ -492,15 +495,11 @@ def calculate_owner_reputation():
     return or_df
 
 
+#TBD, Refactor the two group_data() funcs.
 def gd2_group_data(aa_df):
-    """TBD.Sun2017_0730_16:32 ,
-    Group the contents of the answers df by a specific column.
+    """Group the contents of the answers df by a specific column.
     Group by OwnerUserId, and sort by mean score for answers only
     for each owner (question scores are not counted).
-    Make a numpy array of owners w/ highest mean scores.
-    TBD.1, Find low score answers for these hi-score owners;
-    then mark the low score  answers for evaluation.
-    Low score is any score below lo_score_limit.
     """
     print('#D gd2: owner_grouped_df: Group by owner and sort by mean score for each owner.')
     owner_grouped_df = aa_df.groupby('OwnerUserId')
@@ -530,7 +529,7 @@ def read_data(ans_file, ques_file):
     Compute a factor that dictates how progress will be indicated
     during read operations.
     """
-    # TBD, Sat2017_0506_15:34  Maybe rm latin-1 encoding here also?
+    # TBD, Maybe rm latin-1 encoding here also?
     ans_df = pd.read_csv(
         ans_file,
         encoding='latin-1',
@@ -726,7 +725,7 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, aa_df, numlines, a_fname
              qagroup_df, numlines, a_fname, progress_msg_factor)
 
         #
-        # TBD.Thu2017_0608_23:58
+        # TBD
         # Analyze qagroup_df w/ nlp s/w in this loop;
         # or save each qagroup_df to a separate df for later processing;
         # or save each qagroup_df to a disk file for later processing;
@@ -807,7 +806,7 @@ def analyze_text(qagroup_df, numlines, a_fname, progress_msg_factor):
     return all_qa_with_hst_df
 
 
-# TBD.1 Sat2017_0211_22:55 , should select_keyword_recs()
+# TBD.1 , should select_keyword_recs()
 # be called before combine_related*()?
 # Use it to make the final pop_and_top_l?
 
@@ -862,9 +861,15 @@ def draw_scatter_matrix_plot(plot_df):
     every other feature.
     """
     axs = scatter_matrix(plot_df, alpha=0.2, diagonal='hist')
+    # TBD plt.xscale('log')  # Failed. Logarithm scale, Good to show outliers. Cannot show Score=0?
     plt.show(block=False)
+    
     wdir = 'outdir/'
     wfile = 'scat_mat_plot.pdf'
+    save_prior_file(wdir, wfile)
+    plt.savefig(wdir + wfile)
+
+    wfile = 'scat_mat_plot.png'
     save_prior_file(wdir, wfile)
     plt.savefig(wdir + wfile)
     return
