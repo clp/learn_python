@@ -33,3 +33,8 @@ See the software for the find_answers project at
 
   Each Question followed by its Answers; only shows ID, Title, and Body
   columns.
+
+* [qa_stats.html](qa_stats.html)
+
+  Each Question followed by its Answers; shows ID, Owner, Parent,
+  Score, hstCount, and Owner Reputation columns.

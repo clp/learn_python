@@ -83,7 +83,7 @@ import numpy as np
 import os
 import pandas as pd
 import random
-from pandas.tools.plotting import scatter_matrix
+from pandas.plotting import scatter_matrix
 
 import config as cf
 import nltk_ex25 as nl
@@ -96,12 +96,15 @@ MAXCOLWID = 20
 TMPDIR = 'tmpdir/'
 q_with_a_df = pd.DataFrame()
 all_qa_with_hst_df = pd.DataFrame()
-owner_grouped_df = pd.DataFrame()
 
 
 def main(q_with_a_df):
     """Analyze input data and produce o/p by calling various functions.
     """
+    #TBR # all_ans_df must be global to calculate reputations of owners, because
+    #TBR # it is changed here in main(), and used outside main().
+    #TBR global all_ans_df
+
     init()
 
     a_fname, a_infile, q_infile, indir, outdir = \
@@ -160,7 +163,7 @@ def main(q_with_a_df):
             outfile, header=True, index=None, sep=',', mode='w')
 
 
-    # Save the Q&A df so HTML can be rendered in a browser.
+    # Save the Q&A data so HTML can be rendered in a browser.
     #
     # Set max_colwidth to -1 to store entire Title, Body, & other text.
     pd.set_option('display.max_colwidth', -1) # -1=no limit, for debug
@@ -252,6 +255,8 @@ def show_menu(qa_df):
     """Show prompt to user; get and handle their request.
     """
     user_menu = """    The menu choices:
+    cr: calculate reputations of owners
+    cs: calculate and plot statistics
     d: draw default plot of current data
     dh: draw default histogram plot of current data
     dm: draw scatter matrix plot of current data
@@ -354,6 +359,42 @@ def show_menu(qa_df):
                 print("TBD, Drawing the default reputation scatter plot. NOT READY.\n")
                 # TBD Prepare data to plot: owner reputation (mean or total score), answer score.
                 # TBD, draw_scatter_plot(owner_grouped_df, xaxis, yaxis, xname, yname)
+        # cr: Calculate Reputation, mean, answers only; scatter.
+        elif user_cmd.lower() == 'cr':
+            user_cmd = ''
+            print("Note: This should be a one-time operation w/ data saved on disk.")
+            #
+            orfile = 'outdir/owner_reputation.csv'
+            if os.path.exists(orfile):
+                print(orfile + " file found; read it.")
+                owner_reputation_df = pd.read_csv(
+                    orfile,
+                    encoding='latin-1',
+                    warn_bad_lines=False,
+                    error_bad_lines=False)
+            else:
+                print(orfile + " file not found; will now build it.")
+                owner_reputation_df = calculate_owner_reputation()
+            #
+            if owner_reputation_df.empty:
+                print("Warn: owner reputation df empty or not found.")
+            else:
+                print("Drawing the owner reputation scatter matrix plot.")
+                draw_scatter_matrix_plot(owner_reputation_df[['MeanScore', 'OwnerUserId']])
+        # cs: Calculate and plot statistics
+        elif user_cmd.lower() == 'cs':
+            user_cmd = ''
+            print("Note: Calculate stats, work in progress, Sun2017_0730_21:23 .")
+            print("Note: Must run 'cr' before 'cs' to populate own rep df.")
+                #TBD.1 Add code to fix this.
+            #
+            qa_stats_df = build_stats(all_qa_with_hst_df, owner_reputation_df)
+            #
+            if qa_stats_df.empty:
+                print("Warn: qa_stats_df empty or not found.")
+            else:
+                print("Drawing the qa_stats_df scatter matrix plot.")
+                draw_scatter_matrix_plot(qa_stats_df)
         else:
             print("Got bad cmd from user: ", user_cmd)
             print(user_menu)
@@ -377,6 +418,109 @@ def show_menu(qa_df):
     # TBD outfile.flush()
 
     return
+
+
+def build_stats(qa_df, or_df):
+    """Build a table of statistical data about the data, for
+    analysis and plotting.
+
+    Plan:
+    Loop on all records in qa_df:
+        Read record from qa_df.
+        Find OUId.
+        Read Owner Reputation df.
+            Find that OUId.
+            Write Owner Rep to qa_stats_df in its column.
+    Print table.
+    Plot data in scatter matrix.
+    Visually look for records with high Reputation and low Score.
+    """
+    #ORG qa_stats_df = qa_df
+    #TBD qa_stats_df = qa_df[CreationDate,Id,OwnerUserId,ParentId,Score,Title,CleanBody,HiScoreTerms,hstCount,OwnerRep
+    qa_stats_df = qa_df[['Id','OwnerUserId','ParentId','Score','hstCount']]
+
+    for index, row in qa_df.iterrows():
+        ouid = row['OwnerUserId']
+        #D print("#D qa_stats_df index, ouid: ", index, ouid )
+        try:
+            owner_rep = or_df.loc[or_df['OwnerUserId'] == ouid, 'MeanScore'].iloc[0]
+            #D print("#D qa_stats_df index, owner_rep: ", index, owner_rep )
+            qa_stats_df.loc[index, 'OwnerRep'] = owner_rep
+        except IndexError:
+            # TBD, Some answers in the data file were made by Owners
+            # who are not yet in the reputation df.
+            # This should only be an issue when using small data sets.
+            print("build_stats: did not find ouid in owner reputation df: ", ouid)
+
+    #D print('#D qa_stats_df.head(5):')
+    #D print(qa_stats_df.head(5))
+
+    orfile = 'outdir/qa_stats.csv'
+    save_prior_file('', orfile)
+    qa_stats_df.to_csv(orfile)
+
+    orfile = 'outdir/qa_stats.html'
+    save_prior_file('', orfile)
+    qa_stats_df.to_html(orfile)
+
+    return qa_stats_df
+
+
+def calculate_owner_reputation():
+    """Calculate reputation of each OwnerUserId in the i/p data,
+    based on Score of all answers they provided.
+    Save the data to a disk file and use it when needed, so the
+    calculation need not be done every time this program runs.
+    """
+    # TBD Read all answers data file
+    # TBD, Sat2017_0506_15:34  Maybe rm latin-1 encoding here also?
+    # D ans_file = 'indir/a6_999999.csv'
+    ans_file = 'indir/a3_986.csv'
+    ans_df = pd.read_csv(
+        ans_file,
+        encoding='latin-1',
+        warn_bad_lines=False,
+        error_bad_lines=False)
+    or_df = gd2_group_data(ans_df)
+
+    orfile = 'outdir/owner_reputation.csv'
+    save_prior_file('', orfile)
+    or_df.to_csv(orfile)
+
+    return or_df
+
+
+def gd2_group_data(aa_df):
+    """TBD.Sun2017_0730_16:32 ,
+    Group the contents of the answers df by a specific column.
+    Group by OwnerUserId, and sort by mean score for answers only
+    for each owner (question scores are not counted).
+    Make a numpy array of owners w/ highest mean scores.
+    TBD.1, Find low score answers for these hi-score owners;
+    then mark the low score  answers for evaluation.
+    Low score is any score below lo_score_limit.
+    """
+    print('#D gd2: owner_grouped_df: Group by owner and sort by mean score for each owner.')
+    owner_grouped_df = aa_df.groupby('OwnerUserId')
+    owner_grouped_df = owner_grouped_df[[
+        'Score']].mean().sort_values(['Score'])
+
+    # Copy index column into owner column; Change index column to integer
+    owner_grouped_df['OwnerUserId'] = owner_grouped_df.index
+    owner_grouped_df.reset_index(drop=True, inplace=True)
+    owner_grouped_df.rename(columns={'Score': 'MeanScore'}, inplace=True)
+
+    print()
+    print('#D gd2: len(owner_grouped_df): number of unique OwnerUserId values: ' +
+          str(len(owner_grouped_df)))
+    print()
+    if args['verbose']:
+        print('#D gd2: Show owners with ', str(num_owners), ' highest MeanScores.')
+        # See highest scores at bottom:
+        print(owner_grouped_df.tail(num_owners))
+        print()
+
+    return owner_grouped_df
 
 
 def read_data(ans_file, ques_file):
@@ -860,7 +1004,8 @@ if __name__ == '__main__':
 
     main(q_with_a_df)
 
-    show_menu(q_with_a_df)
+    #TBD show_menu(q_with_a_df , all_ans_df)
+    show_menu(q_with_a_df )
 
     log_msg = cf.log_file + ' - Finish logging for ' + \
         os.path.basename(__file__) + '\n\n'
