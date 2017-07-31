@@ -36,5 +36,11 @@ See the software for the find_answers project at
 
 * [qa_stats.html](qa_stats.html)
 
-  Each Question followed by its Answers; shows ID, Owner, Parent,
+  Each Question followed by its Answers; shows ID, Owner, ParentId,
   Score, hstCount, and Owner Reputation columns.
+
+* [scatter matrix plot](scat_mat_plot.pdf)
+
+  A 6x6 matrix of scatter plots (and histograms) of
+  ID, Owner, ParentId, Score, hstCount, and Owner Reputation data.
+
