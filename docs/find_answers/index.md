@@ -25,7 +25,8 @@ See the software for the find_answers project at
 
 * [all_qa_with_hst.html](all_qa_with_hst.html)
 
-  Question followed by its Answers; then next Q&A.  Includes High Score Terms
+  Question followed by its Answers; then next Q&A.  
+  Includes High Score Terms (hst)
   found for each record.
 
 
@@ -36,11 +37,14 @@ See the software for the find_answers project at
 
 * [qa_stats.html](qa_stats.html)
 
-  Each Question followed by its Answers; shows ID, Owner, ParentId,
-  Score, hstCount, and Owner Reputation columns.
+  A table of each Question followed by its Answers;
+  shows ID, Owner, ParentId,
+  Score, Body Length, Owner Reputation, and hstCount
+  (high score terms count) columns.
 
-* [scatter matrix plot](scat_mat_plot.pdf)
+* [scatter matrix plot, a3data, pdf](scat_mat_plot_4x4_a3data.pdf)
+* [scatter matrix plot, a3data, png](scat_mat_plot_4x4_a3data.png)
 
-  A 6x6 matrix of scatter plots (and histograms) of
-  ID, Owner, ParentId, Score, hstCount, and Owner Reputation data.
+  A 4x4 matrix of scatter plots (and histograms) of
+  Score, Body Length, Owner Reputation, and hstCount data.
 
