@@ -194,6 +194,7 @@ def main(q_with_a_df):
     pd.set_option('display.width', 0)  # 0=no limit, for debug
     pd.set_option('display.max_colwidth', MAXCOLWID) # -1=no limit, for debug
 
+
 def replace_line_breaks(in_s):
     """Replace escaped line break chars so text inside HTML
     pre-blocks and code-blocks (inside HTML table cells)
@@ -203,6 +204,7 @@ def replace_line_breaks(in_s):
     out_s = out_s.replace('\\n\\n', '\n')
     out_s = out_s.replace('\\n', '\n')
     return out_s
+
 
 def init():
     """Initialize some settings for the program.
@@ -625,7 +627,6 @@ def group_data(aa_df):
     print()
 
     return top_scoring_owners_a, owner_grouped_df
-
 
 
 def find_question_ids(top_scoring_owners_a, aa_df):
