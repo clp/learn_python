@@ -235,12 +235,12 @@ def config_data():
     # D q_fname = 'Questions.csv'
 
     # Smaller data sets, used for debugging.
-    #D q_fname = 'q6_999994.csv'
-    #D a_fname = 'a6_999999.csv'
+    q_fname = 'q6_999994.csv'
+    a_fname = 'a6_999999.csv'
     # D a_fname = 'a5_99998.csv'
     # D q_fname = 'q30_99993.csv'
-    a_fname = 'a3_986.csv'
-    q_fname = 'q3_992.csv'
+    #D a_fname = 'a3_986.csv'
+    #D q_fname = 'q3_992.csv'
     # D a_fname = 'a2.csv'
     # D q_fname = 'q2.csv'
 
@@ -367,6 +367,9 @@ def show_menu(qa_df):
             print("Note: This should be a one-time operation w/ data saved on disk.")
             #
             orfile = 'outdir/owner_reputation.csv'
+            #TBF.Fri2017_0804_14:54 , Must chk i/p file & replace owner_rep*.csv if
+            #  a different file was used.  OR, just build this file from Answers.csv
+            #  which should have all answers & produce good reputation data.
             if os.path.exists(orfile):
                 print(orfile + " file found; read it.")
                 owner_reputation_df = pd.read_csv(
@@ -376,7 +379,7 @@ def show_menu(qa_df):
                     error_bad_lines=False)
             else:
                 print(orfile + " file not found; will now build it.")
-                owner_reputation_df = calculate_owner_reputation()
+                owner_reputation_df = calculate_owner_reputation(a_infile)
             #
             if owner_reputation_df.empty:
                 print("Warn: owner reputation df empty or not found.")
@@ -437,6 +440,8 @@ def build_stats(qa_df, or_df):
     Visually look for records with high Reputation and low Score.
     """
     qa_stats_df = qa_df[['Id','OwnerUserId','ParentId','Score','hstCount']]
+    # Add new column to df & initlz it.
+    qa_stats_df = qa_stats_df.assign(BodyLength = qa_stats_df.Id)
 
     for index, row in qa_df.iterrows():
         ouid = row['OwnerUserId']
@@ -449,7 +454,7 @@ def build_stats(qa_df, or_df):
             # TBD, Some answers in the data file were made by Owners
             # who are not yet in the reputation df.
             # This should only be an issue when using small data sets.
-            print("build_stats: did not find ouid in owner reputation df: ", ouid)
+            print("NOTE: build_stats: did not find ouid in owner reputation df; index,ouid: ", index, ouid)
 
         # Save length of body text of each answer.
         qa_stats_df.loc[index, 'BodyLength'] = len(row['Body'])
@@ -469,7 +474,7 @@ def build_stats(qa_df, or_df):
     return qa_stats_df
 
 
-def calculate_owner_reputation():
+def calculate_owner_reputation(ans_file):
     """Calculate reputation of each OwnerUserId in the i/p data,
     based on Score of all answers they provided.
     Save the data to a disk file and use it when needed, so the
@@ -479,8 +484,8 @@ def calculate_owner_reputation():
     #
     # TBD Read all answers data file
     # TBD, Maybe rm latin-1 encoding here also?
-    #D ans_file = 'indir/a6_999999.csv'
-    ans_file = 'indir/a3_986.csv'
+    #TBF ans_file = 'indir/a6_999999.csv'
+    #TBF #D ans_file = 'indir/a3_986.csv'
     ans_df = pd.read_csv(
         ans_file,
         encoding='latin-1',
