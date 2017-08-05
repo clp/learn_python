@@ -103,7 +103,7 @@ def main(q_with_a_df):
     """
     #TBD all_ans_df must be global to calculate reputations of owners, because
     # it is changed here in main(), and used outside main().
-    #TBD global all_ans_df
+    global all_ans_df
 
     init()
 
@@ -253,7 +253,7 @@ def config_data():
     return a_fname, a_infile, q_infile, indir, outdir
 
 
-def show_menu(qa_df):
+def show_menu(qa_df, all_ans_df):
     """Show prompt to user; get and handle their request.
     """
     user_menu = """    The menu choices:
@@ -370,6 +370,7 @@ def show_menu(qa_df):
             #TBF.Fri2017_0804_14:54 , Must chk i/p file & replace owner_rep*.csv if
             #  a different file was used.  OR, just build this file from Answers.csv
             #  which should have all answers & produce good reputation data.
+            #  See notes under 'cs' command, below.
             if os.path.exists(orfile):
                 print(orfile + " file found; read it.")
                 owner_reputation_df = pd.read_csv(
@@ -379,7 +380,7 @@ def show_menu(qa_df):
                     error_bad_lines=False)
             else:
                 print(orfile + " file not found; will now build it.")
-                owner_reputation_df = calculate_owner_reputation(a_infile)
+                owner_reputation_df = calculate_owner_reputation(all_ans_df)
             #
             if owner_reputation_df.empty:
                 print("Warn: owner reputation df empty or not found.")
@@ -390,7 +391,8 @@ def show_menu(qa_df):
         elif user_cmd.lower() == 'cs':
             user_cmd = ''
             print("NOTE: Must run 'cr' before 'cs' to populate owner_reputation_df.")
-                #TBD.1 Add code to fix this.
+                #TBD.1 Add code to fix this: chk for own*rep*.csv file on disk?
+                #  Maybe build that file as part of main(), after reading i/p file.
             #
             qa_stats_df = build_stats(all_qa_with_hst_df, owner_reputation_df)
             #
@@ -474,7 +476,7 @@ def build_stats(qa_df, or_df):
     return qa_stats_df
 
 
-def calculate_owner_reputation(ans_file):
+def calculate_owner_reputation(all_ans_df):
     """Calculate reputation of each OwnerUserId in the i/p data,
     based on Score of all answers they provided.
     Save the data to a disk file and use it when needed, so the
@@ -486,12 +488,15 @@ def calculate_owner_reputation(ans_file):
     # TBD, Maybe rm latin-1 encoding here also?
     #TBF ans_file = 'indir/a6_999999.csv'
     #TBF #D ans_file = 'indir/a3_986.csv'
+    """
+    #TBF:
     ans_df = pd.read_csv(
         ans_file,
         encoding='latin-1',
         warn_bad_lines=False,
         error_bad_lines=False)
-    or_df = gd2_group_data(ans_df)
+    """
+    or_df = gd2_group_data(all_ans_df)
 
     orfile = 'outdir/owner_reputation.csv'
     save_prior_file('', orfile)
@@ -520,6 +525,8 @@ def gd2_group_data(aa_df):
     print('#D gd2: len(owner_grouped_df): number of unique OwnerUserId values: ' +
           str(len(owner_grouped_df)))
     print()
+    cf.logger.info('gd2_group_data(): Show owners with ', str(num_owners), ' highest MeanScores.')
+    cf.logger.info(owner_grouped_df.tail(num_owners))
     if args['verbose']:
         print('#D gd2: Show owners with ', str(num_owners), ' highest MeanScores.')
         # See highest scores at bottom:
@@ -586,6 +593,9 @@ def group_data(aa_df):
     print('len(owner_grouped_df): number of unique OwnerUserId values: ' +
           str(len(owner_grouped_df)))
     print()
+    #TBF cf.logger.info('group_data(): Show owners with ', str(num_owners), ' highest MeanScores.')
+    cf.logger.info('group_data(): Show owners with ... highest MeanScores.')
+    cf.logger.info(owner_grouped_df.tail(num_owners))
     if args['verbose']:
         print('Show owners with ', str(num_owners), ' highest MeanScores.')
         # See highest scores at bottom:
@@ -625,6 +635,8 @@ def group_data(aa_df):
     outfile = 'outdir/lo_scores_for_top_users.csv'
     lo_scores_for_top_users_df.to_csv(
         outfile, header=True, index=None, sep=',', mode='w')
+    cf.logger.info('group_data(): lo_scores_for_top_users_df: ')
+    cf.logger.info(lo_scores_for_top_users_df)
     if args['verbose']:
         print('lo_scores_for_top_users_df: ')
         print(lo_scores_for_top_users_df)
@@ -674,10 +686,12 @@ def select_questions(parent_id_l, popular_ids_a):
     With slice limits at 400 and 300, got 26 Q, 308 A.
     """
     pop_and_top_l = list(
-        # For q6 & a6 data: set(parent_id_l[:500])...(set(popular_ids_a[:500])))
-        # For q3 & a3 data: set(parent_id_l[:40])...(set(popular_ids_a[:10])))
-        set(parent_id_l[:40]).intersection(set(popular_ids_a[:10])))
+        # For q6 & a6 data: set(parent_id_l[:500]).intersection(set(popular_ids_a[:500])))
+        # For q3 & a3 data: set(parent_id_l[:40]).intersection(set(popular_ids_a[:10])))
+        #D set(parent_id_l[:40]).intersection(set(popular_ids_a[:10])))
+        set(parent_id_l[:900]).intersection(set(popular_ids_a[:900])))
     print('len(pop_and_top_l) : ', len(pop_and_top_l))
+    #TBF cf.logger.info('select_questions(): pop_and_top_l, parent id\'s to examine: ', pop_and_top_l[:])
     if args['verbose']:
         print('pop_and_top_l, parent id\'s to examine: ', pop_and_top_l[:])
     return pop_and_top_l
@@ -865,10 +879,16 @@ def draw_scatter_matrix_plot(plot_df):
     """Draw a set of scatter plots showing each feature vs
     every other feature.
     """
+    cf.logger.info('Summary stats from plot_df.describe(): ')
+    cf.logger.info(plot_df.describe())
+
+    print('Summary stats from plot_df.describe(): ')
+    print(plot_df.describe())
+
     axs = scatter_matrix(plot_df, alpha=0.2, diagonal='hist')
     # TBD plt.xscale('log')  # Failed. Logarithm scale, Good to show outliers. Cannot show Score=0?
     plt.show(block=False)
-    
+
     wdir = 'outdir/'
     wfile = 'scat_mat_plot.pdf'
     save_prior_file(wdir, wfile)
@@ -1015,8 +1035,7 @@ if __name__ == '__main__':
 
     main(q_with_a_df)
 
-    #TBD show_menu(q_with_a_df , all_ans_df)
-    show_menu(q_with_a_df )
+    show_menu(q_with_a_df, all_ans_df )
 
     log_msg = cf.log_file + ' - Finish logging for ' + \
         os.path.basename(__file__) + '\n\n'
