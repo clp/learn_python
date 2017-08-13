@@ -97,6 +97,36 @@ TMPDIR = 'tmpdir/'
 q_with_a_df = pd.DataFrame()
 all_qa_with_hst_df = pd.DataFrame()
 
+HEADER = '''
+<html>
+    <head>
+        <style type="text/css">
+        table{
+            /* max-width: 850px; */
+            width: 100%;
+        }
+
+        th, td {
+            overflow: auto;  /* Use auto to get H scroll bars */
+            text-align: left;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        pre,img {
+            padding: 0.1em 0.5em 0.3em 0.7em;
+            border-left: 11px solid #ccc;
+            margin: 1.7em 0 1.7em 0.3em;
+            overflow: auto;  /* Use auto to get H scroll bars */
+        }
+        </style>
+    </head>
+    <body>
+'''
+FOOTER = '''
+    </body>
+</html>
+'''
 
 def main(q_with_a_df):
     """Analyze input data and produce o/p by calling various functions.
@@ -135,12 +165,10 @@ def main(q_with_a_df):
     write_full_df_to_csv_file(all_qa_with_hst_df, TMPDIR, 'all_qa_with_hst.csv')
 
     columns_l = []
-    # D columns_l = ['Id', 'Title', 'Body']
     write_full_df_to_html_file(all_qa_with_hst_df, TMPDIR, 'all_qa_with_hst.html', columns_l)
 
-
     # Write full data set to a csv file.
-    #  TBD, maybe this does write all data, but in
+    #  TBF, maybe this does write all data, but in
     #  wrong fmt: all Q, then all A.
     columns_l = [
         'Id',
@@ -152,6 +180,9 @@ def main(q_with_a_df):
         'Body']
     write_full_df_to_csv_file(q_with_a_df[columns_l], outdir, 'q_with_a.csv')
 
+    # Save the Q&A title & body data as HTML.
+    columns_l = ['Id', 'Title', 'Body']
+    write_full_df_to_html_file(all_qa_with_hst_df, TMPDIR, 'all_qa_title_body.html', columns_l)
 
     #TBD Chg this if needed; or remove.
     if keyword:
@@ -161,38 +192,6 @@ def main(q_with_a_df):
         outfile = 'outdir/qa_with_keyword.csv'
         qa_with_keyword_df[columns_l].to_csv(
             outfile, header=True, index=None, sep=',', mode='w')
-
-
-    # Save the Q&A data so HTML can be rendered in a browser.
-    #
-    # Set max_colwidth to -1 to store entire Title, Body, & other text.
-    pd.set_option('display.max_colwidth', -1) # -1=no limit, for debug
-    outfile = "tmpdir/all_qa_title_body.html"
-    save_prior_file('', outfile)
-    #
-    # Use 'escape=False' to render HTML when outfile is opened in a browser.
-    #TBD.1 'line_width=50' fails w/ unexpected keyword arg.
-    # pandas line_width is deprecated; use display.width instead.
-    # That does not affect width of text in the o/p HTML file from to_html().
-    #
-    # Save o/p to a string and do not specify an output file in
-    # calling to_html(); then clean the newlines in the string
-    # so the HTML inside each table cell renders properly on screen.
-    all_qa_with_hst_s = all_qa_with_hst_df[['Id',
-                                             #TBD.1 'ParentId',
-                                             #TBD.1 'Score',
-                                             #TBD.1 'hstCount',
-                                             #TBD.1 'OwnerUserId',
-                                             'Title',
-                                             'Body',
-                                             ]].to_html(escape=False)
-    #
-    all_qa_with_hst_s = replace_line_breaks(all_qa_with_hst_s)
-    with open(outfile, 'w') as f:
-        print('\nWriting Q and A to outfile: ' + outfile)
-        print(all_qa_with_hst_s, file=f)
-    pd.set_option('display.width', 0)  # 0=no limit, for debug
-    pd.set_option('display.max_colwidth', MAXCOLWID) # -1=no limit, for debug
 
 
 def replace_line_breaks(in_s):
@@ -231,16 +230,16 @@ def config_data():
     # TBD Include the test data files w/ this project.
     indir = 'indir/'  # Relative to pwd, holds i/p files.
     outdir = 'outdir/'  # Relative to pwd, holds o/p files.
-    # D a_fname = 'Answers.csv'
-    # D q_fname = 'Questions.csv'
+    #D a_fname = 'Answers.csv'
+    #D q_fname = 'Questions.csv'
 
     # Smaller data sets, used for debugging.
-    q_fname = 'q6_999994.csv'
-    a_fname = 'a6_999999.csv'
-    # D a_fname = 'a5_99998.csv'
-    # D q_fname = 'q30_99993.csv'
-    #D a_fname = 'a3_986.csv'
-    #D q_fname = 'q3_992.csv'
+    #D q_fname = 'q6_999994.csv'
+    #D a_fname = 'a6_999999.csv'
+    a_fname = 'a5_99998.csv'
+    q_fname = 'q30_99993.csv'
+    a_fname = 'a3_986.csv'
+    q_fname = 'q3_992.csv'
     # D a_fname = 'a2.csv'
     # D q_fname = 'q2.csv'
 
@@ -371,6 +370,7 @@ def show_menu(qa_df, all_ans_df):
             #  a different file was used.  OR, just build this file from Answers.csv
             #  which should have all answers & produce good reputation data.
             #  See notes under 'cs' command, below.
+            owner_reputation_df = pd.DataFrame()
             if os.path.exists(orfile):
                 print(orfile + " file found; read it.")
                 owner_reputation_df = pd.read_csv(
@@ -445,6 +445,7 @@ def build_stats(qa_df, or_df):
     # Add new column to df & initlz it.
     qa_stats_df = qa_stats_df.assign(BodyLength = qa_stats_df.Id)
 
+    #TBD.1.Sun2017_0806_14:16  Chg qa_df to qa_stats_df, unless other columns needed:
     for index, row in qa_df.iterrows():
         ouid = row['OwnerUserId']
         #D print("#D qa_stats_df index, ouid: ", index, ouid )
@@ -456,7 +457,9 @@ def build_stats(qa_df, or_df):
             # TBD, Some answers in the data file were made by Owners
             # who are not yet in the reputation df.
             # This should only be an issue when using small data sets.
-            print("NOTE: build_stats: did not find ouid in owner reputation df; index,ouid: ", index, ouid)
+            print("NOTE: build_stats(): did not find ouid in owner reputation df; index,ouid: ", index, ouid)
+            print("#D NOTE: build_stats():data from the problem row:\n", row)
+            print()
 
         # Save length of body text of each answer.
         qa_stats_df.loc[index, 'BodyLength'] = len(row['Body'])
@@ -481,20 +484,6 @@ def calculate_owner_reputation(all_ans_df):
     based on Score of all answers they provided.
     Save the data to a disk file and use it when needed, so the
     calculation need not be done every time this program runs.
-    """
-    #TBD.1, Use all_ans_df vs re-reading the file.
-    #
-    # TBD Read all answers data file
-    # TBD, Maybe rm latin-1 encoding here also?
-    #TBF ans_file = 'indir/a6_999999.csv'
-    #TBF #D ans_file = 'indir/a3_986.csv'
-    """
-    #TBF:
-    ans_df = pd.read_csv(
-        ans_file,
-        encoding='latin-1',
-        warn_bad_lines=False,
-        error_bad_lines=False)
     """
     or_df = gd2_group_data(all_ans_df)
 
@@ -525,7 +514,7 @@ def gd2_group_data(aa_df):
     print('#D gd2: len(owner_grouped_df): number of unique OwnerUserId values: ' +
           str(len(owner_grouped_df)))
     print()
-    cf.logger.info('gd2_group_data(): Show owners with ', str(num_owners), ' highest MeanScores.')
+    cf.logger.info('gd2_group_data(): Show owners with ... ', ' highest MeanScores.')
     cf.logger.info(owner_grouped_df.tail(num_owners))
     if args['verbose']:
         print('#D gd2: Show owners with ', str(num_owners), ' highest MeanScores.')
@@ -593,7 +582,6 @@ def group_data(aa_df):
     print('len(owner_grouped_df): number of unique OwnerUserId values: ' +
           str(len(owner_grouped_df)))
     print()
-    #TBF cf.logger.info('group_data(): Show owners with ', str(num_owners), ' highest MeanScores.')
     cf.logger.info('group_data(): Show owners with ... highest MeanScores.')
     cf.logger.info(owner_grouped_df.tail(num_owners))
     if args['verbose']:
@@ -953,9 +941,23 @@ def write_full_df_to_html_file(in_df, wdir, wfile, columns_l):
                        'HiScoreTerms',
                        'OwnerUserId',
                        'ParentId']
-    # Use 'escape=False' to render embedded HTML when outfile
-    # is viewed in a browser:
-    in_df[columns_l].to_html(outfile, escape=False)
+    #
+    # Save o/p to a string and do not specify an output file in
+    # calling to_html().
+    # Use 'escape=False' to render HTML when outfile is opened in a browser.
+    in_s = in_df[columns_l].to_html(escape=False)
+
+    # Clean the newlines in the string
+    # so the HTML inside each table cell renders properly on screen.
+    in_s = replace_line_breaks(in_s)
+
+    # Concatenate css w/ html file to format the o/p better.
+    with open(outfile, 'w') as f:
+        print('\nNOTE: Writing data to html outfile: ' + outfile)
+        f.write(HEADER)
+        f.write(in_s)
+        f.write(FOOTER)
+
     pd.set_option('display.max_colwidth', MAXCOLWID) # -1=no limit, for debug
     return
 
@@ -971,7 +973,7 @@ def write_df_to_file(in_df, wdir, wfile):
             '\nWARN: renamed o/p file to *.bak; save it manually if needed:' +
             outfile)
     with open(outfile, 'w') as f:
-        print('\nWriting Q and A to outfile: ' + outfile)
+        print('\nNOTE: Writing data to outfile: ' + outfile)
         print(in_df['Body'], file=f)
     return
 
