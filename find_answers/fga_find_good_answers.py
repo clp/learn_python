@@ -194,17 +194,6 @@ def main(q_with_a_df):
             outfile, header=True, index=None, sep=',', mode='w')
 
 
-def replace_line_breaks(in_s):
-    """Replace escaped line break chars so text inside HTML
-    pre-blocks and code-blocks (inside HTML table cells)
-    is rendered properly on screen.
-    """
-    out_s = in_s.replace('\\r\\n', '\n')
-    out_s = out_s.replace('\\n\\n', '\n')
-    out_s = out_s.replace('\\n', '\n')
-    return out_s
-
-
 def init():
     """Initialize some settings for the program.
     """
@@ -234,12 +223,12 @@ def config_data():
     #D q_fname = 'Questions.csv'
 
     # Smaller data sets, used for debugging.
-    #D q_fname = 'q6_999994.csv'
-    #D a_fname = 'a6_999999.csv'
-    a_fname = 'a5_99998.csv'
-    q_fname = 'q30_99993.csv'
-    a_fname = 'a3_986.csv'
-    q_fname = 'q3_992.csv'
+    q_fname = 'q6_999994.csv'
+    a_fname = 'a6_999999.csv'
+    #D a_fname = 'a5_99998.csv'
+    #D q_fname = 'q30_99993.csv'
+    #D a_fname = 'a3_986.csv'
+    #D q_fname = 'q3_992.csv'
     # D a_fname = 'a2.csv'
     # D q_fname = 'q2.csv'
 
@@ -250,279 +239,6 @@ def config_data():
     print()
 
     return a_fname, a_infile, q_infile, indir, outdir
-
-
-def show_menu(qa_df, all_ans_df):
-    """Show prompt to user; get and handle their request.
-    """
-    user_menu = """    The menu choices:
-    cr: calculate reputations of owners
-    cs: calculate and plot statistics
-    d: draw default plot of current data
-    dh: draw default histogram plot of current data
-    dm: draw scatter matrix plot of current data
-    h, ?: show help text, the menu
-    m: show menu
-    q: save data and quit the program
-    s: show current item: question or answer
-    sn: show next item: question or answer
-    sp: show prior item: question or answer
-    """
-    user_cmd = ''
-    saved_index = 0
-
-    # Show prompt & wait for a cmd.
-    print("======================\n")
-    # TBD print("Scroll up to read current question and answer.")
-    cmd_prompt = "Enter a command: q[uit] [m]enu  ...  [h]elp: "
-    while user_cmd == "":  # Repeat the request if only the Enter key is pressed.
-        user_cmd = input(cmd_prompt)
-    print("User entered this cmd: ", user_cmd)
-
-    # Loop to handle user request.
-    while user_cmd:
-        # D print("#D while-loop: User entered this cmd: ", user_cmd)
-        if user_cmd.lower() == 'm':
-            print(user_menu)
-            user_cmd = ''
-        elif user_cmd.lower() == 'q':
-            print("Save data and Quit the program.")
-            # TBD, show summary & quit?
-            # TBD outfile.flush()
-            # TBD, save more data?
-            raise SystemExit()
-        elif user_cmd == '?' or user_cmd == 'h':
-            print(user_menu)
-            # TBD print some detailed help?
-            # Clear user_cmd here to avoid infinite repetition of while loop.
-            user_cmd = ''
-        elif user_cmd.lower() == 's':
-            # TBD print('\n### Next ###################\n')
-            # TBD user_cmd = show_current_q_a(q_id, q_title, q_body, row)
-            user_cmd = ''
-            if qa_df.empty:
-                print("Warn: dataframe empty or not found; try restarting.")
-            else:
-                # D print('Show current Q&A at this saved_index: ',
-                # saved_index)
-                print(qa_df[['Id', 'Title', 'Body']].iloc[[saved_index]])
-        elif user_cmd.lower() == 'sn':  # show next item
-            user_cmd = ''
-            if qa_df.empty:
-                print("Warn: dataframe empty or not found; try restarting.")
-            else:
-                saved_index += 1
-                # D print('#D Show current Q&A at this saved_index: ',
-                # saved_index)
-                print(qa_df[['Id', 'Title', 'Body']].iloc[[saved_index]])
-        elif user_cmd.lower() == 'sp':  # show prior item
-            user_cmd = ''
-            if qa_df.empty:
-                print("Warn: dataframe empty or not found; try restarting.")
-            else:
-                saved_index -= 1
-                # D print('#D Show current Q&A at this saved_index: ',
-                # saved_index)
-                print(qa_df[['Id', 'Title', 'Body']].iloc[[saved_index]])
-        elif user_cmd.lower() == 'd':
-            user_cmd = ''
-            if all_qa_with_hst_df.empty:
-                print("Warn: dataframe empty or not found; try restarting.")
-            else:
-                print("Drawing the default plot.")
-                draw_scatter_plot(
-                    all_qa_with_hst_df,
-                    'Score',
-                    'hstCount',
-                    'Score',
-                    'hstCount')
-        elif user_cmd.lower() == 'dh':
-            user_cmd = ''
-            if all_qa_with_hst_df.empty:
-                print("Warn: dataframe empty or not found; try restarting.")
-            else:
-                print("Drawing the default histogram plot.")
-                draw_histogram_plot(all_qa_with_hst_df)
-        elif user_cmd.lower() == 'dm':  # Scatter matrix plot
-            user_cmd = ''
-            if all_qa_with_hst_df.empty:
-                print("Warn: dataframe empty or not found; try restarting.")
-            else:
-                print("Drawing the default scatter matrix plot.")
-                draw_scatter_matrix_plot(all_qa_with_hst_df)
-        # rma: Reputation, mean, answers only; scatter.
-        elif user_cmd.lower() == 'dr':
-            user_cmd = ''
-            # TBD.1 use right df in both branches:
-            if qa_df.empty:
-                print("Warn: dataframe empty or not found; try restarting.")
-            else:
-                print("TBD, Drawing the default reputation scatter plot. NOT READY.\n")
-                # TBD Prepare data to plot: owner reputation (mean or total score), answer score.
-                # TBD, draw_scatter_plot(owner_grouped_df, xaxis, yaxis, xname, yname)
-        # cr: Calculate Reputation, mean, answers only; scatter.
-        elif user_cmd.lower() == 'cr':
-            user_cmd = ''
-            print("Note: This should be a one-time operation w/ data saved on disk.")
-            #
-            orfile = 'outdir/owner_reputation.csv'
-            #TBF.Fri2017_0804_14:54 , Must chk i/p file & replace owner_rep*.csv if
-            #  a different file was used.  OR, just build this file from Answers.csv
-            #  which should have all answers & produce good reputation data.
-            #  See notes under 'cs' command, below.
-            owner_reputation_df = pd.DataFrame()
-            if os.path.exists(orfile):
-                print(orfile + " file found; read it.")
-                owner_reputation_df = pd.read_csv(
-                    orfile,
-                    encoding='latin-1',
-                    warn_bad_lines=False,
-                    error_bad_lines=False)
-            else:
-                print(orfile + " file not found; will now build it.")
-                owner_reputation_df = calculate_owner_reputation(all_ans_df)
-            #
-            if owner_reputation_df.empty:
-                print("Warn: owner reputation df empty or not found.")
-            else:
-                print("Drawing the owner reputation scatter matrix plot.")
-                draw_scatter_matrix_plot(owner_reputation_df[['MeanScore', 'OwnerUserId']])
-        # cs: Calculate and plot statistics
-        elif user_cmd.lower() == 'cs':
-            user_cmd = ''
-            print("NOTE: Must run 'cr' before 'cs' to populate owner_reputation_df.")
-                #TBD.1 Add code to fix this: chk for own*rep*.csv file on disk?
-                #  Maybe build that file as part of main(), after reading i/p file.
-            #
-            qa_stats_df = build_stats(all_qa_with_hst_df, owner_reputation_df)
-            #
-            if qa_stats_df.empty:
-                print("Warn: qa_stats_df empty or not found.")
-            else:
-                print("Drawing the qa_stats_df scatter matrix plot.")
-                draw_scatter_matrix_plot(qa_stats_df[['Score', 'BodyLength', 'OwnerRep',  'hstCount' ]])
-        else:
-            print("Got bad cmd from user: ", user_cmd)
-            print(user_menu)
-            # Clear user_cmd here to avoid infinite repetition of while loop.
-            user_cmd = ''
-        # Show prompt & wait for a cmd.
-        print("======================\n")
-        while user_cmd == "":  # Repeat the request if only the Enter key is pressed.
-            user_cmd = input(cmd_prompt)
-    print("#D End of the cmd interpretation loop; return.")
-    print()
-    # D print("#D Last stmt of show_menu(); return.\n")
-
-    # Save df before exit, if quit cmd is not used.
-    # TBD Same code used for 'q' cmd; refactor both.
-    # TBD print("Save data and Quit the program.")
-    # Save only the needed fields to the file.
-    # TBD columns_l = ['Id', 'ParentId', 'Grade', 'Notes', 'Title', 'Body']
-    # TBD outfile = open('outdir/graded_q_with_a.csv', 'w')
-    # TBD graded_df[columns_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
-    # TBD outfile.flush()
-
-    return
-
-
-def build_stats(qa_df, or_df):
-    """Build a table of statistical data about the data, for
-    analysis and plotting.
-
-    Plan:
-    Loop on all records in qa_df:
-        Read record from qa_df.
-        Find OUId.
-        Read Owner Reputation df.
-            Find that OUId.
-            Write Owner Rep to qa_stats_df in its column.
-    Print table.
-    Plot data in scatter matrix.
-    Visually look for records with high Reputation and low Score.
-    """
-    qa_stats_df = qa_df[['Id','OwnerUserId','ParentId','Score','hstCount']]
-    # Add new column to df & initlz it.
-    qa_stats_df = qa_stats_df.assign(BodyLength = qa_stats_df.Id)
-
-    #TBD.1.Sun2017_0806_14:16  Chg qa_df to qa_stats_df, unless other columns needed:
-    for index, row in qa_df.iterrows():
-        ouid = row['OwnerUserId']
-        #D print("#D qa_stats_df index, ouid: ", index, ouid )
-        try:
-            owner_rep = or_df.loc[or_df['OwnerUserId'] == ouid, 'MeanScore'].iloc[0]
-            #D print("#D qa_stats_df index, owner_rep: ", index, owner_rep )
-            qa_stats_df.loc[index, 'OwnerRep'] = owner_rep
-        except IndexError:
-            # TBD, Some answers in the data file were made by Owners
-            # who are not yet in the reputation df.
-            # This should only be an issue when using small data sets.
-            print("NOTE: build_stats(): did not find ouid in owner reputation df; index,ouid: ", index, ouid)
-            print("#D NOTE: build_stats():data from the problem row:\n", row)
-            print()
-
-        # Save length of body text of each answer.
-        qa_stats_df.loc[index, 'BodyLength'] = len(row['Body'])
-
-    #D print('#D qa_stats_df.head(5):')
-    #D print(qa_stats_df.head(5))
-    qa_stats_df = qa_stats_df[['Id', 'ParentId', 'OwnerUserId', 'Score', 'BodyLength', 'OwnerRep', 'hstCount']]
-
-    orfile = 'outdir/qa_stats.csv'
-    save_prior_file('', orfile)
-    qa_stats_df.to_csv(orfile)
-
-    orfile = 'outdir/qa_stats.html'
-    save_prior_file('', orfile)
-    qa_stats_df.to_html(orfile)
-
-    return qa_stats_df
-
-
-def calculate_owner_reputation(all_ans_df):
-    """Calculate reputation of each OwnerUserId in the i/p data,
-    based on Score of all answers they provided.
-    Save the data to a disk file and use it when needed, so the
-    calculation need not be done every time this program runs.
-    """
-    or_df = gd2_group_data(all_ans_df)
-
-    orfile = 'outdir/owner_reputation.csv'
-    save_prior_file('', orfile)
-    or_df.to_csv(orfile)
-
-    return or_df
-
-
-#TBD, Refactor the two group_data() funcs.
-def gd2_group_data(aa_df):
-    """Group the contents of the answers df by a specific column.
-    Group by OwnerUserId, and sort by mean score for answers only
-    for each owner (question scores are not counted).
-    """
-    print('#D gd2: owner_grouped_df: Group by owner and sort by mean score for each owner.')
-    owner_grouped_df = aa_df.groupby('OwnerUserId')
-    owner_grouped_df = owner_grouped_df[[
-        'Score']].mean().sort_values(['Score'])
-
-    # Copy index column into owner column; Change index column to integer
-    owner_grouped_df['OwnerUserId'] = owner_grouped_df.index
-    owner_grouped_df.reset_index(drop=True, inplace=True)
-    owner_grouped_df.rename(columns={'Score': 'MeanScore'}, inplace=True)
-
-    print()
-    print('#D gd2: len(owner_grouped_df): number of unique OwnerUserId values: ' +
-          str(len(owner_grouped_df)))
-    print()
-    cf.logger.info('gd2_group_data(): Show owners with ... ', ' highest MeanScores.')
-    cf.logger.info(owner_grouped_df.tail(num_owners))
-    if args['verbose']:
-        print('#D gd2: Show owners with ', str(num_owners), ' highest MeanScores.')
-        # See highest scores at bottom:
-        print(owner_grouped_df.tail(num_owners))
-        print()
-
-    return owner_grouped_df
 
 
 def read_data(ans_file, ques_file):
@@ -558,6 +274,37 @@ def find_popular_ques(aa_df, a_fname):
     popular_ids.to_csv(outfile)
     return popular_ids
 
+
+
+#TBD, Refactor the two group_data() funcs.
+def gd2_group_data(aa_df):
+    """Group the contents of the answers df by a specific column.
+    Group by OwnerUserId, and sort by mean score for answers only
+    for each owner (question scores are not counted).
+    """
+    print('#D gd2: owner_grouped_df: Group by owner and sort by mean score for each owner.')
+    owner_grouped_df = aa_df.groupby('OwnerUserId')
+    owner_grouped_df = owner_grouped_df[[
+        'Score']].mean().sort_values(['Score'])
+
+    # Copy index column into owner column; Change index column to integer
+    owner_grouped_df['OwnerUserId'] = owner_grouped_df.index
+    owner_grouped_df.reset_index(drop=True, inplace=True)
+    owner_grouped_df.rename(columns={'Score': 'MeanScore'}, inplace=True)
+
+    print()
+    print('#D gd2: len(owner_grouped_df): number of unique OwnerUserId values: ' +
+          str(len(owner_grouped_df)))
+    print()
+    cf.logger.info('gd2_group_data(): Show owners with ... ', ' highest MeanScores.')
+    cf.logger.info(owner_grouped_df.tail(num_owners))
+    if args['verbose']:
+        print('#D gd2: Show owners with ', str(num_owners), ' highest MeanScores.')
+        # See highest scores at bottom:
+        print(owner_grouped_df.tail(num_owners))
+        print()
+
+    return owner_grouped_df
 
 def group_data(aa_df):
     """Group the contents of the answers df by a specific column.
@@ -836,6 +583,248 @@ def select_keyword_recs(keyword, qa_df, columns_l):
     return qak_df
 
 
+def show_menu(qa_df, all_ans_df):
+    """Show prompt to user; get and handle their request.
+    """
+    user_menu = """    The menu choices:
+    cr: calculate reputations of owners
+    cs: calculate and plot statistics
+    d: draw default plot of current data
+    dh: draw default histogram plot of current data
+    dm: draw scatter matrix plot of current data
+    h, ?: show help text, the menu
+    m: show menu
+    q: save data and quit the program
+    s: show current item: question or answer
+    sn: show next item: question or answer
+    sp: show prior item: question or answer
+    """
+    user_cmd = ''
+    saved_index = 0
+
+    # Show prompt & wait for a cmd.
+    print("======================\n")
+    # TBD print("Scroll up to read current question and answer.")
+    cmd_prompt = "Enter a command: q[uit] [m]enu  ...  [h]elp: "
+    while user_cmd == "":  # Repeat the request if only the Enter key is pressed.
+        user_cmd = input(cmd_prompt)
+    print("User entered this cmd: ", user_cmd)
+
+    # Loop to handle user request.
+    while user_cmd:
+        # D print("#D while-loop: User entered this cmd: ", user_cmd)
+        if user_cmd.lower() == 'm':
+            print(user_menu)
+            user_cmd = ''
+        elif user_cmd.lower() == 'q':
+            print("Save data and Quit the program.")
+            # TBD, show summary & quit?
+            # TBD outfile.flush()
+            # TBD, save more data?
+            raise SystemExit()
+        elif user_cmd == '?' or user_cmd == 'h':
+            print(user_menu)
+            # TBD print some detailed help?
+            # Clear user_cmd here to avoid infinite repetition of while loop.
+            user_cmd = ''
+        elif user_cmd.lower() == 's':
+            # TBD print('\n### Next ###################\n')
+            # TBD user_cmd = show_current_q_a(q_id, q_title, q_body, row)
+            user_cmd = ''
+            if qa_df.empty:
+                print("Warn: dataframe empty or not found; try restarting.")
+            else:
+                # D print('Show current Q&A at this saved_index: ',
+                # saved_index)
+                print(qa_df[['Id', 'Title', 'Body']].iloc[[saved_index]])
+        elif user_cmd.lower() == 'sn':  # show next item
+            user_cmd = ''
+            if qa_df.empty:
+                print("Warn: dataframe empty or not found; try restarting.")
+            else:
+                saved_index += 1
+                # D print('#D Show current Q&A at this saved_index: ',
+                # saved_index)
+                print(qa_df[['Id', 'Title', 'Body']].iloc[[saved_index]])
+        elif user_cmd.lower() == 'sp':  # show prior item
+            user_cmd = ''
+            if qa_df.empty:
+                print("Warn: dataframe empty or not found; try restarting.")
+            else:
+                saved_index -= 1
+                # D print('#D Show current Q&A at this saved_index: ',
+                # saved_index)
+                print(qa_df[['Id', 'Title', 'Body']].iloc[[saved_index]])
+        elif user_cmd.lower() == 'd':
+            user_cmd = ''
+            if all_qa_with_hst_df.empty:
+                print("Warn: dataframe empty or not found; try restarting.")
+            else:
+                print("Drawing the default plot.")
+                draw_scatter_plot(
+                    all_qa_with_hst_df,
+                    'Score',
+                    'hstCount',
+                    'Score',
+                    'hstCount')
+        elif user_cmd.lower() == 'dh':
+            user_cmd = ''
+            if all_qa_with_hst_df.empty:
+                print("Warn: dataframe empty or not found; try restarting.")
+            else:
+                print("Drawing the default histogram plot.")
+                draw_histogram_plot(all_qa_with_hst_df)
+        elif user_cmd.lower() == 'dm':  # Scatter matrix plot
+            user_cmd = ''
+            if all_qa_with_hst_df.empty:
+                print("Warn: dataframe empty or not found; try restarting.")
+            else:
+                print("Drawing the default scatter matrix plot.")
+                draw_scatter_matrix_plot(all_qa_with_hst_df)
+        # rma: Reputation, mean, answers only; scatter.
+        elif user_cmd.lower() == 'dr':
+            user_cmd = ''
+            # TBD.1 use right df in both branches:
+            if qa_df.empty:
+                print("Warn: dataframe empty or not found; try restarting.")
+            else:
+                print("TBD, Drawing the default reputation scatter plot. NOT READY.\n")
+                # TBD Prepare data to plot: owner reputation (mean or total score), answer score.
+                # TBD, draw_scatter_plot(owner_grouped_df, xaxis, yaxis, xname, yname)
+        # cr: Calculate Reputation, mean, answers only; scatter.
+        elif user_cmd.lower() == 'cr':
+            user_cmd = ''
+            print("NOTE: This should be a one-time operation w/ data saved on disk.")
+            #
+            orfile = 'outdir/owner_reputation.csv'
+            #TBF.Fri2017_0804_14:54 , Must chk i/p file & replace owner_rep*.csv if
+            #  a different file was used.  OR, just build this file from Answers.csv
+            #  which should have all answers & produce good reputation data.
+            #  See notes under 'cs' command, below.
+            owner_reputation_df = pd.DataFrame()
+            if os.path.exists(orfile):
+                print("NOTE:" + orfile + " file found; read it.")
+                owner_reputation_df = pd.read_csv(
+                    orfile,
+                    encoding='latin-1',
+                    warn_bad_lines=False,
+                    error_bad_lines=False)
+            else:
+                print(orfile + " file not found; will now build it.")
+                owner_reputation_df = calculate_owner_reputation(all_ans_df)
+            #
+            if owner_reputation_df.empty:
+                print("WARN: owner reputation df empty or not found.")
+            else:
+                print("NOTE: Drawing the owner reputation scatter matrix plot.")
+                draw_scatter_matrix_plot(owner_reputation_df[['MeanScore', 'OwnerUserId']])
+        # cs: Calculate and plot statistics
+        elif user_cmd.lower() == 'cs':
+            user_cmd = ''
+            print("NOTE: Must run 'cr' before 'cs' to populate owner_reputation_df.")
+                #TBD.1 Add code to fix this: chk for own*rep*.csv file on disk?
+                #  Maybe build that file as part of main(), after reading i/p file.
+            #
+            qa_stats_df = build_stats(all_qa_with_hst_df, owner_reputation_df)
+            #
+            if qa_stats_df.empty:
+                print("Warn: qa_stats_df empty or not found.")
+            else:
+                print("Drawing the qa_stats_df scatter matrix plot.")
+                draw_scatter_matrix_plot(qa_stats_df[['Score', 'BodyLength', 'OwnerRep',  'hstCount' ]])
+        else:
+            print("Got bad cmd from user: ", user_cmd)
+            print(user_menu)
+            # Clear user_cmd here to avoid infinite repetition of while loop.
+            user_cmd = ''
+        # Show prompt & wait for a cmd.
+        print("======================\n")
+        while user_cmd == "":  # Repeat the request if only the Enter key is pressed.
+            user_cmd = input(cmd_prompt)
+    print("#D End of the cmd interpretation loop; return.")
+    print()
+    # D print("#D Last stmt of show_menu(); return.\n")
+
+    # Save df before exit, if quit cmd is not used.
+    # TBD Same code used for 'q' cmd; refactor both.
+    # TBD print("Save data and Quit the program.")
+    # Save only the needed fields to the file.
+    # TBD columns_l = ['Id', 'ParentId', 'Grade', 'Notes', 'Title', 'Body']
+    # TBD outfile = open('outdir/graded_q_with_a.csv', 'w')
+    # TBD graded_df[columns_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
+    # TBD outfile.flush()
+
+    return
+
+
+def build_stats(qa_df, or_df):
+    """Build a table of statistical data about the data, for
+    analysis and plotting.
+
+    Plan:
+    Loop on all records in qa_df:
+        Read record from qa_df.
+        Find OUId.
+        Read Owner Reputation df.
+            Find that OUId.
+            Write Owner Rep to qa_stats_df in its column.
+    Print table.
+    Plot data in scatter matrix.
+    Visually look for records with high Reputation and low Score.
+    """
+    qa_stats_df = qa_df[['Id','OwnerUserId','ParentId','Score','hstCount']]
+    # Add new column to df & initlz it.
+    qa_stats_df = qa_stats_df.assign(BodyLength = qa_stats_df.Id)
+
+    #TBD.1.Sun2017_0806_14:16  Chg qa_df to qa_stats_df, unless other columns needed:
+    for index, row in qa_df.iterrows():
+        ouid = row['OwnerUserId']
+        #D print("#D qa_stats_df index, ouid: ", index, ouid )
+        try:
+            owner_rep = or_df.loc[or_df['OwnerUserId'] == ouid, 'MeanScore'].iloc[0]
+            #D print("#D qa_stats_df index, owner_rep: ", index, owner_rep )
+            qa_stats_df.loc[index, 'OwnerRep'] = owner_rep
+        except IndexError:
+            # TBD, Some answers in the data file were made by Owners
+            # who are not yet in the reputation df.
+            # This should only be an issue when using small data sets.
+            print("NOTE: build_stats(): did not find ouid in owner reputation df; index,ouid: ", index, ouid)
+            print("#D NOTE: build_stats():data from the problem row:\n", row)
+            print()
+
+        # Save length of body text of each answer.
+        qa_stats_df.loc[index, 'BodyLength'] = len(row['Body'])
+
+    #D print('#D qa_stats_df.head(5):')
+    #D print(qa_stats_df.head(5))
+    qa_stats_df = qa_stats_df[['Id', 'ParentId', 'OwnerUserId', 'Score', 'BodyLength', 'OwnerRep', 'hstCount']]
+
+    orfile = 'outdir/qa_stats.csv'
+    save_prior_file('', orfile)
+    qa_stats_df.to_csv(orfile)
+
+    orfile = 'outdir/qa_stats.html'
+    save_prior_file('', orfile)
+    qa_stats_df.to_html(orfile)
+
+    return qa_stats_df
+
+
+def calculate_owner_reputation(all_ans_df):
+    """Calculate reputation of each OwnerUserId in the i/p data,
+    based on Score of all answers they provided.
+    Save the data to a disk file and use it when needed, so the
+    calculation need not be done every time this program runs.
+    """
+    or_df = gd2_group_data(all_ans_df)
+
+    orfile = 'outdir/owner_reputation.csv'
+    save_prior_file('', orfile)
+    or_df.to_csv(orfile)
+
+    return or_df
+
+
 def draw_histogram_plot(plot_df):
     """Draw a simple histogram plot using pandas tools.
     """
@@ -872,9 +861,11 @@ def draw_scatter_matrix_plot(plot_df):
 
     print('Summary stats from plot_df.describe(): ')
     print(plot_df.describe())
+    print('NOTE: Please wait for plot, 60 sec or more.')
 
     axs = scatter_matrix(plot_df, alpha=0.2, diagonal='hist')
     # TBD plt.xscale('log')  # Failed. Logarithm scale, Good to show outliers. Cannot show Score=0?
+
     plt.show(block=False)
 
     wdir = 'outdir/'
@@ -921,6 +912,17 @@ def write_full_df_to_csv_file(in_df, wdir, wfile):
     in_df.to_csv(outfile)
     pd.set_option('display.max_colwidth', MAXCOLWID) # -1=no limit, for debug
     return
+
+
+def replace_line_breaks(in_s):
+    """Replace escaped line break chars so text inside HTML
+    pre-blocks and code-blocks (inside HTML table cells)
+    is rendered properly on screen.
+    """
+    out_s = in_s.replace('\\r\\n', '\n')
+    out_s = out_s.replace('\\n\\n', '\n')
+    out_s = out_s.replace('\\n', '\n')
+    return out_s
 
 
 def write_full_df_to_html_file(in_df, wdir, wfile, columns_l):
