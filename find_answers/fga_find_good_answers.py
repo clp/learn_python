@@ -632,35 +632,29 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df ):
             # TBD user_cmd = show_current_q_a(q_id, q_title, q_body, row)
             user_cmd = ''
             if qa_df.empty:
-                print("Warn: dataframe empty or not found; try restarting.")
+                print("WARN: dataframe empty or not found; try restarting.")
             else:
-                # D print('Show current Q&A at this saved_index: ',
-                # saved_index)
                 print(qa_df[['Id', 'Title', 'Body']].iloc[[saved_index]])
         elif user_cmd.lower() == 'sn':  # show next item
             user_cmd = ''
             if qa_df.empty:
-                print("Warn: dataframe empty or not found; try restarting.")
+                print("WARN: dataframe empty or not found; try restarting.")
             else:
                 saved_index += 1
-                # D print('#D Show current Q&A at this saved_index: ',
-                # saved_index)
                 print(qa_df[['Id', 'Title', 'Body']].iloc[[saved_index]])
         elif user_cmd.lower() == 'sp':  # show prior item
             user_cmd = ''
             if qa_df.empty:
-                print("Warn: dataframe empty or not found; try restarting.")
+                print("WARN: dataframe empty or not found; try restarting.")
             else:
                 saved_index -= 1
-                # D print('#D Show current Q&A at this saved_index: ',
-                # saved_index)
                 print(qa_df[['Id', 'Title', 'Body']].iloc[[saved_index]])
         elif user_cmd.lower() == 'd':
             user_cmd = ''
             if all_qa_with_hst_df.empty:
-                print("Warn: dataframe empty or not found; try restarting.")
+                print("WARN: dataframe empty or not found; try restarting.")
             else:
-                print("Drawing the default plot.")
+                print("Drawing the default plot, with Score and hstCount.")
                 draw_scatter_plot(
                     all_qa_with_hst_df,
                     'Score',
@@ -670,27 +664,17 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df ):
         elif user_cmd.lower() == 'dh':
             user_cmd = ''
             if all_qa_with_hst_df.empty:
-                print("Warn: dataframe empty or not found; try restarting.")
+                print("WARN: dataframe empty or not found; try restarting.")
             else:
                 print("Drawing the default histogram plot.")
                 draw_histogram_plot(all_qa_with_hst_df)
         elif user_cmd.lower() == 'dm':  # Scatter matrix plot
             user_cmd = ''
             if all_qa_with_hst_df.empty:
-                print("Warn: dataframe empty or not found; try restarting.")
+                print("WARN: dataframe empty or not found; try restarting.")
             else:
                 print("Drawing the default scatter matrix plot.")
                 draw_scatter_matrix_plot(all_qa_with_hst_df)
-        # rma: Reputation, mean, answers only; scatter.
-        elif user_cmd.lower() == 'dr':
-            user_cmd = ''
-            # TBD.1 use right df in both branches:
-            if qa_df.empty:
-                print("Warn: dataframe empty or not found; try restarting.")
-            else:
-                print("TBD, Drawing the default reputation scatter plot. NOT READY.\n")
-                # TBD Prepare data to plot: owner reputation (mean or total score), answer score.
-                # TBD, draw_scatter_plot(owner_grouped_df, xaxis, yaxis, xname, yname)
         # drm: Draw Reputation matrix, mean, answers only; scatter.
         elif user_cmd.lower() == 'drm':
             user_cmd = ''
