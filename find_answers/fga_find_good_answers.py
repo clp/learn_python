@@ -227,8 +227,8 @@ def config_data():
     a_fname = 'a6_999999.csv'
     #D a_fname = 'a5_99998.csv'
     #D q_fname = 'q30_99993.csv'
-    #D a_fname = 'a3_986.csv'
-    #D q_fname = 'q3_992.csv'
+    a_fname = 'a3_986.csv'
+    q_fname = 'q3_992.csv'
     # D a_fname = 'a2.csv'
     # D q_fname = 'q2.csv'
 
@@ -583,12 +583,12 @@ def select_keyword_recs(keyword, qa_df, columns_l):
     return qak_df
 
 
-def show_menu(qa_df, all_ans_df):
+def show_menu(qa_df, all_ans_df, owner_reputation_df ):
     """Show prompt to user; get and handle their request.
     """
     user_menu = """    The menu choices:
-    cr: calculate reputations of owners
-    cs: calculate and plot statistics
+    drm: calculate reputation matrix of owners
+    dsm: draw and plot q&a statistics matrix
     d: draw default plot of current data
     dh: draw default histogram plot of current data
     dm: draw scatter matrix plot of current data
@@ -691,46 +691,27 @@ def show_menu(qa_df, all_ans_df):
                 print("TBD, Drawing the default reputation scatter plot. NOT READY.\n")
                 # TBD Prepare data to plot: owner reputation (mean or total score), answer score.
                 # TBD, draw_scatter_plot(owner_grouped_df, xaxis, yaxis, xname, yname)
-        # cr: Calculate Reputation, mean, answers only; scatter.
-        elif user_cmd.lower() == 'cr':
+        # drm: Draw Reputation matrix, mean, answers only; scatter.
+        elif user_cmd.lower() == 'drm':
             user_cmd = ''
-            print("NOTE: This should be a one-time operation w/ data saved on disk.")
-            #
-            orfile = 'outdir/owner_reputation.csv'
-            #TBF.Fri2017_0804_14:54 , Must chk i/p file & replace owner_rep*.csv if
-            #  a different file was used.  OR, just build this file from Answers.csv
-            #  which should have all answers & produce good reputation data.
-            #  See notes under 'cs' command, below.
-            owner_reputation_df = pd.DataFrame()
-            if os.path.exists(orfile):
-                print("NOTE:" + orfile + " file found; read it.")
-                owner_reputation_df = pd.read_csv(
-                    orfile,
-                    encoding='latin-1',
-                    warn_bad_lines=False,
-                    error_bad_lines=False)
-            else:
-                print(orfile + " file not found; will now build it.")
-                owner_reputation_df = calculate_owner_reputation(all_ans_df)
+            owner_reputation_df = check_owner_reputation(all_ans_df, owner_reputation_df )
             #
             if owner_reputation_df.empty:
                 print("WARN: owner reputation df empty or not found.")
             else:
                 print("NOTE: Drawing the owner reputation scatter matrix plot.")
                 draw_scatter_matrix_plot(owner_reputation_df[['MeanScore', 'OwnerUserId']])
-        # cs: Calculate and plot statistics
-        elif user_cmd.lower() == 'cs':
+        # dsm: Draw q&a statistics matrix
+        elif user_cmd.lower() == 'dsm':
             user_cmd = ''
-            print("NOTE: Must run 'cr' before 'cs' to populate owner_reputation_df.")
-                #TBD.1 Add code to fix this: chk for own*rep*.csv file on disk?
-                #  Maybe build that file as part of main(), after reading i/p file.
+            owner_reputation_df = check_owner_reputation(all_ans_df, owner_reputation_df )
             #
             qa_stats_df = build_stats(all_qa_with_hst_df, owner_reputation_df)
             #
             if qa_stats_df.empty:
-                print("Warn: qa_stats_df empty or not found.")
+                print("WARN: qa_stats_df empty or not found.")
             else:
-                print("Drawing the qa_stats_df scatter matrix plot.")
+                print("NOTE: Drawing the qa_stats_df scatter matrix plot.")
                 draw_scatter_matrix_plot(qa_stats_df[['Score', 'BodyLength', 'OwnerRep',  'hstCount' ]])
         else:
             print("Got bad cmd from user: ", user_cmd)
@@ -810,19 +791,36 @@ def build_stats(qa_df, or_df):
     return qa_stats_df
 
 
-def calculate_owner_reputation(all_ans_df):
-    """Calculate reputation of each OwnerUserId in the i/p data,
+def check_owner_reputation(all_ans_df, owner_reputation_df ):
+    """Check for df with reputation of each OwnerUserId.
+    If not found, then calculate reputation of each OwnerUserId in the i/p data,
     based on Score of all answers they provided.
     Save the data to a disk file and use it when needed, so the
     calculation need not be done every time this program runs.
     """
-    or_df = gd2_group_data(all_ans_df)
-
     orfile = 'outdir/owner_reputation.csv'
-    save_prior_file('', orfile)
-    or_df.to_csv(orfile)
+    #TBF.Fri2017_0804_14:54 , Must chk i/p file & replace owner_rep*.csv if
+    #  a different file was used.  OR, just build this file from Answers.csv
+    #  which should have all answers & produce good reputation data.
 
-    return or_df
+    if not owner_reputation_df.empty:
+        return owner_reputation_df
+
+    if os.path.exists(orfile):
+        print("NOTE: owner rep file, " + orfile + ", found; read it.")
+        owner_reputation_df = pd.read_csv(
+            orfile,
+            encoding='latin-1',
+            warn_bad_lines=False,
+            error_bad_lines=False)
+        return owner_reputation_df
+    else:
+        print("NOTE: owner rep file, " + orfile + ", not found; build it.")
+        print("NOTE: This should be a one-time operation w/ data saved on disk.")
+        owner_reputation_df = gd2_group_data(all_ans_df)
+        save_prior_file('', orfile)
+        owner_reputation_df.to_csv(orfile)
+    return owner_reputation_df
 
 
 def draw_histogram_plot(plot_df):
@@ -1039,7 +1037,8 @@ if __name__ == '__main__':
 
     main(q_with_a_df)
 
-    show_menu(q_with_a_df, all_ans_df )
+    owner_reputation_df = pd.DataFrame()
+    show_menu(q_with_a_df, all_ans_df, owner_reputation_df )
 
     log_msg = cf.log_file + ' - Finish logging for ' + \
         os.path.basename(__file__) + '\n\n'
