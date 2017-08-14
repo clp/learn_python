@@ -92,8 +92,10 @@ import nltk_ex25 as nl
 log_msg = cf.log_file + ' - Start logging for ' + os.path.basename(__file__)
 cf.logger.info(log_msg)
 
+DATADIR = 'data/'
+INDIR = 'indir/'
 MAXCOLWID = 20
-TMPDIR = 'tmpdir/'
+TMPDIR = 'data/'
 q_with_a_df = pd.DataFrame()
 all_qa_with_hst_df = pd.DataFrame()
 
@@ -137,7 +139,7 @@ def main(q_with_a_df):
 
     init()
 
-    a_fname, a_infile, q_infile, indir, outdir = \
+    a_fname, a_infile, q_infile = \
         config_data()
 
     all_ans_df, all_ques_df, progress_msg_factor, numlines = \
@@ -178,7 +180,7 @@ def main(q_with_a_df):
         'Score',
         'Title',
         'Body']
-    write_full_df_to_csv_file(q_with_a_df[columns_l], outdir, 'q_with_a.csv')
+    write_full_df_to_csv_file(q_with_a_df[columns_l], DATADIR, 'q_with_a.csv')
 
     # Save the Q&A title & body data as HTML.
     columns_l = ['Id', 'Title', 'Body']
@@ -189,7 +191,7 @@ def main(q_with_a_df):
         # Write records containing keywords to a csv file.
         qa_with_keyword_df = select_keyword_recs(
             keyword, q_with_a_df, columns_l)
-        outfile = 'outdir/qa_with_keyword.csv'
+        outfile = DATADIR + 'qa_with_keyword.csv'
         qa_with_keyword_df[columns_l].to_csv(
             outfile, header=True, index=None, sep=',', mode='w')
 
@@ -217,8 +219,6 @@ def config_data():
     """
     # TBD Make the in & out dirs w/ this program, if they don't exist?
     # TBD Include the test data files w/ this project.
-    indir = 'indir/'  # Relative to pwd, holds i/p files.
-    outdir = 'outdir/'  # Relative to pwd, holds o/p files.
     #D a_fname = 'Answers.csv'
     #D q_fname = 'Questions.csv'
 
@@ -232,13 +232,13 @@ def config_data():
     # D a_fname = 'a2.csv'
     # D q_fname = 'q2.csv'
 
-    a_infile = indir + a_fname
-    q_infile = indir + q_fname
+    a_infile = INDIR + a_fname
+    q_infile = INDIR + q_fname
 
     print('Input files, q & a:\n' + q_infile + '\n' + a_infile)
     print()
 
-    return a_fname, a_infile, q_infile, indir, outdir
+    return a_fname, a_infile, q_infile
 
 
 def read_data(ans_file, ques_file):
@@ -270,7 +270,7 @@ def find_popular_ques(aa_df, a_fname):
     """Find the most frequent ParentIds in the answers df.
     """
     popular_ids = pd.value_counts(aa_df['ParentId'])
-    outfile = "outdir/fpq_popular_ids." + a_fname + ".csv"
+    outfile = DATADIR + "fpq_popular_ids." + a_fname + ".csv"
     popular_ids.to_csv(outfile)
     return popular_ids
 
@@ -296,7 +296,7 @@ def gd2_group_data(aa_df):
     print('#D gd2: len(owner_grouped_df): number of unique OwnerUserId values: ' +
           str(len(owner_grouped_df)))
     print()
-    cf.logger.info('gd2_group_data(): Show owners with ... ', ' highest MeanScores.')
+    cf.logger.info('gd2_group_data(): Show owners with highest MeanScores.')
     cf.logger.info(owner_grouped_df.tail(num_owners))
     if args['verbose']:
         print('#D gd2: Show owners with ', str(num_owners), ' highest MeanScores.')
@@ -367,7 +367,7 @@ def group_data(aa_df):
     print('lo_score_limit: ', lo_score_limit)
     print('Length of lo_scores_for_top_users_df: ',
           len(lo_scores_for_top_users_df))
-    outfile = 'outdir/lo_scores_for_top_users.csv'
+    outfile = DATADIR + 'lo_scores_for_top_users.csv'
     lo_scores_for_top_users_df.to_csv(
         outfile, header=True, index=None, sep=',', mode='w')
     cf.logger.info('group_data(): lo_scores_for_top_users_df: ')
@@ -715,7 +715,7 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df ):
     # TBD print("Save data and Quit the program.")
     # Save only the needed fields to the file.
     # TBD columns_l = ['Id', 'ParentId', 'Grade', 'Notes', 'Title', 'Body']
-    # TBD outfile = open('outdir/graded_q_with_a.csv', 'w')
+    # TBD outfile = open(DATADIR + 'graded_q_with_a.csv', 'w')
     # TBD graded_df[columns_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
     # TBD outfile.flush()
 
@@ -764,11 +764,11 @@ def build_stats(qa_df, or_df):
     #D print(qa_stats_df.head(5))
     qa_stats_df = qa_stats_df[['Id', 'ParentId', 'OwnerUserId', 'Score', 'BodyLength', 'OwnerRep', 'hstCount']]
 
-    orfile = 'outdir/qa_stats.csv'
+    orfile = DATADIR + 'qa_stats.csv'
     save_prior_file('', orfile)
     qa_stats_df.to_csv(orfile)
 
-    orfile = 'outdir/qa_stats.html'
+    orfile = DATADIR + 'qa_stats.html'
     save_prior_file('', orfile)
     qa_stats_df.to_html(orfile)
 
@@ -782,7 +782,7 @@ def check_owner_reputation(all_ans_df, owner_reputation_df ):
     Save the data to a disk file and use it when needed, so the
     calculation need not be done every time this program runs.
     """
-    orfile = 'outdir/owner_reputation.csv'
+    orfile = DATADIR + 'owner_reputation.csv'
     #TBF.Fri2017_0804_14:54 , Must chk i/p file & replace owner_rep*.csv if
     #  a different file was used.  OR, just build this file from Answers.csv
     #  which should have all answers & produce good reputation data.
@@ -850,7 +850,7 @@ def draw_scatter_matrix_plot(plot_df):
 
     plt.show(block=False)
 
-    wdir = 'outdir/'
+    wdir = DATADIR
     wfile = 'scat_mat_plot.pdf'
     save_prior_file(wdir, wfile)
     plt.savefig(wdir + wfile)
@@ -872,7 +872,7 @@ def draw_scatter_plot(plot_df, xaxis, yaxis, xname, yname):
 def save_prior_file(wdir, wfile):
     """Save backup copy of a file w/ same name; add '.bak' extension.
 
-    Input wdir should have trailing slash, eg, outdir/.
+    Input wdir should have trailing slash, eg, data/.
     Input wfile should have trailing extension name, eg, .csv.
     """
     outfile = wdir + wfile
