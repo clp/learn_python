@@ -425,8 +425,10 @@ def select_questions(parent_id_l, popular_ids_a):
         # For q3 & a3 data: set(parent_id_l[:40]).intersection(set(popular_ids_a[:10])))
         #D set(parent_id_l[:40]).intersection(set(popular_ids_a[:10])))
         set(parent_id_l[:900]).intersection(set(popular_ids_a[:900])))
-    print('len(pop_and_top_l) : ', len(pop_and_top_l))
-    #TBF cf.logger.info('select_questions(): pop_and_top_l, parent id\'s to examine: ', pop_and_top_l[:])
+    log_msg = 'select_questions(): len(pop_and_top_l) : ' + str(len(pop_and_top_l))
+    cf.logger.info(log_msg)
+    log_msg = "select_questions(): pop_and_top_l, top-N parent id\'s to examine: " + str(pop_and_top_l[0:10])
+    cf.logger.info(log_msg)
     if args['verbose']:
         print('pop_and_top_l, parent id\'s to examine: ', pop_and_top_l[:])
     return pop_and_top_l
