@@ -766,13 +766,13 @@ def build_stats(qa_df, or_df):
     #D print(qa_stats_df.head(5))
     qa_stats_df = qa_stats_df[['Id', 'ParentId', 'OwnerUserId', 'Score', 'BodyLength', 'OwnerRep', 'hstCount']]
 
-    orfile = DATADIR + 'qa_stats.csv'
-    save_prior_file('', orfile)
-    qa_stats_df.to_csv(orfile)
+    own_rep_file = DATADIR + 'qa_stats.csv'
+    save_prior_file('', own_rep_file)
+    qa_stats_df.to_csv(own_rep_file)
 
-    orfile = DATADIR + 'qa_stats.html'
-    save_prior_file('', orfile)
-    qa_stats_df.to_html(orfile)
+    own_rep_file = DATADIR + 'qa_stats.html'
+    save_prior_file('', own_rep_file)
+    qa_stats_df.to_html(own_rep_file)
 
     return qa_stats_df
 
@@ -784,7 +784,7 @@ def check_owner_reputation(all_ans_df, owner_reputation_df ):
     Save the data to a disk file and use it when needed, so the
     calculation need not be done every time this program runs.
     """
-    orfile = DATADIR + 'owner_reputation.csv'
+    own_rep_file = DATADIR + 'owner_reputation.csv'
     #TBF.Fri2017_0804_14:54 , Must chk i/p file & replace owner_rep*.csv if
     #  a different file was used.  OR, just build this file from Answers.csv
     #  which should have all answers & produce good reputation data.
@@ -792,20 +792,20 @@ def check_owner_reputation(all_ans_df, owner_reputation_df ):
     if not owner_reputation_df.empty:
         return owner_reputation_df
 
-    if os.path.exists(orfile):
-        print("NOTE: owner rep file, " + orfile + ", found; read it.")
+    if os.path.exists(own_rep_file):
+        print("NOTE: owner rep file, " + own_rep_file + ", found; read it.")
         owner_reputation_df = pd.read_csv(
-            orfile,
+            own_rep_file,
             encoding='latin-1',
             warn_bad_lines=False,
             error_bad_lines=False)
         return owner_reputation_df
     else:
-        print("NOTE: owner rep file, " + orfile + ", not found; build it.")
+        print("NOTE: owner rep file, " + own_rep_file + ", not found; build it.")
         print("NOTE: This should be a one-time operation w/ data saved on disk.")
         owner_reputation_df = gd2_group_data(all_ans_df)
-        save_prior_file('', orfile)
-        owner_reputation_df.to_csv(orfile)
+        save_prior_file('', own_rep_file)
+        owner_reputation_df.to_csv(own_rep_file)
     return owner_reputation_df
 
 
