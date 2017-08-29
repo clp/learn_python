@@ -267,7 +267,7 @@ def read_data(ans_file, ques_file):
 
 
 def find_popular_ques(aa_df, a_fname):
-    """Find the most frequent ParentIds in the answers df.
+    """Find the most frequent ParentIds in the answers dataframe.
     """
     popular_ids = pd.value_counts(aa_df['ParentId'])
     outfile = DATADIR + "fpq_popular_ids." + a_fname + ".csv"
@@ -278,7 +278,7 @@ def find_popular_ques(aa_df, a_fname):
 
 #TBD, Refactor the two group_data() funcs.
 def gd2_group_data(aa_df):
-    """Group the contents of the answers df by a specific column.
+    """Group the contents of the answers dataframe by a specific column.
     Group by OwnerUserId, and sort by mean score for answers only
     for each owner (question scores are not counted).
     """
@@ -307,7 +307,7 @@ def gd2_group_data(aa_df):
     return owner_grouped_df
 
 def group_data(aa_df):
-    """Group the contents of the answers df by a specific column.
+    """Group the contents of the answers dataframe by a specific column.
     Group by OwnerUserId, and sort by mean score for answers only
     for each owner (question scores are not counted).
     Make a numpy array of owners w/ highest mean scores.
@@ -436,7 +436,7 @@ def select_questions(parent_id_l, popular_ids_a):
 
 def combine_related_q_and_a(pop_and_top_l, all_ques_df, aa_df, numlines, a_fname, progress_msg_factor):
     """Get each Q in the list of ParentId's, and the related A's.
-    Loop over all the question Id's and store all Q & A data in a df.
+    Loop over all the question Id's and store all Q & A data in a dataframe.
 
     Then call analyze_text() on each group of Q with A's,
     which calls the routines that perform the natural language processing
@@ -568,7 +568,7 @@ def analyze_text(qagroup_df, numlines, a_fname, progress_msg_factor):
 
 
 def select_keyword_recs(keyword, qa_df, columns_l):
-    """Find the Q's & A's from the filtered df that contain the keyword,
+    """Find the Q's & A's from the filtered dataframe that contain the keyword,
     in Title or Body.
     Combine the sets into one set of unique Q's w/ their A's.
     Save all the selected data for analysis.
@@ -683,7 +683,7 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df ):
             owner_reputation_df = check_owner_reputation(all_ans_df, owner_reputation_df )
             #
             if owner_reputation_df.empty:
-                print("WARN: owner reputation df empty or not found.")
+                print("WARN: owner reputation dataframe empty or not found.")
             else:
                 print("NOTE: Drawing the owner reputation scatter matrix plot.")
                 draw_scatter_matrix_plot(owner_reputation_df[['MeanScore', 'OwnerUserId']])
@@ -755,7 +755,7 @@ def build_stats(qa_df, or_df):
             # TBD, Some answers in the data file were made by Owners
             # who are not yet in the reputation df.
             # This should only be an issue when using small data sets.
-            print("NOTE: build_stats(): did not find ouid in owner reputation df; index,ouid: ", index, ouid)
+            print("NOTE: build_stats(): did not find ouid in owner reputation dataframe; index,ouid: ", index, ouid)
             print("#D NOTE: build_stats():data from the problem row:\n", row)
             print()
 
@@ -778,7 +778,7 @@ def build_stats(qa_df, or_df):
 
 
 def check_owner_reputation(all_ans_df, owner_reputation_df ):
-    """Check for df with reputation of each OwnerUserId.
+    """Check for dataframe with reputation of each OwnerUserId.
     If not found, then calculate reputation of each OwnerUserId in the i/p data,
     based on Score of all answers they provided.
     Save the data to a disk file and use it when needed, so the
