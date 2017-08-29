@@ -623,6 +623,9 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df ):
             # TBD, show summary & quit?
             # TBD outfile.flush()
             # TBD, save more data?
+            log_msg = cf.log_file + ' - Quit by user request; Finish logging for ' + \
+                os.path.basename(__file__) + '\n'
+            cf.logger.warning(log_msg)
             raise SystemExit()
         elif user_cmd == '?' or user_cmd == 'h':
             print(user_menu)
@@ -1027,7 +1030,7 @@ if __name__ == '__main__':
     show_menu(q_with_a_df, all_ans_df, owner_reputation_df )
 
     log_msg = cf.log_file + ' - Finish logging for ' + \
-        os.path.basename(__file__) + '\n\n'
+        os.path.basename(__file__) + '\n'
     cf.logger.warning(log_msg)
 
 'bye'
