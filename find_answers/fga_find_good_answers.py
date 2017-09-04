@@ -42,12 +42,12 @@ Input data format of stackoverflow.com python file from kaggle.com.
         "<p>I am using the Photoshop's javascript API to find the fonts in a given PSD.</p>
 ..."
 
-Output data format of q_with_a.csv o/p file from this program.
+Output data format of all_qa_with_hst.csv o/p file from this program.
     Note: question records have a Title but no ParentId;
     answer records have a ParentId (which is the related
     question's Id) but no Title.
 
-==> q_with_a.csv <==
+==> all_qa_with_hst.csv <==
         Id,ParentId,OwnerUserId,CreationDate,Score,Title,Body
         5313,,680.0,2008-08-07T21:07:24Z,11,"Cross Platform, Language
         Agnostic GUI Markup Language?",
@@ -95,8 +95,8 @@ cf.logger.info(log_msg)
 DATADIR = 'data/'
 INDIR = 'indir/'
 MAXCOLWID = 20
+TMP = 'tmp/'
 TMPDIR = 'data/'
-q_with_a_df = pd.DataFrame()
 all_qa_with_hst_df = pd.DataFrame()
 
 HEADER = '''
@@ -130,7 +130,7 @@ FOOTER = '''
 </html>
 '''
 
-def main(q_with_a_df):
+def main(all_qa_with_hst_df):
     """Analyze input data and produce o/p by calling various functions.
     """
     #TBD all_ans_df must be global to calculate reputations of owners, because
@@ -159,7 +159,7 @@ def main(q_with_a_df):
     pop_and_top_l = \
         select_questions(parent_id_l, popular_ids_a)
 
-    q_with_a_df, all_qa_with_hst_df = \
+    all_qa_with_hst_df = \
         combine_related_q_and_a(
             pop_and_top_l, all_ques_df, all_ans_df, numlines, a_fname, progress_msg_factor)
 
@@ -169,19 +169,6 @@ def main(q_with_a_df):
     columns_l = []
     write_full_df_to_html_file(all_qa_with_hst_df, TMPDIR, 'all_qa_with_hst.html', columns_l)
 
-    # Write full data set to a csv file.
-    #  TBF, maybe this does write all data, but in
-    #  wrong fmt: all Q, then all A.
-    columns_l = [
-        'Id',
-        'ParentId',
-        'OwnerUserId',
-        'CreationDate',
-        'Score',
-        'Title',
-        'Body']
-    write_full_df_to_csv_file(q_with_a_df[columns_l], DATADIR, 'q_with_a.csv')
-
     # Save the Q&A title & body data as HTML.
     columns_l = ['Id', 'Title', 'Body']
     write_full_df_to_html_file(all_qa_with_hst_df, TMPDIR, 'all_qa_title_body.html', columns_l)
@@ -190,7 +177,7 @@ def main(q_with_a_df):
     if keyword:
         # Write records containing keywords to a csv file.
         qa_with_keyword_df = select_keyword_recs(
-            keyword, q_with_a_df, columns_l)
+            keyword, all_qa_with_hst_df, columns_l)
         outfile = DATADIR + 'qa_with_keyword.csv'
         qa_with_keyword_df[columns_l].to_csv(
             outfile, header=True, index=None, sep=',', mode='w')
@@ -442,18 +429,13 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, aa_df, numlines, a_fname
     which calls the routines that perform the natural language processing
     of the text data.
     """
-    global q_with_a_df
     global all_qa_with_hst_df
 
     ques_match_df = all_ques_df[all_ques_df['Id'].isin(pop_and_top_l)]
     ans_match_df = aa_df[aa_df['ParentId'].isin(pop_and_top_l)]
-    q_with_a_df = pd.concat(
-        [ques_match_df, ans_match_df]).reset_index(drop=True)
-    # Full list w/ all Q's at top, A's after.
 
     print('#D len of ques_match_df: ', len(ques_match_df))
     print('#D len of ans_match_df: ', len(ans_match_df))
-    print('#D len of q_with_a_df: ', len(q_with_a_df))
     print('\n#D ques_match_df.head() & ans_match_df: ')
     print(ques_match_df.head())
     print('#D')
@@ -491,7 +473,7 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, aa_df, numlines, a_fname
     # D print('\n#D fga, End of debug code; exiting.')
     # D raise SystemExit()
 
-    return q_with_a_df, all_qa_with_hst_df
+    return all_qa_with_hst_df
 
 
 def analyze_text(qagroup_df, numlines, a_fname, progress_msg_factor):
@@ -501,6 +483,7 @@ def analyze_text(qagroup_df, numlines, a_fname, progress_msg_factor):
     """
     global all_qa_with_hst_df
 
+    #TBD.1, This code may write o/p to file but should not; fix nl module.
     cf.logger.info("NLP Step 2. Process the words of each input line.")
     clean_ans_bodies_l = nl.clean_raw_data(
         a_fname, progress_msg_factor, qagroup_df, TMPDIR)
@@ -720,7 +703,7 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df ):
     # TBD print("Save data and Quit the program.")
     # Save only the needed fields to the file.
     # TBD columns_l = ['Id', 'ParentId', 'Grade', 'Notes', 'Title', 'Body']
-    # TBD outfile = open(DATADIR + 'graded_q_with_a.csv', 'w')
+    # TBD outfile = open(DATADIR + 'graded_q_with_a.csv', 'w') # Rename file, graded_pop_top_qa?
     # TBD graded_df[columns_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
     # TBD outfile.flush()
 
@@ -807,7 +790,6 @@ def check_owner_reputation(all_ans_df, owner_reputation_df ):
         print("NOTE: owner rep file, " + own_rep_file + ", not found; build it.")
         print("NOTE: This should be a one-time operation w/ data saved on disk.")
         owner_reputation_df = gd2_group_data(all_ans_df)
-        save_prior_file('', own_rep_file)
         owner_reputation_df.to_csv(own_rep_file)
     return owner_reputation_df
 
@@ -818,6 +800,7 @@ def draw_histogram_plot(plot_df):
     fig, ax = plt.subplots(1, 1)
     ax.get_xaxis().set_visible(True)
     plot_df = plot_df[['Score']]
+    # TBD, These bins used for debugging; replace.
     histo_bins = [-10, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
                   13, 14, 15, 16, 17, 18, 19, 20, 25, 30, 35, 40, 45, 50]
     plot_df.plot.hist(ax=ax, figsize=(6, 6), bins=histo_bins)
@@ -874,18 +857,26 @@ def draw_scatter_plot(plot_df, xaxis, yaxis, xname, yname):
     return
 
 
+#TBD.1, Simplify this entire func.
 def save_prior_file(wdir, wfile):
     """Save backup copy of a file w/ same name; add '.bak' extension.
 
     Input wdir should have trailing slash, eg, data/.
     Input wfile should have trailing extension name, eg, .csv.
     """
+    import shutil
+
     outfile = wdir + wfile
-    if os.path.exists(outfile):
-        os.rename(outfile, outfile + '.bak')
-        print(
-            '\nWARN: renamed o/p file to *.bak; save it manually if needed:' +
-            outfile)
+    if not os.path.isfile(outfile):
+        # Skip the save if the file does not exist.
+        return
+
+    # Save all backups to tmp/ dir.
+    dst_filename = os.path.join(TMP, os.path.basename(outfile))
+    shutil.move(outfile, dst_filename)
+    print(
+        '\nWARN: moved o/p file to tmp storage; save it manually if needed: ' +
+        TMP + wfile)
     return
 
 
@@ -951,15 +942,16 @@ def write_full_df_to_html_file(in_df, wdir, wfile, columns_l):
     return
 
 
+#TBD, Sun2017_0903_17:00 , not used.
 def write_df_to_file(in_df, wdir, wfile):
     """Write one column of a pandas data frame to a file w/ suffix '.qanda'.
     """
     # Used for testing and debugging.
     outfile = wdir + wfile + '.qanda'
     if os.path.exists(outfile):
-        os.rename(outfile, outfile + '.bak')
+        os.rename(outfile, outfile + '.bak2')
         print(
-            '\nWARN: renamed o/p file to *.bak; save it manually if needed:' +
+            '\nWARN: renamed o/p file to *.bak2; save it manually if needed:' +
             outfile)
     with open(outfile, 'w') as f:
         print('\nNOTE: Writing data to outfile: ' + outfile)
@@ -1024,10 +1016,10 @@ if __name__ == '__main__':
     num_hi_score_terms = 21  # Use 3 for testing; 11 or more for use.
     print("num_hi_score_terms: ", num_hi_score_terms)
 
-    main(q_with_a_df)
+    main(all_qa_with_hst_df)
 
     owner_reputation_df = pd.DataFrame()
-    show_menu(q_with_a_df, all_ans_df, owner_reputation_df )
+    show_menu(all_qa_with_hst_df, all_ans_df, owner_reputation_df )
 
     log_msg = cf.log_file + ' - Finish logging for ' + \
         os.path.basename(__file__) + '\n'
