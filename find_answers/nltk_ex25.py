@@ -135,8 +135,6 @@ def clean_raw_data(a_fname, progress_msg_factor, qagroup_df, tmpdir ):
     #TBR cf.pdb.set_trace()
     # Write cleaned bodies to a file, one body per line, for visual review.
     outfile = tmpdir + a_fname + '.out'
-    if os.path.exists(outfile):
-        os.rename(outfile, outfile + '.bak')
     with open(outfile, 'w') as f:
         f.write('\n'.join(clean_ans_bodies_l))
     return clean_ans_bodies_l
@@ -213,8 +211,6 @@ def sort_save_vocab(suffix, vocab, dist, a_fname, tmpdir):
 
     # Write sorted vocab to a file.
     outfile = tmpdir + a_fname + suffix
-    if os.path.exists(outfile):
-        os.rename(outfile, outfile + '.bak')
     with open(outfile, 'w') as f:
         for count, word in words_sorted_by_count_l:
             print(count, word, file=f)
@@ -320,12 +316,6 @@ def search_for_terms(words_sorted_by_count_main_l, clean_ans_bodies_l, num_hi_sc
     #D print()
     #D cf.logger.debug("DBG, qagroup_df.head():")
     #D cf.logger.debug(qagroup_df.head())
-
-    # Save full df to a file.
-    outfile = "tmpdir/all_ans.csv"
-    # TBD.1 This overwrites the preceding file each time this func is called.
-    #   Must change the code to save data from each time this func is called.
-    qagroup_df.to_csv(outfile)
 
     # Save possible valuable answers to a separate file for review.
     # Replace empty strings in HiScoreTerms cells with NaN,
