@@ -2,7 +2,6 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Tue 2017 Sep 05 11:20:02 AMAM clpoda>
 """grade_each_answer.py
 
    A utility program to prepare data files for analysis by the
