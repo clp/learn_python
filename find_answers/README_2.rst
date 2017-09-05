@@ -256,5 +256,3 @@ Notes
    the 'grep', 'awk', and 'sed' commands.
 
 
-
-Tue2017_0613_20:22 
