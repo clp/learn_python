@@ -42,12 +42,12 @@ Input data format of stackoverflow.com python file from kaggle.com.
         "<p>I am using the Photoshop's javascript API to find the fonts in a given PSD.</p>
 ..."
 
-Output data format of all_qa_with_hst.csv o/p file from this program.
+Output data format of popular_qa.csv o/p file from this program.
     Note: question records have a Title but no ParentId;
     answer records have a ParentId (which is the related
     question's Id) but no Title.
 
-==> all_qa_with_hst.csv <==
+==> popular_qa.csv <==
         Id,ParentId,OwnerUserId,CreationDate,Score,Title,Body
         5313,,680.0,2008-08-07T21:07:24Z,11,"Cross Platform, Language
         Agnostic GUI Markup Language?",
@@ -97,7 +97,7 @@ INDIR = 'indir/'
 MAXCOLWID = 20
 TMP = 'tmp/'
 TMPDIR = 'data/'
-all_qa_with_hst_df = pd.DataFrame()
+popular_qa_df = pd.DataFrame()
 
 HEADER = '''
 <html>
@@ -130,10 +130,10 @@ FOOTER = '''
 </html>
 '''
 
-def main(all_qa_with_hst_df):
+def main(popular_qa_df):
     """Analyze input data and produce o/p by calling various functions.
     """
-    #TBD all_ans_df must be global to calculate reputations of owners, because
+    # all_ans_df must be global to calculate reputations of owners, because
     # it is changed here in main(), and used outside main().
     global all_ans_df
 
@@ -159,25 +159,25 @@ def main(all_qa_with_hst_df):
     pop_and_top_l = \
         select_questions(parent_id_l, popular_ids_a)
 
-    all_qa_with_hst_df = \
+    popular_qa_df = \
         combine_related_q_and_a(
             pop_and_top_l, all_ques_df, all_ans_df, numlines, a_fname, progress_msg_factor)
 
-    # TBD Save a df to a file for review & debug.
-    write_full_df_to_csv_file(all_qa_with_hst_df, TMPDIR, 'all_qa_with_hst.csv')
+    # Save a df to a file for review & debug.
+    write_full_df_to_csv_file(popular_qa_df, TMPDIR, 'popular_qa.csv')
 
     columns_l = []
-    write_full_df_to_html_file(all_qa_with_hst_df, TMPDIR, 'all_qa_with_hst.html', columns_l)
+    write_full_df_to_html_file(popular_qa_df, TMPDIR, 'popular_qa.html', columns_l)
 
     # Save the Q&A title & body data as HTML.
     columns_l = ['Id', 'Title', 'Body']
-    write_full_df_to_html_file(all_qa_with_hst_df, TMPDIR, 'all_qa_title_body.html', columns_l)
+    write_full_df_to_html_file(popular_qa_df, TMPDIR, 'all_qa_title_body.html', columns_l)
 
     #TBD Chg this if needed; or remove.
     if keyword:
         # Write records containing keywords to a csv file.
         qa_with_keyword_df = select_keyword_recs(
-            keyword, all_qa_with_hst_df, columns_l)
+            keyword, popular_qa_df, columns_l)
         outfile = DATADIR + 'qa_with_keyword.csv'
         qa_with_keyword_df[columns_l].to_csv(
             outfile, header=True, index=None, sep=',', mode='w')
@@ -429,7 +429,7 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, aa_df, numlines, a_fname
     which calls the routines that perform the natural language processing
     of the text data.
     """
-    global all_qa_with_hst_df
+    global popular_qa_df
 
     ques_match_df = all_ques_df[all_ques_df['Id'].isin(pop_and_top_l)]
     ans_match_df = aa_df[aa_df['ParentId'].isin(pop_and_top_l)]
@@ -459,7 +459,7 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, aa_df, numlines, a_fname
         cf.logger.info('qagroup_df.head(1): ')
         cf.logger.info(qagroup_df.head(1))
 
-        all_qa_with_hst_df = analyze_text(
+        popular_qa_df = analyze_text(
              qagroup_df, numlines, a_fname, progress_msg_factor)
 
         #
@@ -473,7 +473,7 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, aa_df, numlines, a_fname
     # D print('\n#D fga, End of debug code; exiting.')
     # D raise SystemExit()
 
-    return all_qa_with_hst_df
+    return popular_qa_df
 
 
 def analyze_text(qagroup_df, numlines, a_fname, progress_msg_factor):
@@ -481,7 +481,7 @@ def analyze_text(qagroup_df, numlines, a_fname, progress_msg_factor):
     Process the text data w/ the routines in the nltk module, which use
     natural language tools.
     """
-    global all_qa_with_hst_df
+    global popular_qa_df
 
     #TBD.1, This code may write o/p to file but should not; fix nl module.
     cf.logger.info("NLP Step 2. Process the words of each input line.")
@@ -540,9 +540,9 @@ def analyze_text(qagroup_df, numlines, a_fname, progress_msg_factor):
         words_sorted_by_count_main_l,
         clean_ans_bodies_l,
         num_hi_score_terms, qagroup_df)
-    all_qa_with_hst_df = pd.concat(
-        [all_qa_with_hst_df, qa_with_hst_df]).reset_index(drop=True)
-    return all_qa_with_hst_df
+    popular_qa_df = pd.concat(
+        [popular_qa_df, qa_with_hst_df]).reset_index(drop=True)
+    return popular_qa_df
 
 
 # TBD.1 , should select_keyword_recs()
@@ -639,30 +639,30 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df ):
                 print(qa_df[['Id', 'Title', 'Body']].iloc[[saved_index]])
         elif user_cmd.lower() == 'd':
             user_cmd = ''
-            if all_qa_with_hst_df.empty:
+            if popular_qa_df.empty:
                 print("WARN: dataframe empty or not found; try restarting.")
             else:
                 print("Drawing the default plot, with Score and hstCount.")
                 draw_scatter_plot(
-                    all_qa_with_hst_df,
+                    popular_qa_df,
                     'Score',
                     'hstCount',
                     'Score',
                     'hstCount')
         elif user_cmd.lower() == 'dh':
             user_cmd = ''
-            if all_qa_with_hst_df.empty:
+            if popular_qa_df.empty:
                 print("WARN: dataframe empty or not found; try restarting.")
             else:
                 print("Drawing the default histogram plot.")
-                draw_histogram_plot(all_qa_with_hst_df)
+                draw_histogram_plot(popular_qa_df)
         elif user_cmd.lower() == 'dm':  # Scatter matrix plot
             user_cmd = ''
-            if all_qa_with_hst_df.empty:
+            if popular_qa_df.empty:
                 print("WARN: dataframe empty or not found; try restarting.")
             else:
                 print("Drawing the default scatter matrix plot.")
-                draw_scatter_matrix_plot(all_qa_with_hst_df)
+                draw_scatter_matrix_plot(popular_qa_df)
         # drm: Draw Reputation matrix, mean, answers only; scatter.
         elif user_cmd.lower() == 'drm':
             user_cmd = ''
@@ -678,7 +678,7 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df ):
             user_cmd = ''
             owner_reputation_df = check_owner_reputation(all_ans_df, owner_reputation_df )
             #
-            qa_stats_df = build_stats(all_qa_with_hst_df, owner_reputation_df)
+            qa_stats_df = build_stats(popular_qa_df, owner_reputation_df)
             #
             if qa_stats_df.empty:
                 print("WARN: qa_stats_df empty or not found.")
@@ -703,7 +703,7 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df ):
     # TBD print("Save data and Quit the program.")
     # Save only the needed fields to the file.
     # TBD columns_l = ['Id', 'ParentId', 'Grade', 'Notes', 'Title', 'Body']
-    # TBD outfile = open(DATADIR + 'graded_q_with_a.csv', 'w') # Rename file, graded_pop_top_qa?
+    # TBD outfile = open(DATADIR + 'graded_popular_qa.csv', 'w')
     # TBD graded_df[columns_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
     # TBD outfile.flush()
 
@@ -875,7 +875,7 @@ def save_prior_file(wdir, wfile):
     dst_filename = os.path.join(TMP, os.path.basename(outfile))
     shutil.move(outfile, dst_filename)
     print(
-        '\nWARN: moved old file to tmp storage; save it manually if needed: ' +
+        '\nWARN: Moved old file to tmp storage; save it manually if needed: ' +
         TMP + wfile)
     return
 
@@ -1016,10 +1016,10 @@ if __name__ == '__main__':
     num_hi_score_terms = 21  # Use 3 for testing; 11 or more for use.
     print("num_hi_score_terms: ", num_hi_score_terms)
 
-    main(all_qa_with_hst_df)
+    main(popular_qa_df)
 
     owner_reputation_df = pd.DataFrame()
-    show_menu(all_qa_with_hst_df, all_ans_df, owner_reputation_df )
+    show_menu(popular_qa_df, all_ans_df, owner_reputation_df )
 
     log_msg = cf.log_file + ' - Finish logging for ' + \
         os.path.basename(__file__) + '\n'
