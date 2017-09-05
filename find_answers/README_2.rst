@@ -27,7 +27,7 @@ First Run
      and edit the program to use them.
 
   #. Run the fga program, which will create the main Q&A file
-     outdir/q_with_a.csv; and may create several other files.
+     data/popular_qa.csv; and may create several other files.
 
      The main Q&A file can be used by other tools.
 
@@ -106,7 +106,7 @@ Notes
     the o/p file was 22023 lines long and was built in 59 sec.
 
 #. One way to use the data: run the grade_each_answer.py program
-   which uses the q_with_a.csv file.  Read the question & answer
+   which uses the popular_qa.csv file.  Read the question & answer
    and give the answer a grade based on its value.  That grade
    is saved and available to compare with grades from other
    analysis tools.
@@ -158,7 +158,7 @@ Notes
 
 #. The program is now hard-coded to use a single,
    specific input file during initial debugging,
-   outdir/pid_231767.csv.
+   data/pid_231767.csv.
    When run directly, it will use this data set by default.
    When called via fga*.py,
    it will use the data provided by fga.
@@ -172,8 +172,7 @@ Introduction
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The grade_each_answer program is a utility tool to add new fields
-and their content to each record of the input file
-(q_with_a.csv).
+and their content to each record of the input file.
 
 The o/p is a csv file containing two new fields for each i/p
 record: Grade and Notes.
@@ -233,7 +232,7 @@ Use this command after looking at the menu or help,
 to see the answer to be graded.
 
 Enter 'q' to save data and quit the program.
-The output goes to outdir/graded_q_with_a.csv.
+The output goes to data/graded_popular_qa.csv.
 
 
 Notes
