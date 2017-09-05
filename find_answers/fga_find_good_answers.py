@@ -436,9 +436,9 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, aa_df, numlines, a_fname
 
     print('#D len of ques_match_df: ', len(ques_match_df))
     print('#D len of ans_match_df: ', len(ans_match_df))
-    print('\n#D ques_match_df.head() & ans_match_df: ')
+    print('\n#D ques_match_df.head() & ans_match_df.head(): ')
     print(ques_match_df.head())
-    print('#D')
+    print()
     print(ans_match_df.head())
 
     i = 0
@@ -450,7 +450,7 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, aa_df, numlines, a_fname
         i += 1
         # OK if(i % progress_msg_factor == 0):
         if(i % 20 == 0):
-            print("#D combine_related_q_and_a:for-qid-loop count i: ", i)
+            print("#D combine_related_q_and_a():progress count: ", i)
         qm_df = ques_match_df[ques_match_df['Id'] == qid]
         am_df = ans_match_df[ans_match_df['ParentId'] == qid]
         qagroup_df = pd.concat([qm_df, am_df]).reset_index(drop=True)
@@ -875,7 +875,7 @@ def save_prior_file(wdir, wfile):
     dst_filename = os.path.join(TMP, os.path.basename(outfile))
     shutil.move(outfile, dst_filename)
     print(
-        '\nWARN: moved o/p file to tmp storage; save it manually if needed: ' +
+        '\nWARN: moved old file to tmp storage; save it manually if needed: ' +
         TMP + wfile)
     return
 
