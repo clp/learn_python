@@ -16,7 +16,7 @@ questions and answers from stackoverflow.com about Python.
 The software tries
 to identify good but 'hidden' answers
 to the questions.
-Such answers have useful data but a low score.
+Such answers have useful data but a low stackoverflow score.
 
 It includes the following programs.
 
