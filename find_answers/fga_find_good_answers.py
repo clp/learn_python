@@ -906,7 +906,8 @@ def replace_line_breaks(in_s):
 def write_full_df_to_html_file(in_df, wdir, wfile, columns_l):
     """Write full contents of some columns of a data frame to an html file.
 
-    Use the list of columns included in this function.
+    Use the list of columns included in this function
+    if caller does not specify any.
     """
     pd.set_option('display.max_colwidth', -1) # -1=no limit, for debug
     outfile = wdir + wfile
@@ -939,23 +940,6 @@ def write_full_df_to_html_file(in_df, wdir, wfile, columns_l):
         f.write(FOOTER)
 
     pd.set_option('display.max_colwidth', MAXCOLWID) # -1=no limit, for debug
-    return
-
-
-#TBD, Sun2017_0903_17:00 , not used.
-def write_df_to_file(in_df, wdir, wfile):
-    """Write one column of a pandas data frame to a file w/ suffix '.qanda'.
-    """
-    # Used for testing and debugging.
-    outfile = wdir + wfile + '.qanda'
-    if os.path.exists(outfile):
-        os.rename(outfile, outfile + '.bak2')
-        print(
-            '\nWARN: renamed o/p file to *.bak2; save it manually if needed:' +
-            outfile)
-    with open(outfile, 'w') as f:
-        print('\nNOTE: Writing data to outfile: ' + outfile)
-        print(in_df['Body'], file=f)
     return
 
 
