@@ -2,7 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 
-#   Time-stamp: <Thu 2017 Jun 15 02:50:54 PMPM clpoda>
+#   Time-stamp: <Tue 2017 Sep 05 11:20:02 AMAM clpoda>
 """grade_each_answer.py
 
    A utility program to prepare data files for analysis by the
@@ -38,12 +38,12 @@ Input data format of stackoverflow.com python file from kaggle.com.
 ..."
 
 
-Output data format of graded_q_with_a.csv o/p file from this program.
+Output data format of graded_popular_qa.csv o/p file from this program.
     Note: question records have a Title but no ParentId;
     answer records have a ParentId (which is the related
     question's Id) but no Title.
 
-==> graded_q_with_a.csv <==
+==> graded_popular_qa.csv <==
         Id,ParentId,Grade,Notes,Title,Body
         1269795,,N,None,Unusual Speed Difference between Python
         and C++,"<p>I recently wrote a short algorithm to calculate 
@@ -134,7 +134,7 @@ def read_and_grade_answers():
     Write that df to a csv file.
     """
     
-    qa_master_file = 'outdir/q_with_a.csv'
+    qa_master_file = 'data/popular_qa.csv'
 
     # Handle case of the master Q&A data file is missing.
     if not os.path.exists(qa_master_file):
@@ -143,15 +143,15 @@ def read_and_grade_answers():
         print('  Then create master file by running fga*.py.')
         exit()
     #
-    grade_file = 'outdir/graded_q_with_a.csv'
+    grade_file = 'data/graded_popular_qa.csv'
     if not os.path.exists(grade_file):
-        # If graded_q_with_a.csv file is missing,
+        # If graded_popular_qa.csv file is missing,
         # copy from a master file with no graded answers.
         # Create the grade file only if it does not exist, ie,
         # the first time this function runs, or if the file
         # has been lost or deleted.
-        print('\nWARN: file not found, creating it by copying from q_with_a.csv:' + grade_file + '\n')
-        copyfile('outdir/q_with_a.csv', grade_file)
+        print('\nWARN: file not found, creating it by copying from popular_qa.csv:' + grade_file + '\n')
+        copyfile('data/popular_qa.csv', grade_file)
         #TBD Removing latin-1 in 2 read_csv() calls  fixed a problem:
             #ORG graded_df = pd.read_csv(grade_file, encoding='latin-1', warn_bad_lines=False, error_bad_lines=False, usecols=['Id', 'ParentId', 'Title', 'Body'])
         graded_df = pd.read_csv(grade_file,  warn_bad_lines=False, error_bad_lines=False, usecols=['Id', 'ParentId', 'Title', 'Body'])
@@ -245,7 +245,7 @@ def read_and_grade_answers():
                     print("Save data and Quit the program.")
                     # Save only the needed fields to the file.
                     outfields_l = ['Id', 'ParentId', 'Grade', 'Notes', 'Title', 'Body']
-                    outfile = open('outdir/graded_q_with_a.csv', 'w')
+                    outfile = open('data/graded_popular_qa.csv', 'w')
                     graded_df[outfields_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
                     outfile.flush()
                     #
@@ -281,7 +281,7 @@ def read_and_grade_answers():
     print("Save data and Quit the program.")
     # Save only the needed fields to the file.
     outfields_l = ['Id', 'ParentId', 'Grade', 'Notes', 'Title', 'Body']
-    outfile = open('outdir/graded_q_with_a.csv', 'w')
+    outfile = open('data/graded_popular_qa.csv', 'w')
     graded_df[outfields_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
     outfile.flush()
     #
