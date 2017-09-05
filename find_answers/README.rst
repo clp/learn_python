@@ -59,7 +59,7 @@ Enter 'q' to quit the program.
 Notes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#. The main o/p data is saved at outdir/q_with_a.csv.
+#. The main o/p data is saved at data/popular_qa.csv.
 
 #. One way to examine the data: open the file with
    LibreOffice Calc or other spreadsheet tool that can show
@@ -102,7 +102,7 @@ Notes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #. The o/p data of answers that contain high score terms (hst) is saved
-   at tmpdir/all_qa_with_hst.csv
+   at data/popular_qa.csv
 
 #. The program writes some summary data to the screen,
    to help with debugging.
@@ -117,8 +117,7 @@ Introduction
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The grade_each_answer program is a utility tool to add new fields
-and their content to each record of its input file
-(q_with_a.csv).
+and their content to each record of its input file.
 
 The o/p is a csv file containing two new fields for each i/p
 record: Grade and Notes.
@@ -139,7 +138,7 @@ Notes
    for easier viewing of the Q&A being graded.
    Eg, using the surf web browser:
      
-      ``surf outdir/graded_q_with_a.csv``
+      ``surf data/graded_popular_qa.csv``
 
 #. If you finish handling all records in the i/p file,
    the program saves data and stops.
@@ -203,5 +202,3 @@ For documentation, please visit nltk.org.
 
 * https://worksheets.codalab.org/
 
-
-Sat2017_0715_13:37 
