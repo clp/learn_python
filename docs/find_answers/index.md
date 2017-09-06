@@ -23,14 +23,14 @@ See the software for the find_answers project at
 
 ## Some data files.
 
-* [all_qa_with_hst.html](all_qa_with_hst.html)
+* [popular_qa.html](popular_qa.html)
 
   Question followed by its Answers; then next Q&A.  
   Includes High Score Terms (hst)
   found for each record.
 
 
-* [all_qa_title_body.html](all_qa_title_body.html)
+* [popular_qa_title_body.html](popular_qa_title_body.html)
 
   Each Question followed by its Answers; only shows ID, Title, and Body
   columns.

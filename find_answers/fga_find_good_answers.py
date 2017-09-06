@@ -172,7 +172,7 @@ def main(popular_qa_df):
 
     # Save the Q&A title & body data as HTML.
     columns_l = ['Id', 'Title', 'Body']
-    write_full_df_to_html_file(popular_qa_df, TMPDIR, 'all_qa_title_body.html', columns_l)
+    write_full_df_to_html_file(popular_qa_df, TMPDIR, 'popular_qa_title_body.html', columns_l)
 
     if keyword:
         # Write records containing keywords to a csv file.
