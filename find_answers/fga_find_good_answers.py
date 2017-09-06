@@ -173,7 +173,6 @@ def main(popular_qa_df):
     columns_l = ['Id', 'Title', 'Body']
     write_full_df_to_html_file(popular_qa_df, TMPDIR, 'all_qa_title_body.html', columns_l)
 
-    #TBD Chg this if needed; or remove.
     if keyword:
         # Write records containing keywords to a csv file.
         qa_with_keyword_df = select_keyword_recs(
@@ -204,8 +203,6 @@ def init():
 def config_data():
     """Configure path and file names for i/o data.
     """
-    # TBD Make the in & out dirs w/ this program, if they don't exist?
-    # TBD Include the test data files w/ this project.
     #D a_fname = 'Answers.csv'
     #D q_fname = 'Questions.csv'
 
@@ -990,6 +987,7 @@ if __name__ == '__main__':
     print("num_owners: ", num_owners)
 
     keyword = False
+    keyword = 'font'  # Found in a3* & q3* i/p files.
     # D keyword = 'beginner'
     # D keyword = 'yield'
     # D keyword = 'begin'
