@@ -2,6 +2,7 @@
 
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 # Using Python 3.4.5 :: Anaconda 4.3.0 (64-bit), since Tue2017_0710
+# Requires Python 3; does not work w/ Python 2.
 
 """fga_find_good_answers.py
 
