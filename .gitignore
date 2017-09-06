@@ -10,6 +10,7 @@ ref60rec/
 snapshot/
 tmp/
 
+*.otl
 *.pdf
 *.png
 *.html
