@@ -75,6 +75,7 @@ from nltk.corpus import stopwords
     # S/w installed at ~/nltk_data/.
     # You can use the web site & only d/l some parts if you don't need all.
     # Add code to check for current files on local disk before d/l.
+nltk.download('stopwords')
 
 
 def convert_text_to_words( raw_q_a ):
