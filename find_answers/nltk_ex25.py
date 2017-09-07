@@ -133,11 +133,6 @@ def clean_raw_data(a_fname, progress_msg_factor, qagroup_df, tmpdir ):
             #D cf.logger.debug('  Original text: ' + qagroup_df['Body'][i])
             cf.logger.debug('  Cleaned text:  ' + clean_q_a)
 
-    #TBR cf.pdb.set_trace()
-    # Write cleaned bodies to a file, one body per line, for visual review.
-    outfile = tmpdir + a_fname + '.out'
-    with open(outfile, 'w') as f:
-        f.write('\n'.join(clean_ans_bodies_l))
     return clean_ans_bodies_l
 
 
