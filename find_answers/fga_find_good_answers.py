@@ -484,7 +484,6 @@ def analyze_text(qagroup_df, numlines, a_fname, progress_msg_factor):
     """
     global popular_qa_df
 
-    #TBD.1, This code may write o/p to file but should not; fix nl module.
     cf.logger.info("NLP Step 2. Process the words of each input line.")
     clean_ans_bodies_l = nl.clean_raw_data(
         a_fname, progress_msg_factor, qagroup_df, TMPDIR)
@@ -592,7 +591,6 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df ):
 
     # Show prompt & wait for a cmd.
     print("======================\n")
-    # TBD print("Scroll up to read current question and answer.")
     cmd_prompt = "Enter a command: q[uit] [m]enu  ...  [h]elp: "
     while user_cmd == "":  # Repeat the request if only the Enter key is pressed.
         user_cmd = input(cmd_prompt)
@@ -605,22 +603,17 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df ):
             print(user_menu)
             user_cmd = ''
         elif user_cmd.lower() == 'q':
-            print("Save data and Quit the program.")
-            # TBD, show summary & quit?
-            # TBD outfile.flush()
-            # TBD, save more data?
+            # print("Save data and Quit the program.")
+            print("Quit the program.")
             log_msg = cf.log_file + ' - Quit by user request; Finish logging for ' + \
                 os.path.basename(__file__) + '\n'
             cf.logger.warning(log_msg)
             raise SystemExit()
         elif user_cmd == '?' or user_cmd == 'h':
             print(user_menu)
-            # TBD print some detailed help?
             # Clear user_cmd here to avoid infinite repetition of while loop.
             user_cmd = ''
         elif user_cmd.lower() == 's':
-            # TBD print('\n### Next ###################\n')
-            # TBD user_cmd = show_current_q_a(q_id, q_title, q_body, row)
             user_cmd = ''
             if qa_df.empty:
                 print("WARN: dataframe empty or not found; try restarting.")
@@ -702,13 +695,15 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df ):
     # D print("#D Last stmt of show_menu(); return.\n")
 
     # Save df before exit, if quit cmd is not used.
-    # TBD Same code used for 'q' cmd; refactor both.
-    # TBD print("Save data and Quit the program.")
+    # TBD:
+    # Same code used for 'q' cmd; refactor both.
+    # print("Save data and Quit the program.")
     # Save only the needed fields to the file.
-    # TBD columns_l = ['Id', 'ParentId', 'Grade', 'Notes', 'Title', 'Body']
-    # TBD outfile = open(DATADIR + 'graded_popular_qa.csv', 'w')
-    # TBD graded_df[columns_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
-    # TBD outfile.flush()
+    # TBD:
+    # columns_l = ['Id', 'ParentId', 'Grade', 'Notes', 'Title', 'Body']
+    # outfile = open(DATADIR + 'graded_popular_qa.csv', 'w')
+    # graded_df[columns_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
+    # outfile.flush()
 
     return
 
