@@ -227,11 +227,10 @@ def config_data():
 
 
 def read_data(ans_file, ques_file):
-    """Read the csv i/p files and store data into a pandas data frame.
+    """Read the csv i/p files and store data into pandas data frames.
     Compute a factor that dictates how progress will be indicated
     during read operations.
     """
-    # TBD, Maybe rm latin-1 encoding here also?
     ans_df = pd.read_csv(
         ans_file,
         encoding='latin-1',
@@ -457,19 +456,9 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, aa_df, numlines, a_fname
         cf.logger.info('qagroup_df.head(1): ')
         cf.logger.info(qagroup_df.head(1))
 
+        # Analyze data w/ nlp s/w.
         popular_qa_df = analyze_text(
              qagroup_df, numlines, a_fname, progress_msg_factor)
-
-        #
-        # TBD
-        # Analyze qagroup_df w/ nlp s/w in this loop;
-        # or save each qagroup_df to a separate df for later processing;
-        # or save each qagroup_df to a disk file for later processing;
-        # or move this code to the nlp processing section of the program.
-        #
-
-    # D print('\n#D fga, End of debug code; exiting.')
-    # D raise SystemExit()
 
     return popular_qa_df
 
