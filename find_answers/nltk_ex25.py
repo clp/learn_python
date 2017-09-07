@@ -188,13 +188,9 @@ def make_bag_of_words(clean_ans_bodies_l):
     return (vocab, dist)
 
 
-def sort_save_vocab(suffix, vocab, dist, a_fname, tmpdir):
+def sort_vocab(vocab, dist):
     """
-    Sort and save vocabulary data to a list and to a file
-    with a specified suffix.
-
-    For each item in the bag of words, print the vocabulary word and
-    the number of times it appears in the training set
+    Sort vocabulary data into a list.
     """
     count_tag_l = []
     word_freq_d = {}
@@ -205,11 +201,6 @@ def sort_save_vocab(suffix, vocab, dist, a_fname, tmpdir):
     # Sort the list of tuples by count.
     words_sorted_by_count_l = sorted(count_tag_l, key=lambda x: x[0])
 
-    # Write sorted vocab to a file.
-    outfile = tmpdir + a_fname + suffix
-    with open(outfile, 'w') as f:
-        for count, word in words_sorted_by_count_l:
-            print(count, word, file=f)
     return words_sorted_by_count_l 
 
 

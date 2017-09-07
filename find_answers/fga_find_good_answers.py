@@ -463,6 +463,20 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, aa_df, numlines, a_fname
     return popular_qa_df
 
 
+def save_vocab(suffix, words_sorted_by_count_l, a_fname, TMPDIR):
+    """
+    Save vocabulary data to a file with a specified suffix.
+
+    For each item in the bag of words, print the vocabulary word and
+    the number of times it appears in the training set
+    """
+    # Write sorted vocab to a file.
+    outfile = TMPDIR + a_fname + suffix
+    with open(outfile, 'w') as f:
+        for count, word in words_sorted_by_count_l:
+            print(count, word, file=f)
+
+
 def analyze_text(qagroup_df, numlines, a_fname, progress_msg_factor):
     """Use a Q&A group of one Q w/ its A's for i/p.
     Process the text data w/ the routines in the nltk module, which use
@@ -481,8 +495,8 @@ def analyze_text(qagroup_df, numlines, a_fname, progress_msg_factor):
     (vocab, dist) = nl.make_bag_of_words(clean_ans_bodies_l)
     # D print('\n#D, vocab[:1]')
     # D print(vocab[:1])
-    words_sorted_by_count_l = nl.sort_save_vocab(
-        '.vocab', vocab, dist, a_fname, TMPDIR)
+    words_sorted_by_count_l = nl.sort_vocab(vocab, dist)
+    save_vocab('.vocab', words_sorted_by_count_l, a_fname, TMPDIR)
     # Save the original list for later searching.
     words_sorted_by_count_main_l = words_sorted_by_count_l
 
@@ -503,7 +517,8 @@ def analyze_text(qagroup_df, numlines, a_fname, progress_msg_factor):
         top, score_top_n_df, num_selected_recs, progress_msg_factor, qagroup_df)
     cf.logger.info('make_bag_of_words(top_n_bodies)')
     (vocab, dist) = nl.make_bag_of_words(top_n_bodies)
-    nl.sort_save_vocab('.vocab.hiscore', vocab, dist, a_fname, TMPDIR)
+    words_sorted_by_count_l = nl.sort_vocab(vocab, dist)
+    save_vocab('.vocab.hiscore', words_sorted_by_count_l, a_fname, TMPDIR)
 
     cf.logger.info(
         "NLP Step 6. Find most freq words for low-score Answers, "
@@ -520,7 +535,8 @@ def analyze_text(qagroup_df, numlines, a_fname, progress_msg_factor):
             top, score_top_n_df, num_selected_recs, progress_msg_factor, qagroup_df)
         cf.logger.info('make_bag_of_words(bot_n_bodies)')
         (vocab, dist) = nl.make_bag_of_words(bot_n_bodies)
-        nl.sort_save_vocab('.vocab.loscore', vocab, dist, a_fname, TMPDIR)
+        words_sorted_by_count_l = nl.sort_vocab(vocab, dist)
+        save_vocab('.vocab.loscore', words_sorted_by_count_l, a_fname, TMPDIR)
 
     cf.logger.info("NLP Step 7. Search lo-score A's for hi-score text.")
     qa_with_hst_df = nl.search_for_terms(
