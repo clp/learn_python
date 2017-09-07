@@ -727,13 +727,13 @@ def build_stats(qa_df, or_df):
     # Add new column to df & initlz it.
     qa_stats_df = qa_stats_df.assign(BodyLength = qa_stats_df.Id)
 
-    #TBD.1.Sun2017_0806_14:16  Chg qa_df to qa_stats_df, unless other columns needed:
     for index, row in qa_df.iterrows():
         ouid = row['OwnerUserId']
         #D print("#D qa_stats_df index, ouid: ", index, ouid )
         try:
             owner_rep = or_df.loc[or_df['OwnerUserId'] == ouid, 'MeanScore'].iloc[0]
             #D print("#D qa_stats_df index, owner_rep: ", index, owner_rep )
+            # Add new column to df.
             qa_stats_df.loc[index, 'OwnerRep'] = owner_rep
         except IndexError:
             # TBD, Some answers in the data file were made by Owners
@@ -960,6 +960,12 @@ def get_parser():
         default=10,
         type=int)
 
+    parser.add_argument(
+        '-q',
+        '--quit',
+        help='Stop the program before showing the menu; used for testing',
+        action='store_true')
+
     """
     parser.add_argument(
         '-p',
@@ -1002,6 +1008,14 @@ if __name__ == '__main__':
     main(popular_qa_df)
 
     owner_reputation_df = pd.DataFrame()
+
+    if args['quit']:
+        print('Quit the program and don\'t show menu.')
+        log_msg = cf.log_file + ' - Quit by user request; Finish logging for ' + \
+            os.path.basename(__file__) + '\n'
+        cf.logger.warning(log_msg)
+        raise SystemExit()
+
     show_menu(popular_qa_df, all_ans_df, owner_reputation_df )
 
     log_msg = cf.log_file + ' - Finish logging for ' + \
