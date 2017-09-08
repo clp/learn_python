@@ -284,7 +284,7 @@ def gd2_group_data(aa_df):
     cf.logger.info(owner_grouped_df.tail(num_owners))
     if args['verbose']:
         print('#D gd2: Show owners with ', str(num_owners), ' highest MeanScores.')
-        # See highest scores at bottom:
+        # See highest scores at bottom of sorted list:
         print(owner_grouped_df.tail(num_owners))
         print()
 
@@ -295,11 +295,12 @@ def group_data(aa_df):
     Group by OwnerUserId, and sort by mean score for answers only
     for each owner (question scores are not counted).
     Make a numpy array of owners w/ highest mean scores.
+
     TBD.1, Find low score answers for these hi-score owners;
     then mark the low score  answers for evaluation.
     Low score is any score below lo_score_limit.
     """
-    print('owner_grouped_df: Group by owner and sort by mean score for each owner.')
+    print('group_data(): Group by owner and sort by mean score for each owner.')
     owner_grouped_df = aa_df.groupby('OwnerUserId')
     owner_grouped_df = owner_grouped_df[[
         'Score']].mean().sort_values(['Score'])
@@ -731,7 +732,7 @@ def build_stats(qa_df, or_df):
         ouid = row['OwnerUserId']
         #D print("#D qa_stats_df index, ouid: ", index, ouid )
         try:
-            owner_rep = or_df.loc[or_df['OwnerUserId'] == ouid, 'MeanScore'].iloc[0]
+            owner_rep = round(or_df.loc[or_df['OwnerUserId'] == ouid, 'MeanScore'].iloc[0])
             #D print("#D qa_stats_df index, owner_rep: ", index, owner_rep )
             # Add new column to df.
             qa_stats_df.loc[index, 'OwnerRep'] = owner_rep
@@ -750,13 +751,13 @@ def build_stats(qa_df, or_df):
     #D print(qa_stats_df.head(5))
     qa_stats_df = qa_stats_df[['Id', 'ParentId', 'OwnerUserId', 'Score', 'BodyLength', 'OwnerRep', 'hstCount']]
 
-    own_rep_file = DATADIR + 'qa_stats.csv'
-    save_prior_file('', own_rep_file)
-    qa_stats_df.to_csv(own_rep_file)
+    stats_fname = DATADIR + 'qa_stats.csv'
+    save_prior_file('', stats_fname)
+    qa_stats_df.to_csv(stats_fname)
 
-    own_rep_file = DATADIR + 'qa_stats.html'
-    save_prior_file('', own_rep_file)
-    qa_stats_df.to_html(own_rep_file)
+    stats_fname = DATADIR + 'qa_stats.html'
+    save_prior_file('', stats_fname)
+    qa_stats_df.to_html(stats_fname)
 
     return qa_stats_df
 
