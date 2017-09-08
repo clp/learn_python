@@ -798,9 +798,10 @@ def draw_histogram_plot(plot_df):
     fig, ax = plt.subplots(1, 1)
     ax.get_xaxis().set_visible(True)
     plot_df = plot_df[['Score']]
-    # TBD, These bins used for debugging; replace.
-    histo_bins = [-10, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
-                  13, 14, 15, 16, 17, 18, 19, 20, 25, 30, 35, 40, 45, 50]
+    # D These custom sized bins are used for debugging.
+    # histo_bins = [-10, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
+                  # 13, 14, 15, 16, 17, 18, 19, 20, 25, 30, 35, 40, 45, 50]
+    histo_bins = [-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
     plot_df.plot.hist(ax=ax, figsize=(6, 6), bins=histo_bins)
     plt.show(block=False)
 
