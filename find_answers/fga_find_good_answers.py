@@ -261,6 +261,12 @@ def find_popular_ques(aa_df, a_fname):
 
 
 #TBD, Refactor the two group_data() funcs.
+    # Thu2017_0907_23:30 , Should lo_score*df be returned for use elsewhere?
+    # It is printed to file, maybe to log.
+    # Is it needed to find good answers?
+    # Also chk find_question_ids() ;  common code.
+    # Has copied lines from group_data().
+    # Does not have lo_score* vars & code.
 def gd2_group_data(aa_df):
     """Group the contents of the answers dataframe by a specific column.
     Group by OwnerUserId, and sort by mean score for answers only
@@ -363,7 +369,6 @@ def group_data(aa_df):
     print()
 
     return top_scoring_owners_a, owner_grouped_df
-
 
 def find_question_ids(top_scoring_owners_a, aa_df):
     """Make a list of all answer records by the high-score owners.

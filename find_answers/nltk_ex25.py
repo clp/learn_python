@@ -68,22 +68,15 @@ import re
 import nltk
 from nltk.corpus import stopwords
 
-#TBD nltk.download()
-    # Note: Did this download once & it took 90 minutes;
-    # it downloaded text data sets, including stop words.
-    # Are there any issues btwn py2 & py3 for nltk?
-    # S/w installed at ~/nltk_data/.
-    # You can use the web site & only d/l some parts if you don't need all.
-    # Add code to check for current files on local disk before d/l.
-nltk.download('stopwords')
-
-
 def convert_text_to_words( raw_q_a ):
-    """ Convert a raw stackoverflow question or answer
+    """ Check and download stopwords if not found locally.
+    Convert a raw stackoverflow question or answer
     to a string of words.
     The input is a single string (a raw ques or ans entry), and
     the output is a single string (a preprocessed ques or ans).
     """
+    nltk.download('stopwords')
+
     # 1. Remove HTML
     q_a_text = BeautifulSoup(raw_q_a, "lxml").get_text()
 
