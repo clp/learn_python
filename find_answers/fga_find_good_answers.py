@@ -219,8 +219,10 @@ def config_data():
 
     a_infile = INDIR + a_fname
     q_infile = INDIR + q_fname
+    a_out_vocab_file = DATADIR + a_fname + '.vocab'
 
     print('Input files, q & a:\n' + q_infile + '\n' + a_infile)
+    print('Output vocab file:  ' + a_out_vocab_file)
     print()
 
     return a_fname, a_infile, q_infile

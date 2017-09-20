@@ -68,14 +68,17 @@ import re
 import nltk
 from nltk.corpus import stopwords
 
+# Check and download stopwords if not found locally.
+nltk.download('stopwords')
+
+
 def convert_text_to_words( raw_q_a ):
-    """ Check and download stopwords if not found locally.
+    """
     Convert a raw stackoverflow question or answer
     to a string of words.
     The input is a single string (a raw ques or ans entry), and
     the output is a single string (a preprocessed ques or ans).
     """
-    nltk.download('stopwords')
 
     # 1. Remove HTML
     q_a_text = BeautifulSoup(raw_q_a, "lxml").get_text()
