@@ -356,18 +356,18 @@ def group_data(aa_df):
     # they have low scores.
     # View these answers and evaluate them manually; and analyze them
     # with other s/w.
-    lo_scores_for_top_users_df = pd.concat(owners_df_l)
+    lo_scores_for_top_owners_df = pd.concat(owners_df_l)
     print('lo_score_limit: ', lo_score_limit)
-    print('Length of lo_scores_for_top_users_df: ',
-          len(lo_scores_for_top_users_df))
-    outfile = DATADIR + 'lo_scores_for_top_users.csv'
-    lo_scores_for_top_users_df.to_csv(
+    print('Length of lo_scores_for_top_owners_df: ',
+          len(lo_scores_for_top_owners_df))
+    outfile = DATADIR + 'lo_scores_for_top_owners.csv'
+    lo_scores_for_top_owners_df.to_csv(
         outfile, header=True, index=None, sep=',', mode='w')
-    cf.logger.info('group_data(): lo_scores_for_top_users_df: ')
-    cf.logger.info(lo_scores_for_top_users_df)
+    cf.logger.info('group_data(): lo_scores_for_top_owners_df: ')
+    cf.logger.info(lo_scores_for_top_owners_df)
     if args['verbose']:
-        print('lo_scores_for_top_users_df: ')
-        print(lo_scores_for_top_users_df)
+        print('lo_scores_for_top_owners_df: ')
+        print(lo_scores_for_top_owners_df)
     print()
 
     return top_scoring_owners_a, owner_grouped_df
@@ -387,13 +387,13 @@ def find_question_ids(top_scoring_owners_a, aa_df):
                                  'ParentId', 'Score']][answered_by_owner_sr]
         owners_df_l.append(answers_df)
 
-    hi_scoring_users_df = pd.concat(owners_df_l)
-    # D print('Length of hi_scoring_users_df: ', len(hi_scoring_users_df))
-    # D print('hi_scoring_users_df: ')
-    # D print(hi_scoring_users_df)
+    hi_scoring_owners_df = pd.concat(owners_df_l)
+    # D print('Length of hi_scoring_owners_df: ', len(hi_scoring_owners_df))
+    # D print('hi_scoring_owners_df: ')
+    # D print(hi_scoring_owners_df)
 
     # Get list of unique ParentId's:
-    parent_id_l = list(set(hi_scoring_users_df['ParentId']))
+    parent_id_l = list(set(hi_scoring_owners_df['ParentId']))
     # D print('parent_id_l: ')
     # D print(parent_id_l)
     # D print()
@@ -987,7 +987,7 @@ def get_parser():
         action='store_true')
     parser.add_argument(
         '-t',
-        '--top_users',
+        '--top_owners',
         help='find lo-score answers by hi-scoring owners',
         action='store_true')
     """
