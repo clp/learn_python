@@ -374,9 +374,9 @@ def group_data(aa_df):
 
 def find_question_ids(top_scoring_owners_a, aa_df):
     """Make a list of all answer records by the high-score owners.
-    Use that list to build a list of Question Id's (= ParentId)
+    Use that list to build a list of ParentId's (ie, questions)
     to collect for evaluation.
-    Return that list of question Id's.
+    Return that list of ParentId's.
     """
     owners_df_l = []
     for owner in top_scoring_owners_a:
@@ -402,10 +402,11 @@ def find_question_ids(top_scoring_owners_a, aa_df):
 
 def select_questions(parent_id_l, popular_ids_a):
     """Make a list of questions to use in further processing.
-    pop_and_top_l:
-    Find parent IDs that are popular (have several answers), and
-    assume that some of those answers come from top owners
-    (owners who have high mean scores).
+
+    Select popular questions (those with several answers),
+    that have answers from top-scoring owners (owners with
+    a high mean score).  Return that list of ParentId's in
+    pop_and_top_l.
 
     Set the size of the following list slices to get enough o/p to analyze.
     For i/p data files q6 and a6:
@@ -427,8 +428,8 @@ def select_questions(parent_id_l, popular_ids_a):
 
 
 def combine_related_q_and_a(pop_and_top_l, all_ques_df, aa_df, numlines, a_fname, progress_msg_factor):
-    """Get each Q in the list of ParentId's, and the related A's.
-    Loop over all the question Id's and store all Q & A data in a dataframe.
+    """Get each Q in the list of selected ParentId's, and the related A's.
+    Loop over each question and store the Q & A data in a dataframe.
 
     Then call analyze_text() on each group of Q with A's,
     which calls the routines that perform the natural language processing
@@ -552,6 +553,9 @@ def analyze_text(qagroup_df, numlines, a_fname, progress_msg_factor):
         num_hi_score_terms, qagroup_df)
     popular_qa_df = pd.concat(
         [popular_qa_df, qa_with_hst_df]).reset_index(drop=True)
+    cf.logger.debug('popular_qa_df: len')
+    cf.logger.debug(len(popular_qa_df))
+
     return popular_qa_df
 
 
