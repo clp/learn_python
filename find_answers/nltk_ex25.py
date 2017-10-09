@@ -77,7 +77,7 @@ def convert_text_to_words( raw_q_a ):
     Convert a raw stackoverflow question or answer
     to a string of words.
     The input is a single string (a raw ques or ans entry), and
-    the output is a single string (a preprocessed ques or ans).
+    the output is a single string (a processed ques or ans).
     """
 
     # 1. Remove HTML
@@ -99,8 +99,8 @@ def convert_text_to_words( raw_q_a ):
     # 5. Remove stop words
     meaningful_words = [w for w in words if not w in stops]
 
-    # 6. Join the words back into one string separated by space,
-    # and return the result.
+    # 6. Join the words back into one string of words, each word
+    # separated by a space, and return the result.
     return( " ".join( meaningful_words ))
 
 
@@ -117,11 +117,11 @@ def clean_raw_data(a_fname, progress_msg_factor, qagroup_df, tmpdir ):
     # Build a list that holds the cleaned text from each answer's body field.
     # Use it to find terms that match terms found in hi-score Answers.
     for i in range( 0, num_bodies ):
-        clean_body = convert_text_to_words( qagroup_df["Body"][i] )
-        clean_ans_bodies_l.append(clean_body)
+        clean_body_s = convert_text_to_words(qagroup_df["Body"][i] )
+        clean_ans_bodies_l.append(clean_body_s)
         #
         # Add new column to Answers df.
-        qagroup_df.loc[i,"CleanBody"] = clean_body
+        qagroup_df.loc[i,"CleanBody"] = clean_body_s
         # Print a progress message; default is for every 10% of i/p data handled.
         if( (i+1) % progress_msg_factor == 0 ):
             clean_q_a = convert_text_to_words( qagroup_df["Body"][i] )
@@ -202,7 +202,7 @@ def sort_vocab(vocab, dist):
 
 def sort_answers_by_score(numlines, qagroup_df):
     """
-    Build a sorted dataframe of answers.
+    Build a dataframe of answers sorted by score.
     """
     score_df = qagroup_df.sort_values(['Score'])
     score_df = score_df[['Id', 'Score']]
@@ -226,7 +226,14 @@ def sort_answers_by_score(numlines, qagroup_df):
 
 def find_freq_words(top, score_top_n_df, num_selected_recs, progress_msg_factor, qagroup_df):
     """
-    Build a list of the most frequent terms found in answers.
+    Build a list where each element is a string with terms from
+    the body text of an answer.
+    Select the answers based on their score.
+
+    If top is set to True, use the highest-scoring answers.
+    If top is False, use the lowest-scoring answers.
+
+    The size of the list is equal to the variable, num_selected_recs.
     """
     top_n_bodies = []
     score_df_l = []
@@ -239,10 +246,10 @@ def find_freq_words(top, score_top_n_df, num_selected_recs, progress_msg_factor,
     progress_count = 0
     for i in score_df_l:
         progress_count += 1
-        top_n_bodies.append( convert_text_to_words( df8["Body"][i] ))
-        # Print a progress message for every 10% of i/p data handled.
+        clean_q_a = convert_text_to_words( df8["Body"][i] )
+        top_n_bodies.append(clean_q_a)
+        # Print a progress message (default: for every 10% of i/p data handled).
         if( (progress_count+1) % progress_msg_factor == 0 ):
-            clean_q_a = convert_text_to_words( df8["Body"][i] )
             #D cf.logger.debug("Body for Id %d " % ( i))
             #D cf.logger.debug('  Original text:\n' + df8['Body'][i][:70])
             cf.logger.debug('  Partial slice of cleaned text:\n' + clean_q_a[:70])
