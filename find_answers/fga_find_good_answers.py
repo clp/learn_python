@@ -187,18 +187,18 @@ def main(popular_qa_df):
 
 
 def check_install():
-    """Verify that some required directories and files exist.
+    """Check that some required directories and files exist.
     """
     if not os.path.isdir(DATADIR):
-        print("ERROR, Did not find data/ dir; re-install the fga s/w.")
+        print("ERR, Did not find data/ dir; re-install the fga s/w.")
         raise SystemExit()
 
     if not os.path.isdir(INDIR):
-        print("ERROR, Did not find indir/ dir; re-install the fga s/w.")
+        print("ERR, Did not find indir/ dir; re-install the fga s/w.")
         raise SystemExit()
 
     if not os.path.isfile(INDIR + FILEA3):
-        print("ERROR, Did not find this input file; re-install the fga s/w: ", INDIR + FILEA3)
+        print("ERR, Did not find this input file; re-install the fga s/w: ", INDIR + FILEA3)
         raise SystemExit()
 
 
