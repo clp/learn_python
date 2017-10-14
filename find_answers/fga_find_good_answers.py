@@ -669,13 +669,13 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df ):
             if popular_qa_df.empty:
                 print("WARN: dataframe empty or not found; try restarting.")
             else:
-                print("Drawing the default plot, with Score and hstCount.")
+                print("Drawing the default plot, with Score and HSTCount.")
                 draw_scatter_plot(
                     popular_qa_df,
                     'Score',
-                    'hstCount',
+                    'HSTCount',
                     'Score',
-                    'hstCount')
+                    'HSTCount')
         elif user_cmd.lower() == 'dh':
             user_cmd = ''
             if popular_qa_df.empty:
@@ -711,7 +711,7 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df ):
                 print("WARN: qa_stats_df empty or not found.")
             else:
                 print("NOTE: Drawing the qa_stats_df scatter matrix plot.")
-                draw_scatter_matrix_plot(qa_stats_df[['Score', 'BodyLength', 'OwnerRep',  'hstCount' ]])
+                draw_scatter_matrix_plot(qa_stats_df[['Score', 'BodyLength', 'OwnerRep',  'HSTCount' ]])
         else:
             print("Got bad cmd from user: ", user_cmd)
             print(user_menu)
@@ -754,7 +754,7 @@ def build_stats(qa_df, or_df):
     Plot data in scatter matrix.
     Visually look for records with high Reputation and low Score.
     """
-    qa_stats_df = qa_df[['Id','OwnerUserId','ParentId','Score','hstCount']]
+    qa_stats_df = qa_df[['Id','OwnerUserId','ParentId','Score','HSTCount']]
     # Add new column to df & initlz it.
     qa_stats_df = qa_stats_df.assign(BodyLength = qa_stats_df.Id)
 
@@ -779,7 +779,7 @@ def build_stats(qa_df, or_df):
 
     #D print('#D qa_stats_df.head(5):')
     #D print(qa_stats_df.head(5))
-    qa_stats_df = qa_stats_df[['Id', 'ParentId', 'OwnerUserId', 'Score', 'BodyLength', 'OwnerRep', 'hstCount']]
+    qa_stats_df = qa_stats_df[['Id', 'ParentId', 'OwnerUserId', 'Score', 'BodyLength', 'OwnerRep', 'HSTCount']]
 
     stats_fname = DATADIR + 'qa_stats.csv'
     save_prior_file('', stats_fname)
@@ -948,7 +948,7 @@ def write_full_df_to_html_file(in_df, wdir, wfile, columns_l):
                        'Title',
                        'Body',
                        'Score',
-                       'hstCount',
+                       'HSTCount',
                        'HiScoreTerms',
                        'OwnerUserId',
                        'ParentId']

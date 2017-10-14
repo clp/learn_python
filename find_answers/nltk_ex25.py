@@ -281,7 +281,7 @@ def search_for_terms(words_sorted_by_count_main_l, clean_ans_bodies_l, num_hi_sc
     #  Should tmp_df not be a df?  Would a list of lists be better?
 
     qagroup_df["HiScoreTerms"] = ""
-    qagroup_df["hstCount"] = 0
+    qagroup_df["HSTCount"] = 0
 
     #D print("\nTerms from hi-score Answers.")
     cf.logger.info("Terms from hi-score Answers.")
@@ -300,7 +300,7 @@ def search_for_terms(words_sorted_by_count_main_l, clean_ans_bodies_l, num_hi_sc
                 #TBD, increment hst counter each time one is found.
                 #TBD, How to handle multiple instances of hst? count each occurrence?
                 #TBD, use df func to simply count number of HiScoreTerms in each row?
-                qagroup_df.loc[index, "hstCount"] += 1
+                qagroup_df.loc[index, "HSTCount"] += 1
 
 
     #D print()
@@ -327,6 +327,6 @@ def search_for_terms(words_sorted_by_count_main_l, clean_ans_bodies_l, num_hi_sc
 
     # Also write summary data to log.
     cf.logger.info("Check low score Answers for useful data: ")
-    cf.logger.info(qagroup_df[['Id', 'Score', 'hstCount', 'CreationDate', 'Title', 'HiScoreTerms']])
+    cf.logger.info(qagroup_df[['Id', 'Score', 'HSTCount', 'CreationDate', 'Title', 'HiScoreTerms']])
     return qagroup_df
 
