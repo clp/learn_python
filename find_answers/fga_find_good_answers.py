@@ -93,7 +93,9 @@ import nltk_ex25 as nl
 log_msg = cf.log_file + ' - Start logging for ' + os.path.basename(__file__)
 cf.logger.info(log_msg)
 
+
 DATADIR = 'data/'
+FILEA3 = 'a3_986.csv'
 INDIR = 'indir/'
 MAXCOLWID = 20
 TMP = 'tmp/'
@@ -130,6 +132,7 @@ FOOTER = '''
     </body>
 </html>
 '''
+
 
 def main(popular_qa_df):
     """Analyze input data and produce o/p by calling various functions.
@@ -181,6 +184,22 @@ def main(popular_qa_df):
         outfile = DATADIR + 'qa_with_keyword.csv'
         qa_with_keyword_df[columns_l].to_csv(
             outfile, header=True, index=None, sep=',', mode='w')
+
+
+def check_install():
+    """Verify that some required directories and files exist.
+    """
+    if not os.path.isdir(DATADIR):
+        print("ERROR, Did not find data/ dir; re-install the fga s/w.")
+        raise SystemExit()
+
+    if not os.path.isdir(INDIR):
+        print("ERROR, Did not find indir/ dir; re-install the fga s/w.")
+        raise SystemExit()
+
+    if not os.path.isfile(INDIR + FILEA3):
+        print("ERROR, Did not find this input file; re-install the fga s/w: ", INDIR + FILEA3)
+        raise SystemExit()
 
 
 def init():
@@ -996,6 +1015,8 @@ def get_parser():
 
 
 if __name__ == '__main__':
+
+    check_install()
 
     parser = get_parser()
     args = vars(parser.parse_args())
