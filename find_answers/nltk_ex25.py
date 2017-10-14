@@ -242,16 +242,16 @@ def find_freq_words(top, score_top_n_df, num_selected_recs, progress_msg_factor,
         score_df_l = score_top_n_df['Id'].tail(num_selected_recs).tolist()
     else:  # Get the head of the list, lowest-score items.
         score_df_l = score_top_n_df['Id'].head(num_selected_recs).tolist()
-    df8 = qagroup_df.set_index('Id')
+    tmp_df = qagroup_df.set_index('Id')
     progress_count = 0
     for i in score_df_l:
         progress_count += 1
-        clean_q_a = convert_text_to_words( df8["Body"][i] )
+        clean_q_a = convert_text_to_words( tmp_df["Body"][i] )
         top_n_bodies.append(clean_q_a)
         # Print a progress message (default: for every 10% of i/p data handled).
         if( (progress_count+1) % progress_msg_factor == 0 ):
             #D cf.logger.debug("Body for Id %d " % ( i))
-            #D cf.logger.debug('  Original text:\n' + df8['Body'][i][:70])
+            #D cf.logger.debug('  Original text:\n' + tmp_df['Body'][i][:70])
             cf.logger.debug('  Partial slice of cleaned text:\n' + clean_q_a[:70])
     return top_n_bodies 
 
@@ -278,7 +278,6 @@ def search_for_terms(words_sorted_by_count_main_l, clean_ans_bodies_l, num_hi_sc
     #TBF
     # p.1. Separate the terms from each other so it is clear what was found
     #  and what was not found in the A's being checked.
-    #  Should tmp_df not be a df?  Would a list of lists be better?
 
     qagroup_df["HiScoreTerms"] = ""
     qagroup_df["HSTCount"] = 0
