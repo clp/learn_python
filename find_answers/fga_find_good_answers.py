@@ -551,7 +551,8 @@ def analyze_text(qagroup_df, numlines, a_fname, progress_msg_factor):
         "NLP Step 6. Find most freq words for low-score Answers, "
         "if program started in debug mode.")
     if args['debug']:
-        # Keep these data to compare w/ words for top-scoring Answers; s/b some diff.
+        # Keep these data to compare w/ words for top-scoring Answers;
+        # there should be some diff unless data set is too small.
         # If they are identical, there may be a logic problem in the code,
         # or the data set may be too small.
         score_bot_n_df = score_df[['Id']]

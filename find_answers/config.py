@@ -13,6 +13,7 @@ import logging
 log_file = "fl_fga.log"
 log_level = logging.INFO
 #TBD log_level = logging.DEBUG
+log_level = logging.DEBUG
 logging.basicConfig(
         filename=log_file,
         level=log_level,

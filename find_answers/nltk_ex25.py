@@ -202,8 +202,9 @@ def sort_vocab(vocab, dist):
 
 def sort_answers_by_score(numlines, qagroup_df):
     """
-    Build a dataframe of answers sorted by score.
+    Build a dataframe of answer Id's and their scores, sorted by score.
     """
+    import pdb; pdb.set_trace()
     score_df = qagroup_df.sort_values(['Score'])
     score_df = score_df[['Id', 'Score']]
 
