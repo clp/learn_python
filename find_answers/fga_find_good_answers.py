@@ -528,10 +528,10 @@ def analyze_text(qagroup_df, numlines, a_fname, progress_msg_factor):
     words_sorted_by_count_main_l = words_sorted_by_count_l
 
     cf.logger.info('NLP Step 4. Sort Answers by Score.')
-    score_df, num_selected_recs = nl.sort_answers_by_score(numlines, qagroup_df)
+    ids_and_scores_df, num_selected_recs = nl.sort_answers_by_score(numlines, qagroup_df)
 
     cf.logger.info('NLP Step 5. Find most freq words for top-scoring Answers.')
-    score_top_n_df = score_df[['Id']]
+    score_top_n_df = ids_and_scores_df[['Id']]
 
     cf.logger.debug("score_top_n_df.tail():")
     cf.logger.debug(score_top_n_df.tail(20))
@@ -555,7 +555,7 @@ def analyze_text(qagroup_df, numlines, a_fname, progress_msg_factor):
         # there should be some diff unless data set is too small.
         # If they are identical, there may be a logic problem in the code,
         # or the data set may be too small.
-        score_bot_n_df = score_df[['Id']]
+        score_bot_n_df = ids_and_scores_df[['Id']]
         cf.logger.debug("score_bot_n_df.head():")
         cf.logger.debug(score_bot_n_df.head(20))
         top = False

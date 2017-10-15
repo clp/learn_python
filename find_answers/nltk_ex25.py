@@ -204,8 +204,8 @@ def sort_answers_by_score(numlines, qagroup_df):
     """
     Build a dataframe of answer Id's and their scores, sorted by score.
     """
-    score_df = qagroup_df.sort_values(['Score'])
-    score_df = score_df[['Id', 'Score']]
+    ids_and_scores_df = qagroup_df.sort_values(['Score'])
+    ids_and_scores_df = ids_and_scores_df[['Id', 'Score']]
 
     # Compute the number of records to use for computation and display.
     rec_selection_ratio = 0.10  # Default 0.01?
@@ -215,13 +215,13 @@ def sort_answers_by_score(numlines, qagroup_df):
     log_msg = "  rec_selection_ratio,  number of selected recs: " + str(rec_selection_ratio) + ", " + str(num_selected_recs)
     cf.logger.info(log_msg)
     cf.logger.info('Lowest scoring Answers:')
-    cf.logger.info(score_df.head())
-    #D print(score_df.head(num_selected_recs), '\n')
+    cf.logger.info(ids_and_scores_df.head())
+    #D print(ids_and_scores_df.head(num_selected_recs), '\n')
     cf.logger.info('Highest scoring Answers:')
-    cf.logger.info(score_df.tail())
-    #D print(score_df.tail(num_selected_recs), '\n')
+    cf.logger.info(ids_and_scores_df.tail())
+    #D print(ids_and_scores_df.tail(num_selected_recs), '\n')
 
-    return score_df, num_selected_recs
+    return ids_and_scores_df, num_selected_recs
 
 
 def find_freq_words(top, score_top_n_df, num_selected_recs, progress_msg_factor, qagroup_df):
