@@ -540,10 +540,10 @@ def analyze_text(qagroup_df, numlines, a_fname, progress_msg_factor):
         "For top ans: Cleaning and parsing the training set bodies...")
 
     top = True
-    top_n_bodies = nl.find_freq_words(
+    selected_bodies_l = nl.find_freq_words(
         top, score_top_n_df, num_selected_recs, progress_msg_factor, qagroup_df)
-    cf.logger.info('make_bag_of_words(top_n_bodies)')
-    (vocab, dist) = nl.make_bag_of_words(top_n_bodies)
+    cf.logger.info('make_bag_of_words(selected_bodies_l)')
+    (vocab, dist) = nl.make_bag_of_words(selected_bodies_l)
     words_sorted_by_count_l = nl.sort_vocab(vocab, dist)
     save_vocab('.vocab.hiscore', words_sorted_by_count_l, a_fname, TMPDIR)
 

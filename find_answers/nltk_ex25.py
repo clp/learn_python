@@ -235,7 +235,7 @@ def find_freq_words(top, score_top_n_df, num_selected_recs, progress_msg_factor,
 
     The size of the list is equal to the variable, num_selected_recs.
     """
-    top_n_bodies = []
+    selected_bodies_l = []
     score_df_l = []
     # Convert dataframe to list of Id's, to get the body of each Id.
     if top: # Get the tail of the list, highest-score items.
@@ -247,13 +247,13 @@ def find_freq_words(top, score_top_n_df, num_selected_recs, progress_msg_factor,
     for i in score_df_l:
         progress_count += 1
         clean_q_a = convert_text_to_words( tmp_df["Body"][i] )
-        top_n_bodies.append(clean_q_a)
+        selected_bodies_l.append(clean_q_a)
         # Print a progress message (default: for every 10% of i/p data handled).
         if( (progress_count+1) % progress_msg_factor == 0 ):
             #D cf.logger.debug("Body for Id %d " % ( i))
             #D cf.logger.debug('  Original text:\n' + tmp_df['Body'][i][:70])
             cf.logger.debug('  Partial slice of cleaned text:\n' + clean_q_a[:70])
-    return top_n_bodies 
+    return selected_bodies_l 
 
 
 def search_for_terms(words_sorted_by_count_main_l, clean_ans_bodies_l, num_hi_score_terms, qagroup_df):
