@@ -136,7 +136,7 @@ def make_bag_of_words(clean_ans_bodies_l):
     """Collect and count words (or phrases = ngrams) in the text.
 
     To use ngrams instead of single words in the analysis,
-    specify 'ngram_range = (3,5)' (for example) in the args for
+    specify 'ngram_range = (3,5)' (for example) in the arguments for
     CountVectorizer.
 
     Using this arg & pattern will include 1-letter

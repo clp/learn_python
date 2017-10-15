@@ -205,7 +205,7 @@ def check_install():
 def init():
     """Initialize some settings for the program.
     """
-    if args['debug']:
+    if cli_args_d['debug']:
         end = 55
         print('Running in debug mode.')
         print('  end set to: ', end)
@@ -309,7 +309,7 @@ def gd2_group_data(aa_df):
     print()
     cf.logger.info('gd2_group_data(): Show owners with highest MeanScores.')
     cf.logger.info(owner_grouped_df.tail(num_owners))
-    if args['verbose']:
+    if cli_args_d['verbose']:
         print('#D gd2: Show owners with ', str(num_owners), ' highest MeanScores.')
         # See highest scores at bottom of sorted list:
         print(owner_grouped_df.tail(num_owners))
@@ -343,7 +343,7 @@ def group_data(aa_df):
     print()
     cf.logger.info('group_data(): Show owners with ... highest MeanScores.')
     cf.logger.info(owner_grouped_df.tail(num_owners))
-    if args['verbose']:
+    if cli_args_d['verbose']:
         print('Show owners with ', str(num_owners), ' highest MeanScores.')
         # See highest scores at bottom:
         print(owner_grouped_df.tail(num_owners))
@@ -356,7 +356,7 @@ def group_data(aa_df):
     # D print()
 
     owners_df_l = []
-    lo_score_limit = args['lo_score_limit']
+    lo_score_limit = cli_args_d['lo_score_limit']
     for owner in top_scoring_owners_a:
         # Get a pandas series of booleans for filtering:
         answered_by_o2_sr = (aa_df.OwnerUserId == owner)
@@ -384,7 +384,7 @@ def group_data(aa_df):
         outfile, header=True, index=None, sep=',', mode='w')
     cf.logger.info('group_data(): lo_scores_for_top_owners_df: ')
     cf.logger.info(lo_scores_for_top_owners_df)
-    if args['verbose']:
+    if cli_args_d['verbose']:
         print('lo_scores_for_top_owners_df: ')
         print(lo_scores_for_top_owners_df)
     print()
@@ -441,7 +441,7 @@ def select_questions(parent_id_l, popular_ids_a):
     cf.logger.info(log_msg)
     log_msg = "select_questions(): pop_and_top_l, top-N parent id\'s to examine: " + str(pop_and_top_l[0:10])
     cf.logger.info(log_msg)
-    if args['verbose']:
+    if cli_args_d['verbose']:
         print('pop_and_top_l, parent id\'s to examine: ', pop_and_top_l[:])
     return pop_and_top_l
 
@@ -550,7 +550,7 @@ def analyze_text(qagroup_df, numlines, a_fname, progress_msg_factor):
     cf.logger.info(
         "NLP Step 6. Find most freq words for low-score Answers, "
         "if program started in debug mode.")
-    if args['debug']:
+    if cli_args_d['debug']:
         # Keep these data to compare w/ words for top-scoring Answers;
         # there should be some diff unless data set is too small.
         # If they are identical, there may be a logic problem in the code,
@@ -1020,7 +1020,7 @@ if __name__ == '__main__':
     check_install()
 
     parser = get_parser()
-    args = vars(parser.parse_args())
+    cli_args_d = vars(parser.parse_args())
 
     # Set the number of top scoring owners to select from the data.
     num_owners = 10  # Default is 10.
@@ -1044,7 +1044,7 @@ if __name__ == '__main__':
 
     owner_reputation_df = pd.DataFrame()
 
-    if args['quit']:
+    if cli_args_d['quit']:
         print('Quit the program and don\'t show menu.')
         log_msg = cf.log_file + ' - Quit by user request; Finish logging for ' + \
             os.path.basename(__file__) + '\n'
