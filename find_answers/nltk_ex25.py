@@ -50,26 +50,23 @@ import csv
 import config as cf
 #TBD import logging
 
-
-# ----------------------------------------------------------
-# TBD Hard-coded i/p file to use for temporary debugging.
-#
-# a_fname = 'pid_231767.csv'  # Based on o/p from fga*.py?
-# ----------------------------------------------------------
-
-
-log_msg = cf.log_file + ' - Start logging for ' + os.path.basename(__file__)
-cf.logger.info(log_msg)
-
-# Process the words of each input line.
-
 from bs4 import BeautifulSoup
 import re
 import nltk
 from nltk.corpus import stopwords
 
-# Check and download stopwords if not found locally.
-nltk.download('stopwords')
+def main():
+    # ----------------------------------------------------------
+    # TBD Hard-coded i/p file to use for temporary debugging.
+    #
+    # a_fname = 'pid_231767.csv'  # Based on o/p from fga*.py?
+    # ----------------------------------------------------------
+
+    log_msg = cf.log_file + ' - Start logging for ' + os.path.basename(__file__)
+    cf.logger.info(log_msg)
+
+    # Check and download stopwords if not found locally.
+    nltk.download('stopwords')
 
 
 def convert_text_to_words( raw_q_a ):
@@ -329,3 +326,5 @@ def search_for_terms(words_sorted_by_count_main_l, clean_ans_bodies_l, num_hi_sc
     cf.logger.info(qagroup_df[['Id', 'Score', 'HSTCount', 'CreationDate', 'Title', 'HiScoreTerms']])
     return qagroup_df
 
+if __name__ == '__main__':
+    main()
