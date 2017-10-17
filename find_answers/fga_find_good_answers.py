@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-
+#
 # Using ~/anaconda3/bin/python: Python 3.5.2 :: Anaconda 4.2.0 (64-bit)
 # Using Python 3.4.5 :: Anaconda 4.3.0 (64-bit), since Tue2017_0710
 # Requires Python 3; does not work w/ Python 2.
-
+#
 """fga_find_good_answers.py
 
 
@@ -147,7 +147,7 @@ def main(popular_qa_df):
         config_data()
 
     all_ans_df, all_ques_df, progress_msg_factor, numlines = \
-        read_data( a_infile, q_infile)
+        read_data(a_infile, q_infile)
 
     popular_ids = \
         find_popular_ques(all_ans_df, a_fname)
@@ -213,7 +213,7 @@ def init():
 
     # Initialize settings for pandas.
     pd.set_option('display.width', 0)  # 0=no limit, for debug
-    pd.set_option('display.max_colwidth', MAXCOLWID) # -1=no limit, for debug
+    pd.set_option('display.max_colwidth', MAXCOLWID)  # -1=no limit, for debug
 
     # Don't show commas in large numbers.
     # Show OwnerUserId w/o '.0' suffix.
@@ -280,7 +280,6 @@ def find_popular_ques(aa_df, a_fname):
     return popular_ids
 
 
-
 #TBD, Refactor the two group_data() funcs.
     # Thu2017_0907_23:30 , Should lo_score*df be returned for use elsewhere?
     # It is printed to file, maybe to log.
@@ -317,6 +316,7 @@ def gd2_group_data(aa_df):
 
     return owner_grouped_df
 
+
 def group_data(aa_df):
     """Group the contents of the answers dataframe by a specific column.
     Group by OwnerUserId, and sort by mean score for answers only
@@ -352,7 +352,7 @@ def group_data(aa_df):
     # Take slice of owners w/ highest mean scores; convert to int.
     owners_a = owner_grouped_df['OwnerUserId'].values
     top_scoring_owners_a = np.vectorize(np.int)(owners_a[-num_owners:])
-    # D print('top_scoring_owners_a: ', top_scoring_owners_a )
+    # D print('top_scoring_owners_a: ', top_scoring_owners_a)
     # D print()
 
     owners_df_l = []
@@ -391,6 +391,7 @@ def group_data(aa_df):
 
     return top_scoring_owners_a, owner_grouped_df
 
+
 def find_question_ids(top_scoring_owners_a, aa_df):
     """Make a list of all answer records by the high-score owners.
     Use that list to build a list of ParentId's (ie, questions)
@@ -403,7 +404,7 @@ def find_question_ids(top_scoring_owners_a, aa_df):
         answered_by_owner_sr = (aa_df.OwnerUserId == owner)
         # Get a pandas df with rows for all answers of one user:
         answers_df = aa_df[['Id', 'OwnerUserId',
-                                 'ParentId', 'Score']][answered_by_owner_sr]
+                            'ParentId', 'Score']][answered_by_owner_sr]
         owners_df_l.append(answers_df)
 
     hi_scoring_owners_df = pd.concat(owners_df_l)
@@ -602,7 +603,7 @@ def select_keyword_recs(keyword, qa_df, columns_l):
     return qak_df
 
 
-def show_menu(qa_df, all_ans_df, owner_reputation_df ):
+def show_menu(qa_df, all_ans_df, owner_reputation_df):
     """Show prompt to user; get and handle their request.
     """
     user_menu = """    The menu choices:
@@ -694,7 +695,7 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df ):
         # drm: Draw Reputation matrix, mean, answers only; scatter.
         elif user_cmd.lower() == 'drm':
             user_cmd = ''
-            owner_reputation_df = check_owner_reputation(all_ans_df, owner_reputation_df )
+            owner_reputation_df = check_owner_reputation(all_ans_df, owner_reputation_df)
             #
             if owner_reputation_df.empty:
                 print("WARN: owner reputation dataframe empty or not found.")
@@ -704,7 +705,7 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df ):
         # dsm: Draw q&a statistics matrix
         elif user_cmd.lower() == 'dsm':
             user_cmd = ''
-            owner_reputation_df = check_owner_reputation(all_ans_df, owner_reputation_df )
+            owner_reputation_df = check_owner_reputation(all_ans_df, owner_reputation_df)
             #
             qa_stats_df = build_stats(popular_qa_df, owner_reputation_df)
             #
@@ -755,16 +756,16 @@ def build_stats(qa_df, or_df):
     Plot data in scatter matrix.
     Visually look for records with high Reputation and low Score.
     """
-    qa_stats_df = qa_df[['Id','OwnerUserId','ParentId','Score','HSTCount']]
+    qa_stats_df = qa_df[['Id', 'OwnerUserId', 'ParentId', 'Score', 'HSTCount']]
     # Add new column to df & initlz it.
-    qa_stats_df = qa_stats_df.assign(BodyLength = qa_stats_df.Id)
+    qa_stats_df = qa_stats_df.assign(BodyLength=qa_stats_df.Id)
 
     for index, row in qa_df.iterrows():
         ouid = row['OwnerUserId']
-        #D print("#D qa_stats_df index, ouid: ", index, ouid )
+        #D print("#D qa_stats_df index, ouid: ", index, ouid)
         try:
             owner_rep = round(or_df.loc[or_df['OwnerUserId'] == ouid, 'MeanScore'].iloc[0])
-            #D print("#D qa_stats_df index, owner_rep: ", index, owner_rep )
+            #D print("#D qa_stats_df index, owner_rep: ", index, owner_rep)
             # Add new column to df.
             qa_stats_df.loc[index, 'OwnerRep'] = owner_rep
         except IndexError:
@@ -793,7 +794,7 @@ def build_stats(qa_df, or_df):
     return qa_stats_df
 
 
-def check_owner_reputation(all_ans_df, owner_reputation_df ):
+def check_owner_reputation(all_ans_df, owner_reputation_df):
     """Check for dataframe with reputation of each OwnerUserId.
     If not found, then calculate reputation of each OwnerUserId in the i/p data,
     based on Score of all answers they provided.
@@ -915,11 +916,11 @@ def write_full_df_to_csv_file(in_df, wdir, wfile):
     """Write full contents of all columns of a data frame to a csv file.
     """
     # Used for testing and debugging.
-    pd.set_option('display.max_colwidth', -1) # -1=no limit, for debug
+    pd.set_option('display.max_colwidth', -1)  # -1=no limit, for debug
     save_prior_file(wdir, wfile)
-    outfile = wdir + wfile 
+    outfile = wdir + wfile
     in_df.to_csv(outfile)
-    pd.set_option('display.max_colwidth', MAXCOLWID) # -1=no limit, for debug
+    pd.set_option('display.max_colwidth', MAXCOLWID)  # -1=no limit, for debug
     return
 
 
@@ -940,19 +941,19 @@ def write_full_df_to_html_file(in_df, wdir, wfile, columns_l):
     Use the list of columns included in this function
     if caller does not specify any.
     """
-    pd.set_option('display.max_colwidth', -1) # -1=no limit, for debug
+    pd.set_option('display.max_colwidth', -1)  # -1=no limit, for debug
     outfile = wdir + wfile
     save_prior_file(wdir, wfile)
     # Specify default output fields to use.
     if not columns_l:
         columns_l = ['Id',
-                       'Title',
-                       'Body',
-                       'Score',
-                       'HSTCount',
-                       'HiScoreTerms',
-                       'OwnerUserId',
-                       'ParentId']
+                     'Title',
+                     'Body',
+                     'Score',
+                     'HSTCount',
+                     'HiScoreTerms',
+                     'OwnerUserId',
+                     'ParentId']
     #
     # Save o/p to a string and do not specify an output file in
     # calling to_html().
@@ -970,7 +971,7 @@ def write_full_df_to_html_file(in_df, wdir, wfile, columns_l):
         f.write(in_s)
         f.write(FOOTER)
 
-    pd.set_option('display.max_colwidth', MAXCOLWID) # -1=no limit, for debug
+    pd.set_option('display.max_colwidth', MAXCOLWID)  # -1=no limit, for debug
     return
 
 
@@ -1051,7 +1052,7 @@ if __name__ == '__main__':
         cf.logger.warning(log_msg)
         raise SystemExit()
 
-    show_menu(popular_qa_df, all_ans_df, owner_reputation_df )
+    show_menu(popular_qa_df, all_ans_df, owner_reputation_df)
 
     log_msg = cf.log_file + ' - Finish logging for ' + \
         os.path.basename(__file__) + '\n'
