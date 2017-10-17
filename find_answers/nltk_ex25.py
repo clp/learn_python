@@ -6,7 +6,7 @@
 
    Analyze text files from stackoverflow.com data using NLTK.
 
-   NLTK is the Natural Language Toolkit, a suite of 
+   NLTK is the Natural Language Toolkit, a suite of
    Python s/w, data sets, and documents to support
    the development of Natural Language Processing.
 
@@ -55,6 +55,7 @@ import re
 import nltk
 from nltk.corpus import stopwords
 
+
 def main():
     # ----------------------------------------------------------
     # TBD Hard-coded i/p file to use for temporary debugging.
@@ -69,7 +70,7 @@ def main():
     nltk.download('stopwords')
 
 
-def convert_text_to_words( raw_q_a ):
+def convert_text_to_words(raw_q_a):
     """
     Convert a raw stackoverflow question or answer
     to a string of words.
@@ -94,14 +95,15 @@ def convert_text_to_words( raw_q_a ):
     stops.add('th')
 
     # 5. Remove stop words
-    meaningful_words = [w for w in words if not w in stops]
+    #ORG meaningful_words = [w for w in words if not w in stops]
+    meaningful_words = [w for w in words if w not in stops]
 
     # 6. Join the words back into one string of words, each word
     # separated by a space, and return the result.
-    return( " ".join( meaningful_words ))
+    return(" ".join(meaningful_words))
 
 
-def clean_raw_data(a_fname, progress_msg_factor, qagroup_df, tmpdir ):
+def clean_raw_data(a_fname, progress_msg_factor, qagroup_df, tmpdir):
     """ For all answers: Clean and parse the training set bodies.")
     """
     # Get the number of bodies based on that column's size
@@ -113,16 +115,16 @@ def clean_raw_data(a_fname, progress_msg_factor, qagroup_df, tmpdir ):
 
     # Build a list that holds the cleaned text from each answer's body field.
     # Use it to find terms that match terms found in hi-score Answers.
-    for i in range( 0, num_bodies ):
-        clean_body_s = convert_text_to_words(qagroup_df["Body"][i] )
+    for i in range(0, num_bodies):
+        clean_body_s = convert_text_to_words(qagroup_df["Body"][i])
         clean_ans_bodies_l.append(clean_body_s)
         #
         # Add new column to Answers df.
-        qagroup_df.loc[i,"CleanBody"] = clean_body_s
+        qagroup_df.loc[i, "CleanBody"] = clean_body_s
         # Print a progress message; default is for every 10% of i/p data handled.
-        if( (i+1) % progress_msg_factor == 0 ):
-            clean_q_a = convert_text_to_words( qagroup_df["Body"][i] )
-            #D cf.logger.debug("Body %d of %d" % ( i+1, num_bodies ))
+        if((i+1) % progress_msg_factor == 0):
+            clean_q_a = convert_text_to_words(qagroup_df["Body"][i])
+            #D cf.logger.debug("Body %d of %d" % (i+1, num_bodies))
             #D cf.logger.debug('  Original text: ' + qagroup_df['Body'][i])
             cf.logger.debug('  Cleaned text:  ' + clean_q_a)
 
@@ -130,7 +132,7 @@ def clean_raw_data(a_fname, progress_msg_factor, qagroup_df, tmpdir ):
 
 
 def make_bag_of_words(clean_ans_bodies_l):
-    """Collect and count words (or phrases = ngrams) in the text.
+    """Collect and count words (or phrases or ngrams) in the text.
 
     To use ngrams instead of single words in the analysis,
     specify 'ngram_range = (3,5)' (for example) in the arguments for
@@ -147,13 +149,13 @@ def make_bag_of_words(clean_ans_bodies_l):
 
     # TBD, Fails w/ MemErr with max_features at 5000; ok at 100-200.
 
-    vectorizer = CountVectorizer(analyzer = "word",   \
-                                 tokenizer = None,    \
-                                 preprocessor = None, \
-                                 stop_words = None,   \
-                                 ngram_range = (3,5), \
-                                 # token_pattern = r'\b\w+\b', \
-                                 max_features = 200)
+    vectorizer = CountVectorizer(analyzer="word",
+                                 tokenizer=None,
+                                 preprocessor=None,
+                                 stop_words=None,
+                                 ngram_range=(3, 5),
+                                 # token_pattern=r'\b\w+\b',
+                                 max_features=200)
 
     # fit_transform() does two functions: First, it fits the model
     # and learns the vocabulary; second, it transforms our training data
@@ -194,7 +196,7 @@ def sort_vocab(vocab, dist):
     # Sort the list of tuples by count.
     words_sorted_by_count_l = sorted(count_tag_l, key=lambda x: x[0])
 
-    return words_sorted_by_count_l 
+    return words_sorted_by_count_l
 
 
 def sort_answers_by_score(numlines, qagroup_df):
@@ -235,7 +237,7 @@ def find_freq_words(top, score_top_n_df, num_selected_recs, progress_msg_factor,
     selected_bodies_l = []
     score_df_l = []
     # Convert dataframe to list of Id's, to get the body of each Id.
-    if top: # Get the tail of the list, highest-score items.
+    if top:  # Get the tail of the list, highest-score items.
         score_df_l = score_top_n_df['Id'].tail(num_selected_recs).tolist()
     else:  # Get the head of the list, lowest-score items.
         score_df_l = score_top_n_df['Id'].head(num_selected_recs).tolist()
@@ -243,14 +245,14 @@ def find_freq_words(top, score_top_n_df, num_selected_recs, progress_msg_factor,
     progress_count = 0
     for i in score_df_l:
         progress_count += 1
-        clean_q_a = convert_text_to_words( tmp_df["Body"][i] )
+        clean_q_a = convert_text_to_words(tmp_df["Body"][i])
         selected_bodies_l.append(clean_q_a)
         # Print a progress message (default: for every 10% of i/p data handled).
-        if( (progress_count+1) % progress_msg_factor == 0 ):
-            #D cf.logger.debug("Body for Id %d " % ( i))
+        if((progress_count+1) % progress_msg_factor == 0):
+            #D cf.logger.debug("Body for Id %d " % (i))
             #D cf.logger.debug('  Original text:\n' + tmp_df['Body'][i][:70])
             cf.logger.debug('  Partial slice of cleaned text:\n' + clean_q_a[:70])
-    return selected_bodies_l 
+    return selected_bodies_l
 
 
 def search_for_terms(words_sorted_by_count_main_l, clean_ans_bodies_l, num_hi_score_terms, qagroup_df):
@@ -262,10 +264,10 @@ def search_for_terms(words_sorted_by_count_main_l, clean_ans_bodies_l, num_hi_sc
     """
 
     clean_ans_bodies_df = pd.DataFrame(clean_ans_bodies_l)
-    cf.logger.debug("clean_ans_bodies_l, top:") 
-    cf.logger.debug(clean_ans_bodies_l[:1]) 
+    cf.logger.debug("clean_ans_bodies_l, top:")
+    cf.logger.debug(clean_ans_bodies_l[:1])
     cf.logger.debug("clean_ans_bodies_l, bottom:")
-    cf.logger.debug(clean_ans_bodies_l[-1:]) 
+    cf.logger.debug(clean_ans_bodies_l[-1:])
 
     #D Use short list cab_l for testing:
     #D cab_l = ['step isprimenumber call', 'foo step isprimenumber call bar', 'yield abc def ghi generators long first string', 'generator', 'foo next function bar', 'short list foo bar baz']
@@ -283,21 +285,20 @@ def search_for_terms(words_sorted_by_count_main_l, clean_ans_bodies_l, num_hi_sc
     cf.logger.info("Terms from hi-score Answers.")
     #TBD, Maybe collect these "count,w" data into a single list,
     #   & write it in one step to the log file.
-    for count,w in words_sorted_by_count_main_l[-num_hi_score_terms:]:
+    for count, w in words_sorted_by_count_main_l[-num_hi_score_terms:]:
         #D print("count, w: ", count, " , ", w)
         log_msg = "count, w: " + str(count) + " , " + w
         cf.logger.info(log_msg)
         tmp2_sr = clean_ans_bodies_df[0].str.contains(w)
-        for index,row in tmp2_sr.iteritems():
+        for index, row in tmp2_sr.iteritems():
             if row:
                 #TBD, Change string 'w' to list or tuple for better storage in df?
                 #OK qagroup_df.loc[index, "HiScoreTerms"] = qagroup_df.loc[index, "HiScoreTerms"] + w + ' , '
-                qagroup_df.loc[index, "HiScoreTerms"] += ( w + ' , ')
+                qagroup_df.loc[index, "HiScoreTerms"] += (w + ' , ')
                 #TBD, increment hst counter each time one is found.
                 #TBD, How to handle multiple instances of hst? count each occurrence?
                 #TBD, use df func to simply count number of HiScoreTerms in each row?
                 qagroup_df.loc[index, "HSTCount"] += 1
-
 
     #D print()
     #D cf.logger.debug("DBG, qagroup_df.head():")
