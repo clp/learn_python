@@ -4,37 +4,44 @@
 
 """nltk_ex25.py
 
-   Analyze text files from stackoverflow.com data using NLTK.
+Analyze data using the Natural Language Toolkit, NLTK.
 
-   NLTK is the Natural Language Toolkit, a suite of
-   Python s/w, data sets, and documents to support
-   the development of Natural Language Processing.
+NLTK is a suite of Python s/w, data sets, and documents
+to support the development of Natural Language Processing, NLP.
 
-   The input file has one question and multiple answers for that
-   question.
+This module contains several functions that use NLTK software
+to process text and produce output that might help to find
+some good but 'hidden' records in the input.  A 'hidden' record
+has a low score and might not be prominently displayed in a
+list of records based on scores.
 
-   A goal is to find answers in stackoverflow that might be
-   good, but 'hidden' because they have low scores.
-   Look for such answers based on the terms found in high-score
-   answers, that are also found in low-score answers.
-   Save the o/p to a file for further evaluation & processing.
+One approach is to collect terms found in high-score records,
+and look for low-score records that contain the same terms.
+Count the number of matching terms, and assume that a high count
+indicates a low-score record that might have useful content.
 
-   Usage:
-     pydoc  nltk_ex25
+Return the o/p to the caller for further evaluation & processing.
 
-     See fga_find_good_answers.py for an example that calls
-     the functions in this module.
+This module was built to work with the code in
+fga_find_good_answers.py, which uses data from stackoverflow.com.
+See that program for more details.
 
-     Set the value of num_hi_score_terms in the calling program.
-     It determines how many hi-score terms are used to search
-     text in low-score answers.  A bigger number will cause the
-     program to run longer, and might find more 'hidden' answers
-     that could be valuable.
 
-   Options:
-     TBD
+Usage:
+    import nltk_ex25
+    pydoc nltk_ex25
 
-------
+    See fga_find_good_answers.py for an example that uses
+    the functions in this module.
+
+    Set the value of num_hi_score_terms in the calling program.
+    It determines how many hi-score terms are used to search
+    for matching terms in low-score answers.  A bigger number
+    will cause the program to run longer, and might find more
+    'hidden' answers that could be valuable.
+
+----------------------------------------------------------
+
 """
 
 # Ref: https://www.kaggle.com/c/word2vec-nlp-tutorial/details/part-1-for-beginners-bag-of-words
@@ -74,8 +81,13 @@ def convert_text_to_words(raw_q_a):
     """
     Convert a raw stackoverflow question or answer
     to a string of words.
-    The input is a single string (a raw ques or ans entry), and
-    the output is a single string (a processed ques or ans).
+
+    The input is a single string of text.
+    That content is filtered in various ways, eg, remove HTML,
+    remove non-letters, convert to lower-case, and remove
+    stop words that clutter the output.
+    
+    Return a single string of meaningful words.
     """
 
     # 1. Remove HTML
@@ -104,7 +116,7 @@ def convert_text_to_words(raw_q_a):
 
 
 def clean_raw_data(a_fname, progress_msg_factor, qagroup_df, tmpdir):
-    """ For all answers: Clean and parse the training set bodies.")
+    """ For all answers: Clean and parse the training set bodies.
     """
     # Get the number of bodies based on that column's size
     num_bodies = qagroup_df["Body"].size
