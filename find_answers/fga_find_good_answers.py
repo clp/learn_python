@@ -7,59 +7,117 @@
 """fga_find_good_answers.py
 
 
-   Find answers in stackoverflow that might be good, but 'hidden'
-   because they have low scores.
-   Look for such answers from contributors who have high scores
-   based on their other questions & answers.
-   Save the o/p to a file for further evaluation & processing.
+    Find answers in stackoverflow data that might be good,
+    but 'hidden' because they have low scores.
+    Look for such answers from contributors who have high scores
+    based on their other questions & answers.
+    Save the o/p to a file for further evaluation & processing.
 
-   Usage:
-     ./fga_find_good_answers.sh
-     pydoc  fga_find_good_answers
-     python fga_find_good_answers.py
+    Usage:
+        fga_find_good_answers.sh
+        python fga_find_good_answers.py
+        pydoc  fga_find_good_answers
 
-     Set the value of num_owners at the bottom of the file;
-     default is 10.  It determines how much o/p data will be saved.
+    Initialization
 
-     Set the value of num_hi_score_terms at the bottom of the file;
-     It determines how many hi-score terms are used to search
-     text in low-score answers.  A bigger number will cause the
-     program to run longer, and might find more 'hidden' answers
-     that could be valuable.
+    Set the value of num_owners at the bottom of the file;
+    default is 10.  It determines how much o/p data will be saved.
 
-------
+    Set the value of num_hi_score_terms at the bottom of the file;
+    It determines how many hi-score terms are used to search
+    text in low-score answers.  A bigger number will cause the
+    program to run longer, and might find more 'hidden' answers
+    that could be valuable.
 
-Input data format of stackoverflow.com python file from kaggle.com.
+    Set the value of keyword at the bottom of the file;
+    set it to False to skip this feature.  This feature is not
+    complete; for now, it collects the questions and answers
+    that contain the keyword and writes them to a file.
 
-==> Answers.csv <==
+
+    Overview of Program Actions
+
+    Read the separate question and answer i/p files.
+
+    Find popular questions, those which have several answers.
+
+    Find top-scoring owners, those who have the highest mean scores.
+
+    Select some questions that are popular AND that have answers
+    from top-scoring owners.  These are the pop_and_top questions.
+
+    Build a combined collection of pop_and_top questions with their
+    answers into Q&A groups.  The NLP tools can work with these data.
+
+    Show a menu with choices, to examine the data or to analyze
+    the data and present various plots, eg, scatter plots or
+    histogram plots.  Several menu choices require the NLP-ready
+    data.
+
+    Some menu actions use the following functions.
+
+    build_stats():
+    Compute and save statistics about the selected data, to use
+    in further analysis and plotting, eg, owner reputation (mean
+    score) and length of the body text of the record.
+
+    check_owner_reputation():
+    Provide reputation data from a data frame or a file.  If it
+    does not exist, call the function to build it.
+
+    group_data():
+    Group the data by owner, and sort by mean score.
+
+    analyze_text():
+    Call functions in the nltk module to analyze the text data and
+    to provide data that might reveal good but 'hidden' answers.
+
+
+    Other Actions
+
+    Several functions draw specific plots, using matplotlib tools.
+
+    Several functions write data to disk in csv or html formats.
+
+    One program option is to select records that contain
+    a specific keyword, and save them to a file.
+
+    ------
+
+    Input data format of stackoverflow.com python file from kaggle.com.
+
+    ==> Answers.csv <==
         Id,OwnerUserId,CreationDate,ParentId,Score,Body
         497,50,2008-08-02T16:56:53Z,469,4,
         "<p>open up a terminal (Applications-&gt;Utilities-&gt;Terminal) and type this in:</p>
-..."
-==> Questions.csv <==
+        ..."
+
+    ==> Questions.csv <==
         Id,OwnerUserId,CreationDate,Score,Title,Body
         469,147,2008-08-02T15:11:16Z,21,How can I find the full path to a font
         from its display name on a Mac?,
         "<p>I am using the Photoshop's javascript API to find the fonts in a given PSD.</p>
-..."
+        ..."
 
-Output data format of popular_qa.csv o/p file from this program.
-    Note: question records have a Title but no ParentId;
-    answer records have a ParentId (which is the related
-    question's Id) but no Title.
+    Output data format of popular_qa.csv o/p file from this program.
+        Note: question records have a Title but no ParentId;
+        answer records have a ParentId (which is the related
+        question's Id) but no Title.
 
-==> popular_qa.csv <==
+    ==> popular_qa.csv <==
         Id,ParentId,OwnerUserId,CreationDate,Score,Title,Body
         5313,,680.0,2008-08-07T21:07:24Z,11,"Cross Platform, Language
         Agnostic GUI Markup Language?",
         "<p>I learned Swing back in the day but now
-..."
+        ..."
+
         5319,5313.0,380.0,2008-08-07T21:10:27Z,8,,<p>erm.. HTML?
         (trying to be funny here... while we wait for real answers..)</p>
         5320,5313.0,216.0,2008-08-07T21:11:28Z,1,,"<p>The
         <a href=""http://www.wxwidgets.org/"" rel=""nofollow""
         title=""wxWidgets"">wxWidgets</a> (formerly known as wxWindows)
-..."
+        ..."
+
 
 ----------------------------------------------------------
 Plan
@@ -71,6 +129,13 @@ Plan
     Find the subset of Q's and A's that contain a keyword.
     Save the subset of data to a csv file.
 ----------------------------------------------------------
+
+
+Requirements
+    Python 3, tested with v 3.6.1.
+    pytest for tests, tested with v 3.0.7.
+    TBD
+
 """
 
 version = '0.0.6'
@@ -135,8 +200,14 @@ FOOTER = '''
 
 
 def main(popular_qa_df):
-    """Analyze input data and produce o/p by calling various functions.
+    """Read input data and prepare a subset of question
+    and answer records for analysis by natural language
+    processing (NLP) tools, which reside in external
+    modules.
+    When finished, present user with a menu and prompt
+    them for the next action.
     """
+
     # all_ans_df must be global to calculate reputations of owners, because
     # it is changed here in main(), and used outside main().
     global all_ans_df
@@ -451,6 +522,7 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, aa_df, numlines, a_fname
     """Get each Q in the list of selected ParentId's, and the related A's.
     Loop over each question and store the Q & A data in a dataframe.
 
+    TBD-move:
     Then call analyze_text() on each group of Q with A's,
     which calls the routines that perform the natural language processing
     of the text data.
@@ -1036,6 +1108,7 @@ if __name__ == '__main__':
     # D keyword = 'begin'
     # D keyword = 'pandas'
     # D keyword = 'Python'  # Both Title & Body of data sets have it; for debug
+    keyword = 'library'
     print("Keyword: ", keyword)
 
     num_hi_score_terms = 21  # Use 3 for testing; 11 or more for use.
