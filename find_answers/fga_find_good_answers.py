@@ -7,19 +7,19 @@
 """fga_find_good_answers.py
 
 
-    Find answers in stackoverflow data that might be good,
-    but 'hidden' because they have low scores.
-    Look for such answers from contributors who have high scores
-    based on their other questions & answers.
-    Save the o/p to a file for further evaluation & processing.
+Find answers in stackoverflow data that might be good,
+but 'hidden' because they have low scores.
+Look for such answers from contributors who have high scores
+based on their other questions & answers.
+Save the o/p to a file for further evaluation & processing.
 
-    Usage:
-        fga_find_good_answers.sh
-        python fga_find_good_answers.py
-        pydoc  fga_find_good_answers
+Usage:
+    fga_find_good_answers.sh
+    python fga_find_good_answers.py
+    pydoc  fga_find_good_answers
 
 
-    Initialization
+Initialization
 
     Set the value of num_owners at the bottom of the file;
     default is 10.  It determines how much o/p data will be saved.
@@ -36,7 +36,7 @@
     that contain the keyword and writes them to a file.
 
 
-    Overview of Program Actions
+Overview of Program Actions
 
     Read the separate question and answer i/p files.
 
@@ -74,7 +74,7 @@
     to provide data that might reveal good but 'hidden' answers.
 
 
-    Other Actions
+Other Actions
 
     Several functions draw specific plots, using matplotlib tools.
 
@@ -83,41 +83,41 @@
     One program option is to select records that contain
     a specific keyword, and save them to a file.
 
-    ------
+----------------------------------------------------------
 
-    Input data format of stackoverflow.com python file from kaggle.com.
+Input data format of stackoverflow.com python file from kaggle.com.
 
-    ==> Answers.csv <==
-        Id,OwnerUserId,CreationDate,ParentId,Score,Body
-        497,50,2008-08-02T16:56:53Z,469,4,
-        "<p>open up a terminal (Applications-&gt;Utilities-&gt;Terminal) and type this in:</p>
-        ..."
+==> Answers.csv <==
+    Id,OwnerUserId,CreationDate,ParentId,Score,Body
+    497,50,2008-08-02T16:56:53Z,469,4,
+    "<p>open up a terminal (Applications-&gt;Utilities-&gt;Terminal) and type this in:</p>
+    ..."
 
-    ==> Questions.csv <==
-        Id,OwnerUserId,CreationDate,Score,Title,Body
-        469,147,2008-08-02T15:11:16Z,21,How can I find the full path to a font
-        from its display name on a Mac?,
-        "<p>I am using the Photoshop's javascript API to find the fonts in a given PSD.</p>
-        ..."
+==> Questions.csv <==
+    Id,OwnerUserId,CreationDate,Score,Title,Body
+    469,147,2008-08-02T15:11:16Z,21,How can I find the full path to a font
+    from its display name on a Mac?,
+    "<p>I am using the Photoshop's javascript API to find the fonts in a given PSD.</p>
+    ..."
 
-    Output data format of popular_qa.csv o/p file from this program.
-        Note: question records have a Title but no ParentId;
-        answer records have a ParentId (which is the related
-        question's Id) but no Title.
+Output data format of popular_qa.csv o/p file from this program.
+    Note: Question records have a Title but no ParentId.
+    Answer records have a ParentId (which is the related
+    question's Id) but no Title.
 
-    ==> popular_qa.csv <==
-        Id,ParentId,OwnerUserId,CreationDate,Score,Title,Body
-        5313,,680.0,2008-08-07T21:07:24Z,11,"Cross Platform, Language
-        Agnostic GUI Markup Language?",
-        "<p>I learned Swing back in the day but now
-        ..."
+==> popular_qa.csv <==
+    Id,ParentId,OwnerUserId,CreationDate,Score,Title,Body
+    5313,,680.0,2008-08-07T21:07:24Z,11,"Cross Platform, Language
+    Agnostic GUI Markup Language?",
+    "<p>I learned Swing back in the day but now
+    ..."
 
-        5319,5313.0,380.0,2008-08-07T21:10:27Z,8,,<p>erm.. HTML?
-        (trying to be funny here... while we wait for real answers..)</p>
-        5320,5313.0,216.0,2008-08-07T21:11:28Z,1,,"<p>The
-        <a href=""http://www.wxwidgets.org/"" rel=""nofollow""
-        title=""wxWidgets"">wxWidgets</a> (formerly known as wxWindows)
-        ..."
+    5319,5313.0,380.0,2008-08-07T21:10:27Z,8,,<p>erm.. HTML?
+    (trying to be funny here... while we wait for real answers..)</p>
+    5320,5313.0,216.0,2008-08-07T21:11:28Z,1,,"<p>The
+    <a href=""http://www.wxwidgets.org/"" rel=""nofollow""
+    title=""wxWidgets"">wxWidgets</a> (formerly known as wxWindows)
+    ..."
 
 
 ----------------------------------------------------------
