@@ -856,11 +856,11 @@ def build_stats(qa_df, or_df):
     #D print(qa_stats_df.head(5))
     qa_stats_df = qa_stats_df[['Id', 'ParentId', 'OwnerUserId', 'Score', 'BodyLength', 'OwnerRep', 'HSTCount']]
 
-    stats_fname = DATADIR + 'qa_stats.csv'
+    stats_fname = DATADIR + 'qa_stats_by_dsm.csv'
     save_prior_file('', stats_fname)
     qa_stats_df.to_csv(stats_fname)
 
-    stats_fname = DATADIR + 'qa_stats.html'
+    stats_fname = DATADIR + 'qa_stats_by_dsm.html'
     save_prior_file('', stats_fname)
     qa_stats_df.to_html(stats_fname)
 
@@ -912,7 +912,7 @@ def draw_histogram_plot(plot_df):
     plt.show(block=False)
 
     # Write data set to a csv file.
-    outfile = TMPDIR + 'tmp_plot.csv'
+    outfile = TMPDIR + 'dh_draw_histogram.csv'
     plot_df['Score'].to_csv(
         outfile,
         header=True,
