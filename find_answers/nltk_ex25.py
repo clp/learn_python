@@ -64,6 +64,10 @@ from nltk.corpus import stopwords
 
 
 def main():
+    """
+    Initialization:
+    Download NLTK stopwords data if not found locally.
+    """
     # ----------------------------------------------------------
     # TBD Hard-coded i/p file to use for temporary debugging.
     #
@@ -116,17 +120,33 @@ def convert_text_to_words(raw_q_a):
 
 
 def clean_raw_data(a_fname, progress_msg_factor, qagroup_df, tmpdir):
-    """ For all answers: Clean and parse the training set bodies.
+    """Clean and parse the training set text.
+
+    Create a new column in the i/p data frame.
+
+    Convert the text in one cell of a row of the i/p data frame
+    into a string of meaningful words.
+    Store that string in the new cell for that row.
+
+    One use of this function converts text in the Body column into
+    the words placed in the CleanBody cell of an Answer
+    record.
+
+    Return a list of strings of clean answer bodies, for all the
+    answers to one question.
     """
     # Get the number of bodies based on that column's size
     num_bodies = qagroup_df["Body"].size
-    cf.logger.info("Number of bodies: " + str(num_bodies))
+    cf.logger.info("clean_raw(): Number of bodies: " + str(num_bodies))
 
     clean_ans_bodies_l = []
     qagroup_df["CleanBody"] = ""
 
     # Build a list that holds the cleaned text from each answer's body field.
     # Use it to find terms that match terms found in hi-score Answers.
+    progress_msg_factor = int(round(num_bodies / 10))
+    if progress_msg_factor <= 10:
+        progress_msg_factor = 10
     for i in range(0, num_bodies):
         clean_body_s = convert_text_to_words(qagroup_df["Body"][i])
         clean_ans_bodies_l.append(clean_body_s)
@@ -135,10 +155,9 @@ def clean_raw_data(a_fname, progress_msg_factor, qagroup_df, tmpdir):
         qagroup_df.loc[i, "CleanBody"] = clean_body_s
         # Print a progress message; default is for every 10% of i/p data handled.
         if((i+1) % progress_msg_factor == 0):
-            clean_q_a = convert_text_to_words(qagroup_df["Body"][i])
             #D cf.logger.debug("Body %d of %d" % (i+1, num_bodies))
             #D cf.logger.debug('  Original text: ' + qagroup_df['Body'][i])
-            cf.logger.debug('  Cleaned text:  ' + clean_q_a)
+            cf.logger.debug('  clean*(): Partial slice of cleaned text:\n' + clean_body_s[:70])
 
     return clean_ans_bodies_l
 
@@ -263,7 +282,7 @@ def find_freq_words(top, score_top_n_df, num_selected_recs, progress_msg_factor,
         if((progress_count+1) % progress_msg_factor == 0):
             #D cf.logger.debug("Body for Id %d " % (i))
             #D cf.logger.debug('  Original text:\n' + tmp_df['Body'][i][:70])
-            cf.logger.debug('  Partial slice of cleaned text:\n' + clean_q_a[:70])
+            cf.logger.debug('  find_freq*(): Partial slice of cleaned text:\n' + clean_q_a[:70])
     return selected_bodies_l
 
 
