@@ -587,8 +587,7 @@ def analyze_text(qagroup_df, numlines, a_fname, progress_msg_factor):
     global popular_qa_df
 
     cf.logger.info("NLP Step 2. Process the words of each input line.")
-    clean_ans_bodies_l = nl.clean_raw_data(
-        a_fname, progress_msg_factor, qagroup_df, TMPDIR)
+    clean_ans_bodies_l = nl.clean_raw_data(qagroup_df)
     # D print('\n#D, clean_ans_bodies_l[:1]')
     # D print(clean_ans_bodies_l[:1])
 

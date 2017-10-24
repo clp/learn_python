@@ -68,11 +68,6 @@ def main():
     Initialization:
     Download NLTK stopwords data if not found locally.
     """
-    # ----------------------------------------------------------
-    # TBD Hard-coded i/p file to use for temporary debugging.
-    #
-    # a_fname = 'pid_231767.csv'  # Based on o/p from fga*.py?
-    # ----------------------------------------------------------
 
     log_msg = cf.log_file + ' - Start logging for ' + os.path.basename(__file__)
     cf.logger.info(log_msg)
@@ -119,7 +114,7 @@ def convert_text_to_words(raw_q_a):
     return(" ".join(meaningful_words))
 
 
-def clean_raw_data(a_fname, progress_msg_factor, qagroup_df, tmpdir):
+def clean_raw_data(qagroup_df):
     """Clean and parse the training set text.
 
     Create a new column in the i/p data frame.
