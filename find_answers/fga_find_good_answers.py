@@ -592,10 +592,10 @@ def analyze_text(qagroup_df, numlines, a_fname, progress_msg_factor):
     # D print(clean_ans_bodies_l[:1])
 
     cf.logger.info("NLP Step 3. Build a bag of words and their counts.")
-    (vocab, dist) = nl.make_bag_of_words(clean_ans_bodies_l)
-    # D print('\n#D, vocab[:1]')
-    # D print(vocab[:1])
-    words_sorted_by_count_l = nl.sort_vocab(vocab, dist)
+    (vocab_l, dist_a) = nl.make_bag_of_words(clean_ans_bodies_l)
+    # D print('\n#D, vocab_l[:1]')
+    # D print(vocab_l[:1])
+    words_sorted_by_count_l = nl.sort_vocab(vocab_l, dist_a)
     save_vocab('.vocab', words_sorted_by_count_l, a_fname, TMPDIR)
     # Save the original list for later searching.
     words_sorted_by_count_main_l = words_sorted_by_count_l
@@ -616,8 +616,8 @@ def analyze_text(qagroup_df, numlines, a_fname, progress_msg_factor):
     selected_bodies_l = nl.find_freq_words(
         top, score_top_n_df, num_selected_recs, progress_msg_factor, qagroup_df)
     cf.logger.info('make_bag_of_words(selected_bodies_l)')
-    (vocab, dist) = nl.make_bag_of_words(selected_bodies_l)
-    words_sorted_by_count_l = nl.sort_vocab(vocab, dist)
+    (vocab_l, dist_a) = nl.make_bag_of_words(selected_bodies_l)
+    words_sorted_by_count_l = nl.sort_vocab(vocab_l, dist_a)
     save_vocab('.vocab.hiscore', words_sorted_by_count_l, a_fname, TMPDIR)
 
     cf.logger.info(
@@ -635,8 +635,8 @@ def analyze_text(qagroup_df, numlines, a_fname, progress_msg_factor):
         bot_n_bodies = nl.find_freq_words(
             top, score_top_n_df, num_selected_recs, progress_msg_factor, qagroup_df)
         cf.logger.info('make_bag_of_words(bot_n_bodies)')
-        (vocab, dist) = nl.make_bag_of_words(bot_n_bodies)
-        words_sorted_by_count_l = nl.sort_vocab(vocab, dist)
+        (vocab_l, dist_a) = nl.make_bag_of_words(bot_n_bodies)
+        words_sorted_by_count_l = nl.sort_vocab(vocab_l, dist_a)
         save_vocab('.vocab.loscore', words_sorted_by_count_l, a_fname, TMPDIR)
 
     cf.logger.info("NLP Step 7. Search lo-score A's for hi-score text.")

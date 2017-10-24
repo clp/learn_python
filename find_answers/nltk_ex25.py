@@ -167,11 +167,11 @@ def make_bag_of_words(clean_ans_bodies_l):
     a range, eg, 'ngram_range = (3,5)' in the arguments for
     CountVectorizer.
 
-    Use this argument & pattern to include 1-letter
-    words: 'token_pattern = r'\b\w+\b'.
+    To include 1-letter words, use this argument & pattern:
+    'token_pattern = r'\b\w+\b'.
 
-    Return a tuple of two structures: a list of each ngram found
-    in the i/p; and an array with the count of each ngram in the list.
+    Return a tuple of two structures: a list of ngrams found
+    in the i/p; and an array with the count of each ngram in that list.
     """
 
     cf.logger.debug("Creating the bag of words for word counts ...")
@@ -207,22 +207,22 @@ def make_bag_of_words(clean_ans_bodies_l):
     cf.logger.info(train_data_features.shape)
 
     # Take a look at the words in the vocabulary
-    vocab = vectorizer.get_feature_names()
+    vocab_l = vectorizer.get_feature_names()
 
-    # Print counts of each word in vocab.
+    # Print counts of each term in vocab_l.
     # Sum up the counts of each vocabulary word
-    dist = np.sum(train_data_features, axis=0)
+    dist_a = np.sum(train_data_features, axis=0)
 
-    return (vocab, dist)
+    return (vocab_l, dist_a)
 
 
-def sort_vocab(vocab, dist):
+def sort_vocab(vocab_l, dist_a):
     """
     Sort vocabulary data into a list.
     """
     count_tag_l = []
     word_freq_d = {}
-    for tag, count in zip(vocab, dist):
+    for tag, count in zip(vocab_l, dist_a):
         count_tag_l.append((count, tag))
         #D word_freq_d[tag] = count
 
