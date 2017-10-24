@@ -209,27 +209,31 @@ def make_bag_of_words(clean_ans_bodies_l):
     # Take a look at the words in the vocabulary
     vocab_l = vectorizer.get_feature_names()
 
-    # Print counts of each term in vocab_l.
-    # Sum up the counts of each vocabulary word
+    # Sum up the counts of each vocabulary term in vocab_l.
     dist_a = np.sum(train_data_features, axis=0)
 
     return (vocab_l, dist_a)
 
 
 def sort_vocab(vocab_l, dist_a):
+    """Sort the i/p vocabulary data by count.
+
+    The inputs are a list of terms and an array of counts
+    that correspond to the terms.
+
+    Combine these two structures into a list of tuples;
+    then sort that list by the count element.
+
+    Return a list of tuples sorted by count: count, term.
     """
-    Sort vocabulary data into a list.
-    """
-    count_tag_l = []
-    word_freq_d = {}
-    for tag, count in zip(vocab_l, dist_a):
-        count_tag_l.append((count, tag))
-        #D word_freq_d[tag] = count
+    count_term_l = []
+    for term, count in zip(vocab_l, dist_a):
+        count_term_l.append((count, term))
 
     # Sort the list of tuples by count.
-    words_sorted_by_count_l = sorted(count_tag_l, key=lambda x: x[0])
+    terms_sorted_by_count_l = sorted(count_term_l, key=lambda x: x[0])
 
-    return words_sorted_by_count_l
+    return terms_sorted_by_count_l
 
 
 def sort_answers_by_score(numlines, qagroup_df):
