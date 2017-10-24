@@ -64,8 +64,7 @@ from nltk.corpus import stopwords
 
 
 def main():
-    """
-    Initialization:
+    """Initialization:
     Download NLTK stopwords data if not found locally.
     """
 
@@ -77,7 +76,8 @@ def main():
 
 
 def convert_text_to_words(raw_q_a):
-    """
+    """Convert the i/p text string to a string of words.
+
     Convert a raw stackoverflow question or answer
     to a string of words.
 
@@ -130,6 +130,7 @@ def clean_raw_data(qagroup_df):
     Return a list of strings of clean answer bodies, for all the
     answers to one question.
     """
+
     # Get the number of bodies based on that column's size
     num_bodies = qagroup_df["Body"].size
     cf.logger.info("clean_raw(): Number of bodies: " + str(num_bodies))
@@ -158,22 +159,26 @@ def clean_raw_data(qagroup_df):
 
 
 def make_bag_of_words(clean_ans_bodies_l):
-    """Collect and count words (or phrases or ngrams) in the text.
+    """Collect and count ngrams (words or phrases) in the text.
 
-    To use ngrams instead of single words in the analysis,
-    specify 'ngram_range = (3,5)' (for example) in the arguments for
+    To use phrases instead of single words in the analysis, specify
+    a range, eg, 'ngram_range = (3,5)' in the arguments for
     CountVectorizer.
 
-    Using this arg & pattern will include 1-letter
+    Use this argument & pattern to include 1-letter
     words: 'token_pattern = r'\b\w+\b'.
+
+    Return a tuple of two structures: a list of each ngram found
+    in the i/p; and an array with the count of each ngram in the list.
     """
+
     cf.logger.debug("Creating the bag of words for word counts ...")
     from sklearn.feature_extraction.text import CountVectorizer
 
     # Initialize the "CountVectorizer" object, which is scikit-learn's
     # bag of words tool
 
-    # TBD, Fails w/ MemErr with max_features at 5000; ok at 100-200.
+    # TBD, Fails w/ MemErr with max_features at 5000; ok at 200.
 
     vectorizer = CountVectorizer(analyzer="word",
                                  tokenizer=None,
