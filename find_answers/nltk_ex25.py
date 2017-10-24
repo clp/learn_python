@@ -76,13 +76,13 @@ def main():
 
 
 def convert_text_to_words(raw_q_a):
-    """Convert the i/p text string to a string of words.
+    """Convert and filter the i/p text string to a string of words.
 
     Convert a raw stackoverflow question or answer
-    to a string of words.
+    to a string of meaningful words for detailed analysis.
 
     The input is a single string of text.
-    That content is filtered in various ways, eg, remove HTML,
+    That content is processed in various ways, eg, remove HTML,
     remove non-letters, convert to lower-case, and remove
     stop words that clutter the output.
     
@@ -119,13 +119,15 @@ def clean_raw_data(qagroup_df):
 
     Create a new column in the i/p data frame.
 
+    The input is a data frame of one question and its related
+    answers.
     Convert the text in one cell of a row of the i/p data frame
     into a string of meaningful words.
     Store that string in the new cell for that row.
 
     One use of this function converts text in the Body column into
     the words placed in the CleanBody cell of an Answer
-    record.
+    record in the data frame.
 
     Return a list of strings of clean answer bodies, for all the
     answers to one question.
