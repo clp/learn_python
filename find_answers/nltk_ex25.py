@@ -231,9 +231,9 @@ def sort_vocab(vocab_l, dist_a):
         count_term_l.append((count, term))
 
     # Sort the list of tuples by count.
-    terms_sorted_by_count_l = sorted(count_term_l, key=lambda x: x[0])
+    words_sorted_by_count_l = sorted(count_term_l, key=lambda x: x[0])
 
-    return terms_sorted_by_count_l
+    return words_sorted_by_count_l
 
 
 def sort_answers_by_score(numlines, qagroup_df):
