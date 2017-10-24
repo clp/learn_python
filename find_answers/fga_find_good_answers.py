@@ -598,7 +598,7 @@ def analyze_text(qagroup_df, numlines, a_fname, progress_msg_factor):
     words_sorted_by_count_l = nl.sort_vocab(vocab_l, dist_a)
     save_vocab('.vocab', words_sorted_by_count_l, a_fname, TMPDIR)
     # Save the original list for later searching.
-    words_sorted_by_count_main_l = words_sorted_by_count_l
+    words_sorted_by_count_orig_l = words_sorted_by_count_l
 
     cf.logger.info('NLP Step 4. Sort Answers by Score.')
     ids_and_scores_df, num_selected_recs = nl.sort_answers_by_score(numlines, qagroup_df)
@@ -641,7 +641,7 @@ def analyze_text(qagroup_df, numlines, a_fname, progress_msg_factor):
 
     cf.logger.info("NLP Step 7. Search lo-score A's for hi-score text.")
     qa_with_hst_df = nl.search_for_terms(
-        words_sorted_by_count_main_l,
+        words_sorted_by_count_orig_l,
         clean_ans_bodies_l,
         num_hi_score_terms, qagroup_df)
     popular_qa_df = pd.concat(
