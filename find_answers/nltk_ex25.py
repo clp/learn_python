@@ -118,17 +118,20 @@ def convert_text_to_words(raw_q_a):
 def clean_raw_data(qagroup_df):
     """Clean and parse the training set text.
 
-    Create a new column in the i/p data frame.
-
     The input is a data frame of one question and its related
     answers.
-    Convert the text in one cell of a row of the i/p data frame
+
+    Create a new column in the data frame to hold the
+    cleaned data.
+
+    Process the text in one cell of a row of the data frame
     into a string of meaningful words.
     Store that string in the new cell for that row.
+    Loop over all the rows in the data frame.
 
-    One use of this function converts text in the Body column into
-    the words placed in the CleanBody cell of an Answer
-    record in the data frame.
+    One use of this function converts text from the Body column into
+    the words placed in the CleanBody cell of an Answer record
+    in the data frame.
 
     Return a list of strings of clean answer bodies, for all the
     answers to one question.
