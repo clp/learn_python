@@ -111,6 +111,7 @@ def convert_text_to_words(raw_q_a):
 
     # 6. Join the words back into one string of words, each word
     # separated by a space, and return the result.
+
     return(" ".join(meaningful_words))
 
 
@@ -226,6 +227,7 @@ def sort_vocab(vocab_l, dist_a):
 
     Return a list of tuples sorted by count: count, term.
     """
+
     count_term_l = []
     for term, count in zip(vocab_l, dist_a):
         count_term_l.append((count, term))
@@ -236,28 +238,21 @@ def sort_vocab(vocab_l, dist_a):
     return words_sorted_by_count_l
 
 
-def sort_answers_by_score(numlines, qagroup_df):
+def sort_answers_by_score(qagroup_df):
+    """Build a dataframe of answer Id's and their scores, sorted by score.
+
+    Return that dataframe.
     """
-    Build a dataframe of answer Id's and their scores, sorted by score.
-    """
+
     ids_and_scores_df = qagroup_df.sort_values(['Score'])
     ids_and_scores_df = ids_and_scores_df[['Id', 'Score']]
 
-    # Compute the number of records to use for computation and display.
-    rec_selection_ratio = 0.10  # Default 0.01?
-    num_selected_recs = int(numlines * rec_selection_ratio)
-    if num_selected_recs < 6:
-        num_selected_recs = 5
-    log_msg = "  rec_selection_ratio,  number of selected recs: " + str(rec_selection_ratio) + ", " + str(num_selected_recs)
-    cf.logger.info(log_msg)
     cf.logger.info('Lowest scoring Answers:')
     cf.logger.info(ids_and_scores_df.head())
-    #D print(ids_and_scores_df.head(num_selected_recs), '\n')
     cf.logger.info('Highest scoring Answers:')
     cf.logger.info(ids_and_scores_df.tail())
-    #D print(ids_and_scores_df.tail(num_selected_recs), '\n')
 
-    return ids_and_scores_df, num_selected_recs
+    return ids_and_scores_df
 
 
 def find_freq_words(top, score_top_n_df, num_selected_recs, progress_msg_factor, qagroup_df):

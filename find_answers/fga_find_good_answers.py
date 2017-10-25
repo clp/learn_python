@@ -235,9 +235,11 @@ def main(popular_qa_df):
     pop_and_top_l = \
         select_questions(parent_id_l, popular_ids_a)
 
+    num_selected_recs = compute_record_selector(numlines)
+
     popular_qa_df = \
         combine_related_q_and_a(
-            pop_and_top_l, all_ques_df, all_ans_df, numlines, a_fname, progress_msg_factor)
+            pop_and_top_l, all_ques_df, all_ans_df, num_selected_recs, a_fname, progress_msg_factor)
 
     # Save a df to a file for review & debug.
     write_full_df_to_csv_file(popular_qa_df, TMPDIR, 'popular_qa.csv')
@@ -519,7 +521,7 @@ def select_questions(parent_id_l, popular_ids_a):
     return pop_and_top_l
 
 
-def combine_related_q_and_a(pop_and_top_l, all_ques_df, aa_df, numlines, a_fname, progress_msg_factor):
+def combine_related_q_and_a(pop_and_top_l, all_ques_df, aa_df, num_selected_recs, a_fname, progress_msg_factor):
     """Get each Q in the list of selected ParentId's, and the related A's.
     Loop over each question and store the Q & A data in a dataframe.
 
@@ -560,7 +562,7 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, aa_df, numlines, a_fname
 
         # Analyze data w/ nlp s/w.
         popular_qa_df = analyze_text(
-             qagroup_df, numlines, a_fname, progress_msg_factor)
+             qagroup_df, num_selected_recs, a_fname, progress_msg_factor)
 
     return popular_qa_df
 
@@ -579,7 +581,23 @@ def save_vocab(suffix, words_sorted_by_count_l, a_fname, TMPDIR):
             print(count, word, file=f)
 
 
-def analyze_text(qagroup_df, numlines, a_fname, progress_msg_factor):
+def compute_record_selector(numlines):
+    """Compute the number of records to use for computation and display.
+
+    Return that integer.
+    """
+
+    SELECTOR_RATIO = 0.10  # TBD, use Default 0.01 in production? Move to global scope?
+    num_selected_recs = max(5, int(numlines * SELECTOR_RATIO))
+    log_msg = ("  SELECTOR_RATIO,  number of selected recs: " +
+                str(SELECTOR_RATIO) + ", " + str(num_selected_recs))
+    cf.logger.info(log_msg)
+
+    return num_selected_recs
+
+
+
+def analyze_text(qagroup_df, num_selected_recs, a_fname, progress_msg_factor):
     """Use a Q&A group of one Q w/ its A's for i/p.
     Process the text data w/ the routines in the nltk module, which use
     natural language tools.
@@ -601,7 +619,7 @@ def analyze_text(qagroup_df, numlines, a_fname, progress_msg_factor):
     words_sorted_by_count_orig_l = words_sorted_by_count_l
 
     cf.logger.info('NLP Step 4. Sort Answers by Score.')
-    ids_and_scores_df, num_selected_recs = nl.sort_answers_by_score(numlines, qagroup_df)
+    ids_and_scores_df = nl.sort_answers_by_score(qagroup_df)
 
     cf.logger.info('NLP Step 5. Find most freq words for top-scoring Answers.')
     score_top_n_df = ids_and_scores_df[['Id']]
@@ -628,7 +646,7 @@ def analyze_text(qagroup_df, numlines, a_fname, progress_msg_factor):
         # there should be some diff unless data set is too small.
         # If they are identical, there may be a logic problem in the code,
         # or the data set may be too small.
-        score_bot_n_df = ids_and_scores_df[['Id']]
+        score_bot_n_df = ids_and_scores_df[['Id']] #TBF, rename to lo_score_ids_df?
         cf.logger.debug("score_bot_n_df.head():")
         cf.logger.debug(score_bot_n_df.head(20))
         top = False
