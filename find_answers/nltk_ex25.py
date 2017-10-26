@@ -222,8 +222,8 @@ def make_bag_of_words(clean_ans_bodies_l):
 def sort_vocab(vocab_l, dist_a):
     """Sort the i/p vocabulary data by count.
 
-    The inputs are a list of terms and an array of counts
-    that correspond to the terms.
+    The two input structures are a list of terms and an array
+    of counts that correspond to the terms.
 
     Combine these two structures into a list of tuples;
     then sort that list by the count element.
@@ -242,9 +242,11 @@ def sort_vocab(vocab_l, dist_a):
 
 
 def sort_answers_by_score(qagroup_df):
-    """Build a dataframe of answer Id's and their scores, sorted by score.
+    """Build a dataframe of Id's and their Scores, sorted by score.
 
-    Return that dataframe.
+    Use one Q&A group dataframe as input.
+
+    Return the sorted dataframe with only Id's and Scores.
     """
 
     ids_and_scores_df = qagroup_df.sort_values(['Score'])
@@ -262,7 +264,6 @@ def find_freq_words(top, score_top_n_df, num_selected_recs, progress_msg_factor,
     """
     Build a list where each element is a string with terms from
     the body text of an answer.
-    Select the answers based on their score.
 
     If top is set to True, use the highest-scoring answers.
     If top is False, use the lowest-scoring answers.
