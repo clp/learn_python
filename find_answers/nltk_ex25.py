@@ -260,26 +260,33 @@ def sort_answers_by_score(qagroup_df):
     return ids_and_scores_df
 
 
-def find_freq_words(top, score_top_n_df, num_selected_recs, progress_msg_factor, qagroup_df):
+def find_words_based_on_score(top, ids_sorted_by_score_l, num_selected_recs, progress_msg_factor, qagroup_df):
     """
-    Build a list where each element is a string with terms from
-    the body text of an answer.
+    Build a list of strings; each string has terms from a record's body text.
 
-    If top is set to True, use the highest-scoring answers.
-    If top is False, use the lowest-scoring answers.
+    The inputs include the dataframe of one Q&A group, and the
+    list of Id's for the members of the Q&A group sorted by Score.
 
-    The size of the list is equal to the variable, num_selected_recs.
+    Select items from the Q&A group based on their score, either the
+    highest or lowest score items.
+
+    Clean the raw body text of each selected item, store it in a string,
+    and append that string to a list.
+
+    Return that list of items.
     """
     selected_bodies_l = []
-    score_df_l = []
     # Convert dataframe to list of Id's, to get the body of each Id.
+    #
+    #TBD, Wed2017_1025_13:59 , num_selected_recs=7603 for i/p a6* file; Check its use here:
+        # Should ids_sorted_by_score_l be 10% of i/p length, or just a small number-10-20?
     if top:  # Get the tail of the list, highest-score items.
-        score_df_l = score_top_n_df['Id'].tail(num_selected_recs).tolist()
+        ids_sorted_by_score_l = ids_sorted_by_score_l[-num_selected_recs:]
     else:  # Get the head of the list, lowest-score items.
-        score_df_l = score_top_n_df['Id'].head(num_selected_recs).tolist()
+        ids_sorted_by_score_l = ids_sorted_by_score_l[0:num_selected_recs]
     tmp_df = qagroup_df.set_index('Id')
     progress_count = 0
-    for i in score_df_l:
+    for i in ids_sorted_by_score_l:
         progress_count += 1
         clean_q_a = convert_text_to_words(tmp_df["Body"][i])
         selected_bodies_l.append(clean_q_a)

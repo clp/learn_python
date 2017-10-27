@@ -163,6 +163,7 @@ cf.logger.info(log_msg)
 DATADIR = 'data/'
 FILEA3 = 'a3_986.csv'
 INDIR = 'indir/'
+LINE_COUNT = 10
 MAXCOLWID = 20
 TMP = 'tmp/'
 TMPDIR = 'data/'
@@ -621,18 +622,18 @@ def analyze_text(qagroup_df, num_selected_recs, a_fname, progress_msg_factor):
     cf.logger.info('NLP Step 4. Sort Answers by Score.')
     ids_and_scores_df = nl.sort_answers_by_score(qagroup_df)
 
-    cf.logger.info('NLP Step 5. Find most freq words for top-scoring Answers.')
-    score_top_n_df = ids_and_scores_df[['Id']]
+    cf.logger.info('NLP Step 5. Find words in highest or lowest scoring items.')
+    ids_sorted_by_score_l = ids_and_scores_df['Id'].tolist()
 
-    cf.logger.debug("score_top_n_df.tail():")
-    cf.logger.debug(score_top_n_df.tail(20))
+    cf.logger.debug("ids_sorted_by_score_l-slice at end, high scores:")
+    cf.logger.debug(ids_sorted_by_score_l[-LINE_COUNT:])
     # Use top_n Answers & count their words.
     cf.logger.info(
         "For top ans: Cleaning and parsing the training set bodies...")
 
     top = True
-    selected_bodies_l = nl.find_freq_words(
-        top, score_top_n_df, num_selected_recs, progress_msg_factor, qagroup_df)
+    selected_bodies_l = nl.find_words_based_on_score(
+        top, ids_sorted_by_score_l, num_selected_recs, progress_msg_factor, qagroup_df)
     cf.logger.info('make_bag_of_words(selected_bodies_l)')
     (vocab_l, dist_a) = nl.make_bag_of_words(selected_bodies_l)
     words_sorted_by_count_l = nl.sort_vocab(vocab_l, dist_a)
@@ -646,14 +647,15 @@ def analyze_text(qagroup_df, num_selected_recs, a_fname, progress_msg_factor):
         # there should be some diff unless data set is too small.
         # If they are identical, there may be a logic problem in the code,
         # or the data set may be too small.
-        score_bot_n_df = ids_and_scores_df[['Id']] #TBF, rename to lo_score_ids_df?
-        cf.logger.debug("score_bot_n_df.head():")
-        cf.logger.debug(score_bot_n_df.head(20))
+
+        cf.logger.debug("ids_sorted_by_score_l-slice at start, low scores:")
+        cf.logger.debug(ids_sorted_by_score_l[:LINE_COUNT])
+
         top = False
-        bot_n_bodies = nl.find_freq_words(
-            top, score_top_n_df, num_selected_recs, progress_msg_factor, qagroup_df)
-        cf.logger.info('make_bag_of_words(bot_n_bodies)')
-        (vocab_l, dist_a) = nl.make_bag_of_words(bot_n_bodies)
+        selected_bodies_l = nl.find_words_based_on_score(
+            top, ids_sorted_by_score_l, num_selected_recs, progress_msg_factor, qagroup_df)
+        cf.logger.info('make_bag_of_words(selected_bodies_l)')
+        (vocab_l, dist_a) = nl.make_bag_of_words(selected_bodies_l)
         words_sorted_by_count_l = nl.sort_vocab(vocab_l, dist_a)
         save_vocab('.vocab.loscore', words_sorted_by_count_l, a_fname, TMPDIR)
 
