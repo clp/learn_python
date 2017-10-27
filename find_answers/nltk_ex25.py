@@ -261,8 +261,7 @@ def sort_answers_by_score(qagroup_df):
 
 
 def find_words_based_on_score(top, ids_sorted_by_score_l, num_selected_recs, progress_msg_factor, qagroup_df):
-    """
-    Build a list of strings; each string has terms from a record's body text.
+    """Build a list of strings; each string has terms from a record's body text.
 
     The inputs include the dataframe of one Q&A group, and the
     list of Id's for the members of the Q&A group sorted by Score.
