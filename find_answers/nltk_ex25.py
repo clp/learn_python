@@ -267,10 +267,11 @@ def find_words_based_on_score(top, ids_sorted_by_score_l, num_selected_recs, pro
     list of Id's for the members of the Q&A group sorted by Score.
 
     Select items from the Q&A group based on their score, either the
-    highest or lowest score items.
+    highest or lowest score items, depending on how the caller
+    sets the 'top' var.
 
-    Clean the raw body text of each selected item, store it in a string,
-    and append that string to a list.
+    Clean the raw body text of each selected item, store it in a string
+    of words, and append that string to a list.
 
     Return that list of items.
     """
