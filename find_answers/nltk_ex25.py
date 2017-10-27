@@ -294,11 +294,11 @@ def find_words_based_on_score(top, ids_sorted_by_score_l, num_selected_recs, pro
         if((progress_count+1) % progress_msg_factor == 0):
             #D cf.logger.debug("Body for Id %d " % (i))
             #D cf.logger.debug('  Original text:\n' + tmp_df['Body'][i][:70])
-            cf.logger.debug('  find_freq*(): Partial slice of cleaned text:\n' + clean_q_a[:70])
+            cf.logger.debug('  find_words*(): Partial slice of cleaned text:\n' + clean_q_a[:70])
     return selected_bodies_l
 
 
-def search_for_terms(words_sorted_by_count_main_l, clean_ans_bodies_l, num_hi_score_terms, qagroup_df):
+def search_for_terms(words_sorted_by_count_orig_l, clean_ans_bodies_l, num_hi_score_terms, qagroup_df):
     """
     Read each answer and save any terms that it has in common
     with (high frequency) text from the high-score answers.
@@ -328,7 +328,7 @@ def search_for_terms(words_sorted_by_count_main_l, clean_ans_bodies_l, num_hi_sc
     cf.logger.info("Terms from hi-score Answers.")
     #TBD, Maybe collect these "count,w" data into a single list,
     #   & write it in one step to the log file.
-    for count, w in words_sorted_by_count_main_l[-num_hi_score_terms:]:
+    for count, w in words_sorted_by_count_orig_l[-num_hi_score_terms:]:
         #D print("count, w: ", count, " , ", w)
         log_msg = "count, w: " + str(count) + " , " + w
         cf.logger.info(log_msg)
