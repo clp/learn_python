@@ -299,44 +299,38 @@ def find_words_based_on_score(top, ids_sorted_by_score_l, num_selected_recs, pro
 
 
 def search_for_terms(words_sorted_by_count_orig_l, clean_q_a_bodies_l, num_hi_score_terms, qagroup_df):
-    """TBD summary.
+    """Save terms that a record has in common with frequently-seen text.
 
     Important Variables.
 
-    clean_q_a_bodies_df: A dataframe with text from Q&A bodies that were cleaned.
+    clean_q_a_bodies_df: A dataframe with cleaned text from Q&A bodies.
 
-    HiScoreTerms: A column added to the qagroup_df, holding terms that have high scores,
-    extracted from TBD, based on TBD.
+    HiScoreTerms: A column added to the qagroup_df, holding terms
+    that appear often.
 
     HSTCount: A column added to the qagroup_df, holding the total count
     of the number of high score terms for a record.
 
-    qagroup_df: A dataframe with one Q&A group, one question with its related answers.
+    qagroup_df: A dataframe with one Q&A group, ie, one question
+    with its related answers.
 
-    words_sorted_by_count_orig_l: The original list of all words found TBD,
-    that is sorted by the count of each word.
+    words_sorted_by_count_orig_l: The original list of all terms found
+    in the bodies of records, which is sorted by the count of each term.
 
 
     Actions.
 
-    TBD:
-    Read each answer and save any terms that it has in common
-    with (high frequency) text from the high-score answers.
-
-
-    TBD:
-    Start with a list of words from the
-    (answers?) of a Q&A group.
-    Use the subset of words that appear most often.
-    Compare each word of that subset with each word in the body of each
-    (answer?).  If there is a match,
-    save the word and increment the total HSTCount
+    Start with a list of terms (words or phrases) from the bodies
+    of a Q&A group, sorted by count.
+    Select a subset of terms that appear most often.
+    Compare each term of that subset with each term in the body
+    of one row in the Q&A group dataframe.  If there is a match,
+    save the term and increment the total HSTCount
     for that row in the output dataframe.
-    Repeat for each item in the frequent words list,
-    and for each item in the Q&A group,
-    by using two nested loops.
+    Use nested loops to check all frequently-seen terms against
+    all rows of the Q&A group dataframe.
 
-    Return the updated dataframe further investigation.
+    Return the updated Q&A group dataframe for further investigation.
     """
 
     clean_q_a_bodies_df = pd.DataFrame(clean_q_a_bodies_l)
