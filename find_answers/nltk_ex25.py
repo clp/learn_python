@@ -129,9 +129,9 @@ def clean_raw_data(qagroup_df):
     Store that string in the new cell for that row.
     Loop over all the rows in the data frame.
 
-    One use of this function converts text from the Body column into
-    the words placed in the CleanBody cell of an Answer record
-    in the data frame.
+    One use of this function uses text from the Body column,
+    and converts it into words, and places them in the CleanBody
+    cell of a row in the data frame.
 
     Return a list of strings of clean answer bodies, for all the
     answers to one question.
