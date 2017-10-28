@@ -141,7 +141,7 @@ def clean_raw_data(qagroup_df):
     num_bodies = qagroup_df["Body"].size
     cf.logger.info("clean_raw(): Number of bodies: " + str(num_bodies))
 
-    clean_ans_bodies_l = []
+    clean_q_a_bodies_l = []
     qagroup_df["CleanBody"] = ""
 
     # Build a list that holds the cleaned text from each answer's body field.
@@ -151,7 +151,7 @@ def clean_raw_data(qagroup_df):
         progress_msg_factor = 10
     for i in range(0, num_bodies):
         clean_body_s = convert_text_to_words(qagroup_df["Body"][i])
-        clean_ans_bodies_l.append(clean_body_s)
+        clean_q_a_bodies_l.append(clean_body_s)
         #
         # Add new column to Answers df.
         qagroup_df.loc[i, "CleanBody"] = clean_body_s
@@ -161,10 +161,10 @@ def clean_raw_data(qagroup_df):
             #D cf.logger.debug('  Original text: ' + qagroup_df['Body'][i])
             cf.logger.debug('  clean*(): Partial slice of cleaned text:\n' + clean_body_s[:70])
 
-    return clean_ans_bodies_l
+    return clean_q_a_bodies_l
 
 
-def make_bag_of_words(clean_ans_bodies_l):
+def make_bag_of_words(clean_q_a_bodies_l):
     """Collect and count ngrams (words or phrases) in the text.
 
     To use phrases instead of single words in the analysis, specify
@@ -199,7 +199,7 @@ def make_bag_of_words(clean_ans_bodies_l):
     # into feature vectors. The input to fit_transform should be a list of
     # strings.
 
-    train_data_features = vectorizer.fit_transform(clean_ans_bodies_l)
+    train_data_features = vectorizer.fit_transform(clean_q_a_bodies_l)
 
     # Numpy arrays are easy to work with, so convert the result to an
     # array
@@ -298,13 +298,12 @@ def find_words_based_on_score(top, ids_sorted_by_score_l, num_selected_recs, pro
     return selected_bodies_l
 
 
-def search_for_terms(words_sorted_by_count_orig_l, clean_ans_bodies_l, num_hi_score_terms, qagroup_df):
+def search_for_terms(words_sorted_by_count_orig_l, clean_q_a_bodies_l, num_hi_score_terms, qagroup_df):
     """TBD summary.
 
     Important Variables.
 
-    clean_ans_bodies_df: A dataframe with text from bodies that were cleaned.
-        TBD, what other fields are in it?
+    clean_q_a_bodies_df: A dataframe with text from Q&A bodies that were cleaned.
 
     HiScoreTerms: A column added to the qagroup_df, holding terms that have high scores,
     extracted from TBD, based on TBD.
@@ -340,11 +339,11 @@ def search_for_terms(words_sorted_by_count_orig_l, clean_ans_bodies_l, num_hi_sc
     Return the updated dataframe further investigation.
     """
 
-    clean_ans_bodies_df = pd.DataFrame(clean_ans_bodies_l)
-    cf.logger.debug("clean_ans_bodies_l, top:")
-    cf.logger.debug(clean_ans_bodies_l[:1])
-    cf.logger.debug("clean_ans_bodies_l, bottom:")
-    cf.logger.debug(clean_ans_bodies_l[-1:])
+    clean_q_a_bodies_df = pd.DataFrame(clean_q_a_bodies_l)
+    cf.logger.debug("clean_q_a_bodies_l, top:")
+    cf.logger.debug(clean_q_a_bodies_l[:1])
+    cf.logger.debug("clean_q_a_bodies_l, bottom:")
+    cf.logger.debug(clean_q_a_bodies_l[-1:])
 
     #D Use short list cab_l for testing:
     #D cab_l = ['step isprimenumber call', 'foo step isprimenumber call bar', 'yield abc def ghi generators long first string', 'generator', 'foo next function bar', 'short list foo bar baz']
@@ -366,7 +365,7 @@ def search_for_terms(words_sorted_by_count_orig_l, clean_ans_bodies_l, num_hi_sc
         #D print("count, w: ", count, " , ", w)
         log_msg = "count, w: " + str(count) + " , " + w
         cf.logger.info(log_msg)
-        tmp2_sr = clean_ans_bodies_df[0].str.contains(w)
+        tmp2_sr = clean_q_a_bodies_df[0].str.contains(w)
         for index, row in tmp2_sr.iteritems():
             if row:
                 #TBD, Change string 'w' to list or tuple for better storage in df?
