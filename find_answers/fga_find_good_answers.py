@@ -234,7 +234,7 @@ def main(popular_qa_df):
         find_question_ids(top_scoring_owners_a, all_ans_df)
 
     ques_ids_pop_and_top_l = \
-        select_questions(parent_id_l, popular_ids_a)
+        select_ques_ids_pop_and_top(parent_id_l, popular_ids_a)
 
     num_selected_recs = compute_record_selector(numlines)
 
@@ -495,7 +495,7 @@ def find_question_ids(top_scoring_owners_a, aa_df):
     return parent_id_l
 
 
-def select_questions(parent_id_l, popular_ids_a):
+def select_ques_ids_pop_and_top(parent_id_l, popular_ids_a):
     """Make a list of question Id's to use for further processing.
 
     Select popular questions (those with several answers),
@@ -514,9 +514,9 @@ def select_questions(parent_id_l, popular_ids_a):
         # For q3 & a3 data: set(parent_id_l[:40]).intersection(set(popular_ids_a[:10])))
         #D set(parent_id_l[:40]).intersection(set(popular_ids_a[:10])))
         set(parent_id_l[:900]).intersection(set(popular_ids_a[:900])))
-    log_msg = 'select_questions(): len(ques_ids_pop_and_top_l) : ' + str(len(ques_ids_pop_and_top_l))
+    log_msg = 'select_ques_ids_pop_and_top(): len(ques_ids_pop_and_top_l) : ' + str(len(ques_ids_pop_and_top_l))
     cf.logger.info(log_msg)
-    log_msg = "select_questions(): ques_ids_pop_and_top_l, top-N parent id\'s to examine: " + str(ques_ids_pop_and_top_l[0:10])
+    log_msg = "select_ques_ids_pop_and_top(): ques_ids_pop_and_top_l, top-N parent id\'s to examine: " + str(ques_ids_pop_and_top_l[0:10])
     cf.logger.info(log_msg)
     if cli_args_d['verbose']:
         print('ques_ids_pop_and_top_l, parent id\'s to examine: ', ques_ids_pop_and_top_l[:])
