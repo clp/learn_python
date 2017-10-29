@@ -233,14 +233,14 @@ def main(popular_qa_df):
     parent_id_l = \
         find_question_ids(top_scoring_owners_a, all_ans_df)
 
-    pop_and_top_l = \
+    ques_ids_pop_and_top_l = \
         select_questions(parent_id_l, popular_ids_a)
 
     num_selected_recs = compute_record_selector(numlines)
 
     popular_qa_df = \
         combine_related_q_and_a(
-            pop_and_top_l, all_ques_df, all_ans_df, num_selected_recs, a_fname, progress_msg_factor)
+            ques_ids_pop_and_top_l, all_ques_df, all_ans_df, num_selected_recs, a_fname, progress_msg_factor)
 
     # Save a df to a file for review & debug.
     write_full_df_to_csv_file(popular_qa_df, TMPDIR, 'popular_qa.csv')
@@ -496,33 +496,34 @@ def find_question_ids(top_scoring_owners_a, aa_df):
 
 
 def select_questions(parent_id_l, popular_ids_a):
-    """Make a list of questions to use in further processing.
+    """Make a list of question Id's to use for further processing.
 
     Select popular questions (those with several answers),
     that have answers from top-scoring owners (owners with
-    a high mean score).  Return that list of ParentId's in
-    pop_and_top_l.
+    a high mean score).
 
     Set the size of the following list slices to get enough o/p to analyze.
     For i/p data files q6 and a6:
     With slice limits at 40 and 30, got 2 Q, 36 A.
     With slice limits at 400 and 300, got 26 Q, 308 A.
+
+    Return the list of ParentId's in ques_ids_pop_and_top_l.
     """
-    pop_and_top_l = list(
+    ques_ids_pop_and_top_l = list(
         # For q6 & a6 data: set(parent_id_l[:500]).intersection(set(popular_ids_a[:500])))
         # For q3 & a3 data: set(parent_id_l[:40]).intersection(set(popular_ids_a[:10])))
         #D set(parent_id_l[:40]).intersection(set(popular_ids_a[:10])))
         set(parent_id_l[:900]).intersection(set(popular_ids_a[:900])))
-    log_msg = 'select_questions(): len(pop_and_top_l) : ' + str(len(pop_and_top_l))
+    log_msg = 'select_questions(): len(ques_ids_pop_and_top_l) : ' + str(len(ques_ids_pop_and_top_l))
     cf.logger.info(log_msg)
-    log_msg = "select_questions(): pop_and_top_l, top-N parent id\'s to examine: " + str(pop_and_top_l[0:10])
+    log_msg = "select_questions(): ques_ids_pop_and_top_l, top-N parent id\'s to examine: " + str(ques_ids_pop_and_top_l[0:10])
     cf.logger.info(log_msg)
     if cli_args_d['verbose']:
-        print('pop_and_top_l, parent id\'s to examine: ', pop_and_top_l[:])
-    return pop_and_top_l
+        print('ques_ids_pop_and_top_l, parent id\'s to examine: ', ques_ids_pop_and_top_l[:])
+    return ques_ids_pop_and_top_l
 
 
-def combine_related_q_and_a(pop_and_top_l, all_ques_df, aa_df, num_selected_recs, a_fname, progress_msg_factor):
+def combine_related_q_and_a(ques_ids_pop_and_top_l, all_ques_df, aa_df, num_selected_recs, a_fname, progress_msg_factor):
     """Get each Q in the list of selected ParentId's, and the related A's.
     Loop over each question and store the Q & A data in a dataframe.
 
@@ -533,8 +534,8 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, aa_df, num_selected_recs
     """
     global popular_qa_df
 
-    ques_match_df = all_ques_df[all_ques_df['Id'].isin(pop_and_top_l)]
-    ans_match_df = aa_df[aa_df['ParentId'].isin(pop_and_top_l)]
+    ques_match_df = all_ques_df[all_ques_df['Id'].isin(ques_ids_pop_and_top_l)]
+    ans_match_df = aa_df[aa_df['ParentId'].isin(ques_ids_pop_and_top_l)]
 
     print('#D len of ques_match_df: ', len(ques_match_df))
     print('#D len of ans_match_df: ', len(ans_match_df))
@@ -548,7 +549,7 @@ def combine_related_q_and_a(pop_and_top_l, all_ques_df, aa_df, num_selected_recs
     # TBD, How to do this w/o explicit loop, using df tools?
     # TBD, Combine or replace the ques_match_df & ans*df code above w/ this?
     # Maybe delete those 'intermediate' results?
-    for qid in pop_and_top_l:
+    for qid in ques_ids_pop_and_top_l:
         i += 1
         # OK if(i % progress_msg_factor == 0):
         if(i % 20 == 0):
@@ -674,7 +675,7 @@ def analyze_text(qagroup_df, num_selected_recs, a_fname, progress_msg_factor):
 
 # TBD.1 , should select_keyword_recs()
 # be called before combine_related*()?
-# Use it to make the final pop_and_top_l?
+# Use it to make the final ques_ids_pop_and_top_l?
 
 
 def select_keyword_recs(keyword, qa_df, columns_l):
