@@ -661,7 +661,7 @@ def analyze_text(qagroup_df, num_selected_recs, a_fname, progress_msg_factor):
         save_vocab('.vocab.loscore', words_sorted_by_count_l, a_fname, TMPDIR)
 
     cf.logger.info("NLP Step 7. Search lo-score A's for hi-score text.")
-    qa_with_hst_df = nl.search_for_terms(
+    qa_with_hst_df = nl.find_hi_score_terms_in_bodies(
         words_sorted_by_count_orig_l,
         clean_ans_bodies_l,
         num_hi_score_terms, qagroup_df)

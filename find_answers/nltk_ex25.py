@@ -298,7 +298,7 @@ def find_words_based_on_score(top, ids_sorted_by_score_l, num_selected_recs, pro
     return selected_bodies_l
 
 
-def search_for_terms(words_sorted_by_count_orig_l, clean_q_a_bodies_l, num_hi_score_terms, qagroup_df):
+def find_hi_score_terms_in_bodies(words_sorted_by_count_orig_l, clean_q_a_bodies_l, num_hi_score_terms, qagroup_df):
     """Save terms that a record has in common with frequently-seen text.
 
     Important Variables.
