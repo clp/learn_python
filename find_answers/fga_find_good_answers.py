@@ -556,15 +556,15 @@ def combine_related_q_and_a(ques_ids_pop_and_top_l, all_ques_df, aa_df, num_sele
             print("#D combine_related_q_and_a():progress count: ", i)
         qm_df = ques_match_df[ques_match_df['Id'] == qid]
         am_df = ans_match_df[ans_match_df['ParentId'] == qid]
-        qagroup_df = pd.concat([qm_df, am_df]).reset_index(drop=True)
-        # D print("\n#D qagroup_df.head(): ")
-        # D print(qagroup_df.head())
-        cf.logger.info('qagroup_df.head(1): ')
-        cf.logger.info(qagroup_df.head(1))
+        qagroup_from_pop_top_ques_df = pd.concat([qm_df, am_df]).reset_index(drop=True)
+        # D print("\n#D qagroup_from_pop_top_ques_df.head(): ")
+        # D print(qagroup_from_pop_top_ques_df.head())
+        cf.logger.info('qagroup_from_pop_top_ques_df.head(1): ')
+        cf.logger.info(qagroup_from_pop_top_ques_df.head(1))
 
         # Analyze data w/ nlp s/w.
         popular_qa_df = analyze_text(
-             qagroup_df, num_selected_recs, a_fname, progress_msg_factor)
+             qagroup_from_pop_top_ques_df, num_selected_recs, a_fname, progress_msg_factor)
 
     return popular_qa_df
 
@@ -599,15 +599,24 @@ def compute_record_selector(numlines):
 
 
 
-def analyze_text(qagroup_df, num_selected_recs, a_fname, progress_msg_factor):
+def analyze_text(qagroup_from_pop_top_ques_df, num_selected_recs, a_fname, progress_msg_factor):
     """Use a Q&A group of one Q w/ its A's for i/p.
     Process the text data w/ the routines in the nltk module, which use
     natural language tools.
+
+    Important variables.
+
+    qagroup_from_pop_top_ques_df: 
+    A dataframe with one Q&A group (ie, one question with its related
+    answers), which is selected from all such groups based on being 'pop'
+    (popular, questions with several answers) and 'top' (having one
+    or more answers by high-reputation owners).
+
     """
     global popular_qa_df
 
     cf.logger.info("NLP Step 2. Process the words of each input line.")
-    clean_ans_bodies_l = nl.clean_raw_data(qagroup_df)
+    clean_ans_bodies_l = nl.clean_raw_data(qagroup_from_pop_top_ques_df)
     # D print('\n#D, clean_ans_bodies_l[:1]')
     # D print(clean_ans_bodies_l[:1])
 
@@ -621,7 +630,7 @@ def analyze_text(qagroup_df, num_selected_recs, a_fname, progress_msg_factor):
     words_sorted_by_count_orig_l = words_sorted_by_count_l
 
     cf.logger.info('NLP Step 4. Sort Answers by Score.')
-    ids_and_scores_df = nl.sort_answers_by_score(qagroup_df)
+    ids_and_scores_df = nl.sort_answers_by_score(qagroup_from_pop_top_ques_df)
 
     cf.logger.info('NLP Step 5. Find words in highest or lowest scoring items.')
     ids_sorted_by_score_l = ids_and_scores_df['Id'].tolist()
@@ -634,7 +643,7 @@ def analyze_text(qagroup_df, num_selected_recs, a_fname, progress_msg_factor):
 
     top = True
     selected_bodies_l = nl.find_words_based_on_score(
-        top, ids_sorted_by_score_l, num_selected_recs, progress_msg_factor, qagroup_df)
+        top, ids_sorted_by_score_l, num_selected_recs, progress_msg_factor, qagroup_from_pop_top_ques_df)
     cf.logger.info('make_bag_of_words(selected_bodies_l)')
     (vocab_l, dist_a) = nl.make_bag_of_words(selected_bodies_l)
     words_sorted_by_count_l = nl.sort_vocab(vocab_l, dist_a)
@@ -654,7 +663,7 @@ def analyze_text(qagroup_df, num_selected_recs, a_fname, progress_msg_factor):
 
         top = False
         selected_bodies_l = nl.find_words_based_on_score(
-            top, ids_sorted_by_score_l, num_selected_recs, progress_msg_factor, qagroup_df)
+            top, ids_sorted_by_score_l, num_selected_recs, progress_msg_factor, qagroup_from_pop_top_ques_df)
         cf.logger.info('make_bag_of_words(selected_bodies_l)')
         (vocab_l, dist_a) = nl.make_bag_of_words(selected_bodies_l)
         words_sorted_by_count_l = nl.sort_vocab(vocab_l, dist_a)
@@ -664,7 +673,7 @@ def analyze_text(qagroup_df, num_selected_recs, a_fname, progress_msg_factor):
     qa_with_hst_df = nl.find_hi_score_terms_in_bodies(
         words_sorted_by_count_orig_l,
         clean_ans_bodies_l,
-        num_hi_score_terms, qagroup_df)
+        num_hi_score_terms, qagroup_from_pop_top_ques_df)
     popular_qa_df = pd.concat(
         [popular_qa_df, qa_with_hst_df]).reset_index(drop=True)
     cf.logger.debug('popular_qa_df: len')
