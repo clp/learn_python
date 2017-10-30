@@ -342,11 +342,6 @@ def find_hi_score_terms_in_bodies(words_sorted_by_count_orig_l, clean_q_a_bodies
     cf.logger.debug("clean_q_a_bodies_l, bottom:")
     cf.logger.debug(clean_q_a_bodies_l[-1:])
 
-    #D Use short list cab_l for testing:
-    #D cab_l = ['step isprimenumber call', 'foo step isprimenumber call bar', 'yield abc def ghi generators long first string', 'generator', 'foo next function bar', 'short list foo bar baz']
-
-    #D cab_df = pd.DataFrame(cab_l)
-
     #TBF
     # p.1. Separate the terms from each other so it is clear what was found
     #  and what was not found in the A's being checked.
@@ -354,18 +349,16 @@ def find_hi_score_terms_in_bodies(words_sorted_by_count_orig_l, clean_q_a_bodies
     qagroup_from_pop_top_ques_df["HiScoreTerms"] = ""
     qagroup_from_pop_top_ques_df["HSTCount"] = 0
 
-    #D print("\nTerms from hi-score Answers.")
     cf.logger.info("Terms from hi-score Answers.")
     #TBD, Maybe collect these "count,w" data into a single list,
     #   & write it in one step to the log file.
     for count, w in words_sorted_by_count_orig_l[-num_hi_score_terms:]:
-        #D print("count, w: ", count, " , ", w)
         log_msg = "count, w: " + str(count) + " , " + w
         cf.logger.info(log_msg)
         tmp2_sr = clean_q_a_bodies_df[0].str.contains(w)
         for index, row in tmp2_sr.iteritems():
             if row:
-                #TBD, Change string 'w' to list or tuple for better storage in df?
+                #TBD, Maybe Change string 'w' to list or tuple for better storage in df?
                 #OK qagroup_from_pop_top_ques_df.loc[index, "HiScoreTerms"] = qagroup_from_pop_top_ques_df.loc[index, "HiScoreTerms"] + w + ' , '
                 qagroup_from_pop_top_ques_df.loc[index, "HiScoreTerms"] += (w + ' , ')
                 #TBD, increment hst counter each time one is found.
@@ -373,7 +366,6 @@ def find_hi_score_terms_in_bodies(words_sorted_by_count_orig_l, clean_q_a_bodies
                 #TBD, use df func to simply count number of HiScoreTerms in each row?
                 qagroup_from_pop_top_ques_df.loc[index, "HSTCount"] += 1
 
-    #D print()
     #D cf.logger.debug("DBG, qagroup_from_pop_top_ques_df.head():")
     #D cf.logger.debug(qagroup_from_pop_top_ques_df.head())
 
