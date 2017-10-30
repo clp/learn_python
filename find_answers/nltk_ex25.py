@@ -86,7 +86,7 @@ def convert_text_to_words(raw_q_a_s):
     That content is processed in various ways, eg, remove HTML,
     remove non-letters, convert to lower-case, and remove
     stop words that clutter the output.
-    
+
     Return a single string of meaningful words.
     """
 
@@ -119,10 +119,10 @@ def convert_text_to_words(raw_q_a_s):
 def clean_raw_data(qagroup_from_pop_top_ques_df):
     """Clean and parse the training set text.
 
-    The input is a dataframe of one question, which is pop
-    (popular; has several answers) and is top (some answers
-    are by owners with high reputation scores); and the
-    answers related to that question.
+    The input is a dataframe of one question and its related
+    answers.  The question is both pop (popular) and top: it has
+    several answers; and some answers are by owners with high
+    reputation scores.
 
     Create a new column in the dataframe to hold the
     cleaned data.
@@ -131,6 +131,7 @@ def clean_raw_data(qagroup_from_pop_top_ques_df):
     into a string of meaningful words.
     Store that new string in the new cell for that row.
     Repeat for all the rows in the dataframe by using a loop.
+    This updated dataframe is then used elsewhere.
 
     One use of this function reads text from the Body column of a row
     in the dataframe; converts it into words; and places them in the
@@ -168,7 +169,9 @@ def clean_raw_data(qagroup_from_pop_top_ques_df):
 
 
 def make_bag_of_words(clean_q_a_bodies_l):
-    """Collect and count ngrams (words or phrases) in the text.
+    """Collect and count ngrams (words or phrases) in the i/p text.
+
+    Input is a list of strings of cleaned text, for one Q&A group.
 
     To use phrases instead of single words in the analysis, specify
     a range, eg, 'ngram_range = (3,5)' in the arguments for
