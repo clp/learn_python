@@ -4,7 +4,7 @@
 
 """nltk_ex25.py
 
-Analyze data using the Natural Language Toolkit, NLTK.
+Analyze text data using the Natural Language Toolkit, NLTK.
 
 NLTK is a suite of Python s/w, data sets, and documents
 to support the development of Natural Language Processing, NLP.
@@ -22,8 +22,8 @@ indicates a low-score record that might have useful content.
 
 Return the o/p to the caller for further evaluation & processing.
 
-This module was built to work with the code in
-fga_find_good_answers.py, which uses data from stackoverflow.com.
+These functions were built to work with the calling code in
+fga_find_good_answers.py (which uses data from stackoverflow.com).
 See that program for more details.
 
 
@@ -75,13 +75,14 @@ def main():
     nltk.download('stopwords')
 
 
-def convert_text_to_words(raw_q_a):
+def convert_text_to_words(raw_q_a_s):
     """Convert and filter the i/p text string to a string of words.
 
     Convert a raw stackoverflow question or answer
     to a string of meaningful words for detailed analysis.
 
     The input is a single string of text.
+
     That content is processed in various ways, eg, remove HTML,
     remove non-letters, convert to lower-case, and remove
     stop words that clutter the output.
@@ -90,7 +91,7 @@ def convert_text_to_words(raw_q_a):
     """
 
     # 1. Remove HTML
-    q_a_text = BeautifulSoup(raw_q_a, "lxml").get_text()
+    q_a_text = BeautifulSoup(raw_q_a_s, "lxml").get_text()
 
     # 2. Remove non-letters
     letters_only = re.sub("[^a-zA-Z]", " ", q_a_text)
@@ -110,7 +111,7 @@ def convert_text_to_words(raw_q_a):
     meaningful_words = [w for w in words if w not in stops]
 
     # 6. Join the words back into one string of words, each word
-    # separated by a space, and return the result.
+    # separated by a space, and return the resulting string.
 
     return(" ".join(meaningful_words))
 
@@ -118,23 +119,25 @@ def convert_text_to_words(raw_q_a):
 def clean_raw_data(qagroup_from_pop_top_ques_df):
     """Clean and parse the training set text.
 
-    The input is a data frame of one question and its related
-    answers.
+    The input is a dataframe of one question, which is pop
+    (popular; has several answers) and is top (some answers
+    are by owners with high reputation scores); and the
+    answers related to that question.
 
-    Create a new column in the data frame to hold the
+    Create a new column in the dataframe to hold the
     cleaned data.
 
-    Process the text in one cell of a row of the data frame
+    Process the text from one cell of a row of the dataframe
     into a string of meaningful words.
-    Store that string in the new cell for that row.
-    Loop over all the rows in the data frame.
+    Store that new string in the new cell for that row.
+    Repeat for all the rows in the dataframe by using a loop.
 
-    One use of this function uses text from the Body column,
-    and converts it into words, and places them in the CleanBody
-    cell of a row in the data frame.
+    One use of this function reads text from the Body column of a row
+    in the dataframe; converts it into words; and places them in the
+    CleanBody cell of that row.
 
-    Return a list of strings of clean answer bodies, for all the
-    answers to one question.
+    Return a list of strings of cleaned text, one string for each
+    row in the dataframe.
     """
 
     # Get the number of bodies based on that column's size
