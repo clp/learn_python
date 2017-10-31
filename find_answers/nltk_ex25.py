@@ -309,12 +309,12 @@ def find_words_based_on_score(top, ids_sorted_by_score_l, num_selected_recs, pro
     #TBD, Wed2017_1025_13:59 , num_selected_recs=7603 for i/p a6* file; Check its use here:
         # Should ids_sorted_by_score_l be 10% of i/p length, or just a small number-10-20?
     if top:  # Get the tail of the list, highest-score items.
-        ids_sorted_by_score_l = ids_sorted_by_score_l[-num_selected_recs:]
+        ids_l = ids_sorted_by_score_l[-num_selected_recs:]
     else:  # Get the head of the list, lowest-score items.
-        ids_sorted_by_score_l = ids_sorted_by_score_l[0:num_selected_recs]
+        ids_l = ids_sorted_by_score_l[0:num_selected_recs]
     tmp_df = qagroup_from_pop_top_ques_df.set_index('Id')
     progress_count = 0
-    for i in ids_sorted_by_score_l:
+    for i in ids_l:
         progress_count += 1
         clean_q_a = convert_text_to_words(tmp_df["Body"][i])
         selected_bodies_l.append(clean_q_a)
