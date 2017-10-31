@@ -169,19 +169,41 @@ def clean_raw_data(qagroup_from_pop_top_ques_df):
 
 
 def make_bag_of_words(clean_q_a_bodies_l):
-    """Collect and count ngrams (words or phrases) in the i/p text.
+    """Extract numerical features from input text data.
+    Later steps can use the numeric form with machine learning
+    algorithms to analyze the data further.
 
-    Input is a list of strings of cleaned text, for one Q&A group.
+    The input data is a list of strings of cleaned text,
+    for one Q&A group.  Each string contains the words of the
+    Body field of the question or of one of its answers.
 
-    To use phrases instead of single words in the analysis, specify
-    a range, eg, 'ngram_range = (3,5)' in the arguments for
-    CountVectorizer.
+    Consider the entire list to be a corpus or collection
+    of documents in the form of a matrix.
 
-    To include 1-letter words, use this argument & pattern:
+    Each string in the list is a row of the matrix;
+    and each ngram (word or phrase) in each row occupies one column
+    of the matrix.
+
+    Use CountVectorizer() from scikit-learn to convert
+    that matrix into numerical feature vectors.
+
+    Return a tuple of two structures.
+    vocab_l: one list of all ngrams in the vocabulary;
+    dist_a: one array with the total count of the occurrences
+    of each ngram in the vocabulary list.
+
+
+    # Some Details.
+
+    To use phrases instead of single words in making the bag of words,
+    specify a range, eg, 'ngram_range = (3,5)' in the arguments for
+    CountVectorizer().
+
+    To include 1-letter words in the bag, use this argument & pattern:
     'token_pattern = r'\b\w+\b'.
 
-    Return a tuple of two structures: a list of ngrams found
-    in the i/p; and an array with the count of each ngram in that list.
+    Ref: http://scikit-learn.org/stable/modules/feature_extraction.html#text-feature-extraction.
+
     """
 
     cf.logger.debug("Creating the bag of words for word counts ...")
