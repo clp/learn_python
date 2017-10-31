@@ -269,7 +269,7 @@ def sort_vocab(vocab_l, dist_a):
     return words_sorted_by_count_l
 
 
-def sort_answers_by_score(qagroup_from_pop_top_ques_df):
+def sort_q_a_by_score(qagroup_from_pop_top_ques_df):
     """Build a dataframe of Id's and their Scores, sorted by score.
 
     Use one Q&A group dataframe as input.

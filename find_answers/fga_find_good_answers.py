@@ -630,7 +630,8 @@ def analyze_text(qagroup_from_pop_top_ques_df, num_selected_recs, a_fname, progr
     words_sorted_by_count_orig_l = words_sorted_by_count_l
 
     cf.logger.info('NLP Step 4. Sort Answers by Score.')
-    ids_and_scores_df = nl.sort_answers_by_score(qagroup_from_pop_top_ques_df)
+    # TBD, Plan to change func to sort only answers. See b.98.
+    ids_and_scores_df = nl.sort_q_a_by_score(qagroup_from_pop_top_ques_df)
 
     cf.logger.info('NLP Step 5. Find words in highest or lowest scoring items.')
     ids_sorted_by_score_l = ids_and_scores_df['Id'].tolist()
