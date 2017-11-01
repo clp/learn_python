@@ -569,20 +569,6 @@ def combine_related_q_and_a(ques_ids_pop_and_top_l, all_ques_df, aa_df, num_sele
     return popular_qa_df
 
 
-def save_vocab(suffix, words_sorted_by_count_l, a_fname, TMPDIR):
-    """
-    Save vocabulary data to a file with a specified suffix.
-
-    For each item in the bag of words, print the vocabulary word and
-    the number of times it appears in the training set
-    """
-    # Write sorted vocab to a file.
-    outfile = TMPDIR + a_fname + suffix
-    with open(outfile, 'w') as f:
-        for count, word in words_sorted_by_count_l:
-            print(count, word, file=f)
-
-
 def compute_record_selector(numlines):
     """Compute the number of records to use for computation and display.
 
@@ -625,54 +611,10 @@ def analyze_text(qagroup_from_pop_top_ques_df, num_selected_recs, a_fname, progr
     # D print('\n#D, vocab_l[:1]')
     # D print(vocab_l[:1])
     words_sorted_by_count_l = nl.sort_vocab(vocab_l, dist_a)
-    save_vocab('.vocab', words_sorted_by_count_l, a_fname, TMPDIR)
-    # Save the original list for later searching.
-    words_sorted_by_count_orig_l = words_sorted_by_count_l
-
-    cf.logger.info('NLP Step 4. Sort Answers by Score.')
-    # TBD, Plan to change func to sort only answers. See b.98.
-    ids_and_scores_df = nl.sort_q_a_by_score(qagroup_from_pop_top_ques_df)
-
-    cf.logger.info('NLP Step 5. Find words in highest or lowest scoring items.')
-    ids_sorted_by_score_l = ids_and_scores_df['Id'].tolist()
-
-    cf.logger.debug("ids_sorted_by_score_l-slice at end, high scores:")
-    cf.logger.debug(ids_sorted_by_score_l[-LINE_COUNT:])
-    # Use top_n Answers & count their words.
-    cf.logger.info(
-        "For top ans: Cleaning and parsing the training set bodies...")
-
-    top = True
-    selected_bodies_l = nl.find_words_based_on_score(
-        top, ids_sorted_by_score_l, num_selected_recs, progress_msg_factor, qagroup_from_pop_top_ques_df)
-    cf.logger.info('make_bag_of_words(selected_bodies_l)')
-    (vocab_l, dist_a) = nl.make_bag_of_words(selected_bodies_l)
-    words_sorted_by_count_l = nl.sort_vocab(vocab_l, dist_a)
-    save_vocab('.vocab.hiscore', words_sorted_by_count_l, a_fname, TMPDIR)
-
-    cf.logger.info(
-        "NLP Step 6. Find most freq words for low-score Answers, "
-        "if program started in debug mode.")
-    if cli_args_d['debug']:
-        # Keep these data to compare w/ words for top-scoring Answers;
-        # there should be some diff unless data set is too small.
-        # If they are identical, there may be a logic problem in the code,
-        # or the data set may be too small.
-
-        cf.logger.debug("ids_sorted_by_score_l-slice at start, low scores:")
-        cf.logger.debug(ids_sorted_by_score_l[:LINE_COUNT])
-
-        top = False
-        selected_bodies_l = nl.find_words_based_on_score(
-            top, ids_sorted_by_score_l, num_selected_recs, progress_msg_factor, qagroup_from_pop_top_ques_df)
-        cf.logger.info('make_bag_of_words(selected_bodies_l)')
-        (vocab_l, dist_a) = nl.make_bag_of_words(selected_bodies_l)
-        words_sorted_by_count_l = nl.sort_vocab(vocab_l, dist_a)
-        save_vocab('.vocab.loscore', words_sorted_by_count_l, a_fname, TMPDIR)
 
     cf.logger.info("NLP Step 7. Search lo-score A's for hi-score text.")
     qa_with_hst_df = nl.find_hi_score_terms_in_bodies(
-        words_sorted_by_count_orig_l,
+        words_sorted_by_count_l,
         clean_ans_bodies_l,
         num_hi_score_terms, qagroup_from_pop_top_ques_df)
     popular_qa_df = pd.concat(

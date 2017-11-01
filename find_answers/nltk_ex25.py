@@ -288,44 +288,6 @@ def sort_q_a_by_score(qagroup_from_pop_top_ques_df):
     return ids_and_scores_df
 
 
-def find_words_based_on_score(top, ids_sorted_by_score_l, num_selected_recs, progress_msg_factor, qagroup_from_pop_top_ques_df):
-    """Build a list of strings; each string has terms from a record's body text.
-
-    The inputs include the dataframe of one Q&A group, and the
-    list of Id's for the members of the Q&A group sorted by Score.
-
-    Select items from the Q&A group based on their score, either the
-    highest or lowest score items, depending on how the caller
-    sets the 'top' var.
-
-    Clean the raw body text of each selected item, store it in a string
-    of words, and append that string to a list.
-
-    Return that list of items.
-    """
-    selected_bodies_l = []
-    # Convert dataframe to list of Id's, to get the body of each Id.
-    #
-    #TBD, Wed2017_1025_13:59 , num_selected_recs=7603 for i/p a6* file; Check its use here:
-        # Should ids_sorted_by_score_l be 10% of i/p length, or just a small number-10-20?
-    if top:  # Get the tail of the list, highest-score items.
-        ids_l = ids_sorted_by_score_l[-num_selected_recs:]
-    else:  # Get the head of the list, lowest-score items.
-        ids_l = ids_sorted_by_score_l[0:num_selected_recs]
-    tmp_df = qagroup_from_pop_top_ques_df.set_index('Id')
-    progress_count = 0
-    for i in ids_l:
-        progress_count += 1
-        clean_q_a = convert_text_to_words(tmp_df["Body"][i])
-        selected_bodies_l.append(clean_q_a)
-        # Print a progress message (default: for every 10% of i/p data handled).
-        if((progress_count+1) % progress_msg_factor == 0):
-            #D cf.logger.debug("Body for Id %d " % (i))
-            #D cf.logger.debug('  Original text:\n' + tmp_df['Body'][i][:70])
-            cf.logger.debug('  find_words*(): Partial slice of cleaned text:\n' + clean_q_a[:70])
-    return selected_bodies_l
-
-
 def find_hi_score_terms_in_bodies(words_sorted_by_count_orig_l, clean_q_a_bodies_l, num_hi_score_terms, qagroup_from_pop_top_ques_df):
     """Save terms that a record has in common with frequently-seen text.
 
