@@ -40,6 +40,10 @@ Usage:
     will cause the program to run longer, and might find more
     'hidden' answers that could be valuable.
 
+
+Terms:
+    ngram: a string of one or more words.
+
 ----------------------------------------------------------
 
 """
@@ -76,7 +80,7 @@ def main():
 
 
 def convert_text_to_words(raw_q_a_s):
-    """Convert and filter the i/p text string to a string of words.
+    """Convert and filter the i/p text string into a string of words.
 
     Convert a raw stackoverflow question or answer
     to a string of meaningful words for detailed analysis.
@@ -117,12 +121,12 @@ def convert_text_to_words(raw_q_a_s):
 
 
 def clean_raw_data(qagroup_from_pop_top_ques_df):
-    """Clean and parse the training set text.
+    """Clean and parse the input text.
 
     The input is a dataframe of one question and its related
-    answers.  The question is both pop (popular) and top: it has
-    several answers; and some answers are by owners with high
-    reputation scores.
+    answers (one Q&A group).  The question is both pop (popular)
+    and top: it has several answers, and some answers are by owners
+    with high reputation scores.
 
     Create a new column in the dataframe to hold the
     cleaned data.
@@ -170,12 +174,12 @@ def clean_raw_data(qagroup_from_pop_top_ques_df):
 
 def make_bag_of_words(clean_q_a_bodies_l):
     """Extract numerical features from input text data.
-    Later steps can use the numeric form with machine learning
+    Later steps can use those features with machine learning
     algorithms to analyze the data further.
 
     The input data is a list of strings of cleaned text,
     for one Q&A group.  Each string contains the words of the
-    Body field of the question or of one of its answers.
+    Body field of the question or an answer.
 
     Consider the entire list to be a corpus or collection
     of documents in the form of a matrix.
@@ -188,19 +192,20 @@ def make_bag_of_words(clean_q_a_bodies_l):
     that matrix into numerical feature vectors.
 
     Return a tuple of two structures.
-    vocab_l: one list of all ngrams in the vocabulary;
-    dist_a: one array with the total count of the occurrences
+    vocab_l: a list of srings; each string is one ngram
+    in the vocabulary;
+    dist_a: an array with the total count of the occurrences
     of each ngram in the vocabulary list.
 
 
     # Some Details.
 
     To use phrases instead of single words in making the bag of words,
-    specify a range, eg, 'ngram_range = (3,5)' in the arguments for
+    specify a range, eg, "ngram_range = (3,5)" in the arguments for
     CountVectorizer().
 
     To include 1-letter words in the bag, use this argument & pattern:
-    'token_pattern = r'\b\w+\b'.
+    "token_pattern = r'\b\w+\b".
 
     Ref: http://scikit-learn.org/stable/modules/feature_extraction.html#text-feature-extraction.
 
@@ -250,8 +255,8 @@ def make_bag_of_words(clean_q_a_bodies_l):
 def sort_vocab(vocab_l, dist_a):
     """Sort the i/p vocabulary data by count.
 
-    The two input structures are a list of terms and an array
-    of counts that correspond to the terms.
+    The two input structures are a list of strings of terms
+    and an array of counts that correspond to the terms.
 
     Combine these two structures into a list of tuples;
     then sort that list by the count element.
@@ -270,11 +275,9 @@ def sort_vocab(vocab_l, dist_a):
 
 
 def sort_q_a_by_score(qagroup_from_pop_top_ques_df):
-    """Build a dataframe of Id's and their Scores, sorted by score.
+    """Return a dataframe of Id's and their Scores, sorted by score.
 
     Use one Q&A group dataframe as input.
-
-    Return the sorted dataframe with only Id's and Scores.
     """
 
     ids_and_scores_df = qagroup_from_pop_top_ques_df.sort_values(['Score'])
@@ -288,39 +291,40 @@ def sort_q_a_by_score(qagroup_from_pop_top_ques_df):
     return ids_and_scores_df
 
 
-def find_hi_score_terms_in_bodies(words_sorted_by_count_orig_l, clean_q_a_bodies_l, num_hi_score_terms, qagroup_from_pop_top_ques_df):
+def find_hi_score_terms_in_bodies(words_sorted_by_count_l, clean_q_a_bodies_l, num_hi_score_terms, qagroup_from_pop_top_ques_df):
     """Save terms that a record has in common with frequently-seen text.
 
     Important Variables.
 
-    clean_q_a_bodies_df: A dataframe with cleaned text from Q&A bodies.
+    clean_q_a_bodies_df: A dataframe with cleaned text from Q&A
+    bodies.
 
-    HiScoreTerms: A column added to qagroup_from_pop_top_ques_df, holding terms
-    that might indicate that this is a useful record.
+    HiScoreTerms: A column added to qagroup_from_pop_top_ques_df,
+    holding terms that might indicate that this is a useful record.
 
-    HSTCount: A column added to qagroup_from_pop_top_ques_df, holding the total count
-    of the number of high score terms in a record.
+    HSTCount: A column added to qagroup_from_pop_top_ques_df, holding
+    the total count of the number of high score terms in a record.
 
-    qagroup_from_pop_top_ques_df: A dataframe with one Q&A group
-    (ie, one question with its related answers), which is selected from all
-    such groups based on being 'pop' (popular, questions with several
-    answers) and 'top' (having one or more answers by high-reputation
-    owners).
+    qagroup_from_pop_top_ques_df: a dataframe of one question
+    and its related answers (one Q&A group).  The question is
+    both pop (popular) and top: it has several answers, and some
+    answers are by owners with high reputation scores.
 
-    words_sorted_by_count_orig_l: The original list of all terms found
-    in the bodies of records, which is sorted by the count of each term.
+    words_sorted_by_count_l: A list of strings of ngrams found
+    in the bodies of records; the list is sorted by the count
+    of each ngram.
 
 
     Actions.
 
-    Start with a list of terms (words or phrases) from the bodies
-    of a Q&A group, sorted by count.
-    Select a subset of terms that appear most often.
-    Compare each term of that subset with each term in the body
+    Start with a list of ngrams from the bodies of a Q&A group,
+    sorted by count.
+    Select a subset of ngrams that appear most often.
+    Compare each ngram of that subset with each ngram in the body
     of one row in the Q&A group dataframe.  If there is a match,
     save the term and increment the total HSTCount
     for that row in the output dataframe.
-    Use nested loops to check all frequently-seen terms against
+    Use nested loops to check all frequently-seen ngrams against
     all rows of the Q&A group dataframe.
 
     Return the updated Q&A group dataframe for further investigation.
@@ -342,7 +346,7 @@ def find_hi_score_terms_in_bodies(words_sorted_by_count_orig_l, clean_q_a_bodies
     cf.logger.info("Terms from hi-score Answers.")
     #TBD, Maybe collect these "count,w" data into a single list,
     #   & write it in one step to the log file.
-    for count, w in words_sorted_by_count_orig_l[-num_hi_score_terms:]:
+    for count, w in words_sorted_by_count_l[-num_hi_score_terms:]:
         log_msg = "count, w: " + str(count) + " , " + w
         cf.logger.info(log_msg)
         tmp2_sr = clean_q_a_bodies_df[0].str.contains(w)
