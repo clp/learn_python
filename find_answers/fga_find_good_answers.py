@@ -139,8 +139,6 @@ Requirements
 
 """
 
-version = '0.0.6'
-
 import argparse
 import nltk
 import matplotlib.pyplot as plt
@@ -210,8 +208,6 @@ def main(popular_qa_df):
     them for the next action.
     """
 
-    # all_ans_df must be global to calculate reputations of owners, because
-    # it is changed here in main(), and used outside main().
     global all_ans_df
 
     init()
@@ -230,11 +226,11 @@ def main(popular_qa_df):
     top_scoring_owners_a, owner_grouped_df = \
         group_data(all_ans_df)
 
-    parent_id_l = \
-        find_question_ids(top_scoring_owners_a, all_ans_df)
+    ques_ids_from_top_own_l = \
+        find_ques_ids_from_top_owners(top_scoring_owners_a, all_ans_df)
 
     ques_ids_pop_and_top_l = \
-        select_ques_ids_pop_and_top(parent_id_l, popular_ids_a)
+        find_pop_and_top_ques_ids(ques_ids_from_top_own_l, popular_ids_a)
 
     num_selected_recs = compute_record_selector(numlines)
 
@@ -359,7 +355,7 @@ def find_popular_ques(aa_df, a_fname):
     # Thu2017_0907_23:30 , Should lo_score*df be returned for use elsewhere?
     # It is printed to file, maybe to log.
     # Is it needed to find good answers?
-    # Also chk find_question_ids() ;  common code.
+    # Also chk find_ques_ids_from_top_owners() ;  common code.
     # Has copied lines from group_data().
     # Does not have lo_score* vars & code.
 def gd2_group_data(aa_df):
@@ -467,7 +463,7 @@ def group_data(aa_df):
     return top_scoring_owners_a, owner_grouped_df
 
 
-def find_question_ids(top_scoring_owners_a, aa_df):
+def find_ques_ids_from_top_owners(top_scoring_owners_a, aa_df):
     """Make a list of all answer records by the high-score owners.
     Use that list to build a list of ParentId's (ie, questions)
     to collect for evaluation.
@@ -488,18 +484,18 @@ def find_question_ids(top_scoring_owners_a, aa_df):
     # D print(hi_scoring_owners_df)
 
     # Get list of unique ParentId's:
-    parent_id_l = list(set(hi_scoring_owners_df['ParentId']))
-    # D print('parent_id_l: ')
-    # D print(parent_id_l)
+    ques_ids_from_top_own_l = list(set(hi_scoring_owners_df['ParentId']))
+    # D print('ques_ids_from_top_own_l: ')
+    # D print(ques_ids_from_top_own_l)
     # D print()
-    return parent_id_l
+    return ques_ids_from_top_own_l
 
 
-def select_ques_ids_pop_and_top(parent_id_l, popular_ids_a):
+def find_pop_and_top_ques_ids(ques_ids_from_top_own_l, popular_ids_a):
     """Make a list of question Id's to use for further processing.
 
     Select popular questions (those with several answers),
-    that have answers from top-scoring owners (owners with
+    that also have answers from top-scoring owners (owners with
     a high mean score).
 
     Set the size of the following list slices to get enough o/p to analyze.
@@ -507,16 +503,16 @@ def select_ques_ids_pop_and_top(parent_id_l, popular_ids_a):
     With slice limits at 40 and 30, got 2 Q, 36 A.
     With slice limits at 400 and 300, got 26 Q, 308 A.
 
-    Return the list of ParentId's in ques_ids_pop_and_top_l.
+    Return the list of question id's in ques_ids_pop_and_top_l.
     """
     ques_ids_pop_and_top_l = list(
-        # For q6 & a6 data: set(parent_id_l[:500]).intersection(set(popular_ids_a[:500])))
-        # For q3 & a3 data: set(parent_id_l[:40]).intersection(set(popular_ids_a[:10])))
-        #D set(parent_id_l[:40]).intersection(set(popular_ids_a[:10])))
-        set(parent_id_l[:900]).intersection(set(popular_ids_a[:900])))
-    log_msg = 'select_ques_ids_pop_and_top(): len(ques_ids_pop_and_top_l) : ' + str(len(ques_ids_pop_and_top_l))
+        # For q6 & a6 data: set(ques_ids_from_top_own_l[:500]).intersection(set(popular_ids_a[:500])))
+        # For q3 & a3 data: set(ques_ids_from_top_own_l[:40]).intersection(set(popular_ids_a[:10])))
+        #D set(ques_ids_from_top_own_l[:40]).intersection(set(popular_ids_a[:10])))
+        set(ques_ids_from_top_own_l[:900]).intersection(set(popular_ids_a[:900])))
+    log_msg = 'find_pop_and_top_ques_ids(): len(ques_ids_pop_and_top_l) : ' + str(len(ques_ids_pop_and_top_l))
     cf.logger.info(log_msg)
-    log_msg = "select_ques_ids_pop_and_top(): ques_ids_pop_and_top_l, top-N parent id\'s to examine: " + str(ques_ids_pop_and_top_l[0:10])
+    log_msg = "find_pop_and_top_ques_ids(): ques_ids_pop_and_top_l, top-N parent id\'s to examine: " + str(ques_ids_pop_and_top_l[0:10])
     cf.logger.info(log_msg)
     if cli_args_d['verbose']:
         print('ques_ids_pop_and_top_l, parent id\'s to examine: ', ques_ids_pop_and_top_l[:])
