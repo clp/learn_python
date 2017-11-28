@@ -11,17 +11,17 @@ to identify good but 'hidden' answers to the questions. Such
 answers have useful data but a low score.
 
 The input data is analyzed using statistical techniques,
-and using Natural Language Programming (NLP) techniques.
+and using Natural Language Processing (NLP) techniques.
 The Python Natural Language Toolkit (NLTK)
 provides good access to NLP tools.
 
-This site contains some data files that were built
+This site contains some output files that were built
 from the software.
 
 See the software for the find_answers project at
 [github.](https://github.com/clp/learn_python/tree/master/find_answers)
 
-## Some data files.
+## Some output tables and plots.
 
 * [popular_qa.html](popular_qa.html)
 
