@@ -778,28 +778,7 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df):
                 print("WARN: dataframe empty or search term not found; try another term.")
             else:
                 # Show full text of the record.
-                pd.set_option('display.max_colwidth', -1)  # -1=no limit, for debug
-                for index, row in qa_with_keyword_df.iterrows():
-                    #D print("#D index, row: ", index, row)
-                    #
-                    ident = row['Id']
-                    parentident = row['ParentId']
-                    title = row['Title']
-                    body = row['Body']
-                    hstcount = row['HSTCount']
-                    hst = row['HiScoreTerms']
-                    score = row['Score']
-                    #OK print("#D index, id, title: ", index, ident, title) # Short 1-line/record
-                    print("#D index: ", index)
-                    print("#D HSTCount: ", hstcount)
-                    print("#D Score: ", score)
-                    print("#D Id: ", ident)
-                    print("#D ParentId: ", parentident)
-                    print("#D Title: ", title)
-                    print("#D HiScoreTerms: ", hst)
-                    #D print("#D Body: ", body)
-                    print("#D ==========\n")
-                pd.set_option('display.max_colwidth', MAXCOLWID)  # -1=no limit, for debug
+                show_q_a_with_keywords(qa_with_keyword_df )
         else:
             print("Got bad cmd from user: ", user_cmd)
             print(user_menu)
@@ -825,6 +804,31 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df):
     # outfile.flush()
 
     return
+
+
+def show_q_a_with_keywords(qa_with_keyword_df ):
+    pd.set_option('display.max_colwidth', -1)  # -1=no limit, for debug
+    for index, row in qa_with_keyword_df.iterrows():
+        #D print("#D index, row: ", index, row)
+        #
+        ident = row['Id']
+        parentident = row['ParentId']
+        title = row['Title']
+        body = row['Body']
+        hstcount = row['HSTCount']
+        hst = row['HiScoreTerms']
+        score = row['Score']
+        #OK print("#D index, id, title: ", index, ident, title) # Short 1-line/record
+        print("#D index: ", index)
+        print("#D HSTCount: ", hstcount)
+        print("#D Score: ", score)
+        print("#D Id: ", ident)
+        print("#D ParentId: ", parentident)
+        print("#D Title: ", title)
+        print("#D HiScoreTerms: ", hst)
+        #D print("#D Body: ", body)
+        print("#D ==========\n")
+    pd.set_option('display.max_colwidth', MAXCOLWID)  # -1=no limit, for debug
 
 
 def build_stats(qa_df, or_df):
