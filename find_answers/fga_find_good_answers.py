@@ -667,7 +667,7 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df):
     # Show prompt & wait for a cmd.
     print("======================\n")
     cmd_prompt = "Enter a command: q[uit] [m]enu  ...  [h]elp: "
-    while user_cmd == "":  # Repeat the request if only the Enter key is pressed.
+    while user_cmd == "":  # Repeat the prompt if the Enter key is pressed.
         user_cmd = input(cmd_prompt)
     print("User entered this cmd: ", user_cmd)
 
@@ -774,6 +774,7 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df):
             columns_l = ['Id', 'ParentId', 'Title', 'Body', 'HSTCount', 'HiScoreTerms', 'Score' ]
             qa_with_keyword_df = select_keyword_recs(
                 search_term, popular_qa_df, columns_l)
+            #
             if qa_with_keyword_df.empty:
                 print("WARN: dataframe empty or search term not found; try another term.")
             else:
@@ -786,7 +787,7 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df):
             user_cmd = ''
         # Show prompt & wait for a cmd.
         print("======================\n")
-        while user_cmd == "":  # Repeat the request if only the Enter key is pressed.
+        while user_cmd == "":  # Repeat the prompt if the Enter key is pressed.
             user_cmd = input(cmd_prompt)
     print("#D End of the cmd interpretation loop; return.")
     print()
