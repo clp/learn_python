@@ -654,6 +654,7 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df):
     dh: draw default histogram plot of current data
     dm: draw scatter matrix plot of current data
     h, ?: show help text, the menu
+    lxk: look for exact keyword in questions and answers
     m: show menu
     q: save data and quit the program
     s: show current item: question or answer
@@ -755,6 +756,37 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df):
             else:
                 print("NOTE: Drawing the qa_stats_df scatter matrix plot.")
                 draw_scatter_matrix_plot(qa_stats_df[['Score', 'BodyLength', 'OwnerRep',  'HSTCount' ]])
+        #TBD,Fri2017_1215_18:07  New cmd.
+        #TBF, Search is case sensitive.
+        # lxk: Look for exact keywords in the Q&A df.
+        elif user_cmd.lower() == 'lxk':
+            user_cmd = 'lxk'  #TBD, Forces menu to always repeat the lxk function.
+            search_prompt = "Enter a word or phrase to seek in Q & A text; press Enter only to return to menu: "
+            search_term = input(search_prompt)
+            if search_term == "": # Return to main menu and ask for a cmd.
+                user_cmd = 'm'
+                continue
+            print("User entered this search_term: ", search_term)
+            log_msg = cf.log_file + ' - Search term entered by user: ' + \
+                search_term + '\n'
+            cf.logger.warning(log_msg)
+            #
+            columns_l = ['Id', 'Title', 'Body']
+            #TBF, Decide which df to use for i/p: popular or other:
+            qa_with_keyword_df = select_keyword_recs(
+                search_term, popular_qa_df, columns_l)
+            if qa_with_keyword_df.empty:
+                print("WARN: dataframe empty or search term not found; try another term.")
+            else:
+                #TBF,Fri2017_1215_20:01  temp, use loop to show every item?
+                    # Or just show top-N items, where N is a CLI arg.
+                #
+                # Show full text of the record.
+                pd.set_option('display.max_colwidth', -1)  # -1=no limit, for debug
+                saved_index = 0
+                print('#D Show one record of the df: ')
+                print(qa_with_keyword_df[['Id', 'Title', 'Body']].iloc[[saved_index]])
+                pd.set_option('display.max_colwidth', MAXCOLWID)  # -1=no limit, for debug
         else:
             print("Got bad cmd from user: ", user_cmd)
             print(user_menu)
