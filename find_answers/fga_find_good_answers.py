@@ -654,7 +654,7 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df):
     dh: draw default histogram plot of current data
     dm: draw scatter matrix plot of current data
     h, ?: show help text, the menu
-    lxk: look for exact keyword in questions and answers
+    lek: look for exact keyword in questions and answers
     m: show menu
     q: save data and quit the program
     s: show current item: question or answer
@@ -756,12 +756,12 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df):
             else:
                 print("NOTE: Drawing the qa_stats_df scatter matrix plot.")
                 draw_scatter_matrix_plot(qa_stats_df[['Score', 'BodyLength', 'OwnerRep',  'HSTCount' ]])
-        #TBD,Fri2017_1215_18:07  New cmd.
-        #TBF, Search is case sensitive.
-        # lxk: Look for exact keywords in the Q&A df.
-        elif user_cmd.lower() == 'lxk':
-            user_cmd = 'lxk'  #TBD, Forces menu to always repeat the lxk function.
-            search_prompt = "Enter a word or phrase to seek in Q & A text; press Enter only to return to menu: "
+        #TBD,Fri2017_1215_18:07  New cmd, work-in-progress.
+        #TBD, Search is now case sensitive.
+        # lek: Look for exact keywords in the Q&A df.
+        elif user_cmd.lower() == 'lek':
+            user_cmd = 'lek'  # Force menu to always repeat the lek function.
+            search_prompt = "Please type a search term; press Enter alone to show main menu: "
             search_term = input(search_prompt)
             if search_term == "": # Return to main menu and ask for a cmd.
                 user_cmd = 'm'
@@ -771,21 +771,34 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df):
                 search_term + '\n'
             cf.logger.warning(log_msg)
             #
-            columns_l = ['Id', 'Title', 'Body']
-            #TBF, Decide which df to use for i/p: popular or other:
+            columns_l = ['Id', 'ParentId', 'Title', 'Body', 'HSTCount', 'HiScoreTerms', 'Score' ]
             qa_with_keyword_df = select_keyword_recs(
                 search_term, popular_qa_df, columns_l)
             if qa_with_keyword_df.empty:
                 print("WARN: dataframe empty or search term not found; try another term.")
             else:
-                #TBF,Fri2017_1215_20:01  temp, use loop to show every item?
-                    # Or just show top-N items, where N is a CLI arg.
-                #
                 # Show full text of the record.
                 pd.set_option('display.max_colwidth', -1)  # -1=no limit, for debug
-                saved_index = 0
-                print('#D Show one record of the df: ')
-                print(qa_with_keyword_df[['Id', 'Title', 'Body']].iloc[[saved_index]])
+                for index, row in qa_with_keyword_df.iterrows():
+                    #D print("#D index, row: ", index, row)
+                    #
+                    ident = row['Id']
+                    parentident = row['ParentId']
+                    title = row['Title']
+                    body = row['Body']
+                    hstcount = row['HSTCount']
+                    hst = row['HiScoreTerms']
+                    score = row['Score']
+                    #OK print("#D index, id, title: ", index, ident, title) # Short 1-line/record
+                    print("#D index: ", index)
+                    print("#D HSTCount: ", hstcount)
+                    print("#D Score: ", score)
+                    print("#D Id: ", ident)
+                    print("#D ParentId: ", parentident)
+                    print("#D Title: ", title)
+                    print("#D HiScoreTerms: ", hst)
+                    #D print("#D Body: ", body)
+                    print("#D ==========\n")
                 pd.set_option('display.max_colwidth', MAXCOLWID)  # -1=no limit, for debug
         else:
             print("Got bad cmd from user: ", user_cmd)
