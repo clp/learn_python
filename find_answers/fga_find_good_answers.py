@@ -779,7 +779,7 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df):
                 print("WARN: dataframe empty or search term not found; try another term.")
             else:
                 # Show full text of the record.
-                show_q_a_with_keywords(qa_with_keyword_df )
+                show_q_a_with_keywords(qa_with_keyword_df, search_term)
         else:
             print("Got bad cmd from user: ", user_cmd)
             print(user_menu)
@@ -807,29 +807,65 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df):
     return
 
 
-def show_q_a_with_keywords(qa_with_keyword_df ):
+def show_q_a_with_keywords(qa_with_keyword_df, search_term):
+    """
+    #TBD,Sat2017_1216_15:43  Ideas
+    Get i/p CLI arg for number of answers to show; default is 3.
+    Set answers_to_show_count = 0
+    Review each row in the i/p df.
+        If a Q:
+            examine all A's
+            print Q
+            print A.'s with highest HSTCount, w/ highest Scores, etc.
+            increment answers_shown_count
+            if answers_shown_count >= answers_to_show:
+                break
+        If an A:
+            find ParentId, the related Q
+            examine all A's for that Q
+            print Q
+            print A.'s with highest HSTCount, w/ highest Scores, etc.
+            increment answers_shown_count
+            if answers_shown_count >= answers_to_show:
+                break
+    Opt: Print summary o/p, 1 line per row of i/p df.
+        Id, Title, HSTCount, Score.
+    """
     pd.set_option('display.max_colwidth', -1)  # -1=no limit, for debug
+    search_summary_l = []
     for index, row in qa_with_keyword_df.iterrows():
-        #D print("#D index, row: ", index, row)
-        #
         ident = row['Id']
         parentident = row['ParentId']
-        title = row['Title']
-        body = row['Body']
+        score = row['Score']
         hstcount = row['HSTCount']
         hst = row['HiScoreTerms']
-        score = row['Score']
-        #OK print("#D index, id, title: ", index, ident, title) # Short 1-line/record
-        print("#D index: ", index)
-        print("#D HSTCount: ", hstcount)
-        print("#D Score: ", score)
-        print("#D Id: ", ident)
-        print("#D ParentId: ", parentident)
-        print("#D Title: ", title)
-        print("#D HiScoreTerms: ", hst)
-        #D print("#D Body: ", body)
-        print("#D ==========\n")
+        title = row['Title']
+        body = row['Body']
+        row_short_t = (index, ident, parentident, score, hstcount, title) # Short 1-line/record
+        search_summary_l.append(row_short_t) # For short 1-line/record summary
+        print_row_as_key_value(index, row)
+    print("Search Summary for Term: {}\n===\nIndex, Id, ParentId, Score, HSTCount, Title:".format(search_term)) 
+    print('\n'.join(str(r) for r in search_summary_l))
     pd.set_option('display.max_colwidth', MAXCOLWID)  # -1=no limit, for debug
+
+
+def print_row_as_key_value(index, row):
+    ident = row['Id']
+    parentident = row['ParentId']
+    score = row['Score']
+    hstcount = row['HSTCount']
+    hst = row['HiScoreTerms']
+    title = row['Title']
+    body = row['Body']
+    print("#D index: ", index)
+    print("#D HSTCount: ", hstcount)
+    print("#D Score: ", score)
+    print("#D Id: ", ident)
+    print("#D ParentId: ", parentident)
+    print("#D Title: ", title)
+    print("#D HiScoreTerms: ", hst)
+    #TBD print("#D Body: ", body)
+    print("#D ==========\n")
 
 
 def build_stats(qa_df, or_df):
