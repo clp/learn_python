@@ -833,6 +833,7 @@ def show_q_a_with_keywords(qa_with_keyword_df, search_term):
     """
     pd.set_option('display.max_colwidth', -1)  # -1=no limit, for debug
     search_summary_l = []
+    search_full_l = []
     for index, row in qa_with_keyword_df.iterrows():
         ident = row['Id']
         parentident = row['ParentId']
@@ -841,12 +842,32 @@ def show_q_a_with_keywords(qa_with_keyword_df, search_term):
         hst = row['HiScoreTerms']
         title = row['Title']
         body = row['Body']
-        row_short_t = (index, ident, parentident, score, hstcount, title) # Short 1-line/record
-        search_summary_l.append(row_short_t) # For short 1-line/record summary
+        row_for_summary_t = (index, ident, parentident, score, hstcount, title) # Short 1-line/record
+        row_with_body_t = (index, ident, parentident, score, hstcount, title, body) # Record w/ Body field.
+        # Append each record to o/p list.
+        search_summary_l.append(row_for_summary_t) # For short 1-line/record summary
+        search_full_l.append(row_with_body_t) # For most fields of matching output records
         print_row_as_key_value(index, row)
+
+    # Print summary data for records w/ the search term
     print("Search Summary for Term: {}\n===\nIndex, Id, ParentId, Score, HSTCount, Title:".format(search_term)) 
     print('\n'.join(str(r) for r in search_summary_l))
+
+    # Convert list to df, then write df to disk.
+    search_result_full_df = pd.DataFrame(search_full_l, columns = ['Index', 'Id', 'ParentId', 'Score', 'HSTCount', 'Title', 'Body'])
+    wdir = DATADIR
+    search_fname = 'search_result_full.csv'
+    save_prior_file(wdir, search_fname)
+    search_result_full_df.to_csv(wdir + search_fname)
     pd.set_option('display.max_colwidth', MAXCOLWID)  # -1=no limit, for debug
+
+    search_fname = 'search_result_full.html'
+    save_prior_file(wdir, search_fname)
+    columns_l = ['Id', 'Title', 'Body']
+    write_full_df_to_html_file(search_result_full_df, TMPDIR, search_fname, columns_l)
+
+    return 1
+
 
 
 def print_row_as_key_value(index, row):
@@ -866,6 +887,9 @@ def print_row_as_key_value(index, row):
     print("#D HiScoreTerms: ", hst)
     #TBD print("#D Body: ", body)
     print("#D ==========\n")
+
+    return 1
+
 
 
 def build_stats(qa_df, or_df):
