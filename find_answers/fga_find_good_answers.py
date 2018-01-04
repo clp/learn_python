@@ -700,8 +700,13 @@ def select_keyword_recs(keyword, qa_df, columns_l,
         all_ques_df, all_ans_df, num_selected_recs, a_fname, progress_msg_factor):
     """Find the Q's & A's from the filtered dataframe that contain the keyword,
     in Title or Body.
-    Combine the sets into one set of Q&A groups: unique Q's w/ their A's.
+    Build a list of unique Id's in the desired order.
+    Build a df of Q's w/ their A's.
     Save all the selected data for analysis.
+    #
+    Gather all A's with keyword and their related Q's;
+    then get the Q and all related A's into one Q&A group
+    in the right order for display and analysis.
     #
     TBD, Show the Q's that have the keyword.
     Show the A's from the filtered df that have the keyword;
@@ -711,12 +716,9 @@ def select_keyword_recs(keyword, qa_df, columns_l,
     TBD, Show the Q&A items from the filtered df that have the keyword;
     sort them in order of decreasing HSTCount.
     #
-    TBD, In future, gather all A's with keyword and their related Q's,
-    and all their related A's into one Q&A group for display and analysis.
-    #
     TBD, In future, search entire collection of Q&A, not just
     the filtered subset.
-
+    #
     TBD, qa_df: filtered dataframe of questions and answers that are pop and top,
     ie, popular and from owners with high reputation scores.
     """
@@ -727,19 +729,19 @@ def select_keyword_recs(keyword, qa_df, columns_l,
     qab_sr = qa_df.Body.str.contains(keyword, regex=False)
     # Combine two series into one w/ boolean OR.
     qa_contains_sr = qab_sr | qt_sr
+    # Build a df with Q's and A's that contain the keyword.
     qak_df = qa_df[columns_l][qa_contains_sr]
+    if qak_df.empty:
+        print('Search term not found, the dataframe is empty.')
+        return
     #
     #D print("#D select*(): qak_df['ParentId']:\n", qak_df['ParentId'] , '\n')
     #
-    #TBD,Mon2017_1225_16:22 , phase 1, show records w/ keyword.
-    # Print summary, 1 line/record:
-    #D print('#D 1-line summary, qak_df:\n', qak_df[:] , '\n')
-    #
     print('\n#D summary in key:value format:')
-    parent_id = -1  # Initlz if needed outside loop, and if search has no matches.
+    parent_id = -1  # Initlz if needed outside the loop, and if search has no matches.
     ans_ids_from_search_l = []  # A's w/ keywords.
     ques_ids_from_search_l = [] # Initlz #TBR;  Q's w/ keywords and Q's of A's w/ keywords
-    q_with_key_l = []
+    #TBR.1 q_with_key_l = []
     for index, row in qak_df.iterrows():
         rec_id = row['Id']
         title = row['Title']
@@ -748,130 +750,34 @@ def select_keyword_recs(keyword, qa_df, columns_l,
         hstcount = row['HSTCount']
         score = row['Score']
         #
-        if pd.isnull(title): # Found an answer w/ keyword, add its Q to list.
-            #D print("#D append parent_id")
+        if pd.isnull(title):
+            # Found an answer w/ keyword, add its Q.Id to ques list.
             ques_ids_from_search_l.append(parent_id)
+            # Also add the A.Id to the answer list.
             ans_ids_from_search_l.append(rec_id)
-        elif title: # Found a question w/ keyword; add it to list.
-            #D print("#D append rec_id")
+        elif title:
+            # Found a question w/ keyword; add it to ques list.
             ques_ids_from_search_l.append(rec_id)
         else:
-            #TBD,Tue2017_1226_18:21 , Test this path, it should never be reached.  Need bad data record.
+            #TBD,Tue2017_1226_18:21 , Test this path, it should never be reached.
+                # Need a bad data record for the test.
                 # Maybe need record w/ no Title field?
             print("\nselect*(): Bad data found, problem with Title?  Id, Title:")
             print("Id: ", rec_id)
             print("ParentId: ", parent_id)
             print("Title: ", title)
             raise SystemExit()  # TBD too drastic?  Maybe show menu?
-        #D print("#D select*(): ques_ids_from_search_l: ", ques_ids_from_search_l)
-        #D print("#D select*(): ans_ids_from_search_l: ", ans_ids_from_search_l)
-        #
-        """
-        TMP,Sun2017_1231_12:55  Remove debug code.
-        print("#D Id: ", rec_id)
-        print("#D ParentId: ", parent_id)
-        print("#D Score: ", score)
-        print("#D HSTCount: ", hstcount)
-        print("#D Title: ", title)
-        print("#D Body: ", body[:60])
-        print("#D =====\n")
-        TMP,Sun2017_1231_12:55  Remove debug code.
-        """
     print("#D ==========\n\n")
     #
-    # Build set of unique IDs.
+    # Build sets of unique IDs.
     ques_ids_from_search_l = list(set(ques_ids_from_search_l))
-    print('#D ques_ids_from_search_l: ' , ques_ids_from_search_l[:] , '\n')
+    #D print('#D ques_ids_from_search_l: ' , ques_ids_from_search_l[:] , '\n')
     ans_ids_from_search_l = list(set(ans_ids_from_search_l))
-    print('#D ans_ids_from_search_l: ' , ans_ids_from_search_l[:] , '\n')
+    #D print('#D ans_ids_from_search_l: ' , ans_ids_from_search_l[:] , '\n')
     #
     # Print summary, 1 line/record:
     print('#D 1-line summary, qak_df:\n', qak_df[:] , '\n')
     #
-    
-    
-    #
-    pd.set_option('display.max_colwidth', -1)  # -1=no limit, for debug
-    #
-    #TBD,Mon2018_0101_14:31  Loop on chosen Q's; sort their A's by H, S, I; build list of A.Id's.
-        # Temp code to learn techniques.
-        # Temp code to learn techniques.
-        # Temp code to learn techniques.
-        # Temp code to learn techniques.
-    """
-    TBD,Tue2018_0102_18:05  comment-out.
-    ans_ids_sorted_l = []
-    a3_df = pd.DataFrame()
-    print('a3_df[hstc, score, id]: ')
-    for qid in ques_ids_from_search_l:
-        a2_df = qak_df.loc[qak_df['ParentId'] == qid]
-        a3_df = a2_df.sort_values(['HSTCount', 'Score', 'Id'], ascending=[False, False, True])
-            # Got warning when using 'inplace=True'.
-        #OK #D print('a3_df[hstc, score, id]: ', a3_df[['HSTCount', 'Score', 'Id']])
-        #F ans_ids_sorted_l.append(a3_df[['Id']].values[0])
-        ans_ids_sorted_l.append(a3_df[['Id']])
-    print('\n#D End of for-loop: qid ####################\n')
-    """
-    #
-    #
-    #TBD,Mon2018_0101_14:31  Loop on chosen A's; sort their A's by H, S, I; build list of A.Id's.
-        # Temp code to learn techniques.
-    #
-    #D This print loop section is OK.
-    print('\n#D OK: print Q.Title then A.Body\n')
-    #
-#DBG    for aid in ans_ids_from_search_l:
-#DBG        #OK a_df = qa_df.loc[qa_df['Id'] == aid]
-#DBG            #TBD, Using qa_df here is not obviously diff from qak.
-#DBG        a_df = qak_df.loc[qak_df['Id'] == aid]
-#DBG        #OK if not qak_df.loc[qak_df['Id'] == aid].empty:
-#DBG        if not a_df.empty:
-#DBG            parent_id = a_df['ParentId'].iloc[0]
-#DBG            print('#D Q.Id, Q.Title:', parent_id)
-#DBG            tmp_df = qa_df.loc[qa_df['Id'] == parent_id]
-#DBG                #TBD, using qa_df is better than qak: it finds more Q.Titles.
-#DBG            print(tmp_df['Title'].iloc[0])
-#DBG            print('---------------')
-#DBG            print()
-#DBG            #
-#DBG            print('#D A.Body for Id: ', aid)
-#DBG            #TBR print('#D A.Body:')
-#DBG            print(a_df['Body'].iloc[0][:MAX_PRINT_SIZE])
-#DBG            print('--------------------------------')
-#DBG            print()
-#DBG            #
-    #
-    pd.set_option('display.max_colwidth', MAX_COL_WID)  # -1=no limit, for debug
-    #
-    #
-    print('\n#D wip: arrange A.\'s: sort by HSTCount then Score then Id  ###########\n')
-    #TBD,Mon2018_0101_13:55   , wip here.
-    #
-    #TBD.next,Wed2017_1227_15:50 
-    """
-    Code steps, Sat2017_1230_18:07 .
-        Chosen Q's are Q's w/ search term.
-        Chosen A's are A's w/ search term.
-        Sort chosen A's by HSTCount, descending; then by Score, descend; then by Id, ascend.
-        for chosen A's in sorted collection:
-            get all parent_id's and save them in order in the ordered Q list.
-            append Chosen Q.Id's to the list.
-            make one ordered list of unique Q's from that list (use set()?)
-                Keep only the first instance of a Q.Id & rm all other ones.
-        for each Q in the ordered list:
-            add Q.Id to outlist.
-            print chosen A's in sorted order
-                add A.Id to outlist.
-            get all remaining A's for that Q
-                get all A's for that Q
-                remove the chosen A's from the list, b/c they are already included.
-            sort those remaining A's by hstcount, score, id
-            add each A.Id to outlist.
-        Use outlist to print to screen and to save to file.
-        print 1-line summary of A's shown & not shown, w/ Score & HSTCount
-        print 1-line summary of Q&A groups w/ HSTCount, Score, Id, Q.Title, A.Body.
-        Save full o/p of Q&A groups w/ HSTCount, Score, Id, Q.Title, A.Body.
-    """
     #
     # Sort chosen A's by HSTCount, descending; then by Score, descend; then by Id, ascend.
     #
@@ -880,49 +786,26 @@ def select_keyword_recs(keyword, qa_df, columns_l,
     #TBD,Mon2018_0101_17:24 , Delete or hide prior code that uses same vars as below.
     #TBD,Mon2018_0101_17:24 , Delete or hide prior code that uses same vars as below.
     ans_ids_sorted_l = []
-    ques_ids_ord_l = []
     ans_ids_l = []
     for aid in ans_ids_from_search_l:
-        #TBD,Tue2018_0102_16:36 , Chk code & rm asort_df if not needed; replaced w/ a_df & seems OK.
-        #TBD,Tue2018_0102_16:36 , Chk code & rm asort_df if not needed; replaced w/ a_df & seems OK.
-        #TBD,Tue2018_0102_16:36 , Chk code & rm asort_df if not needed; replaced w/ a_df & seems OK.
-        #TBD,Tue2018_0102_16:36 , Chk code & rm asort_df if not needed; replaced w/ a_df & seems OK.
-        #TBD,Tue2018_0102_16:36 , Chk code & rm asort_df if not needed; replaced w/ a_df & seems OK.
-        #TBD,Tue2018_0102_16:36 , Chk code & rm asort_df if not needed; replaced w/ a_df & seems OK.
-        #TBD,Tue2018_0102_16:36 , Chk code & rm asort_df if not needed; replaced w/ a_df & seems OK.
-        #OK a_df = qa_df.loc[qa_df['Id'] == aid]
-            #TBD, Using qa_df here is not obviously diff from qak.
         a_df = qak_df.loc[qak_df['Id'] == aid]
-        asort_df = a_df.sort_values(['HSTCount', 'Score', 'Id'], ascending=[False, False, True])
-        #D print('#D.1535  asort_df[hstc, score, id]: ', asort_df[['HSTCount', 'Score', 'Id']].values[0])
+            #TBD, Using qa_df here is not obviously diff from qak.
         #
         # Build a list of answer Id's.
-        #OK ans_ids_l.append([asort_df['HSTCount'].values[0], asort_df['Score'].values[0], asort_df['Id'].values[0]])
         ans_ids_l.append([a_df['HSTCount'].values[0], a_df['Score'].values[0], a_df['Id'].values[0]])
-        #
+    #
     #TBD,Tue2018_0102_15:10 , Now sort the entire df of A.'s.
-    print()
-    #OK print('#D.1535  asort_df[hstc, score, id]: ', asort_df[['HSTCount', 'Score', 'Id']].values[0])
     #
     # Build a list of answer Id's in sorted order.
-    # ans_ids_l.append(asort_df['HSTCount'].values[0], asort_df['Score'].values[0], asort_df['Id'].values[0])
     print()
     ans_ids_sorted_l = sorted(ans_ids_l, reverse=True)
     print('#D.1547 sorted ans_ids_sorted_l:\n', ans_ids_sorted_l)
     print()
-    print('#D sysexit was here')
-    print()
     #
     #
-    ###
-    ###
-    ###
-    ###
     # Use sorted A's to build ordered Q's.
-    #TBD
-    #TBD raise SystemExit()
     #
-    #OK.OLD,Tue2018_0102_16:23  for aid in ans_ids_from_search_l:
+    ques_ids_ord_l = []
     for hstc, score, aid in ans_ids_sorted_l:
         q_df = qak_df.loc[qak_df['Id'] == aid]
         parent_id = q_df['ParentId'].iloc[0]
@@ -931,43 +814,10 @@ def select_keyword_recs(keyword, qa_df, columns_l,
             #TBD, using qa_df is better than qak: it finds more Q.Titles.
         print(tmp_df['Title'].iloc[0])
         ques_ids_ord_l.append(parent_id)
-        #OK print('---------------')
-        #OK print()
-        #
-        #
-        #TBD,Tue2018_0102_16:44 , For later step of showing all A's for the current Q.
-        #TBD print('#D A.Body for Id: ', aid, '; hstcount: ', asort_df['HSTCount'].values[0], '; score: ', asort_df['Score'].values[0])
-        #TBD print(asort_df['Body'].iloc[0][:MAX_PRINT_SIZE])
-        #TBD print('--------------------------------')
-        #TBD #OK print()
-        #
-        #
-        print('#D.1650 ques_ids_ord_l: ', ques_ids_ord_l )
-        #
-        """
-        if not asort_df.empty:
-            #ORG parent_id = asort_df['ParentId'].iloc[0]
-            parent_id = qak_df['ParentId'].iloc[0]
-            print('#D Q.Id, Q.Title:', parent_id)
-            tmp_df = qa_df.loc[qa_df['Id'] == parent_id]
-                #TBD, using qa_df is better than qak: it finds more Q.Titles.
-            print(tmp_df['Title'].iloc[0])
-            ques_ids_ord_l.append(parent_id)
-            #OK print('---------------')
-            #OK print()
-            #
-            print('#D A.Body for Id: ', aid, '; hstcount: ', asort_df['HSTCount'].values[0], '; score: ', asort_df['Score'].values[0])
-            #TBR print('#D A.Body:')
-            #OK print(asort_df['Body'].iloc[0][:MAX_PRINT_SIZE])
-            print('--------------------------------')
-            #OK print()
-            #
-            print('#D ques_ids_ord_l: ', ques_ids_ord_l )
-        """
+    #
     # Append the chosen Q.Id's found by search to make the full Q list in desired order.
-    #TBD, append or concat?
+    #TBD, use list append or concat?
     ques_ids_ord_l += ques_ids_from_search_l
-    print('\n\n#D.1655 ques_ids_ord_l: ', ques_ids_ord_l )
     #
     # Remove duplicate Q.Id's w/o changing order of the list.
     qid_ord_l = []
@@ -985,33 +835,25 @@ def select_keyword_recs(keyword, qa_df, columns_l,
         #
         # Find & sort & save all A.Id's for this Q.
         #
-        #TBD,Wed2018_0103_13:16  , Using qa_df Does not show all answers.
-            # i.3. Maybe the problem will disappear when using the full Answers.csv for i/p?
-            # w/ a6* i/p files: Ran fast, in 11 sec & data looks OK in rough scan.
         ans_match_df = qa_df[qa_df['ParentId'] == qid]
             #TBD,Wed2018_0103_18:51  qa_df is popular_qa_df; maybe use a df w/ more records in the call to this func?
+        # Sort the df:
+        #TBD, sort it inplace to avoid another temp var? Does inplace have problems?
         ams_df = ans_match_df.sort_values(['HSTCount', 'Score', 'Id'], ascending=[False, False, True])
-        #D print('#D qid:', qid)
         #
         for hstc, score, aid in ams_df[['HSTCount', 'Score', 'Id']].values:
-            #D print('#D aid:', aid)
-            #D print('#D.1230 A for Id: ', aid, '; hstcount: ', hstc, '; score: ', score)
             qa_id_ord_l.append(aid)
-    print('\n\n#D.1702 qa_id_ord_l: ', qa_id_ord_l )
+    print('\n\n#D.1550 qa_id_ord_l: ', qa_id_ord_l )
     #
     # Build o/p df from the list of Id's.
     qa_keyword_df_l = []
     for item in qa_id_ord_l:
-        #TBD,Wed2018_0103_18:47 , Find how to use df w/o these loops.
-        #TBD qa_keyword_df_l.append(qa_df.loc[qa_df['Id']] == item)
-            # Try moving Id column to Index, w/ set_index().
         for index, row in qa_df.iterrows():
             if row['Id'] == item:
                 qa_keyword_df_l.append(row)
-                #D print('#D Build o/p from df: match for this Id found: ', item)
                 continue
-    #
     qa_keyword_df = pd.DataFrame(qa_keyword_df_l)
+    #
 
     # Write o/p to disk file.
     search_fname = 'search_result_full.csv'
@@ -1020,10 +862,8 @@ def select_keyword_recs(keyword, qa_df, columns_l,
 
     search_fname = 'search_result_full.html'
     save_prior_file(DATADIR, search_fname)
-    #ORG columns_l = ['Id', 'Title', 'Body']
     columns_l = ['HSTCount', 'Score', 'Id', 'Title', 'Body']
     write_full_df_to_html_file(qa_keyword_df, DATADIR, search_fname, columns_l)
-    #
     #
     return  #TMP
     #
@@ -1298,8 +1138,7 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df,
             else:
                 print("NOTE: Drawing the qa_stats_df scatter matrix plot.")
                 draw_scatter_matrix_plot(qa_stats_df[['Score', 'BodyLength', 'OwnerRep',  'HSTCount' ]])
-        #TBD,Fri2017_1215_18:07  New cmd, work-in-progress.
-        #TBD, Search is now case sensitive.
+        #TBD, Search cmd lek is now case sensitive.
         # lek: Look for exact keywords in the Q&A df.
         elif user_cmd.lower() == 'lek':
             user_cmd = 'lek'  # Force menu to always repeat the lek function.
@@ -1672,6 +1511,9 @@ def write_full_df_to_html_file(in_df, wdir, wfile, columns_l):
     Use the list of columns included in this function
     if caller does not specify any.
     """
+    if in_df.empty:
+        print('Input dataframe empty or not found.')
+        return
     pd.set_option('display.max_colwidth', -1)  # -1=no limit, for debug
     outfile = wdir + wfile
     save_prior_file(wdir, wfile)
@@ -1794,100 +1636,4 @@ if __name__ == '__main__':
     cf.logger.warning(log_msg)
 
 'bye'
-
-
-
-### """TBD,Tue2017_1226_13:07 , OLD CODE, save temporarily if needed.
-### TBD,Tue2017_1226_13:07 , OLD CODE, save temporarily if needed.
-### TBD,Tue2017_1226_13:07 , OLD CODE, save temporarily if needed.
-### """
-### def select_keyword_recs(keyword, qa_df, columns_l,
-###         all_ques_df, all_ans_df, num_selected_recs, a_fname, progress_msg_factor):
-###     """Find the Q's & A's from the filtered dataframe that contain the keyword,
-###     in Title or Body.
-###     Combine the sets into one set of unique Q's w/ their A's.
-###     Save all the selected data for analysis.
-###     TBD, In future, search entire collection of Q&A, not just
-###     the filtered subset.
-###     """
-###     # Get a pandas series of booleans to find the current question id.
-###     # Check Question & Answer, both Title and Body columns.
-###     qt_sr = qa_df.Title.str.contains(keyword, regex=False)
-###     qab_sr = qa_df.Body.str.contains(keyword, regex=False)
-###     # Combine two series into one w/ boolean OR.
-###     qa_contains_sr = qab_sr | qt_sr
-###     qak_df = qa_df[columns_l][qa_contains_sr]
-###     #
-###     #TBD,Mon2017_1225_16:22 , phase 1, show records w/ keyword.
-###     # Print summary, 1 line/record:
-###     print('#D 1-line summary, qak_df:\n', qak_df[:] , '\n')
-###     # Print full Title field:
-###     #F print('#D qak_df, Title: ' , qak_df[:'Title'] , '\n')
-###     #F print('#D qak_df, Title: ' , qak_df.loc[:'Title'] , '\n')
-###     #F print('#D qak_df, Title: ' , qak_df.loc['Title'] , '\n')
-###     #F print('#D qak_df, Title: ' , qak_df.loc[['Title']] , '\n')
-###     #F print('#D qak_df, Title: ' , qak_df.loc[qak_df['Title']] , '\n')
-###     #F print('#D qak_df, Title: ' , qak_df[qak_df['Title']] , '\n')
-###     #TBR pd.set_option('display.max_colwidth', -1)  # -1=no limit, for debug
-###     #OK print('#D qak_df, Title:\n',qak_df['Title'],'\n')
-###     #OK print('#D qak_df, Title:\n')
-###     #OK print(qak_df['Body'] , '\n')
-###     #F print(qak_df['Title', 'Body'] , '\n')
-###     #OK print(qak_df[['Title', 'Body']] , '\n')
-###     #TBR pd.set_option('display.max_colwidth', MAX_COL_WID)  # -1=no limit, for debug
-###     #
-###     # Print each field as key:value.
-###     for index, row in qak_df.iterrows():
-###         rec_id = row['Id']
-###         title = row['Title']
-###         body = row['Body']
-###         print("#D Id: ", rec_id)
-###         print("#D Title: ", title)
-###         print("#D Body: ", body[:60])
-###         print("#D =====\n")
-###     print("#D ==========\n\n")
-###     #
-###     # Print summary, 1 line/record:
-###     #TBR print('#D qak_df:\n', qak_df[:] , '\n')
-###     print('#D 1-line summary, qak_df:\n', qak_df[:] , '\n')
-###     return  #TMP
-###     #
-###     #
-###     #TBD,Mon2017_1225_16:23 , wip: Other code to show related Q&A groups for Qs and As w/ keywords.
-###     qak_id_l = [] # Initlz #TBR
-###     qak_id_l = list(set(qak_df['Id']))
-###     print('#D qak_id_l: ' , qak_id_l[:] , '\n')
-###     q_a_group_with_keyword_df = build_qa_groups_with_keywords(qak_id_l, qa_df,
-###         all_ques_df, all_ans_df, num_selected_recs, a_fname, progress_msg_factor)
-###     return q_a_group_with_keyword_df
-
-
-
-
-### TBD,Tue2018_0102_16:07  Saved code.
-    ###TBA
-    ###TBA
-    ###TBA
-    ###ans_ids_sorted_l = []
-    ###a3_df = pd.DataFrame()
-    ###print('a3_df[hstc, score, id]: ')
-    ###for qid in ques_ids_from_search_l:
-        ###a2_df = qak_df.loc[qak_df['ParentId'] == qid]
-        ###a3_df = a2_df.sort_values(['HSTCount', 'Score', 'Id'], ascending=[False, False, True])
-            #### Got warning when using 'inplace=True'.
-        ####OK #D print('a3_df[hstc, score, id]: ', a3_df[['HSTCount', 'Score', 'Id']])
-        ###ans_ids_sorted_l.append(a3_df[['Id']])
-    ####OK #D print('\n\n#D After for-loop, print full df:\na3_df[hstc, score, id]:\n', a3_df[['HSTCount', 'Score', 'Id']])
-    #### print()
-    ###print('\n\nAfter for-loop, print full df:\nans_ids_sorted_l:\n', ans_ids_sorted_l)
-    ###TBA
-    ###TBA
-    ###TBA
-    #TBD,Mon2018_0101_15:45 ,First build list of Q based on sorted A's in one loop.
-        # Then build ordered list of unique Q.Id's in correct order.
-    #TBD,Mon2018_0101_15:45 ,First build list of Q based on sorted A's in one loop.
-        # Then build ordered list of unique Q.Id's in correct order.
-    #TBD,Mon2018_0101_15:45 ,First build list of Q based on sorted A's in one loop.
-        # Then build ordered list of unique Q.Id's in correct order.
-
 
