@@ -661,7 +661,6 @@ def analyze_text(qagroup_from_pop_top_ques_df, num_selected_recs, a_fname, progr
     if not clean_ans_bodies_l:
         print('#D analyze_text(): clean_ans_bodies_l: ', clean_ans_bodies_l)
         print('#TBD, analyze_text(), missing data in clean_ans_bodies_l, no text to analyze; exit now.')
-        #TBR return pd.DataFrame()
         raise SystemExit()
     #D print('\n#D, clean_ans_bodies_l[:1]')
     #D print(clean_ans_bodies_l[:1])
@@ -727,22 +726,24 @@ def select_keyword_recs(keyword, qa_df, columns_l,
     # Check Question & Answer, both Title and Body columns.
     qt_sr = qa_df.Title.str.contains(keyword, regex=False)
     qab_sr = qa_df.Body.str.contains(keyword, regex=False)
+    #
     # Combine two series into one w/ boolean OR.
     qa_contains_sr = qab_sr | qt_sr
+    #
     # Build a df with Q's and A's that contain the keyword.
     qak_df = qa_df[columns_l][qa_contains_sr]
     if qak_df.empty:
         print('Search term not found, the dataframe is empty.')
         return
     #
-    #D print("#D select*(): qak_df['ParentId']:\n", qak_df['ParentId'] , '\n')
+    # Build a list of Id values of Q's and A's that contain the keyword.
     #
-    print('\n#D summary in key:value format:')
     parent_id = -1  # Initlz if needed outside the loop, and if search has no matches.
     ans_ids_from_search_l = []  # A's w/ keywords.
-    ques_ids_from_search_l = [] # Initlz #TBR;  Q's w/ keywords and Q's of A's w/ keywords
-    #TBR.1 q_with_key_l = []
+    ques_ids_from_search_l = [] # Q's w/ keywords and Q's of A's w/ keywords
+    #
     for index, row in qak_df.iterrows():
+        #TBD,Thu2018_0104_15:46  rm unneeded vars from here:
         rec_id = row['Id']
         title = row['Title']
         body = row['Body']
@@ -767,37 +768,25 @@ def select_keyword_recs(keyword, qa_df, columns_l,
             print("ParentId: ", parent_id)
             print("Title: ", title)
             raise SystemExit()  # TBD too drastic?  Maybe show menu?
-    print("#D ==========\n\n")
     #
     # Build sets of unique IDs.
     ques_ids_from_search_l = list(set(ques_ids_from_search_l))
-    #D print('#D ques_ids_from_search_l: ' , ques_ids_from_search_l[:] , '\n')
     ans_ids_from_search_l = list(set(ans_ids_from_search_l))
-    #D print('#D ans_ids_from_search_l: ' , ans_ids_from_search_l[:] , '\n')
     #
     # Print summary, 1 line/record:
-    print('#D 1-line summary, qak_df:\n', qak_df[:] , '\n')
+    print()
+    print('#D 1-line summary, qak_df, Q & A w/ keyword:\n', qak_df[:] , '\n')
     #
     #
-    # Sort chosen A's by HSTCount, descending; then by Score, descend; then by Id, ascend.
-    #
-    print('\n#D OK: print Q.Title then A.Body\n')
-    #
-    #TBD,Mon2018_0101_17:24 , Delete or hide prior code that uses same vars as below.
-    #TBD,Mon2018_0101_17:24 , Delete or hide prior code that uses same vars as below.
+    # Build a list of answer Id's.
     ans_ids_sorted_l = []
     ans_ids_l = []
     for aid in ans_ids_from_search_l:
         a_df = qak_df.loc[qak_df['Id'] == aid]
             #TBD, Using qa_df here is not obviously diff from qak.
-        #
-        # Build a list of answer Id's.
         ans_ids_l.append([a_df['HSTCount'].values[0], a_df['Score'].values[0], a_df['Id'].values[0]])
     #
-    #TBD,Tue2018_0102_15:10 , Now sort the entire df of A.'s.
-    #
     # Build a list of answer Id's in sorted order.
-    print()
     ans_ids_sorted_l = sorted(ans_ids_l, reverse=True)
     print('#D.1547 sorted ans_ids_sorted_l:\n', ans_ids_sorted_l)
     print()
@@ -806,10 +795,11 @@ def select_keyword_recs(keyword, qa_df, columns_l,
     # Use sorted A's to build ordered Q's.
     #
     ques_ids_ord_l = []
+    print('#D Q.Id, Q.Title:')
     for hstc, score, aid in ans_ids_sorted_l:
         q_df = qak_df.loc[qak_df['Id'] == aid]
         parent_id = q_df['ParentId'].iloc[0]
-        print('#D Q.Id, Q.Title:', parent_id)
+        print(parent_id)
         tmp_df = qa_df.loc[qa_df['Id'] == parent_id]
             #TBD, using qa_df is better than qak: it finds more Q.Titles.
         print(tmp_df['Title'].iloc[0])
@@ -845,7 +835,7 @@ def select_keyword_recs(keyword, qa_df, columns_l,
             qa_id_ord_l.append(aid)
     print('\n\n#D.1550 qa_id_ord_l: ', qa_id_ord_l )
     #
-    # Build o/p df from the list of Id's.
+    # Build o/p df w/ Q's and A's in right order, from the list of Id's.
     qa_keyword_df_l = []
     for item in qa_id_ord_l:
         for index, row in qa_df.iterrows():
@@ -865,161 +855,7 @@ def select_keyword_recs(keyword, qa_df, columns_l,
     columns_l = ['HSTCount', 'Score', 'Id', 'Title', 'Body']
     write_full_df_to_html_file(qa_keyword_df, DATADIR, search_fname, columns_l)
     #
-    return  #TMP
-    #
-    #
-    #TBD q_a_group_with_keyword_df = build_qa_groups_with_keywords(qak_id_l, qa_df,
-        #TBD all_ques_df, all_ans_df, num_selected_recs, a_fname, progress_msg_factor)
-
-    #End of select_keyword_recs().
-    return q_a_group_with_keyword_df
-
-
-
-
-def build_qa_groups_with_keywords(qak_id_l, qa_df,
-        all_ques_df, all_ans_df, num_selected_recs, a_fname, progress_msg_factor):
-    """TBD
-
-    Return dataframe of question and answer groups that contain a keyword.
-    """
-    q_with_key_l = []
-    for id in qak_id_l:
-        #TBD,Thu2017_1221_20:09  Rewrite :
-        #OK? if not qa_df['Title'].empty:  # Found a question
-        #FF if qa_df['Id'][qa_df['Id'] == id].item():
-        id_df = qa_df[qa_df['Id'] == id]
-        #TBR qagroup_from_pop_top_ques_df = pd.concat([qm_df, am_df]).reset_index(drop=True)
-        #F if qa_df['Id'] == id:
-        if id_df['Title'].any():  # Found a question
-            q_with_key_l.append(id)
-        #TBR else:  # Found an answer
-            #TBR q_with_key_l.append(qa_df['ParentId'])
-            #TBD,Thu2017_1221_22:57  only save Q Id's in this list; use combine*() w/ this list to get QAGroups.
-    q_with_key_l = list(set(q_with_key_l))
-    q_a_with_key_df = pd.DataFrame() # Initlz at each call
-    #TBD,Mon2017_1225_14:31  Don't call combine*(), b/c it includes too many records in o/p,
-        # including records w/o keywords.  Make a separate func to use only keyword recs.
-    #ORG q_a_with_key_df = combine_related_q_and_a(
-            #ORG q_with_key_l, all_ques_df, all_ans_df, num_selected_recs, a_fname, progress_msg_factor)
-    q_a_with_key_df = ck_combine_keyword_q_and_a(
-            q_with_key_l, all_ques_df, all_ans_df, num_selected_recs, a_fname, progress_msg_factor)
-    return q_a_with_key_df
-
-
-def ck_combine_keyword_q_and_a(ques_ids_pop_and_top_l, all_ques_df, aa_df, num_selected_recs, a_fname, progress_msg_factor):
-    """Get each Q in the list of selected ParentId's, and the related A's.
-    Loop over each question and store the Q & A data in a dataframe.
-
-    TBD-move:
-    Then call analyze_text() on each group of Q with A's,
-    which calls the routines that perform the natural language processing
-    of the text data.
-    """
-    global popular_qa_df
-
-    ques_match_df = all_ques_df[all_ques_df['Id'].isin(ques_ids_pop_and_top_l)]
-    ans_match_df = aa_df[aa_df['ParentId'].isin(ques_ids_pop_and_top_l)]
-
-    print('#D len of ques_match_df: ', len(ques_match_df))
-    print('#D len of ans_match_df: ', len(ans_match_df))
-    print('\n#D ques_match_df.head():')
-    print(ques_match_df.head())
-    print()
-    print('\n#D ans_match_df.head():')
-    print(ans_match_df.head())
-
-    # Build each Q&A group: one Q w/ all its A.'s
-    # TBD, How to do this w/o explicit loop, using df tools?
-    # TBD, Combine or replace the ques_match_df & ans*df code above w/ this?
-    # Maybe delete those 'intermediate' results?
-    qagroup_from_pop_top_ques_df = pd.DataFrame()
-    for i, qid in enumerate(ques_ids_pop_and_top_l):
-        # OK if(i % progress_msg_factor == 0):
-        if(i % 20 == 0):
-            print("#D combine_related_q_and_a():progress count: ", i)
-        qm_df = ques_match_df[ques_match_df['Id'] == qid]
-        am_df = ans_match_df[ans_match_df['ParentId'] == qid]
-        qagroup_from_pop_top_ques_df = pd.concat([qm_df, am_df]).reset_index(drop=True)
-        #TBD,Fri2017_1222_00:02 , This maybe fixed big problem, don't analyze empty df:
-        if qagroup_from_pop_top_ques_df.empty:
-            #TBD, Skip this qid, it does not match what we seek?
-            continue
-        # D print("\n#D qagroup_from_pop_top_ques_df.head(): ")
-        # D print(qagroup_from_pop_top_ques_df.head())
-        cf.logger.info('qagroup_from_pop_top_ques_df.head(1): ')
-        cf.logger.info(qagroup_from_pop_top_ques_df.head(5))  #TBD, reset to 1
-
-        # Analyze data w/ nlp s/w.
-        #TBD,Mon2017_1225_14:49 , Change to handle keywords
-        #ORG popular_qa_df = analyze_text(
-             #ORG qagroup_from_pop_top_ques_df, num_selected_recs, a_fname, progress_msg_factor)
-        popular_qa_df = ak_analyze_keyword_text(
-             qagroup_from_pop_top_ques_df, num_selected_recs, a_fname, progress_msg_factor)
-
-    #END ck_combine_keyword_q_and_a():
-    return popular_qa_df
-
-
-def ak_analyze_keyword_text(qagroup_from_pop_top_ques_df, num_selected_recs, a_fname, progress_msg_factor):
-    """Use a Q&A group of one Q w/ its A's for i/p.
-    Process the text data w/ the routines in the nltk module, which use
-    natural language tools.
-
-    Important variables.
-
-    qagroup_from_pop_top_ques_df: 
-    A dataframe with one Q&A group (ie, one question with its related
-    answers), which is selected from all such groups based on being 'pop'
-    (popular, questions with several answers) and 'top' (having one
-    or more answers by high-reputation owners).
-
-    """
-    global popular_qa_df
-    global search_qa_df 
-
-    cf.logger.info("NLP Step 2. Process the words of each input line.")
-    #D print('#D analyze_text(): qagroup_from_pop_top_ques_df: ', qagroup_from_pop_top_ques_df)
-    clean_ans_bodies_l = nl.clean_raw_data(qagroup_from_pop_top_ques_df)
-    if not clean_ans_bodies_l:
-        print('#D analyze_text(): clean_ans_bodies_l: ', clean_ans_bodies_l)
-        print('#TBD, analyze_text(), missing data in clean_ans_bodies_l, no text to analyze; exit now.')
-        #TBR return pd.DataFrame()
-        raise SystemExit()
-    #D print('\n#D, clean_ans_bodies_l[:1]')
-    #D print(clean_ans_bodies_l[:1])
-
-    cf.logger.info("NLP Step 3. Build a bag of words and their counts.")
-    (vocab_l, dist_a) = nl.make_bag_of_words(clean_ans_bodies_l)
-    #D print('\n#D, vocab_l[:1]')
-    #D print(vocab_l[:1])
-    words_sorted_by_count_l = nl.sort_vocab(vocab_l, dist_a)
-
-    cf.logger.info("NLP Step 7. Search lo-score A's for hi-score text.")
-    qa_with_hst_df = nl.find_hi_score_terms_in_bodies(
-        words_sorted_by_count_l,
-        clean_ans_bodies_l,
-        num_hi_score_terms, qagroup_from_pop_top_ques_df)
-    popular_qa_df = pd.concat(
-        [popular_qa_df, qa_with_hst_df]).reset_index(drop=True)
-    #TBD,Sat2017_1223_16:09 , Prob: search*df includes every record from hst df b/c of concat.
-        # Same problem w/ popular_qa_df above.
-        #TBD,Mon2017_1225_14:53 , Chg from qa_with_hst_df to qa_with_keyword_df?
-    #TBD,Mon2017_1225_15:09 , Just use search*df w/o concat, to prevent adding non-keyword recs to it.
-    #D search_qa_df = pd.concat(
-        #D [search_qa_df, qagroup_from_pop_top_ques_df, qa_with_hst_df]).reset_index(drop=True)
-    search_qa_df = pd.concat(
-        [search_qa_df, qagroup_from_pop_top_ques_df ]).reset_index(drop=True)
-    print('#D ak_analyze*(): len(qa_with_hst_df: ', len(qa_with_hst_df))
-    print('#D ak_analyze*(): len(search_qa_df: ', len(search_qa_df))
-    cf.logger.debug('popular_qa_df: len')
-    cf.logger.debug(len(popular_qa_df))
-
-    #END def ak_analyze_keyword_text()
-    return search_qa_df
-
-
-
+    return  qa_keyword_df
 
 
 
@@ -1171,11 +1007,15 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df,
                 # Show full text of the record.
                 show_q_a_with_keywords(q_a_group_with_keyword_df, search_term)
             """
+            """
+            TBD,Thu2018_0104_15:36  This code is not now used; keep temporarily.
+                The select*() function now does the reqd o/p actions.
             if search_qa_df.empty:
                 print("WARN: dataframe empty or search term not found; try another term.")
             else:
                 # Show full text of the record.
                 show_q_a_with_keywords(search_qa_df, search_term)
+            """
         else:
             print("Got bad cmd from user: ", user_cmd)
             print(user_menu)
@@ -1242,7 +1082,6 @@ def show_q_a_with_keywords(search_qa_df, search_term):
                 combine_related_q_and_a(
                     ques_ids_pop_and_top_l, all_ques_df, all_ans_df, num_selected_recs, a_fname, progress_msg_factor)
     """
-    row_for_summary_t = () # Initlz #TBR 
     for index, row in search_qa_df.iterrows():
         ident = row['Id']
         parent_id = row['ParentId']
