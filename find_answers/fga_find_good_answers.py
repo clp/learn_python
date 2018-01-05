@@ -698,10 +698,15 @@ def select_keyword_recs(keyword, qa_df, columns_l,
     qa_contains_sr = qab_sr | qt_sr
     #
     # Build a df with Q's and A's that contain the keyword.
+    #
     qak_df = qa_df[columns_l][qa_contains_sr]
     if qak_df.empty:
         print('Search term not found, the dataframe is empty.')
         return
+    #
+    # Print summary, 1 line/record:
+    print()
+    print('#D 1-line summary, qak_df, Q & A that contain the keyword:\n', qak_df[:] , '\n')
     #
     # Build a list of Id values of Q's and A's that contain the keyword.
     #
@@ -736,16 +741,13 @@ def select_keyword_recs(keyword, qa_df, columns_l,
             print("Title: ", title)
             raise SystemExit()  # TBD too drastic?  Maybe show menu?
     #
-    # Build sets of unique IDs.
+    # Build sets of unique IDs of Q's and A's w/ keyword.
+    #
     ques_ids_from_search_l = list(set(ques_ids_from_search_l))
     ans_ids_from_search_l = list(set(ans_ids_from_search_l))
     #
-    # Print summary, 1 line/record:
-    print()
-    print('#D 1-line summary, qak_df, Q & A w/ keyword:\n', qak_df[:] , '\n')
-    #
-    #
     # Build a list of answer Id's.
+    #
     ans_ids_sorted_l = []
     ans_ids_l = []
     for aid in ans_ids_from_search_l:
@@ -753,38 +755,40 @@ def select_keyword_recs(keyword, qa_df, columns_l,
             #TBD, Using qa_df here is not obviously diff from qak.
         ans_ids_l.append([a_df['HSTCount'].values[0], a_df['Score'].values[0], a_df['Id'].values[0]])
     #
-    # Build a list of answer Id's in sorted order.
+    # Sort the list of answer Id's by HSTCount, Score, Id.
+    #
     ans_ids_sorted_l = sorted(ans_ids_l, reverse=True)
-    print('#D.1547 sorted ans_ids_sorted_l:\n', ans_ids_sorted_l)
+    print('#D.1547 , ans_ids_sorted_l sorted by hstc,score,id:\n', ans_ids_sorted_l)
     print()
     #
-    #
-    # Use sorted A's to build ordered Q's.
+    # Use sorted A's to build list of ordered Q's.
     #
     ques_ids_ord_l = []
     print('#D Q.Id, Q.Title:')
     for hstc, score, aid in ans_ids_sorted_l:
         q_df = qak_df.loc[qak_df['Id'] == aid]
         parent_id = q_df['ParentId'].iloc[0]
-        print(parent_id)
-        tmp_df = qa_df.loc[qa_df['Id'] == parent_id]
-            #TBD, using qa_df is better than qak: it finds more Q.Titles.
-        print(tmp_df['Title'].iloc[0])
         ques_ids_ord_l.append(parent_id)
+        #
+        print(parent_id)
+        #TBD, using qa_df is better than qak: it finds more Q.Titles.
+        tmp_df = qa_df.loc[qa_df['Id'] == parent_id]
+        print(tmp_df['Title'].iloc[0])
     #
-    # Append the chosen Q.Id's found by search to make the full Q list in desired order.
-    #TBD, use list append or concat?
-    ques_ids_ord_l += ques_ids_from_search_l
+    # Extend the list of ordered Q's w/ Q.Id's that have the keyword.
     #
-    # Remove duplicate Q.Id's w/o changing order of the list.
+    ques_ids_ord_l.extend(ques_ids_from_search_l)
+    #
+    # Remove duplicate Q.Id's w/o changing the order of the list.
+    #
     qid_ord_l = []
     for i in ques_ids_ord_l:
         if i not in qid_ord_l:
             qid_ord_l.append(i)
-    print('\n\n#D.1702 qid_ord_l: ', qid_ord_l )
-    #
+    #D print('\n\n#D.1702 qid_ord_l: ', qid_ord_l )
     #
     # Build list of Q.Id and A.Id in the right order for output.
+    #
     qa_id_ord_l = []
     for qid in qid_ord_l:
         # Save the Q.Id.
@@ -792,8 +796,10 @@ def select_keyword_recs(keyword, qa_df, columns_l,
         #
         # Find & sort & save all A.Id's for this Q.
         #
+        #TBD,Wed2018_0103_18:51  qa_df is popular_qa_df;
+            # maybe use a df w/ more records, in the call to this func?
         ans_match_df = qa_df[qa_df['ParentId'] == qid]
-            #TBD,Wed2018_0103_18:51  qa_df is popular_qa_df; maybe use a df w/ more records in the call to this func?
+        #
         # Sort the df:
         #TBD, sort it inplace to avoid another temp var? Does inplace have problems?
         ams_df = ans_match_df.sort_values(['HSTCount', 'Score', 'Id'], ascending=[False, False, True])
@@ -803,6 +809,7 @@ def select_keyword_recs(keyword, qa_df, columns_l,
     print('\n\n#D.1550 qa_id_ord_l: ', qa_id_ord_l )
     #
     # Build o/p df w/ Q's and A's in right order, from the list of Id's.
+    #
     qa_keyword_df_l = []
     for item in qa_id_ord_l:
         for index, row in qa_df.iterrows():
@@ -811,20 +818,18 @@ def select_keyword_recs(keyword, qa_df, columns_l,
                 continue
     qa_keyword_df = pd.DataFrame(qa_keyword_df_l)
     #
-
-    # Write o/p to disk file.
+    # Write o/p to disk files.
+    #
     search_fname = 'search_result_full.csv'
     save_prior_file(DATADIR, search_fname)
     qa_keyword_df.to_csv(DATADIR + search_fname)
-
+    #
     search_fname = 'search_result_full.html'
     save_prior_file(DATADIR, search_fname)
     columns_l = ['HSTCount', 'Score', 'Id', 'Title', 'Body']
     write_full_df_to_html_file(qa_keyword_df, DATADIR, search_fname, columns_l)
     #
     return  qa_keyword_df
-
-
 
 
 
