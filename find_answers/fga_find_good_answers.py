@@ -999,23 +999,6 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df,
             q_a_group_with_keyword_df = select_keyword_recs(
                 search_term, popular_qa_df, columns_l,
                 all_ques_df, all_ans_df, num_selected_recs, a_fname, progress_msg_factor)
-            #
-            """TBD,Sat2017_1223_15:50 , Big change for debug.
-            if q_a_group_with_keyword_df.empty:
-                print("WARN: dataframe empty or search term not found; try another term.")
-            else:
-                # Show full text of the record.
-                show_q_a_with_keywords(q_a_group_with_keyword_df, search_term)
-            """
-            """
-            TBD,Thu2018_0104_15:36  This code is not now used; keep temporarily.
-                The select*() function now does the reqd o/p actions.
-            if search_qa_df.empty:
-                print("WARN: dataframe empty or search term not found; try another term.")
-            else:
-                # Show full text of the record.
-                show_q_a_with_keywords(search_qa_df, search_term)
-            """
         else:
             print("Got bad cmd from user: ", user_cmd)
             print(user_menu)
@@ -1042,89 +1025,6 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df,
 
     return
 
-
-#ORG,Sat2017_1223_15:53  def show_q_a_with_keywords(q_a_group_with_keyword_df, search_term):
-def show_q_a_with_keywords(search_qa_df, search_term):
-    """
-    #TBD,Sat2017_1216_15:43  Ideas
-    Get i/p CLI arg for number of answers to show; default is 3.
-    Set answers_to_show_count = 0
-    Review each row in the i/p df.
-        If a Q:
-            examine all A's
-            print Q
-            print A.'s with highest HSTCount, w/ highest Scores, etc.
-            increment num_answers_shown_count
-            if num_answers_shown_count >= num_answers_to_show:
-                break
-        If an A:
-            find ParentId, the related Q
-            examine all A's for that Q
-            print Q
-            print A.'s with highest HSTCount, w/ highest Scores, etc.
-            increment num_answers_shown_count
-            if num_answers_shown_count >= num_answers_to_show:
-                break
-    Opt: Print summary o/p, 1 line per row of i/p df.
-        Id, Title, HSTCount, Score.
-    """
-    pd.set_option('display.max_colwidth', -1)  # -1=no limit, for debug
-    search_summary_l = []
-    search_full_l = []
-    """
-    #TBD,Thu2017_1221, temp code, not run.
-    for index, row in q_a_group_with_keyword_df.iterrows():
-        ident = row['Id']
-        parent_id = row['ParentId']
-        if not parent_id: # Found a question; get all its answers.
-            #TBD,Thu2017_1221_15:59 , copied from main(); is it needed here?
-            popular_qa_df = \
-                combine_related_q_and_a(
-                    ques_ids_pop_and_top_l, all_ques_df, all_ans_df, num_selected_recs, a_fname, progress_msg_factor)
-    """
-    for index, row in search_qa_df.iterrows():
-        ident = row['Id']
-        parent_id = row['ParentId']
-        score = row['Score']
-        hstcount = row['HSTCount']
-        hst = row['HiScoreTerms']
-        title = row['Title']
-        body = row['Body']
-        row_for_summary_t = (index, ident, parent_id, score, hstcount, title) # Short 1-line/record
-        row_with_body_t = (index, ident, parent_id, score, hstcount, title, body) # Record w/ Body field.
-        #
-        # Append fields of current record to o/p list.
-        search_summary_l.append(row_for_summary_t) # For short 1-line/record summary
-        search_full_l.append(row_with_body_t) # For most fields of matching output records
-        #
-        # Show some fields from the current record.
-        #D,TBD,Fri2017_1222_17:09  print_row_as_key_value(index, row)
-        #
-        #TBD,Thu2017_1221_14:15  If record is a Q, find all its A's and include them in the o/p.
-
-    # Print summary data for records w/ the search term
-    print()
-    print("Summary of Search for Term: {}\n===\nIndex, Id, ParentId, Score, HSTCount, Title:".format(search_term)) 
-    #D print('\n'.join(str(r) for r in search_summary_l))
-    print('#D show_q_a*(): len(search_qa_df: ', len(search_qa_df))
-    print('#D show_q_a*(): len(search_summary_l: ', len(search_summary_l))
-    print()
-
-    # Convert list to df, then write df to disk.
-    #TBR? search_result_full_df = pd.DataFrame() # Initlz at every call.
-    search_result_full_df = pd.DataFrame(search_full_l, columns = ['Index', 'Id', 'ParentId', 'Score', 'HSTCount', 'Title', 'Body'])
-    wdir = DATADIR
-    search_fname = 'search_result_full.csv'
-    save_prior_file(wdir, search_fname)
-    search_result_full_df.to_csv(wdir + search_fname)
-    pd.set_option('display.max_colwidth', MAX_COL_WID)  # -1=no limit, for debug
-
-    search_fname = 'search_result_full.html'
-    save_prior_file(wdir, search_fname)
-    columns_l = ['Id', 'Title', 'Body']
-    write_full_df_to_html_file(search_result_full_df, TMPDIR, search_fname, columns_l)
-
-    return 1
 
 
 
