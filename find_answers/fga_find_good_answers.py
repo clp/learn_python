@@ -262,7 +262,6 @@ def main(popular_qa_df):
     write_full_df_to_html_file(popular_qa_df, TMPDIR, 'popular_qa_title_body.html', columns_l)
 
 
-
 def check_install():
     """Check that some required directories and files exist.
     """
@@ -664,29 +663,41 @@ def analyze_text(qagroup_from_pop_top_ques_df, num_selected_recs, a_fname, progr
 
 def select_keyword_recs(keyword, qa_df, columns_l,
         all_ques_df, all_ans_df, num_selected_recs, a_fname, progress_msg_factor):
-    """Find the Q's & A's from the filtered dataframe that contain the keyword,
-    in Title or Body.
-    Build a list of unique Id's in the desired order.
-    Build a df of Q's w/ their A's.
-    Save all the selected data for analysis.
-    #
-    Gather all A's with keyword and their related Q's;
-    then get the Q and all related A's into one Q&A group
-    in the right order for display and analysis.
-    #
-    TBD, Show the Q's that have the keyword.
-    Show the A's from the filtered df that have the keyword;
-    sort them in order of decreasing HSTCount.
-    Show the Q's that have the keyword.
-    #
-    TBD, Show the Q&A items from the filtered df that have the keyword;
-    sort them in order of decreasing HSTCount.
-    #
-    TBD, In future, search entire collection of Q&A, not just
-    the filtered subset.
-    #
-    TBD, qa_df: filtered dataframe of questions and answers that are pop and top,
-    ie, popular and from owners with high reputation scores.
+    """Find the Q's & A's from the filtered dataframe
+    that contain the keyword, in Title or Body.
+    Use those Id's to find the related* Q's and A's that do not
+    contain the keyword.
+    Collect all these Id's into a list, and eliminate all
+    the redundant entries.
+    Build a list of unique Id's in the desired** order.
+    Show the data with those Id's, and save it for analysis.
+
+    [*]A related question is a question that has an answer that
+    contains a keyword.
+
+    A related answer is an answer for a question that
+    contains a keyword.
+
+    [**]Desired order is to organize Q&A groups, and the answers
+    inside each group, in this manner:
+
+    1.  Sort answers by highest HSTCount, highest Score, lowest Id.
+
+    2.  Starting with the highest answer, build its Q&A group
+    from its related question, then include all that question's
+    related answers.  The answers should be sorted in order
+    from highest to lowest.
+
+    3.  Continue with the next highest answer remaining, and
+    build its Q&A group.  Repeat until all Q&A groups have been
+    built.
+
+
+    Important variables.
+
+    qa_df: filtered dataframe of questions and answers that
+    are pop and top, ie, popular and from owners with high
+    reputation scores.
     """
     #
     # Get a pandas series of booleans to find the current question id.
@@ -1059,7 +1070,7 @@ def check_owner_reputation(all_ans_df, owner_reputation_df):
     calculation need not be done every time this program runs.
     """
     own_rep_file = DATADIR + 'owner_reputation.csv'
-    #TBF.Fri2017_0804_14:54 , Must chk i/p file & replace owner_rep*.csv if
+    #TBD.Fri2017_0804_14:54 , Must chk i/p file & replace owner_rep*.csv if
     #  a different file was used.  OR, just build this file from Answers.csv
     #  which should have all answers & produce good reputation data.
 
