@@ -250,17 +250,6 @@ def main(popular_qa_df):
     popular_qa_df = \
         combine_related_q_and_a(
             ques_ids_pop_and_top_l, all_ques_df, all_ans_df, num_selected_recs, a_fname, progress_msg_factor)
-    """
-    #TBD,Sat2017_1223_13:24 , Disable all this code to debug problem; 
-        # Maybe rm it and go directly to show_menu() for user i/p.
-    #TBR, maybe not the right place for this test.
-    #TBD,Thu2017_1221_20:44 , Wrong test, the df has len=130 here so it doesn't stop.
-        # Problem is when trying to analyze text w/ empty i/p df.
-    # Test df and stop program if empty.
-    print('#D len(popular_qa_df): ', len(popular_qa_df))
-    if popular_qa_df.empty:
-        print('#D, main(), empty df from combine_related_q_and_a(); cannot proceed; debug.')
-        raise SystemExit()
 
     # Save a df to a file for review & debug.
     write_full_df_to_csv_file(popular_qa_df, TMPDIR, 'popular_qa.csv')
@@ -271,29 +260,7 @@ def main(popular_qa_df):
     # Save the Q&A title & body data as HTML.
     columns_l = ['Id', 'Title', 'Body']
     write_full_df_to_html_file(popular_qa_df, TMPDIR, 'popular_qa_title_body.html', columns_l)
-    """
 
-
-
-
-    """
-    #TBD,Fri2017_1222_16:51 , Rm this call, maybe it was for debugging; only search when user asks.
-    if keyword:
-        #TBR, maybe not the right place for this test  #TBD,Thu2017_1221_20:48 .
-        # Test df and stop program if empty.
-        print('#D len(popular_qa_df): ', len(popular_qa_df))
-        if popular_qa_df.empty:
-            print('#D, main(), empty df from combine_related_q_and_a(); cannot proceed; debug.')
-            raise SystemExit()
-
-        # Write records containing keywords to a csv file.
-        q_a_group_with_keyword_df = select_keyword_recs(
-            keyword, popular_qa_df, columns_l,
-            all_ques_df, all_ans_df, num_selected_recs, a_fname, progress_msg_factor)
-        outfile = DATADIR + 'qa_with_keyword.csv'
-        q_a_group_with_keyword_df[columns_l].to_csv(
-            outfile, header=True, index=None, sep=',', mode='w')
-    """
 
 
 def check_install():
