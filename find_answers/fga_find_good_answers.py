@@ -998,30 +998,6 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df,
     return
 
 
-
-
-def print_row_as_key_value(index, row):
-    ident = row['Id']
-    parent_id = row['ParentId']
-    score = row['Score']
-    hstcount = row['HSTCount']
-    hst = row['HiScoreTerms']
-    title = row['Title']
-    body = row['Body']
-    print("#D index: ", index)
-    print("#D HSTCount: ", hstcount)
-    print("#D Score: ", score)
-    print("#D Id: ", ident)
-    print("#D ParentId: ", parent_id)
-    print("#D Title: ", title)
-    print("#D HiScoreTerms: ", hst)
-    #TBD print("#D Body: ", body)
-    print("#D ==========\n")
-
-    return 1
-
-
-
 def build_stats(qa_df, or_df):
     """Build a table of statistical data about the data, for
     analysis and plotting.
