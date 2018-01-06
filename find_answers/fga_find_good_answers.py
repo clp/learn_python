@@ -167,7 +167,6 @@ MAX_PRINT_SIZE = 60
 TMP = 'tmp/'
 TMPDIR = 'data/'
 popular_qa_df = pd.DataFrame()
-search_qa_df = pd.DataFrame()
 
 HEADER = '''
 <html>
@@ -314,10 +313,10 @@ def config_data():
 
     a_infile = INDIR + a_fname
     q_infile = INDIR + q_fname
-    a_out_vocab_file = DATADIR + a_fname + '.vocab'
+    #TBR a_out_vocab_file = DATADIR + a_fname + '.vocab'
 
     print('Input files, q & a:\n' + q_infile + '\n' + a_infile)
-    print('Output vocab file:  ' + a_out_vocab_file)
+    #TBR print('Output vocab file:  ' + a_out_vocab_file)
     print()
 
     return a_fname, a_infile, q_infile
@@ -342,7 +341,7 @@ def read_data(ans_file, ques_file):
     numlines = len(ans_df)
     print('Number of answer records in i/p data frame, ans_df: ' + str(numlines))
     progress_msg_factor = int(round(numlines / 10))
-    print('\n#D  progress_msg_factor : ', progress_msg_factor)
+    #TBR print('\n#D  progress_msg_factor : ', progress_msg_factor)
     print()
     return ans_df, ques_df, progress_msg_factor, numlines
 
@@ -384,11 +383,6 @@ def gd2_group_data(aa_df):
     print()
     cf.logger.info('gd2_group_data(): Show owners with highest MeanScores.')
     cf.logger.info(owner_grouped_df.tail(num_owners))
-    if cli_args_d['verbose']:
-        print('#D gd2: Show owners with ', str(num_owners), ' highest MeanScores.')
-        # See highest scores at bottom of sorted list:
-        print(owner_grouped_df.tail(num_owners))
-        print()
 
     return owner_grouped_df
 
@@ -419,11 +413,6 @@ def group_data(aa_df):
     print()
     cf.logger.info('group_data(): Show owners with ... highest MeanScores.')
     cf.logger.info(owner_grouped_df.tail(num_owners))
-    if cli_args_d['verbose']:
-        print('Show owners with ', str(num_owners), ' highest MeanScores.')
-        # See highest scores at bottom:
-        print(owner_grouped_df.tail(num_owners))
-        print()
 
     # Take slice of owners w/ highest mean scores; convert to int.
     owners_a = owner_grouped_df['OwnerUserId'].values
@@ -460,9 +449,6 @@ def group_data(aa_df):
         outfile, header=True, index=None, sep=',', mode='w')
     cf.logger.info('group_data(): lo_scores_for_top_owners_df: ')
     cf.logger.info(lo_scores_for_top_owners_df)
-    if cli_args_d['verbose']:
-        print('lo_scores_for_top_owners_df: ')
-        print(lo_scores_for_top_owners_df)
     print()
 
     return top_scoring_owners_a, owner_grouped_df
@@ -484,15 +470,10 @@ def find_ques_ids_from_top_owners(top_scoring_owners_a, aa_df):
         owners_df_l.append(answers_df)
 
     hi_scoring_owners_df = pd.concat(owners_df_l)
-    # D print('Length of hi_scoring_owners_df: ', len(hi_scoring_owners_df))
-    # D print('hi_scoring_owners_df: ')
-    # D print(hi_scoring_owners_df)
 
     # Get list of unique ParentId's:
     ques_ids_from_top_own_l = list(set(hi_scoring_owners_df['ParentId']))
-    # D print('ques_ids_from_top_own_l: ')
-    # D print(ques_ids_from_top_own_l)
-    # D print()
+
     return ques_ids_from_top_own_l
 
 
@@ -510,10 +491,10 @@ def find_pop_and_top_ques_ids(ques_ids_from_top_own_l, popular_ids_a):
 
     Return the list of question id's in ques_ids_pop_and_top_l.
     """
+    #D Notes on settings used below:
+    # For q6 & a6 data: set(ques_ids_from_top_own_l[:500]).intersection(set(popular_ids_a[:500])))
+    # For q3 & a3 data: set(ques_ids_from_top_own_l[:40]).intersection(set(popular_ids_a[:10])))
     ques_ids_pop_and_top_l = list(
-        # For q6 & a6 data: set(ques_ids_from_top_own_l[:500]).intersection(set(popular_ids_a[:500])))
-        # For q3 & a3 data: set(ques_ids_from_top_own_l[:40]).intersection(set(popular_ids_a[:10])))
-        #D set(ques_ids_from_top_own_l[:40]).intersection(set(popular_ids_a[:10])))
         set(ques_ids_from_top_own_l[:900]).intersection(set(popular_ids_a[:900])))
     log_msg = 'find_pop_and_top_ques_ids(): len(ques_ids_pop_and_top_l) : ' + str(len(ques_ids_pop_and_top_l))
     cf.logger.info(log_msg)
@@ -524,14 +505,10 @@ def find_pop_and_top_ques_ids(ques_ids_from_top_own_l, popular_ids_a):
     return ques_ids_pop_and_top_l
 
 
-#TBD,Thu2017_1221_19:12  Rewrite combine*() to be more general w/ diff arg names.
-#TBD,Thu2017_1221_19:12  Rewrite combine*() to be more general w/ diff arg names.
-#TBD,Thu2017_1221_19:12  Rewrite combine*() to be more general w/ diff arg names.
 def combine_related_q_and_a(ques_ids_pop_and_top_l, all_ques_df, aa_df, num_selected_recs, a_fname, progress_msg_factor):
     """Get each Q in the list of selected ParentId's, and the related A's.
     Loop over each question and store the Q & A data in a dataframe.
 
-    TBD-move:
     Then call analyze_text() on each group of Q with A's,
     which calls the routines that perform the natural language processing
     of the text data.
@@ -541,22 +518,8 @@ def combine_related_q_and_a(ques_ids_pop_and_top_l, all_ques_df, aa_df, num_sele
     ques_match_df = all_ques_df[all_ques_df['Id'].isin(ques_ids_pop_and_top_l)]
     ans_match_df = aa_df[aa_df['ParentId'].isin(ques_ids_pop_and_top_l)]
 
-    print('#D len of ques_match_df: ', len(ques_match_df))
-    print('#D len of ans_match_df: ', len(ans_match_df))
-    print('\n#D ques_match_df.head():')
-    print(ques_match_df.head())
-    print()
-    print('\n#D ans_match_df.head():')
-    print(ans_match_df.head())
-
-
     # Build each Q&A group: one Q w/ all its A.'s
-    # TBD, How to do this w/o explicit loop, using df tools?
-    # TBD, Combine or replace the ques_match_df & ans*df code above w/ this?
-    # Maybe delete those 'intermediate' results?
-    qagroup_from_pop_top_ques_df = pd.DataFrame()
     for i, qid in enumerate(ques_ids_pop_and_top_l):
-        # OK if(i % progress_msg_factor == 0):
         if(i % 20 == 0):
             print("#D combine_related_q_and_a():progress count: ", i)
         qm_df = ques_match_df[ques_match_df['Id'] == qid]
@@ -565,19 +528,14 @@ def combine_related_q_and_a(ques_ids_pop_and_top_l, all_ques_df, aa_df, num_sele
         #
         # Change NaN values to zero, and the field type from float64 to int64,
         # to help with search functionality.
-        #TBD,Tue2017_1226_17:01 , Must this be done elsewhere?
         qagroup_from_pop_top_ques_df['ParentId'] = qagroup_from_pop_top_ques_df['ParentId'].fillna(0).astype(int)
         qagroup_from_pop_top_ques_df['OwnerUserId'] = qagroup_from_pop_top_ques_df['OwnerUserId'].fillna(0).astype(int)
-        #D print("#D combine*() after changing series: qagroup_from_pop_top_ques_df['ParentId']:\n", qagroup_from_pop_top_ques_df['ParentId'].head(9) , '\n')
         #
-        #TBD,Fri2017_1222_00:02 , This maybe fixed big problem, don't analyze empty df:
         if qagroup_from_pop_top_ques_df.empty:
-            #TBD, Skip this qid, it does not match what we seek?
+            # Skip this qid, it does not match what we seek.
             continue
-        # D print("\n#D qagroup_from_pop_top_ques_df.head(): ")
-        # D print(qagroup_from_pop_top_ques_df.head())
         cf.logger.info('qagroup_from_pop_top_ques_df.head(1): ')
-        cf.logger.info(qagroup_from_pop_top_ques_df.head(5))  #TBD, reset to 1
+        cf.logger.info(qagroup_from_pop_top_ques_df.head(1))
 
         # Analyze data w/ nlp s/w.
         popular_qa_df = analyze_text(
@@ -585,8 +543,6 @@ def combine_related_q_and_a(ques_ids_pop_and_top_l, all_ques_df, aa_df, num_sele
 
     # END combine_related_q_and_a().
     return popular_qa_df
-
-
 
 
 def compute_record_selector(numlines):
@@ -619,7 +575,6 @@ def analyze_text(qagroup_from_pop_top_ques_df, num_selected_recs, a_fname, progr
 
     """
     global popular_qa_df
-    global search_qa_df 
 
     cf.logger.info("NLP Step 2. Process the words of each input line.")
     #D print('#D analyze_text(): qagroup_from_pop_top_ques_df: ', qagroup_from_pop_top_ques_df)
@@ -628,13 +583,9 @@ def analyze_text(qagroup_from_pop_top_ques_df, num_selected_recs, a_fname, progr
         print('#D analyze_text(): clean_ans_bodies_l: ', clean_ans_bodies_l)
         print('#TBD, analyze_text(), missing data in clean_ans_bodies_l, no text to analyze; exit now.')
         raise SystemExit()
-    #D print('\n#D, clean_ans_bodies_l[:1]')
-    #D print(clean_ans_bodies_l[:1])
 
     cf.logger.info("NLP Step 3. Build a bag of words and their counts.")
     (vocab_l, dist_a) = nl.make_bag_of_words(clean_ans_bodies_l)
-    #D print('\n#D, vocab_l[:1]')
-    #D print(vocab_l[:1])
     words_sorted_by_count_l = nl.sort_vocab(vocab_l, dist_a)
 
     cf.logger.info("NLP Step 7. Search lo-score A's for hi-score text.")
@@ -644,15 +595,6 @@ def analyze_text(qagroup_from_pop_top_ques_df, num_selected_recs, a_fname, progr
         num_hi_score_terms, qagroup_from_pop_top_ques_df)
     popular_qa_df = pd.concat(
         [popular_qa_df, qa_with_hst_df]).reset_index(drop=True)
-    #TBD,Sat2017_1223_16:09 , Prob: search*df includes every record from hst df b/c of concat.
-        # Same problem w/ popular_qa_df above.
-        #TBD,Mon2017_1225_15:12 , So don't concat search df w/ hst df.
-    #D search_qa_df = pd.concat(
-        #D [search_qa_df, qa_with_hst_df]).reset_index(drop=True)
-    #D print('#D analyze*(): len(qa_with_hst_df: ', len(qa_with_hst_df))
-    #D print('#D analyze*(): len(search_qa_df: ', len(search_qa_df))
-    cf.logger.debug('popular_qa_df: len')
-    cf.logger.debug(len(popular_qa_df))
 
     return popular_qa_df
 
@@ -661,8 +603,8 @@ def analyze_text(qagroup_from_pop_top_ques_df, num_selected_recs, a_fname, progr
 # be called before combine_related*()?
 # Use it to make the final ques_ids_pop_and_top_l?
 
-def select_keyword_recs(keyword, qa_df, columns_l,
-        all_ques_df, all_ans_df, num_selected_recs, a_fname, progress_msg_factor):
+def select_keyword_recs(keyword, qa_df, columns_l):
+    #TBR.1: all_ques_df, all_ans_df, num_selected_recs, a_fname, progress_msg_factor):
     """Find the Q's & A's from the filtered dataframe
     that contain the keyword, in Title or Body.
     Use those Id's to find the related* Q's and A's that do not
@@ -700,7 +642,7 @@ def select_keyword_recs(keyword, qa_df, columns_l,
     reputation scores.
     """
     #
-    # Get a pandas series of booleans to find the current question id.
+    # Get a pandas series of booleans for filtering:
     # Check Question & Answer, both Title and Body columns.
     qt_sr = qa_df.Title.str.contains(keyword, regex=False)
     qab_sr = qa_df.Body.str.contains(keyword, regex=False)
@@ -709,7 +651,6 @@ def select_keyword_recs(keyword, qa_df, columns_l,
     qa_contains_sr = qab_sr | qt_sr
     #
     # Build a df with Q's and A's that contain the keyword.
-    #
     qak_df = qa_df[columns_l][qa_contains_sr]
     if qak_df.empty:
         print('Search term not found, the dataframe is empty.')
@@ -717,7 +658,7 @@ def select_keyword_recs(keyword, qa_df, columns_l,
     #
     # Print summary, 1 line/record:
     print()
-    print('#D 1-line summary, qak_df, Q & A that contain the keyword:\n', qak_df[:] , '\n')
+    print('#D qak_df summary, Q & A that contain the keyword:\n', qak_df[:] , '\n')
     #
     # Build a list of Id values of Q's and A's that contain the keyword.
     #
@@ -729,10 +670,10 @@ def select_keyword_recs(keyword, qa_df, columns_l,
         #TBD,Thu2018_0104_15:46  rm unneeded vars from here:
         rec_id = row['Id']
         title = row['Title']
-        body = row['Body']
+        #TBR body = row['Body']
         parent_id = row['ParentId']
-        hstcount = row['HSTCount']
-        score = row['Score']
+        #TBR hstcount = row['HSTCount']
+        #TBR score = row['Score']
         #
         if pd.isnull(title):
             # Found an answer w/ keyword, add its Q.Id to ques list.
@@ -743,7 +684,7 @@ def select_keyword_recs(keyword, qa_df, columns_l,
             # Found a question w/ keyword; add it to ques list.
             ques_ids_from_search_l.append(rec_id)
         else:
-            #TBD,Tue2017_1226_18:21 , Test this path, it should never be reached.
+            #TBD,Tue2017_1226_18:21 , How to test this path, it should never be reached.
                 # Need a bad data record for the test.
                 # Maybe need record w/ no Title field?
             print("\nselect*(): Bad data found, problem with Title?  Id, Title:")
@@ -752,7 +693,7 @@ def select_keyword_recs(keyword, qa_df, columns_l,
             print("Title: ", title)
             raise SystemExit()  # TBD too drastic?  Maybe show menu?
     #
-    # Build sets of unique IDs of Q's and A's w/ keyword.
+    # Build sets of unique Id's of Q's and A's w/ keyword.
     #
     ques_ids_from_search_l = list(set(ques_ids_from_search_l))
     ans_ids_from_search_l = list(set(ans_ids_from_search_l))
@@ -775,16 +716,17 @@ def select_keyword_recs(keyword, qa_df, columns_l,
     # Use sorted A's to build list of ordered Q's.
     #
     ques_ids_ord_l = []
-    print('#D Q.Id, Q.Title:')
+    if cli_args_d['verbose']:
+        print('#D Q.Id, Q.Title:')
     for hstc, score, aid in ans_ids_sorted_l:
         q_df = qak_df.loc[qak_df['Id'] == aid]
         parent_id = q_df['ParentId'].iloc[0]
         ques_ids_ord_l.append(parent_id)
         #
-        print(parent_id)
-        #TBD, using qa_df is better than qak: it finds more Q.Titles.
-        tmp_df = qa_df.loc[qa_df['Id'] == parent_id]
-        print(tmp_df['Title'].iloc[0])
+        if cli_args_d['verbose']:
+            print(parent_id)
+            tmp_df = qa_df.loc[qa_df['Id'] == parent_id]
+            print(tmp_df['Title'].iloc[0])
     #
     # Extend the list of ordered Q's w/ Q.Id's that have the keyword.
     #
@@ -796,7 +738,6 @@ def select_keyword_recs(keyword, qa_df, columns_l,
     for i in ques_ids_ord_l:
         if i not in qid_ord_l:
             qid_ord_l.append(i)
-    #D print('\n\n#D.1702 qid_ord_l: ', qid_ord_l )
     #
     # Build list of Q.Id and A.Id in the right order for output.
     #
@@ -811,13 +752,12 @@ def select_keyword_recs(keyword, qa_df, columns_l,
             # maybe use a df w/ more records, in the call to this func?
         ans_match_df = qa_df[qa_df['ParentId'] == qid]
         #
-        # Sort the df:
-        #TBD, sort it inplace to avoid another temp var? Does inplace have problems?
+        # Sort the df.
         ams_df = ans_match_df.sort_values(['HSTCount', 'Score', 'Id'], ascending=[False, False, True])
         #
         for hstc, score, aid in ams_df[['HSTCount', 'Score', 'Id']].values:
             qa_id_ord_l.append(aid)
-    print('\n\n#D.1550 qa_id_ord_l: ', qa_id_ord_l )
+    #D print('\n\n#D.1550 qa_id_ord_l: ', qa_id_ord_l )
     #
     # Build o/p df w/ Q's and A's in right order, from the list of Id's.
     #
@@ -981,7 +921,8 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df,
                 # Also, only include needed vars in the func call.
             q_a_group_with_keyword_df = select_keyword_recs(
                 search_term, popular_qa_df, columns_l,
-                all_ques_df, all_ans_df, num_selected_recs, a_fname, progress_msg_factor)
+                #TBR.1 all_ques_df, all_ans_df, num_selected_recs, a_fname, progress_msg_factor)
+                )
         else:
             print("Got bad cmd from user: ", user_cmd)
             print(user_menu)
