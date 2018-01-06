@@ -248,7 +248,7 @@ def main(popular_qa_df):
 
     popular_qa_df = \
         combine_related_q_and_a(
-            ques_ids_pop_and_top_l, all_ques_df, all_ans_df, num_selected_recs, a_fname, progress_msg_factor)
+            ques_ids_pop_and_top_l, all_ques_df, all_ans_df)
 
     # Save a df to a file for review & debug.
     write_full_df_to_csv_file(popular_qa_df, TMPDIR, 'popular_qa.csv')
@@ -313,10 +313,8 @@ def config_data():
 
     a_infile = INDIR + a_fname
     q_infile = INDIR + q_fname
-    #TBR a_out_vocab_file = DATADIR + a_fname + '.vocab'
 
     print('Input files, q & a:\n' + q_infile + '\n' + a_infile)
-    #TBR print('Output vocab file:  ' + a_out_vocab_file)
     print()
 
     return a_fname, a_infile, q_infile
@@ -341,7 +339,6 @@ def read_data(ans_file, ques_file):
     numlines = len(ans_df)
     print('Number of answer records in i/p data frame, ans_df: ' + str(numlines))
     progress_msg_factor = int(round(numlines / 10))
-    #TBR print('\n#D  progress_msg_factor : ', progress_msg_factor)
     print()
     return ans_df, ques_df, progress_msg_factor, numlines
 
@@ -505,7 +502,7 @@ def find_pop_and_top_ques_ids(ques_ids_from_top_own_l, popular_ids_a):
     return ques_ids_pop_and_top_l
 
 
-def combine_related_q_and_a(ques_ids_pop_and_top_l, all_ques_df, aa_df, num_selected_recs, a_fname, progress_msg_factor):
+def combine_related_q_and_a(ques_ids_pop_and_top_l, all_ques_df, aa_df):
     """Get each Q in the list of selected ParentId's, and the related A's.
     Loop over each question and store the Q & A data in a dataframe.
 
@@ -538,8 +535,7 @@ def combine_related_q_and_a(ques_ids_pop_and_top_l, all_ques_df, aa_df, num_sele
         cf.logger.info(qagroup_from_pop_top_ques_df.head(1))
 
         # Analyze data w/ nlp s/w.
-        popular_qa_df = analyze_text(
-             qagroup_from_pop_top_ques_df, num_selected_recs, a_fname, progress_msg_factor)
+        popular_qa_df = analyze_text(qagroup_from_pop_top_ques_df)
 
     # END combine_related_q_and_a().
     return popular_qa_df
@@ -560,7 +556,7 @@ def compute_record_selector(numlines):
     return num_selected_recs
 
 
-def analyze_text(qagroup_from_pop_top_ques_df, num_selected_recs, a_fname, progress_msg_factor):
+def analyze_text(qagroup_from_pop_top_ques_df):
     """Use a Q&A group of one Q w/ its A's for i/p.
     Process the text data w/ the routines in the nltk module, which use
     natural language tools.
@@ -604,7 +600,6 @@ def analyze_text(qagroup_from_pop_top_ques_df, num_selected_recs, a_fname, progr
 # Use it to make the final ques_ids_pop_and_top_l?
 
 def select_keyword_recs(keyword, qa_df, columns_l):
-    #TBR.1: all_ques_df, all_ans_df, num_selected_recs, a_fname, progress_msg_factor):
     """Find the Q's & A's from the filtered dataframe
     that contain the keyword, in Title or Body.
     Use those Id's to find the related* Q's and A's that do not
@@ -667,13 +662,9 @@ def select_keyword_recs(keyword, qa_df, columns_l):
     ques_ids_from_search_l = [] # Q's w/ keywords and Q's of A's w/ keywords
     #
     for index, row in qak_df.iterrows():
-        #TBD,Thu2018_0104_15:46  rm unneeded vars from here:
         rec_id = row['Id']
         title = row['Title']
-        #TBR body = row['Body']
         parent_id = row['ParentId']
-        #TBR hstcount = row['HSTCount']
-        #TBR score = row['Score']
         #
         if pd.isnull(title):
             # Found an answer w/ keyword, add its Q.Id to ques list.
@@ -784,8 +775,7 @@ def select_keyword_recs(keyword, qa_df, columns_l):
 
 
 
-def show_menu(qa_df, all_ans_df, owner_reputation_df,
-        all_ques_df, num_selected_recs, a_fname, progress_msg_factor):
+def show_menu(qa_df, all_ans_df, owner_reputation_df):
     """Show prompt to user; get and handle their request.
     """
     user_menu = """    The menu choices:
@@ -920,9 +910,7 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df,
                 # Don't limit the df in use until necessary.
                 # Also, only include needed vars in the func call.
             q_a_group_with_keyword_df = select_keyword_recs(
-                search_term, popular_qa_df, columns_l,
-                #TBR.1 all_ques_df, all_ans_df, num_selected_recs, a_fname, progress_msg_factor)
-                )
+                search_term, popular_qa_df, columns_l)
         else:
             print("Got bad cmd from user: ", user_cmd)
             print(user_menu)
@@ -1267,8 +1255,7 @@ if __name__ == '__main__':
         cf.logger.warning(log_msg)
         raise SystemExit()
 
-    show_menu(popular_qa_df, all_ans_df, owner_reputation_df,
-        all_ques_df, num_selected_recs, a_fname, progress_msg_factor)
+    show_menu(popular_qa_df, all_ans_df, owner_reputation_df)
 
     log_msg = cf.log_file + ' - Finish logging for ' + \
         os.path.basename(__file__) + '\n'
