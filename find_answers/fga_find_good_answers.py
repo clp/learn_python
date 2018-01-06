@@ -595,9 +595,6 @@ def analyze_text(qagroup_from_pop_top_ques_df):
     return popular_qa_df
 
 
-# TBD.1 , should select_keyword_recs()
-# be called before combine_related*()?
-# Use it to make the final ques_ids_pop_and_top_l?
 
 def select_keyword_recs(keyword, qa_df, columns_l):
     """Find the Q's & A's from the filtered dataframe
@@ -798,18 +795,17 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df):
     # Show prompt & wait for a cmd.
     print("======================\n")
     cmd_prompt = "Enter a command: q[uit] [m]enu  ...  [h]elp: "
-    while user_cmd == "":  # Repeat the prompt if the Enter key is pressed.
+    while user_cmd == "":  # Repeat the prompt if no i/p given.
         user_cmd = input(cmd_prompt)
     print("User entered this cmd: ", user_cmd)
 
     # Loop to handle user request.
     while user_cmd:
-        # D print("#D while-loop: User entered this cmd: ", user_cmd)
         if user_cmd.lower() == 'm':
             print(user_menu)
+            # Clear user_cmd here to avoid infinite repetition of while loop.
             user_cmd = ''
         elif user_cmd.lower() == 'q':
-            # print("Save data and Quit the program.")
             print("Quit the program.")
             log_msg = cf.log_file + ' - Quit by user request; Finish logging for ' + \
                 os.path.basename(__file__) + '\n'
@@ -817,7 +813,6 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df):
             raise SystemExit()
         elif user_cmd == '?' or user_cmd == 'h':
             print(user_menu)
-            # Clear user_cmd here to avoid infinite repetition of while loop.
             user_cmd = ''
         elif user_cmd.lower() == 's':
             user_cmd = ''
@@ -887,11 +882,10 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df):
             else:
                 print("NOTE: Drawing the qa_stats_df scatter matrix plot.")
                 draw_scatter_matrix_plot(qa_stats_df[['Score', 'BodyLength', 'OwnerRep',  'HSTCount' ]])
-        #TBD, Search cmd lek is now case sensitive.
-        # lek: Look for exact keywords in the Q&A df.
+        # lek: Look for exact keywords in the Q&A df; now case sensitive.
         elif user_cmd.lower() == 'lek':
-            user_cmd = 'lek'  # Force menu to always repeat the lek function.
-            search_prompt = "\n\nPlease type a search term; or press Enter alone to return to main menu: "
+            user_cmd = 'lek'  # Force menu to always repeat the lek prompt.
+            search_prompt = "\nPlease type a search term; or press Enter alone to return to main menu: "
             search_term = input(search_prompt)
             if search_term == "": # Return to main menu and ask for a cmd.
                 user_cmd = 'm'
@@ -905,10 +899,6 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df):
             q_a_group_with_keyword_df = pd.DataFrame() # Initlz at each call
             #
             #TBD,Wed2018_0103_15:27  Chg popular_qa_df to a df w/ more records, for dbg & initial use.
-            #TBD,Wed2018_0103_15:27  Chg popular_qa_df to a df w/ more records, for dbg & initial use.
-            #TBD,Wed2018_0103_15:27  Chg popular_qa_df to a df w/ more records, for dbg & initial use.
-                # Don't limit the df in use until necessary.
-                # Also, only include needed vars in the func call.
             q_a_group_with_keyword_df = select_keyword_recs(
                 search_term, popular_qa_df, columns_l)
         else:
@@ -918,22 +908,9 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df):
             user_cmd = ''
         # Show prompt & wait for a cmd.
         print("======================\n")
-        while user_cmd == "":  # Repeat the prompt if the Enter key is pressed.
+        while user_cmd == "":  # Repeat the prompt if no i/p given.
             user_cmd = input(cmd_prompt)
-    print("#D End of the cmd interpretation loop; return.")
-    print()
-    # D print("#D Last stmt of show_menu(); return.\n")
-
-    # Save df before exit, if quit cmd is not used.
-    # TBD:
-    # Same code used for 'q' cmd; refactor both.
-    # print("Save data and Quit the program.")
-    # Save only the needed fields to the file.
-    # TBD:
-    # columns_l = ['Id', 'ParentId', 'Grade', 'Notes', 'Title', 'Body']
-    # outfile = open(DATADIR + 'graded_popular_qa.csv', 'w')
-    # graded_df[columns_l].to_csv(outfile, header=True, index=None, sep=',', mode='w')
-    # outfile.flush()
+    print("#D End of the cmd interpretation loop; return.\n")
 
     return
 
@@ -959,25 +936,20 @@ def build_stats(qa_df, or_df):
 
     for index, row in qa_df.iterrows():
         ouid = row['OwnerUserId']
-        #D print("#D qa_stats_df index, ouid: ", index, ouid)
         try:
             owner_rep = round(or_df.loc[or_df['OwnerUserId'] == ouid, 'MeanScore'].iloc[0])
-            #D print("#D qa_stats_df index, owner_rep: ", index, owner_rep)
             # Add new column to df.
             qa_stats_df.loc[index, 'OwnerRep'] = owner_rep
         except IndexError:
             # TBD, Some answers in the data file were made by Owners
             # who are not yet in the reputation df.
-            # This should only be an issue when using small data sets.
-            print("NOTE: build_stats(): did not find ouid in owner reputation dataframe; index,ouid: ", index, ouid)
-            print("#D NOTE: build_stats():data from the problem row:\n", row)
+            print("NOTE: build_stats(): Did not find ouid in owner reputation dataframe; index,ouid: ", index, ouid)
+            print("NOTE: build_stats():data from the problem row in qa_df:\n", row)
             print()
 
         # Save length of body text of each answer.
         qa_stats_df.loc[index, 'BodyLength'] = len(row['Body'])
 
-    #D print('#D qa_stats_df.head(5):')
-    #D print(qa_stats_df.head(5))
     qa_stats_df = qa_stats_df[['Id', 'ParentId', 'OwnerUserId', 'Score', 'BodyLength', 'OwnerRep', 'HSTCount']]
 
     stats_fname = DATADIR + 'qa_stats_by_dsm.csv'
@@ -1028,7 +1000,7 @@ def draw_histogram_plot(plot_df):
     fig, ax = plt.subplots(1, 1)
     ax.get_xaxis().set_visible(True)
     plot_df = plot_df[['Score']]
-    # D These custom sized bins are used for debugging.
+    #TBD These custom sized bins are used for debugging; change later.
     # histo_bins = [-10, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
                   # 13, 14, 15, 16, 17, 18, 19, 20, 25, 30, 35, 40, 45, 50]
     histo_bins = [-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
@@ -1058,8 +1030,6 @@ def draw_scatter_matrix_plot(plot_df):
     cf.logger.info('Summary stats from plot_df.describe(): ')
     cf.logger.info(plot_df.describe())
 
-    print('Summary stats from plot_df.describe(): ')
-    print(plot_df.describe())
     print('NOTE: Please wait for plot, 60 sec or more.')
 
     axs = scatter_matrix(plot_df, alpha=0.2, diagonal='hist')
@@ -1097,7 +1067,7 @@ def save_prior_file(wdir, wfile):
 
     outfile = wdir + wfile
     if not os.path.isfile(outfile):
-        # Skip the save if the file does not exist.
+        # Skip the save operation if the file does not exist.
         return
 
     # Save all backups to tmp/ dir.
@@ -1144,7 +1114,7 @@ def write_full_df_to_html_file(in_df, wdir, wfile, columns_l):
     pd.set_option('display.max_colwidth', -1)  # -1=no limit, for debug
     outfile = wdir + wfile
     save_prior_file(wdir, wfile)
-    # Specify default output fields to use.
+    # Specify default output columns to use.
     if not columns_l:
         columns_l = ['Id',
                      'Title',
@@ -1201,18 +1171,6 @@ def get_parser():
         help='Stop the program before showing the menu; used for testing',
         action='store_true')
 
-    """
-    parser.add_argument(
-        '-p',
-        '--popular_questions',
-        help='select questions with many answers',
-        action='store_true')
-    parser.add_argument(
-        '-t',
-        '--top_owners',
-        help='find lo-score answers by hi-scoring owners',
-        action='store_true')
-    """
     parser.add_argument('-v', '--verbose', action='store_true')
     return parser
 
@@ -1225,23 +1183,16 @@ if __name__ == '__main__':
     cli_args_d = vars(parser.parse_args())
 
     # Set the number of top scoring owners to select from the data.
-    num_owners = 10  # Default is 10.
     num_owners = 40  # Default is 10.
-    # D num_owners = 100  # Default is 10.
     print("num_owners: ", num_owners)
 
     keyword = False
     # D keyword = 'font'  # Found in a3* & q3* i/p files.
-    # D keyword = 'beginner'
-    # D keyword = 'yield'
-    # D keyword = 'begin'
-    # D keyword = 'pandas'
-    # D keyword = 'Python'  # Both Title & Body of data sets have it; for debug
-    # D keyword = 'library'
+    # D keyword = 'Python'  # Both Title & Body of data sets have it.
+    # Other test terms: 'yield', 'begin', 'pandas', 'library'.
     print("Keyword: ", keyword)
 
-    num_hi_score_terms = 21  # Use 3 for testing; 11 or more for use.
-    num_hi_score_terms = 3  # Use 3 for testing; 11 or more for use.
+    num_hi_score_terms = 9  # Use 3 for testing; 11 or more for use.
     print("num_hi_score_terms: ", num_hi_score_terms)
 
     main(popular_qa_df)
