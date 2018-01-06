@@ -538,7 +538,8 @@ def compute_record_selector(numlines):
     Return that integer.
     """
 
-    SELECTOR_RATIO = 0.10  # TBD, use Default 0.01 in production? Move to global scope?
+    # TBD, use Default 0.01 in production? Move to global scope?
+    SELECTOR_RATIO = 0.10
     num_selected_recs = max(5, int(numlines * SELECTOR_RATIO))
     log_msg = ("  SELECTOR_RATIO,  number of selected recs: " +
                 str(SELECTOR_RATIO) + ", " + str(num_selected_recs))
@@ -567,8 +568,7 @@ def analyze_text(qagroup_from_pop_top_ques_df):
     #D print('#D analyze_text(): qagroup_from_pop_top_ques_df: ', qagroup_from_pop_top_ques_df)
     clean_ans_bodies_l = nl.clean_raw_data(qagroup_from_pop_top_ques_df)
     if not clean_ans_bodies_l:
-        print('#D analyze_text(): clean_ans_bodies_l: ', clean_ans_bodies_l)
-        print('#TBD, analyze_text(), No text to analyze; exit now.')
+        print('analyze_text(), No text to analyze; exit now.')
         raise SystemExit()
 
     cf.logger.info("NLP Step 3. Build a bag of words and their counts.")
@@ -663,14 +663,14 @@ def select_keyword_recs(keyword, qa_df, columns_l):
             # Found a question w/ keyword; add it to ques list.
             ques_ids_from_search_l.append(rec_id)
         else:
-            #TBD,Tue2017_1226_18:21 , How to test this path, it should never be reached.
+            #TBD, How to test this path, it should never be reached.
                 # Need a bad data record for the test.
-                # Maybe need record w/ no Title field?
+                # Maybe need record w/ no Title field.
             print("\nselect*(): Bad data found, problem with Title?  Id, Title:")
             print("Id: ", rec_id)
             print("ParentId: ", parent_id)
             print("Title: ", title)
-            raise SystemExit()  # TBD too drastic?  Maybe show menu?
+            raise SystemExit()  # TBD too drastic?  Maybe return, show menu?
     #
     # Build sets of unique Id's of Q's and A's w/ keyword.
     #
@@ -683,14 +683,13 @@ def select_keyword_recs(keyword, qa_df, columns_l):
     ans_ids_l = []
     for aid in ans_ids_from_search_l:
         a_df = qak_df.loc[qak_df['Id'] == aid]
-            #TBD, Using qa_df here is not obviously diff from qak.
+            # Using qa_df here is not obviously diff from qak.
         ans_ids_l.append([a_df['HSTCount'].values[0], a_df['Score'].values[0], a_df['Id'].values[0]])
     #
     # Sort the list of answer Id's by HSTCount, Score, Id.
     #
     ans_ids_sorted_l = sorted(ans_ids_l, reverse=True)
-    print('#D.1547 , ans_ids_sorted_l sorted by hstc,score,id:\n', ans_ids_sorted_l)
-    print()
+    #D print('#D.1547 , ans_ids_sorted_l sorted by hstc,score,id:\n', ans_ids_sorted_l)
     #
     # Use sorted A's to build list of ordered Q's.
     #
@@ -727,8 +726,8 @@ def select_keyword_recs(keyword, qa_df, columns_l):
         #
         # Find & sort & save all A.Id's for this Q.
         #
-        #TBD,Wed2018_0103_18:51  qa_df is popular_qa_df;
-            # maybe use a df w/ more records, in the call to this func?
+        # qa_df is popular_qa_df;
+        # TBD, Maybe use a df w/ more records, in the call to this func?
         ans_match_df = qa_df[qa_df['ParentId'] == qid]
         #
         # Sort the df.
@@ -889,7 +888,7 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df):
             columns_l = ['Id', 'ParentId', 'Title', 'Body', 'HSTCount', 'HiScoreTerms', 'Score' ]
             q_a_group_with_keyword_df = pd.DataFrame() # Initlz at each call
             #
-            #TBD,Wed2018_0103_15:27  Chg popular_qa_df to a df w/ more records, for dbg & initial use.
+            #TBD Chg popular_qa_df to a df w/ more records, for dbg & initial use.
             q_a_group_with_keyword_df = select_keyword_recs(
                 search_term, popular_qa_df, columns_l)
         else:
@@ -962,7 +961,7 @@ def check_owner_reputation(all_ans_df, owner_reputation_df):
     calculation need not be done every time this program runs.
     """
     own_rep_file = DATADIR + 'owner_reputation.csv'
-    #TBD.Fri2017_0804_14:54 , Must chk i/p file & replace owner_rep*.csv if
+    #TBD Must chk i/p file & replace owner_rep*.csv if
     #  a different file was used.  OR, just build this file from Answers.csv
     #  which should have all answers & produce good reputation data.
 
@@ -1024,7 +1023,8 @@ def draw_scatter_matrix_plot(plot_df):
     print('NOTE: Please wait for plot, 60 sec or more.')
 
     axs = scatter_matrix(plot_df, alpha=0.2, diagonal='hist')
-    # TBD plt.xscale('log')  # Failed. Logarithm scale, Good to show outliers. Cannot show Score=0?
+    #TBD Failed. Logarithm scale, Good to show outliers. Cannot show Score=0?
+    # plt.xscale('log')
 
     plt.show(block=False)
 
