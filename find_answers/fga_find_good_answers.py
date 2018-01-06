@@ -135,7 +135,6 @@ Plan
 Requirements
     Python 3, tested with v 3.6.1.
     pytest for tests, tested with v 3.0.7.
-    TBD
 
 """
 
@@ -163,7 +162,6 @@ FILEA3 = 'a3_986.csv'
 INDIR = 'indir/'
 LINE_COUNT = 10
 MAX_COL_WID = 20
-MAX_PRINT_SIZE = 60
 TMP = 'tmp/'
 TMPDIR = 'data/'
 popular_qa_df = pd.DataFrame()
@@ -177,20 +175,15 @@ HEADER = '''
             width: 100%;
         }
 
-        th {
-            overflow: auto;  /* Use auto to get H scroll bars */
-            text-align: left;
-            max-width: 50px; /* Was 500px; */
-            min-width: 1px; /* TBD,Wed2018_0103_19:14  New spec */
-            width: auto;    /* TBD, Was 100%; */
-        }
 
-        td {
+        th, td {
             overflow: auto;  /* Use auto to get H scroll bars */
             text-align: left;
-            max-width: 500px;
-            min-width: 10px;  /* TBD,Wed2018_0103_19:16  new */
-            width: auto;    /* TBD, Was 100%; */
+            /* max-width helps line-wrap in a cell, and most code */ 
+            /* samples in cells have no H.scroll when width=700px: */ 
+            max-width: 700px;  
+            /* max-width: 50%; Using % breaks line-wrap inside a cell */
+            width: auto;    /* auto is better than using % */
         }
 
         pre,img {
@@ -219,8 +212,6 @@ def main(popular_qa_df):
     """
 
     global all_ans_df
-    #TBD,Fri2017_1222_00:19 , quick fix; may be a problem;; needs cleanup.
-    global all_ques_df, num_selected_recs, a_fname, progress_msg_factor
 
     init()
 
@@ -304,8 +295,8 @@ def config_data():
     # Smaller data sets, used for debugging.
     q_fname = 'q6_999994.csv'
     a_fname = 'a6_999999.csv'
-    a_fname = 'a5_99998.csv'
-    q_fname = 'q30_99993.csv'
+    #D a_fname = 'a5_99998.csv'
+    #D q_fname = 'q30_99993.csv'
     a_fname = 'a3_986.csv'
     q_fname = 'q3_992.csv'
     # D a_fname = 'a2.csv'
@@ -468,7 +459,7 @@ def find_ques_ids_from_top_owners(top_scoring_owners_a, aa_df):
 
     hi_scoring_owners_df = pd.concat(owners_df_l)
 
-    # Get list of unique ParentId's:
+    # Make list of unique ParentId's:
     ques_ids_from_top_own_l = list(set(hi_scoring_owners_df['ParentId']))
 
     return ques_ids_from_top_own_l
@@ -577,7 +568,7 @@ def analyze_text(qagroup_from_pop_top_ques_df):
     clean_ans_bodies_l = nl.clean_raw_data(qagroup_from_pop_top_ques_df)
     if not clean_ans_bodies_l:
         print('#D analyze_text(): clean_ans_bodies_l: ', clean_ans_bodies_l)
-        print('#TBD, analyze_text(), missing data in clean_ans_bodies_l, no text to analyze; exit now.')
+        print('#TBD, analyze_text(), No text to analyze; exit now.')
         raise SystemExit()
 
     cf.logger.info("NLP Step 3. Build a bag of words and their counts.")
