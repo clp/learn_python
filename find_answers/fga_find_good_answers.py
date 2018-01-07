@@ -271,11 +271,11 @@ def check_install():
 def init():
     """Initialize some settings for the program.
     """
-    if cli_args_d['debug']:
-        end = 55
-        print('Running in debug mode.')
-        print('  end set to: ', end)
-        print()
+    #TBD.1 if cli_args_d['debug']:
+        #TBD.1 end = 55
+        #TBD.1 print('Running in debug mode.')
+        #TBD.1 print('  end set to: ', end)
+        #TBD.1 print()
 
     # Initialize settings for pandas.
     pd.set_option('display.width', 0)  # 0=no limit, for debug
@@ -370,7 +370,8 @@ def gd2_group_data(aa_df):
           str(len(owner_grouped_df)))
     print()
     cf.logger.info('gd2_group_data(): Show owners with highest MeanScores.')
-    cf.logger.info(owner_grouped_df.tail(num_owners))
+    #TBD.1 cf.logger.info(owner_grouped_df.tail(num_owners))
+    cf.logger.info(owner_grouped_df.tail(5))
 
     return owner_grouped_df
 
@@ -400,16 +401,19 @@ def group_data(aa_df):
           str(len(owner_grouped_df)))
     print()
     cf.logger.info('group_data(): Show owners with ... highest MeanScores.')
-    cf.logger.info(owner_grouped_df.tail(num_owners))
+    #TBD.1 cf.logger.info(owner_grouped_df.tail(num_owners))
+    cf.logger.info(owner_grouped_df.tail(5))
 
     # Take slice of owners w/ highest mean scores; convert to int.
     owners_a = owner_grouped_df['OwnerUserId'].values
-    top_scoring_owners_a = np.vectorize(np.int)(owners_a[-num_owners:])
+    #TBD.1 top_scoring_owners_a = np.vectorize(np.int)(owners_a[-num_owners:])
+    top_scoring_owners_a = np.vectorize(np.int)(owners_a[-5:])
     # D print('top_scoring_owners_a: ', top_scoring_owners_a)
     # D print()
 
     owners_df_l = []
-    lo_score_limit = cli_args_d['lo_score_limit']
+    #TBD.1 lo_score_limit = cli_args_d['lo_score_limit']
+    lo_score_limit = 10 #TBD.1 default
     for owner in top_scoring_owners_a:
         # Get a pandas series of booleans for filtering:
         answered_by_o2_sr = (aa_df.OwnerUserId == owner)
@@ -488,8 +492,8 @@ def find_pop_and_top_ques_ids(ques_ids_from_top_own_l, popular_ids_a):
     cf.logger.info(log_msg)
     log_msg = "find_pop_and_top_ques_ids(): ques_ids_pop_and_top_l, top-N parent id\'s to examine: " + str(ques_ids_pop_and_top_l[0:10])
     cf.logger.info(log_msg)
-    if cli_args_d['verbose']:
-        print('ques_ids_pop_and_top_l, parent id\'s to examine: ', ques_ids_pop_and_top_l[:])
+    #TBD.1 if cli_args_d['verbose']:
+        #TBD.1 print('ques_ids_pop_and_top_l, parent id\'s to examine: ', ques_ids_pop_and_top_l[:])
     return ques_ids_pop_and_top_l
 
 
@@ -579,7 +583,8 @@ def analyze_text(qagroup_from_pop_top_ques_df):
     qa_with_hst_df = nl.find_hi_score_terms_in_bodies(
         words_sorted_by_count_l,
         clean_ans_bodies_l,
-        num_hi_score_terms, qagroup_from_pop_top_ques_df)
+        9, qagroup_from_pop_top_ques_df)
+        #TBD.1 num_hi_score_terms, qagroup_from_pop_top_ques_df)
     popular_qa_df = pd.concat(
         [popular_qa_df, qa_with_hst_df]).reset_index(drop=True)
 
@@ -694,17 +699,17 @@ def select_keyword_recs(keyword, qa_df, columns_l):
     # Use sorted A's to build list of ordered Q's.
     #
     ques_ids_ord_l = []
-    if cli_args_d['verbose']:
-        print('#D Q.Id, Q.Title:')
+    #TBD.1 if cli_args_d['verbose']:
+        #TBD.1 print('#D Q.Id, Q.Title:')
     for hstc, score, aid in ans_ids_sorted_l:
         q_df = qak_df.loc[qak_df['Id'] == aid]
         parent_id = q_df['ParentId'].iloc[0]
         ques_ids_ord_l.append(parent_id)
         #
-        if cli_args_d['verbose']:
-            print(parent_id)
-            tmp_df = qa_df.loc[qa_df['Id'] == parent_id]
-            print(tmp_df['Title'].iloc[0])
+        #TBD.1 if cli_args_d['verbose']:
+            #TBD.1 print(parent_id)
+            #TBD.1 tmp_df = qa_df.loc[qa_df['Id'] == parent_id]
+            #TBD.1 print(tmp_df['Title'].iloc[0])
     #
     # Extend the list of ordered Q's w/ Q.Id's that have the keyword.
     #
