@@ -179,8 +179,8 @@ def main(popular_qa_df):
 
     init()
 
-    a_fname, a_infile, q_infile, q_a_groups_fname = \
-        config_data()
+    a_fname, a_infile, q_infile = \
+        fga.config_data()
 
     all_ans_df, all_ques_df, progress_msg_factor, numlines = \
         fga.read_data(a_infile, q_infile)
@@ -256,38 +256,6 @@ def init():
     # Don't show commas in large numbers.
     # Show OwnerUserId w/o '.0' suffix.
     pd.options.display.float_format = '{:.0f}'.format
-
-
-#TBD,Tue2017_1212_21:13  Update
-# Use an existing file in data/: popular_qa.csv has HSTs & HSTCount, HTML tags.
-    # has these flds: ,Body,CreationDate,Id,OwnerUserId,ParentId,Score,Title,CleanBody,HiScoreTerms,HSTCount
-# Use an existing file in data/: popular_qa_title_body.html.
-def config_data():
-    """Configure path and file names for i/o data.
-    """
-    #D a_fname = 'Answers.csv'
-    #D q_fname = 'Questions.csv'
-
-    # Smaller data sets, used for debugging.
-    q_fname = 'q6_999994.csv'
-    a_fname = 'a6_999999.csv'
-    #D a_fname = 'a5_99998.csv'
-    #D q_fname = 'q30_99993.csv'
-    a_fname = 'a3_986.csv'
-    q_fname = 'q3_992.csv'
-    # D a_fname = 'a2.csv'
-    # D q_fname = 'q2.csv'
-
-    a_infile = INDIR + a_fname
-    q_infile = INDIR + q_fname
-
-    q_a_groups_fname = DATADIR + 'popular_qa.csv'
-
-    print('Input files, q & a:\n' + q_infile + '\n' + a_infile)
-    print('Input file, q & a groups:\n' + q_a_groups_fname)
-    print()
-
-    return a_fname, a_infile, q_infile, q_a_groups_fname
 
 
 def select_keyword_recs(keyword, qa_df, columns_l):
@@ -495,29 +463,22 @@ def get_parser():
 #TBD,Sat2018_0106_17:59  To update
 if __name__ == '__main__':
 
-    parser = get_parser()
-    args = parser.parse_args()
-
     # Set the number of top scoring owners to select from the data.
     num_owners = 40  # Default is 10.
     print("num_owners: ", num_owners)
 
-    keyword = False
-    # keyword = 'def'  # Found in a3* & q3* i/p files.
-    # D keyword = 'Python'  # Both Title & Body of data sets have it.
-    # Other test terms: 'yield', 'begin', 'pandas', 'library', 'don\'t', 'I'.
+    num_hi_score_terms = 9  # Use 3 for testing; 11 or more for use.
+    print("num_hi_score_terms: ", num_hi_score_terms)
+
+    parser = get_parser()
+    args = parser.parse_args()
 
     if args.search:
         keyword = args.search
         print('sga: Search the data for this term: ', keyword)
         columns_l = ['Id', 'ParentId', 'HSTCount', 'Score', 'Title', 'Body']
 
-    num_hi_score_terms = 9  # Use 3 for testing; 11 or more for use.
-    print("num_hi_score_terms: ", num_hi_score_terms)
-
     main(popular_qa_df)
-
-    owner_reputation_df = pd.DataFrame()
 
     if args.quit:
         print('Quit the program and don\'t show menu.')
@@ -525,6 +486,8 @@ if __name__ == '__main__':
             os.path.basename(__file__) + '\n'
         cf.logger.warning(log_msg)
         raise SystemExit()
+
+    owner_reputation_df = pd.DataFrame()
 
     fga.show_menu(popular_qa_df, all_ans_df, owner_reputation_df)
 
