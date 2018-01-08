@@ -767,7 +767,7 @@ def ORG_select_keyword_recs(keyword, qa_df, columns_l):
 
 
 
-def show_menu(qa_df, all_ans_df, owner_reputation_df):
+def show_menu(qa_df, all_ans_df, owner_reputation_df, args):
     """Show prompt to user; get and handle their request.
     """
     user_menu = """    The menu choices:
@@ -1196,7 +1196,7 @@ if __name__ == '__main__':
         cf.logger.warning(log_msg)
         raise SystemExit()
 
-    show_menu(popular_qa_df, all_ans_df, owner_reputation_df)
+    show_menu(popular_qa_df, all_ans_df, owner_reputation_df, args)
 
     log_msg = cf.log_file + ' - Finish logging for ' + \
         os.path.basename(__file__) + '\n'

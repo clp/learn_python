@@ -461,7 +461,7 @@ if __name__ == '__main__':
 
     owner_reputation_df = pd.DataFrame()
 
-    fga.show_menu(popular_qa_df, all_ans_df, owner_reputation_df)
+    fga.show_menu(popular_qa_df, all_ans_df, owner_reputation_df, args)
 
     log_msg = cf.log_file + ' - Finish logging for ' + \
         os.path.basename(__file__) + '\n'
