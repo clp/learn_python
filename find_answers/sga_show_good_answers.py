@@ -239,7 +239,7 @@ def main(popular_qa_df):
 def init():
     """Initialize some settings for the program.
     """
-    if cli_args_d['debug']:
+    if args.debug:
         end = 55
         print('Running in debug mode.')
         print('  end set to: ', end)
@@ -397,14 +397,14 @@ def select_keyword_recs(keyword, qa_df, columns_l):
     # Use sorted A's to build list of ordered Q's.
     #
     ques_ids_ord_l = []
-    if cli_args_d['verbose']:
+    if args.verbose:
         print('#D Q.Id, Q.Title:')
     for hstc, score, aid in ans_ids_sorted_l:
         q_df = qak_df.loc[qak_df['Id'] == aid]
         parent_id = q_df['ParentId'].iloc[0]
         ques_ids_ord_l.append(parent_id)
         #
-        if cli_args_d['verbose']:
+        if args.verbose:
             print(parent_id)
             tmp_df = qa_df.loc[qa_df['Id'] == parent_id]
             print(tmp_df['Title'].iloc[0])
@@ -476,17 +476,13 @@ def get_parser():
         help='Use settings to help with debugging',
         action='store_true')
 
-    #TBD,Tue2017_1212, How to specify an option that takes a string arg, -s='key1 key2 key3'?
-        # How to retrieve the string arg entered by user?
-        #TBD.Sat2018_0106_23:37 , Still failing.
+    # Specify an option that takes a string arg: -s word1 word2 ...
     parser.add_argument(
         '-s',
         '--search',
-        #TBR "searchterm",
-        help='Search the Q & A Collection for this term; enclose multiple words in quotes',
+        help='Search the Q & A Collection for this term',
         type=str
         )
-        #TBR action='store_true')
 
     parser.add_argument(
         '-q',
@@ -502,8 +498,6 @@ if __name__ == '__main__':
 
     #TBD,Sat2018_0106_17:59  To update
     parser = get_parser()
-    #TBD,Sat2018_0106_23:47  Are both these needed?:
-    cli_args_d = vars(parser.parse_args()) #TBR?
     args = parser.parse_args()  # Used for search.
 
     # Set the number of top scoring owners to select from the data.
@@ -513,16 +507,12 @@ if __name__ == '__main__':
     keyword = False
     keyword = 'def'  # Found in a3* & q3* i/p files.
     # D keyword = 'Python'  # Both Title & Body of data sets have it.
-    # Other test terms: 'yield', 'begin', 'pandas', 'library'.
+    # Other test terms: 'yield', 'begin', 'pandas', 'library', 'don\'t', 'I'.
 
     #TBD,Sat2018_0106_23:54 , cleanup.
-    #TBR?.ORG if cli_args_d['search']:
     if args.search:
         keyword = args.search
-        print('args.search : ', args.search)
-        print('args.debug : ', args.debug)
-        print('args.verbose : ', args.verbose)
-        print('args.quit : ', args.quit)
+        print('#D args.search : ', args.search)
         print('Search the data for this term: ', keyword)
         columns_l = ['Id', 'ParentId', 'HSTCount', 'Score', 'Title', 'Body']
         qa_with_keyword_df = select_keyword_recs(
@@ -532,9 +522,6 @@ if __name__ == '__main__':
             keyword + '\n'
         cf.logger.info(log_msg)
 
-
-    print("Keyword: ", keyword)
-
     num_hi_score_terms = 9  # Use 3 for testing; 11 or more for use.
     print("num_hi_score_terms: ", num_hi_score_terms)
 
@@ -542,7 +529,7 @@ if __name__ == '__main__':
 
     owner_reputation_df = pd.DataFrame()
 
-    if cli_args_d['quit']:
+    if args.quit:
         print('Quit the program and don\'t show menu.')
         log_msg = cf.log_file + ' - Quit by user request; Finish logging for ' + \
             os.path.basename(__file__) + '\n'
