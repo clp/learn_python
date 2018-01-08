@@ -166,13 +166,8 @@ FOOTER = '''
 '''
 
 
-def main(popular_qa_df):
-    """Initialization:
-    TBD
-    """
-
-    log_msg = cf.log_file + ' - Start logging for ' + os.path.basename(__file__)
-    cf.logger.info(log_msg)
+def main():
+    pass
 
 
 def select_keyword_recs(keyword, qa_df, columns_l, opt_ns):
@@ -347,63 +342,7 @@ def select_keyword_recs(keyword, qa_df, columns_l, opt_ns):
     return  qa_keyword_df
 
 
-def get_parser():
-    """Create parser to specify cmd line options for this program.
-    """
-    parser = argparse.ArgumentParser(
-        description='show good answers hidden in stackoverflow data')
-
-    parser.add_argument(
-        '-d',
-        '--debug',
-        help='Use settings to help with debugging',
-        action='store_true')
-
-    # Specify an option that takes a string arg: -s word1 word2 ...
-    parser.add_argument(
-        '-s',
-        '--search',
-        help='Search the Q & A Collection for this term',
-        type=str
-        )
-
-    parser.add_argument(
-        '-q',
-        '--quit',
-        help='Stop the program before showing the menu; used for testing',
-        action='store_true')
-
-    parser.add_argument('-v', '--verbose', action='store_true')
-    return parser
-
-
 if __name__ == '__main__':
-
-    parser = get_parser()
-    opt_ns = parser.parse_args()
-
-    keyword = False # Initialize before reading cmd line options.
-
-    if opt_ns.search:
-        keyword = opt_ns.search
-        print('sga: Search the data for this term: ', keyword)
-        columns_l = ['Id', 'ParentId', 'HSTCount', 'Score', 'Title', 'Body']
-
-    main(popular_qa_df)
-
-    if opt_ns.quit:
-        print('Quit the program and don\'t show menu.')
-        log_msg = 'Quit by user request; Finish logging for ' + \
-            os.path.basename(__file__) + '\n'
-        cf.logger.warning(log_msg)
-        raise SystemExit()
-
-    owner_reputation_df = pd.DataFrame()
-
-    fga.show_menu(popular_qa_df, all_ans_df, owner_reputation_df, opt_ns)
-
-    log_msg = cf.log_file + ' - Finish logging for ' + \
-        os.path.basename(__file__) + '\n'
-    cf.logger.warning(log_msg)
+    main()
 
 'bye'
