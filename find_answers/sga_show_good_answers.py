@@ -59,7 +59,7 @@ Overview of Program Actions
 
 ----------------------------------------------------------
 
-#TBD,Tue2017_1212_21:05  Update
+#TBD,Tue2017_1212_21:05  Rvw & Update
 
 Input data format of stackoverflow.com python file from kaggle.com.
 
@@ -166,7 +166,6 @@ FOOTER = '''
 '''
 
 
-#TBD,Tue2017_1212_21:13  Update
 def main(popular_qa_df):
     """Read input data and the search term and
     prepare a subset of question
@@ -177,7 +176,7 @@ def main(popular_qa_df):
 
     global all_ans_df
 
-    init()
+    fga.init()
 
     a_fname, a_infile, q_infile = \
         fga.config_data()
@@ -235,27 +234,6 @@ def main(popular_qa_df):
         outfile = DATADIR + 'qa_with_keyword.csv'
         qa_with_keyword_df[columns_l].to_csv(
             outfile, header=True, index=None, sep=',', mode='w')
-
-
-
-
-#TBD,Tue2017_1212_21:13  Update
-def init():
-    """Initialize some settings for the program.
-    """
-    if args.debug:
-        end = 55
-        print('Running in debug mode.')
-        print('  end set to: ', end)
-        print()
-
-    # Initialize settings for pandas.
-    pd.set_option('display.width', 0)  # 0=no limit, for debug
-    pd.set_option('display.max_colwidth', MAXCOLWID)  # -1=no limit, for debug
-
-    # Don't show commas in large numbers.
-    # Show OwnerUserId w/o '.0' suffix.
-    pd.options.display.float_format = '{:.0f}'.format
 
 
 def select_keyword_recs(keyword, qa_df, columns_l):
@@ -460,15 +438,7 @@ def get_parser():
     return parser
 
 
-#TBD,Sat2018_0106_17:59  To update
 if __name__ == '__main__':
-
-    # Set the number of top scoring owners to select from the data.
-    num_owners = 40  # Default is 10.
-    print("num_owners: ", num_owners)
-
-    num_hi_score_terms = 9  # Use 3 for testing; 11 or more for use.
-    print("num_hi_score_terms: ", num_hi_score_terms)
 
     parser = get_parser()
     args = parser.parse_args()
