@@ -101,7 +101,6 @@ Output data format of popular_qa.csv o/p file from this program.
 Requirements
     Python 3, tested with v 3.6.1.
     pytest for tests, tested with v 3.0.7.
-    TBD
 
 """
 
@@ -178,7 +177,6 @@ def main(popular_qa_df):
 
     global all_ans_df
 
-    print('\nStart sga.main().')
     init()
 
     a_fname, a_infile, q_infile, q_a_groups_fname = \
@@ -213,19 +211,25 @@ def main(popular_qa_df):
     popular_qa_df = \
         fga.combine_related_q_and_a(
             ques_ids_pop_and_top_l, all_ques_df, all_ans_df)
+
     if popular_qa_df.empty:
-        print('sga.main*(): Missing data, popular_qa_df is empty.')
-        return #TBD. What debug data to print here?
+        log_msg = 'sga.main*(): Missing data, popular_qa_df is empty.'
+        print(log_msg)
+        cf.logger.warning(log_msg)
+        return #TBD. What debug data or steps to print here?
 
     columns_l = ['Id', 'ParentId', 'HSTCount', 'Score', 'Title', 'Body']
     if keyword:
-        print('sga.main():keyword: ', keyword)
-        # Write records containing keywords to a csv file.
         qa_with_keyword_df = select_keyword_recs(
             keyword, popular_qa_df, columns_l)
+        #
+        log_msg = 'Search for a term: ' + keyword + '\n'
+        cf.logger.info(log_msg)
 
         if qa_with_keyword_df.empty:
-            print('sga.main(): Missing data, the qa_with_keyword_df is empty.')
+            log_msg = 'sga.main(): Missing data, the qa_with_keyword_df is empty.'
+            print(log_msg)
+            cf.logger.warning(log_msg)
             return #TBD. What debug data to print here?
 
         outfile = DATADIR + 'qa_with_keyword.csv'
@@ -323,9 +327,9 @@ def select_keyword_recs(keyword, qa_df, columns_l):
     are pop and top, ie, popular and from owners with high
     reputation scores.
     """
-    print('\nStart sga.select*().')
+    print('\nsga.select*(), at start.')
     if qa_df.empty:
-        print('sga.select*():start: Missing data, qa_df is empty.')
+        print('1627, sga.select*():start: Missing data, qa_df is empty.')
         return
     #
     # Get a pandas series of booleans for filtering:
@@ -429,16 +433,10 @@ def select_keyword_recs(keyword, qa_df, columns_l):
         #
         # Find & sort & save all A.Id's for this Q.
         #
-        # qa_df is popular_qa_df;
-        # TBD, Maybe use a df w/ more records, in the call to this func?
         ans_match_df = qa_df[qa_df['ParentId'] == qid]
-        #
-        # Sort the df.
         ams_df = ans_match_df.sort_values(['HSTCount', 'Score', 'Id'], ascending=[False, False, True])
-        #
         for hstc, score, aid in ams_df[['HSTCount', 'Score', 'Id']].values:
             qa_id_ord_l.append(aid)
-    #D print('\n\n#D.1550 qa_id_ord_l: ', qa_id_ord_l )
     #
     # Build o/p df w/ Q's and A's in right order, from the list of Id's.
     #
@@ -494,33 +492,25 @@ def get_parser():
     return parser
 
 
+#TBD,Sat2018_0106_17:59  To update
 if __name__ == '__main__':
 
-    #TBD,Sat2018_0106_17:59  To update
     parser = get_parser()
-    args = parser.parse_args()  # Used for search.
+    args = parser.parse_args()
 
     # Set the number of top scoring owners to select from the data.
     num_owners = 40  # Default is 10.
     print("num_owners: ", num_owners)
 
     keyword = False
-    keyword = 'def'  # Found in a3* & q3* i/p files.
+    # keyword = 'def'  # Found in a3* & q3* i/p files.
     # D keyword = 'Python'  # Both Title & Body of data sets have it.
     # Other test terms: 'yield', 'begin', 'pandas', 'library', 'don\'t', 'I'.
 
-    #TBD,Sat2018_0106_23:54 , cleanup.
     if args.search:
         keyword = args.search
-        print('#D args.search : ', args.search)
-        print('Search the data for this term: ', keyword)
+        print('sga: Search the data for this term: ', keyword)
         columns_l = ['Id', 'ParentId', 'HSTCount', 'Score', 'Title', 'Body']
-        qa_with_keyword_df = select_keyword_recs(
-            keyword, popular_qa_df, columns_l)
-        #
-        log_msg = cf.log_file + ' - Search for a term: ' + \
-            keyword + '\n'
-        cf.logger.info(log_msg)
 
     num_hi_score_terms = 9  # Use 3 for testing; 11 or more for use.
     print("num_hi_score_terms: ", num_hi_score_terms)
@@ -531,7 +521,7 @@ if __name__ == '__main__':
 
     if args.quit:
         print('Quit the program and don\'t show menu.')
-        log_msg = cf.log_file + ' - Quit by user request; Finish logging for ' + \
+        log_msg = 'Quit by user request; Finish logging for ' + \
             os.path.basename(__file__) + '\n'
         cf.logger.warning(log_msg)
         raise SystemExit()
