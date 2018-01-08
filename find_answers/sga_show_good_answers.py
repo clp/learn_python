@@ -220,7 +220,7 @@ def main(popular_qa_df):
     columns_l = ['Id', 'ParentId', 'HSTCount', 'Score', 'Title', 'Body']
     if keyword:
         qa_with_keyword_df = select_keyword_recs(
-            keyword, popular_qa_df, columns_l)
+            keyword, popular_qa_df, columns_l, args)
         #
         log_msg = 'Search for a term: ' + keyword + '\n'
         cf.logger.info(log_msg)
@@ -236,7 +236,7 @@ def main(popular_qa_df):
             outfile, header=True, index=None, sep=',', mode='w')
 
 
-def select_keyword_recs(keyword, qa_df, columns_l):
+def select_keyword_recs(keyword, qa_df, columns_l, args):
     """Find the Q's & A's from the filtered dataframe
     that contain the keyword, in Title or Body.
     Use those Id's to find the related* Q's and A's that do not

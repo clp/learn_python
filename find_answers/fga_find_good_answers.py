@@ -152,6 +152,7 @@ from pandas.plotting import scatter_matrix
 
 import config as cf
 import nltk_ex25 as nl
+import sga_show_good_answers as sga
 
 
 log_msg = cf.log_file + ' - Start logging for ' + os.path.basename(__file__)
@@ -591,7 +592,7 @@ def analyze_text(qagroup_from_pop_top_ques_df):
 
 
 
-def select_keyword_recs(keyword, qa_df, columns_l):
+def ORG_select_keyword_recs(keyword, qa_df, columns_l):
     """Find the Q's & A's from the filtered dataframe
     that contain the keyword, in Title or Body.
     Use those Id's to find the related* Q's and A's that do not
@@ -893,8 +894,8 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df):
             q_a_group_with_keyword_df = pd.DataFrame() # Initlz at each call
             #
             #TBD Chg popular_qa_df to a df w/ more records, for dbg & initial use.
-            q_a_group_with_keyword_df = select_keyword_recs(
-                search_term, popular_qa_df, columns_l)
+            q_a_group_with_keyword_df = sga.select_keyword_recs(
+                search_term, popular_qa_df, columns_l, args)
         else:
             print("Got bad cmd from user: ", user_cmd)
             print(user_menu)
@@ -1176,6 +1177,7 @@ if __name__ == '__main__':
 
     parser = get_parser()
     cli_args_d = vars(parser.parse_args())
+    args = parser.parse_args()
 
     keyword = False
     # D keyword = 'font'  # Found in a3* & q3* i/p files.
