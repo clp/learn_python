@@ -247,6 +247,25 @@ def main(popular_qa_df):
         combine_related_q_and_a(
             ques_ids_pop_and_top_l, all_ques_df, all_ans_df)
 
+
+    columns_l = ['Id', 'ParentId', 'Title', 'Body', 'HSTCount', 'Score']
+    if keyword:
+        qa_with_keyword_df = sga.select_keyword_recs(
+            keyword, popular_qa_df, columns_l, opt_ns)
+        #
+        log_msg = 'Search for a term: ' + keyword + '\n'
+        cf.logger.info(log_msg)
+
+        if qa_with_keyword_df.empty:
+            log_msg = 'sga.main(): Missing data, the qa_with_keyword_df is empty.'
+            print(log_msg)
+            cf.logger.warning(log_msg)
+            return #TBD. What debug data to print here?
+
+        outfile = DATADIR + 'qa_with_keyword.csv'
+        qa_with_keyword_df[columns_l].to_csv(
+            outfile, header=True, index=None, sep=',', mode='w')
+
     # Save a df to a file for review & debug.
     write_full_df_to_csv_file(popular_qa_df, TMPDIR, 'popular_qa.csv')
 
