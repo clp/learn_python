@@ -251,13 +251,13 @@ def main(popular_qa_df):
     columns_l = ['Id', 'ParentId', 'Title', 'Body', 'HSTCount', 'Score']
     if keyword:
         qa_with_keyword_df = sga.select_keyword_recs(
-            keyword, popular_qa_df, columns_l, opt_ns)
+            keyword, popular_qa_df, columns_l, opt_ns, DATADIR)
         #
         log_msg = 'Search for a term: ' + keyword + '\n'
         cf.logger.info(log_msg)
 
         if qa_with_keyword_df.empty:
-            log_msg = 'sga.main(): Missing data, the qa_with_keyword_df is empty.'
+            log_msg = 'fga.main(): Missing data, the qa_with_keyword_df is empty.'
             print(log_msg)
             cf.logger.warning(log_msg)
             return #TBD. What debug data to print here?
@@ -739,7 +739,7 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df, opt_ns):
             #
             #TBD Chg popular_qa_df to a df w/ more records, for dbg & initial use.
             q_a_group_with_keyword_df = sga.select_keyword_recs(
-                search_term, popular_qa_df, columns_l, opt_ns)
+                search_term, popular_qa_df, columns_l, opt_ns, DATADIR)
         else:
             print("Got bad cmd from user: ", user_cmd)
             print(user_menu)
@@ -1034,7 +1034,7 @@ if __name__ == '__main__':
 
     if opt_ns.search:
         keyword = opt_ns.search
-        print('sga: Search the data for this term: ', keyword)
+        print('Search the data for this term: ', keyword)
         columns_l = ['Id', 'ParentId', 'HSTCount', 'Score', 'Title', 'Body']
 
     main(popular_qa_df)

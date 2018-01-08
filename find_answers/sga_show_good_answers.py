@@ -105,72 +105,22 @@ Requirements
 """
 
 
-import argparse
-import nltk
-import matplotlib.pyplot as plt
-import matplotlib
-matplotlib.style.use('ggplot')
-import numpy as np
 import os
 import pandas as pd
-import random
-from pandas.plotting import scatter_matrix
 
 import config as cf
 import fga_find_good_answers as fga
-import nltk_ex25 as nl
 
 
 log_msg = cf.log_file + ' - Start logging for ' + os.path.basename(__file__)
 cf.logger.info(log_msg)
 
 
-DATADIR = 'data/'
-FILEA3 = 'a3_986.csv'
-INDIR = 'indir/'
-LINE_COUNT = 10
-MAXCOLWID = 20
-TMP = 'tmp/'
-TMPDIR = 'data/'
-popular_qa_df = pd.DataFrame()
-
-HEADER = '''
-<html>
-    <head>
-        <style type="text/css">
-        table{
-            /* max-width: 850px; */
-            width: 100%;
-        }
-
-        th, td {
-            overflow: auto;  /* Use auto to get H scroll bars */
-            text-align: left;
-            max-width: 500px;
-            width: 100%;
-        }
-
-        pre,img {
-            padding: 0.1em 0.5em 0.3em 0.7em;
-            border-left: 11px solid #ccc;
-            margin: 1.7em 0 1.7em 0.3em;
-            overflow: auto;  /* Use auto to get H scroll bars */
-        }
-        </style>
-    </head>
-    <body>
-'''
-FOOTER = '''
-    </body>
-</html>
-'''
-
-
 def main():
     pass
 
 
-def select_keyword_recs(keyword, qa_df, columns_l, opt_ns):
+def select_keyword_recs(keyword, qa_df, columns_l, opt_ns, DATADIR):
     """Find the Q's & A's from the filtered dataframe
     that contain the keyword, in Title or Body.
     Use those Id's to find the related* Q's and A's that do not
@@ -207,9 +157,10 @@ def select_keyword_recs(keyword, qa_df, columns_l, opt_ns):
     are pop and top, ie, popular and from owners with high
     reputation scores.
     """
-    print('\nsga.select*(), at start.')
+
+    print('\n#D sga.select*(), at start.')
     if qa_df.empty:
-        print('1627, sga.select*():start: Missing data, qa_df is empty.')
+        print('sga.select*(): Missing data, qa_df is empty.')
         return
     #
     # Get a pandas series of booleans for filtering:
