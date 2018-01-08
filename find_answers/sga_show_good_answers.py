@@ -443,6 +443,8 @@ if __name__ == '__main__':
     parser = get_parser()
     args = parser.parse_args()
 
+    keyword = False # Initialize before reading cmd line args.
+
     if args.search:
         keyword = args.search
         print('sga: Search the data for this term: ', keyword)
