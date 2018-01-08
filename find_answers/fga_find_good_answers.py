@@ -21,19 +21,20 @@ Usage:
 
 Initialization
 
-    Set the value of num_owners at the bottom of the file;
-    default is 10.  It determines how much o/p data will be saved.
+    Set the value of global constant MAX_OWNERS near the top
+    of the file; default is 10.  It determines how much o/p data
+    will be saved.
 
-    Set the value of num_hi_score_terms at the bottom of the file;
+    Set the value of global constant MAX_HI_SCORE_TERMS
+    near the top of the file.
     It determines how many hi-score terms are used to search
-    text in low-score answers.  A bigger number will cause the
-    program to run longer, and might find more 'hidden' answers
-    that could be valuable.
+    for text in low-score answers.  A bigger number will cause the
+    program to process more data, and might find more 'hidden'
+    answers that could be valuable.
 
-    Set the value of keyword at the bottom of the file;
-    set it to False to skip this feature.  This feature is not
-    complete; for now, it collects the questions and answers
-    that contain the keyword and writes them to a file.
+    Set the value of keyword in response to the prompt.  The i/p
+    data will be searched, and matching records will be shown
+    and saved to disk files.
 
 
 Overview of Program Actions
@@ -162,6 +163,8 @@ FILEA3 = 'a3_986.csv'
 INDIR = 'indir/'
 LINE_COUNT = 10
 MAX_COL_WID = 20
+MAX_HI_SCORE_TERMS = 10
+MAX_OWNERS = 20
 TMP = 'tmp/'
 TMPDIR = 'data/'
 popular_qa_df = pd.DataFrame()
@@ -371,7 +374,8 @@ def gd2_group_data(aa_df):
     print()
     cf.logger.info('gd2_group_data(): Show owners with highest MeanScores.')
     #TBD.1 cf.logger.info(owner_grouped_df.tail(num_owners))
-    cf.logger.info(owner_grouped_df.tail(5))
+    #TMP cf.logger.info(owner_grouped_df.tail(5))
+    cf.logger.info(owner_grouped_df.tail(MAX_OWNERS))
 
     return owner_grouped_df
 
@@ -402,12 +406,14 @@ def group_data(aa_df):
     print()
     cf.logger.info('group_data(): Show owners with ... highest MeanScores.')
     #TBD.1 cf.logger.info(owner_grouped_df.tail(num_owners))
-    cf.logger.info(owner_grouped_df.tail(5))
+    #TMP cf.logger.info(owner_grouped_df.tail(5))
+    cf.logger.info(owner_grouped_df.tail(MAX_OWNERS))
 
     # Take slice of owners w/ highest mean scores; convert to int.
     owners_a = owner_grouped_df['OwnerUserId'].values
     #TBD.1 top_scoring_owners_a = np.vectorize(np.int)(owners_a[-num_owners:])
-    top_scoring_owners_a = np.vectorize(np.int)(owners_a[-5:])
+    #TMP top_scoring_owners_a = np.vectorize(np.int)(owners_a[-5:])
+    top_scoring_owners_a = np.vectorize(np.int)(owners_a[-MAX_OWNERS:])
     # D print('top_scoring_owners_a: ', top_scoring_owners_a)
     # D print()
 
@@ -583,8 +589,7 @@ def analyze_text(qagroup_from_pop_top_ques_df):
     qa_with_hst_df = nl.find_hi_score_terms_in_bodies(
         words_sorted_by_count_l,
         clean_ans_bodies_l,
-        9, qagroup_from_pop_top_ques_df)
-        #TBD.1 num_hi_score_terms, qagroup_from_pop_top_ques_df)
+        MAX_HI_SCORE_TERMS, qagroup_from_pop_top_ques_df)
     popular_qa_df = pd.concat(
         [popular_qa_df, qa_with_hst_df]).reset_index(drop=True)
 
@@ -1178,18 +1183,11 @@ if __name__ == '__main__':
     parser = get_parser()
     cli_args_d = vars(parser.parse_args())
 
-    # Set the number of top scoring owners to select from the data.
-    num_owners = 40  # Default is 10.
-    print("num_owners: ", num_owners)
-
     keyword = False
     # D keyword = 'font'  # Found in a3* & q3* i/p files.
     # D keyword = 'Python'  # Both Title & Body of data sets have it.
     # Other test terms: 'yield', 'begin', 'pandas', 'library'.
     print("Keyword: ", keyword)
-
-    num_hi_score_terms = 9  # Use 3 for testing; 11 or more for use.
-    print("num_hi_score_terms: ", num_hi_score_terms)
 
     main(popular_qa_df)
 
