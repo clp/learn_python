@@ -167,73 +167,12 @@ FOOTER = '''
 
 
 def main(popular_qa_df):
-    """Read input data and the search term and
-    prepare a subset of question
-    and answer records that contain the term.
-    When finished, present user with a menu and prompt
-    them for the next action.
+    """Initialization:
+    TBD
     """
 
-    global all_ans_df
-
-    fga.init()
-
-    a_fname, a_infile, q_infile = \
-        fga.config_data()
-
-    all_ans_df, all_ques_df, progress_msg_factor, numlines = \
-        fga.read_data(a_infile, q_infile)
-
-    #TBD,Thu2017_1214_13:28 , Temp code for test_read_input_file().
-    columns_l = ['Id', 'ParentId', 'Body']
-    outfile = DATADIR + 'sga22.csv'
-    all_ans_df[columns_l].to_csv(
-        outfile, header=True, index=None, sep=',', mode='w')
-
-
-    popular_ids = \
-        fga.find_popular_ques(all_ans_df, a_fname)
-
-    popular_ids_a = popular_ids.index.values
-
-    top_scoring_owners_a, owner_grouped_df = \
-        fga.group_data(all_ans_df)
-
-    ques_ids_from_top_own_l = \
-        fga.find_ques_ids_from_top_owners(top_scoring_owners_a, all_ans_df)
-
-    ques_ids_pop_and_top_l = \
-        fga.find_pop_and_top_ques_ids(ques_ids_from_top_own_l, popular_ids_a)
-
-    num_selected_recs = fga.compute_record_selector(numlines)
-
-    popular_qa_df = \
-        fga.combine_related_q_and_a(
-            ques_ids_pop_and_top_l, all_ques_df, all_ans_df)
-
-    if popular_qa_df.empty:
-        log_msg = 'sga.main*(): Missing data, popular_qa_df is empty.'
-        print(log_msg)
-        cf.logger.warning(log_msg)
-        return #TBD. What debug data or steps to print here?
-
-    columns_l = ['Id', 'ParentId', 'HSTCount', 'Score', 'Title', 'Body']
-    if keyword:
-        qa_with_keyword_df = select_keyword_recs(
-            keyword, popular_qa_df, columns_l, opt_ns)
-        #
-        log_msg = 'Search for a term: ' + keyword + '\n'
-        cf.logger.info(log_msg)
-
-        if qa_with_keyword_df.empty:
-            log_msg = 'sga.main(): Missing data, the qa_with_keyword_df is empty.'
-            print(log_msg)
-            cf.logger.warning(log_msg)
-            return #TBD. What debug data to print here?
-
-        outfile = DATADIR + 'qa_with_keyword.csv'
-        qa_with_keyword_df[columns_l].to_csv(
-            outfile, header=True, index=None, sep=',', mode='w')
+    log_msg = cf.log_file + ' - Start logging for ' + os.path.basename(__file__)
+    cf.logger.info(log_msg)
 
 
 def select_keyword_recs(keyword, qa_df, columns_l, opt_ns):
