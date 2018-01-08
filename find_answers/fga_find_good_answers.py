@@ -39,6 +39,8 @@ Initialization
 
 Overview of Program Actions
 
+    Read and parse the command-line options.
+
     Read the separate question and answer i/p files.
 
     Find popular questions, those which have several answers.
@@ -275,11 +277,11 @@ def check_install():
 def init():
     """Initialize some settings for the program.
     """
-    #TBD.1 if cli_args_d['debug']:
-        #TBD.1 end = 55
-        #TBD.1 print('Running in debug mode.')
-        #TBD.1 print('  end set to: ', end)
-        #TBD.1 print()
+    if opt_ns.debug:
+        end = 55
+        print('Running in debug mode.')
+        print('  end set to: ', end)
+        print()
 
     # Initialize settings for pandas.
     pd.set_option('display.width', 0)  # 0=no limit, for debug
@@ -413,8 +415,7 @@ def group_data(aa_df):
     # D print()
 
     owners_df_l = []
-    #TBD.1 lo_score_limit = cli_args_d['lo_score_limit']
-    lo_score_limit = 10 #TBD.1 default
+    lo_score_limit = opt_ns.lo_score_limit
     for owner in top_scoring_owners_a:
         # Get a pandas series of booleans for filtering:
         answered_by_o2_sr = (aa_df.OwnerUserId == owner)
@@ -493,8 +494,8 @@ def find_pop_and_top_ques_ids(ques_ids_from_top_own_l, popular_ids_a):
     cf.logger.info(log_msg)
     log_msg = "find_pop_and_top_ques_ids(): ques_ids_pop_and_top_l, top-N parent id\'s to examine: " + str(ques_ids_pop_and_top_l[0:10])
     cf.logger.info(log_msg)
-    #TBD.1 if cli_args_d['verbose']:
-        #TBD.1 print('ques_ids_pop_and_top_l, parent id\'s to examine: ', ques_ids_pop_and_top_l[:])
+    if opt_ns.verbose:
+        print('ques_ids_pop_and_top_l, parent id\'s to examine: ', ques_ids_pop_and_top_l[:])
     return ques_ids_pop_and_top_l
 
 
@@ -699,17 +700,17 @@ def ORG_select_keyword_recs(keyword, qa_df, columns_l):
     # Use sorted A's to build list of ordered Q's.
     #
     ques_ids_ord_l = []
-    #TBD.1 if cli_args_d['verbose']:
-        #TBD.1 print('#D Q.Id, Q.Title:')
+    if opt_ns.verbose:
+        print('#D Q.Id, Q.Title:')
     for hstc, score, aid in ans_ids_sorted_l:
         q_df = qak_df.loc[qak_df['Id'] == aid]
         parent_id = q_df['ParentId'].iloc[0]
         ques_ids_ord_l.append(parent_id)
         #
-        #TBD.1 if cli_args_d['verbose']:
-            #TBD.1 print(parent_id)
-            #TBD.1 tmp_df = qa_df.loc[qa_df['Id'] == parent_id]
-            #TBD.1 print(tmp_df['Title'].iloc[0])
+        if opt_ns.verbose:
+            print(parent_id)
+            tmp_df = qa_df.loc[qa_df['Id'] == parent_id]
+            print(tmp_df['Title'].iloc[0])
     #
     # Extend the list of ordered Q's w/ Q.Id's that have the keyword.
     #
@@ -767,7 +768,7 @@ def ORG_select_keyword_recs(keyword, qa_df, columns_l):
 
 
 
-def show_menu(qa_df, all_ans_df, owner_reputation_df, args):
+def show_menu(qa_df, all_ans_df, owner_reputation_df, opt_ns):
     """Show prompt to user; get and handle their request.
     """
     user_menu = """    The menu choices:
@@ -895,7 +896,7 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df, args):
             #
             #TBD Chg popular_qa_df to a df w/ more records, for dbg & initial use.
             q_a_group_with_keyword_df = sga.select_keyword_recs(
-                search_term, popular_qa_df, columns_l, args)
+                search_term, popular_qa_df, columns_l, opt_ns)
         else:
             print("Got bad cmd from user: ", user_cmd)
             print(user_menu)
@@ -1161,6 +1162,14 @@ def get_parser():
         default=10,
         type=int)
 
+    # Specify an option that takes a string arg: -s word1 word2 ...
+    parser.add_argument(
+        '-s',
+        '--search',
+        help='Search the Q & A Collection for this term',
+        type=str
+        )
+
     parser.add_argument(
         '-q',
         '--quit',
@@ -1176,31 +1185,31 @@ if __name__ == '__main__':
     check_install()
 
     parser = get_parser()
-    cli_args_d = vars(parser.parse_args())
-    args = parser.parse_args()
+    opt_ns = parser.parse_args()
 
     keyword = False
-    # D keyword = 'font'  # Found in a3* & q3* i/p files.
-    # D keyword = 'Python'  # Both Title & Body of data sets have it.
-    # Other test terms: 'yield', 'begin', 'pandas', 'library'.
-    print("Keyword: ", keyword)
+
+    if opt_ns.search:
+        keyword = opt_ns.search
+        print('sga: Search the data for this term: ', keyword)
+        columns_l = ['Id', 'ParentId', 'HSTCount', 'Score', 'Title', 'Body']
 
     main(popular_qa_df)
 
-    owner_reputation_df = pd.DataFrame()
-
-    if cli_args_d['quit']:
+    #ORG if cli_args_d['quit']:
+    if opt_ns.quit:
         print('Quit the program and don\'t show menu.')
         log_msg = cf.log_file + ' - Quit by user request; Finish logging for ' + \
             os.path.basename(__file__) + '\n'
         cf.logger.warning(log_msg)
         raise SystemExit()
 
-    show_menu(popular_qa_df, all_ans_df, owner_reputation_df, args)
+    owner_reputation_df = pd.DataFrame()
+
+    show_menu(popular_qa_df, all_ans_df, owner_reputation_df, opt_ns)
 
     log_msg = cf.log_file + ' - Finish logging for ' + \
         os.path.basename(__file__) + '\n'
     cf.logger.warning(log_msg)
 
 'bye'
-

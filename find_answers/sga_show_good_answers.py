@@ -32,7 +32,7 @@ Initialization
 
 Overview of Program Actions
 
-    Read the cmd line args for search term and options.
+    Read the cmd line options for search term and options.
 
     Read the question and answer i/p file.
 
@@ -220,7 +220,7 @@ def main(popular_qa_df):
     columns_l = ['Id', 'ParentId', 'HSTCount', 'Score', 'Title', 'Body']
     if keyword:
         qa_with_keyword_df = select_keyword_recs(
-            keyword, popular_qa_df, columns_l, args)
+            keyword, popular_qa_df, columns_l, opt_ns)
         #
         log_msg = 'Search for a term: ' + keyword + '\n'
         cf.logger.info(log_msg)
@@ -236,7 +236,7 @@ def main(popular_qa_df):
             outfile, header=True, index=None, sep=',', mode='w')
 
 
-def select_keyword_recs(keyword, qa_df, columns_l, args):
+def select_keyword_recs(keyword, qa_df, columns_l, opt_ns):
     """Find the Q's & A's from the filtered dataframe
     that contain the keyword, in Title or Body.
     Use those Id's to find the related* Q's and A's that do not
@@ -347,14 +347,14 @@ def select_keyword_recs(keyword, qa_df, columns_l, args):
     # Use sorted A's to build list of ordered Q's.
     #
     ques_ids_ord_l = []
-    if args.verbose:
+    if opt_ns.verbose:
         print('#D Q.Id, Q.Title:')
     for hstc, score, aid in ans_ids_sorted_l:
         q_df = qak_df.loc[qak_df['Id'] == aid]
         parent_id = q_df['ParentId'].iloc[0]
         ques_ids_ord_l.append(parent_id)
         #
-        if args.verbose:
+        if opt_ns.verbose:
             print(parent_id)
             tmp_df = qa_df.loc[qa_df['Id'] == parent_id]
             print(tmp_df['Title'].iloc[0])
@@ -441,18 +441,18 @@ def get_parser():
 if __name__ == '__main__':
 
     parser = get_parser()
-    args = parser.parse_args()
+    opt_ns = parser.parse_args()
 
-    keyword = False # Initialize before reading cmd line args.
+    keyword = False # Initialize before reading cmd line options.
 
-    if args.search:
-        keyword = args.search
+    if opt_ns.search:
+        keyword = opt_ns.search
         print('sga: Search the data for this term: ', keyword)
         columns_l = ['Id', 'ParentId', 'HSTCount', 'Score', 'Title', 'Body']
 
     main(popular_qa_df)
 
-    if args.quit:
+    if opt_ns.quit:
         print('Quit the program and don\'t show menu.')
         log_msg = 'Quit by user request; Finish logging for ' + \
             os.path.basename(__file__) + '\n'
@@ -461,7 +461,7 @@ if __name__ == '__main__':
 
     owner_reputation_df = pd.DataFrame()
 
-    fga.show_menu(popular_qa_df, all_ans_df, owner_reputation_df, args)
+    fga.show_menu(popular_qa_df, all_ans_df, owner_reputation_df, opt_ns)
 
     log_msg = cf.log_file + ' - Finish logging for ' + \
         os.path.basename(__file__) + '\n'
