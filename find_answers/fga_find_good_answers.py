@@ -373,8 +373,6 @@ def gd2_group_data(aa_df):
           str(len(owner_grouped_df)))
     print()
     cf.logger.info('gd2_group_data(): Show owners with highest MeanScores.')
-    #TBD.1 cf.logger.info(owner_grouped_df.tail(num_owners))
-    #TMP cf.logger.info(owner_grouped_df.tail(5))
     cf.logger.info(owner_grouped_df.tail(MAX_OWNERS))
 
     return owner_grouped_df
@@ -404,15 +402,11 @@ def group_data(aa_df):
     print('len(owner_grouped_df): number of unique OwnerUserId values: ' +
           str(len(owner_grouped_df)))
     print()
-    cf.logger.info('group_data(): Show owners with ... highest MeanScores.')
-    #TBD.1 cf.logger.info(owner_grouped_df.tail(num_owners))
-    #TMP cf.logger.info(owner_grouped_df.tail(5))
+    cf.logger.info('group_data(): Show owners with highest MeanScores.')
     cf.logger.info(owner_grouped_df.tail(MAX_OWNERS))
 
     # Take slice of owners w/ highest mean scores; convert to int.
     owners_a = owner_grouped_df['OwnerUserId'].values
-    #TBD.1 top_scoring_owners_a = np.vectorize(np.int)(owners_a[-num_owners:])
-    #TMP top_scoring_owners_a = np.vectorize(np.int)(owners_a[-5:])
     top_scoring_owners_a = np.vectorize(np.int)(owners_a[-MAX_OWNERS:])
     # D print('top_scoring_owners_a: ', top_scoring_owners_a)
     # D print()
