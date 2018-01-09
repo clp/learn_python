@@ -7,7 +7,7 @@
 """sga_show_good_answers.py
 
 
-Search the input data for term(s) specified on the cmd line;
+Search the input data for term(s) passed by the caller;
 then show the records that contain the term(s).
 
 Input data is built by the fga_find_good_answers program,
@@ -23,29 +23,21 @@ Usage:
 
 
 
-Initialization
+Initialization and Operation:
 
     Run the fga*.py program to build the required data set.
 
-    Enter the search terms as a cmd line argument.
-
-    Other CLI options are available, to specify the size
-    and type of the output from the program.
+    When prompted from the fga menu, choose "lek: look for
+    exact keyword in questions and answers".
 
 
-Overview of Program Actions
 
-    Read the cmd line options for search term and options.
+Overview of Program Actions:
 
-    Read the question and answer i/p file.
-
-    Check the cache for the search term; use it if avbl.
+    Receive the search term, Q & A data set, and other data
+    from the caller.
 
     Search the collection of question and answer title
-    and body fields for the search term;
-    use any matching records for output.
-
-    Do a fuzzy search of the collection of question and answer title
     and body fields for the search term;
     use any matching records for output.
 
@@ -55,9 +47,10 @@ Overview of Program Actions
         Show full text of top-N matches.
 
         Save full text of all matches to a temporary cached file.
-        Tell user where it is and they can open it w/ an editor.
+        Tell user where it is, and they can open it with an editor.
 
-    If no match found, print that message and stop.
+    If no match found, print that message and prompt for the next
+    search term.
 
 
 ----------------------------------------------------------
