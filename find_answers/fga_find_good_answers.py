@@ -533,7 +533,7 @@ def combine_related_q_and_a(ques_ids_pop_and_top_l, all_ques_df, aa_df):
 
     # Build each Q&A group: one Q w/ all its A.'s
     for i, qid in enumerate(ques_ids_pop_and_top_l):
-        if(i % 20 == 0):
+        if i % 20 == 0:
             print("#D combine_related_q_and_a():progress count: ", i)
         qm_df = ques_match_df[ques_match_df['Id'] == qid]
         am_df = ans_match_df[ans_match_df['ParentId'] == qid]
@@ -567,7 +567,7 @@ def compute_record_selector(numlines):
     SELECTOR_RATIO = 0.10
     num_selected_recs = max(5, int(numlines * SELECTOR_RATIO))
     log_msg = ("  SELECTOR_RATIO,  number of selected recs: " +
-                str(SELECTOR_RATIO) + ", " + str(num_selected_recs))
+               str(SELECTOR_RATIO) + ", " + str(num_selected_recs))
     cf.logger.info(log_msg)
 
     return num_selected_recs
@@ -580,7 +580,7 @@ def analyze_text(qagroup_from_pop_top_ques_df):
 
     Important variables.
 
-    qagroup_from_pop_top_ques_df: 
+    qagroup_from_pop_top_ques_df:
     A dataframe with one Q&A group (ie, one question with its related
     answers), which is selected from all such groups based on being 'pop'
     (popular, questions with several answers) and 'top' (having one
@@ -720,7 +720,7 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df, opt_ns):
                 print("WARN: qa_stats_df empty or not found.")
             else:
                 print("NOTE: Drawing the qa_stats_df scatter matrix plot.")
-                draw_scatter_matrix_plot(qa_stats_df[['Score', 'BodyLength', 'OwnerRep',  'HSTCount' ]])
+                draw_scatter_matrix_plot(qa_stats_df[['Score', 'BodyLength', 'OwnerRep', 'HSTCount']])
         # lek: Look for exact keywords in the Q&A df; now case sensitive.
         elif user_cmd.lower() == 'lek':
             user_cmd = 'lek'  # Force menu to always repeat the lek prompt.
@@ -734,7 +734,7 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df, opt_ns):
                 search_term + '\n'
             cf.logger.warning(log_msg)
             #
-            columns_l = ['Id', 'ParentId', 'Title', 'Body', 'HSTCount', 'HiScoreTerms', 'Score' ]
+            columns_l = ['Id', 'ParentId', 'Title', 'Body', 'HSTCount', 'HiScoreTerms', 'Score']
             q_a_group_with_keyword_df = pd.DataFrame() # Initlz at each call
             #
             #TBD Chg popular_qa_df to a df w/ more records, for dbg & initial use.

@@ -21,7 +21,6 @@ Usage:
     See fga_find_good_answers.py for an example that uses
     the functions in this module.
 
-    
 
 
 Initialization
@@ -182,7 +181,7 @@ def select_keyword_recs(keyword, qa_df, columns_l, opt_ns, DATADIR):
     #
     # Print summary, 1 line/record:
     print()
-    print('#D qak_df summary, Q & A that contain the keyword:\n', qak_df[:] , '\n')
+    print('#D qak_df summary, Q & A that contain the keyword:\n', qak_df[:], '\n')
     #
     # Build a list of Id values of Q's and A's that contain the keyword.
     #
@@ -224,7 +223,6 @@ def select_keyword_recs(keyword, qa_df, columns_l, opt_ns, DATADIR):
     ans_ids_l = []
     for aid in ans_ids_from_search_l:
         a_df = qak_df.loc[qak_df['Id'] == aid]
-            # Using qa_df here is not obviously diff from qak.
         ans_ids_l.append([a_df['HSTCount'].values[0], a_df['Score'].values[0], a_df['Id'].values[0]])
     #
     # Sort the list of answer Id's by HSTCount, Score, Id.
