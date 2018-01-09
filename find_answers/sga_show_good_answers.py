@@ -14,12 +14,24 @@ Input data is built by the fga_find_good_answers program,
 ie, answers in stackoverflow data that might be good,
 but 'hidden' because they have low scores.
 
+
+
+Reference:
+
+    This file is part of the learn_python/find_answers project
+    at this URL:
+
+        https://github.com/clp/learn_python/tree/master/find_answers
+
+
+
 Usage:
+
     import sga_show_good_answers as sga
     pydoc  sga_show_good_answers
 
-    See fga_find_good_answers.py for an example that uses
-    the functions in this module.
+    See the fga_find_good_answers.py program for an example that
+    uses this module.
 
 
 
@@ -34,20 +46,16 @@ Initialization and Operation:
 
 Overview of Program Actions:
 
-    Receive the search term, Q & A data set, and other data
-    from the caller.
+    Receive the search term, Q & A data, and other data
+    from the calling code.
 
-    Search the collection of question and answer title
-    and body fields for the search term;
-    use any matching records for output.
+    Search the collection of question and answer data
+    for the search term; use any matching records for output.
 
     Output choices:
-        Show short summary of top-N matches.
+        Short summary of top matches on screen.
 
-        Show full text of top-N matches.
-
-        Save full text of all matches to a temporary cached file.
-        Tell user where it is, and they can open it with an editor.
+        Full text of all matches in a disk file.
 
     If no match found, print that message and prompt for the next
     search term.
@@ -55,41 +63,35 @@ Overview of Program Actions:
 
 ----------------------------------------------------------
 
-#TBD,Tue2017_1212_21:05  Rvw & Update
+Content of question and answer data provided to this module,
+in a pandas dataframe.
 
-Input data format of stackoverflow.com python file from kaggle.com.
-
-==> Answers.csv <==
-    Id,OwnerUserId,CreationDate,ParentId,Score,Body
-    497,50,2008-08-02T16:56:53Z,469,4,
-    "<p>open up a terminal (Applications-&gt;Utilities-&gt;Terminal) and type this in:</p>
-    ..."
-
-==> Questions.csv <==
-    Id,OwnerUserId,CreationDate,Score,Title,Body
-    469,147,2008-08-02T15:11:16Z,21,How can I find the full path to a font
-    from its display name on a Mac?,
-    "<p>I am using the Photoshop's javascript API to find the fonts in a given PSD.</p>
-    ..."
-
-Output data format of popular_qa.csv o/p file from this program.
     Note: Question records have a Title but no ParentId.
     Answer records have a ParentId (which is the related
     question's Id) but no Title.
 
-==> popular_qa.csv <==
-    Id,ParentId,OwnerUserId,CreationDate,Score,Title,Body
-    5313,,680.0,2008-08-07T21:07:24Z,11,"Cross Platform, Language
-    Agnostic GUI Markup Language?",
-    "<p>I learned Swing back in the day but now
-    ..."
+    Note: The format below shows column titles on the top rows,
+    followed by data rows.  The line breaks and blank lines
+    are inserted here for better readability, and are not in the
+    input data.  Some data is truncated as symbolized by an
+    ellipsis.
 
-    5319,5313.0,380.0,2008-08-07T21:10:27Z,8,,<p>erm.. HTML?
-    (trying to be funny here... while we wait for real answers..)</p>
-    5320,5313.0,216.0,2008-08-07T21:11:28Z,1,,"<p>The
-    <a href=""http://www.wxwidgets.org/"" rel=""nofollow""
-    title=""wxWidgets"">wxWidgets</a> (formerly known as wxWindows)
-    ..."
+
+==> popular_qa.csv <==
+    RecId,"Body",CreationDate,Id,OwnerUserId,ParentId,Score,
+    Title,CleanBody,"HiScoreTerms",HSTCount
+
+    0,"<p>I haven't ...",2008-08-03T18:27:09Z,773,207,0,256,
+    How do I use ...,able find ...,,0
+
+    1,"<p>Can you ...",2008-08-03T18:40:09Z,783,189,773,52,,
+    show us code ...,"store group iterator , store group
+    iterator list , ..., ",3
+
+    2,"<p>As Sebastjan ...",2008-08-10T18:45:32Z,7286,207,773,394,,
+    sebastjan said ...,"speed boat vehicle school ,
+    speed boat vehicle school bus , ...",7
+
 
 
 ----------------------------------------------------------
