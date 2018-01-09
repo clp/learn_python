@@ -15,9 +15,13 @@ ie, answers in stackoverflow data that might be good,
 but 'hidden' because they have low scores.
 
 Usage:
-    sga_show_good_answers.sh
-    python sga_show_good_answers.py
+    import sga_show_good_answers as sga
     pydoc  sga_show_good_answers
+
+    See fga_find_good_answers.py for an example that uses
+    the functions in this module.
+
+    
 
 
 Initialization
@@ -158,7 +162,6 @@ def select_keyword_recs(keyword, qa_df, columns_l, opt_ns, DATADIR):
     reputation scores.
     """
 
-    print('\n#D sga.select*(), at start.')
     if qa_df.empty:
         print('sga.select*(): Missing data, qa_df is empty.')
         return

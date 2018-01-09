@@ -1039,7 +1039,6 @@ if __name__ == '__main__':
 
     main(popular_qa_df)
 
-    #ORG if cli_args_d['quit']:
     if opt_ns.quit:
         print('Quit the program and don\'t show menu.')
         log_msg = cf.log_file + ' - Quit by user request; Finish logging for ' + \
