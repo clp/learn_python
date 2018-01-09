@@ -103,6 +103,8 @@ Input data format of stackoverflow.com python file from kaggle.com.
     "<p>I am using the Photoshop's javascript API to find the fonts in a given PSD.</p>
     ..."
 
+#TBD.Mon2018_0108_22:23  Update this text.
+
 Output data format of popular_qa.csv o/p file from this program.
     Note: Question records have a Title but no ParentId.
     Answer records have a ParentId (which is the related
@@ -257,7 +259,7 @@ def main(popular_qa_df):
         cf.logger.info(log_msg)
 
         if qa_with_keyword_df.empty:
-            log_msg = 'fga.main(): Missing data, the qa_with_keyword_df is empty.'
+            log_msg = 'fga.main(): Missing data, qa_with_keyword_df is empty.'
             print(log_msg)
             cf.logger.warning(log_msg)
             return #TBD. What debug data to print here?
@@ -289,17 +291,18 @@ def check_install():
         raise SystemExit()
 
     if not os.path.isfile(INDIR + FILEA3):
-        print("ERR, Did not find this input file; re-install the fga s/w: ", INDIR + FILEA3)
+        print("ERR, Did not find this input file; re-install the fga s/w: [", INDIR + FILEA3 + "]")
         raise SystemExit()
 
 
 def init():
     """Initialize some settings for the program.
     """
+    #TBR,Tue2018_0109_11:19  Not in use?
     if opt_ns.debug:
-        end = 55
+        END = 55
         print('Running in debug mode.')
-        print('  end set to: ', end)
+        print('  end set to: ', END)
         print()
 
     # Initialize settings for pandas.
@@ -380,7 +383,7 @@ def gd2_group_data(aa_df):
     Group by OwnerUserId, and sort by mean score for answers only
     for each owner (question scores are not counted).
     """
-    print('#D gd2: owner_grouped_df: Group by owner and sort by mean score for each owner.')
+    #D print('#D gd2: owner_grouped_df: Group by owner and sort by mean score for each owner.')
     owner_grouped_df = aa_df.groupby('OwnerUserId')
     owner_grouped_df = owner_grouped_df[[
         'Score']].mean().sort_values(['Score'])
@@ -390,10 +393,11 @@ def gd2_group_data(aa_df):
     owner_grouped_df.reset_index(drop=True, inplace=True)
     owner_grouped_df.rename(columns={'Score': 'MeanScore'}, inplace=True)
 
-    print()
-    print('#D gd2: len(owner_grouped_df): number of unique OwnerUserId values: ' +
-          str(len(owner_grouped_df)))
-    print()
+    if opt_ns.verbose:
+        print()
+        print('#D gd2: len(owner_grouped_df): number of unique OwnerUserId values: ' +
+              str(len(owner_grouped_df)))
+        print()
     cf.logger.info('gd2_group_data(): Show owners with highest MeanScores.')
     cf.logger.info(owner_grouped_df.tail(MAX_OWNERS))
 
@@ -410,7 +414,7 @@ def group_data(aa_df):
     then mark the low score  answers for evaluation.
     Low score is any score below lo_score_limit.
     """
-    print('group_data(): Group by owner and sort by mean score for each owner.')
+    #D print('group_data(): Group by owner and sort by mean score for each owner.')
     owner_grouped_df = aa_df.groupby('OwnerUserId')
     owner_grouped_df = owner_grouped_df[[
         'Score']].mean().sort_values(['Score'])
@@ -420,18 +424,20 @@ def group_data(aa_df):
     owner_grouped_df.reset_index(drop=True, inplace=True)
     owner_grouped_df.rename(columns={'Score': 'MeanScore'}, inplace=True)
 
-    print()
-    print('len(owner_grouped_df): number of unique OwnerUserId values: ' +
-          str(len(owner_grouped_df)))
-    print()
+    if opt_ns.verbose:
+        print()
+        print('len(owner_grouped_df): number of unique OwnerUserId values: ' +
+              str(len(owner_grouped_df)))
+        print()
     cf.logger.info('group_data(): Show owners with highest MeanScores.')
     cf.logger.info(owner_grouped_df.tail(MAX_OWNERS))
 
     # Take slice of owners w/ highest mean scores; convert to int.
     owners_a = owner_grouped_df['OwnerUserId'].values
     top_scoring_owners_a = np.vectorize(np.int)(owners_a[-MAX_OWNERS:])
-    # D print('top_scoring_owners_a: ', top_scoring_owners_a)
-    # D print()
+    if opt_ns.verbose:
+        print('top_scoring_owners_a: ', top_scoring_owners_a)
+        print()
 
     owners_df_l = []
     lo_score_limit = opt_ns.lo_score_limit
@@ -454,15 +460,16 @@ def group_data(aa_df):
     # View these answers and evaluate them manually; and analyze them
     # with other s/w.
     lo_scores_for_top_owners_df = pd.concat(owners_df_l)
-    print('lo_score_limit: ', lo_score_limit)
-    print('Length of lo_scores_for_top_owners_df: ',
-          len(lo_scores_for_top_owners_df))
+    if opt_ns.verbose:
+        print('lo_score_limit: ', lo_score_limit)
+        print('Length of lo_scores_for_top_owners_df: ',
+              len(lo_scores_for_top_owners_df))
+        print()
     outfile = DATADIR + 'lo_scores_for_top_owners.csv'
     lo_scores_for_top_owners_df.to_csv(
         outfile, header=True, index=None, sep=',', mode='w')
     cf.logger.info('group_data(): lo_scores_for_top_owners_df: ')
     cf.logger.info(lo_scores_for_top_owners_df)
-    print()
 
     return top_scoring_owners_a, owner_grouped_df
 
@@ -533,8 +540,9 @@ def combine_related_q_and_a(ques_ids_pop_and_top_l, all_ques_df, aa_df):
 
     # Build each Q&A group: one Q w/ all its A.'s
     for i, qid in enumerate(ques_ids_pop_and_top_l):
-        if i % 20 == 0:
-            print("#D combine_related_q_and_a():progress count: ", i)
+        if opt_ns.verbose:
+            if i % 20 == 0:
+                print("#D combine_related_q_and_a():progress count: ", i)
         qm_df = ques_match_df[ques_match_df['Id'] == qid]
         am_df = ans_match_df[ans_match_df['ParentId'] == qid]
         qagroup_from_pop_top_ques_df = pd.concat([qm_df, am_df]).reset_index(drop=True)
@@ -553,7 +561,7 @@ def combine_related_q_and_a(ques_ids_pop_and_top_l, all_ques_df, aa_df):
         # Analyze data w/ nlp s/w.
         popular_qa_df = analyze_text(qagroup_from_pop_top_ques_df)
 
-    # END combine_related_q_and_a().
+    # End combine_related_q_and_a().
     return popular_qa_df
 
 
@@ -590,7 +598,8 @@ def analyze_text(qagroup_from_pop_top_ques_df):
     global popular_qa_df
 
     cf.logger.info("NLP Step 2. Process the words of each input line.")
-    #D print('#D analyze_text(): qagroup_from_pop_top_ques_df: ', qagroup_from_pop_top_ques_df)
+    if opt_ns.veryverbose:
+        print('#D analyze_text(): qagroup_from_pop_top_ques_df: ', qagroup_from_pop_top_ques_df)
     clean_ans_bodies_l = nl.clean_raw_data(qagroup_from_pop_top_ques_df)
     if not clean_ans_bodies_l:
         print('analyze_text(), No text to analyze; exit now.')
@@ -949,7 +958,7 @@ def write_full_df_to_html_file(in_df, wdir, wfile, columns_l):
     if caller does not specify any.
     """
     if in_df.empty:
-        print('Input dataframe empty or not found.')
+        print('WARN: write_full*(): Input dataframe empty or not found.')
         return
     pd.set_option('display.max_colwidth', -1)  # -1=no limit, for debug
     outfile = wdir + wfile
@@ -1020,6 +1029,7 @@ def get_parser():
         action='store_true')
 
     parser.add_argument('-v', '--verbose', action='store_true')
+    parser.add_argument('-vv', '--veryverbose', action='store_true')
     return parser
 
 
@@ -1030,7 +1040,7 @@ if __name__ == '__main__':
     parser = get_parser()
     opt_ns = parser.parse_args()
 
-    keyword = False
+    keyword = False # Init before reading CLI argument.
 
     if opt_ns.search:
         keyword = opt_ns.search
