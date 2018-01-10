@@ -110,8 +110,7 @@ import config as cf
 import fga_find_good_answers as fga
 
 
-log_msg = cf.log_file + ' - Start logging for ' + os.path.basename(__file__)
-cf.logger.info(log_msg)
+cf.logger.info(cf.log_file + ' - Start logging for ' + os.path.basename(__file__))
 
 
 def main():
