@@ -333,6 +333,13 @@ def config_data():
     a_infile = INDIR + a_fname
     q_infile = INDIR + q_fname
 
+    if not os.path.isfile(a_infile):
+        print("ERR, Did not find the requested input file: [", a_infile + "]")
+        print("  Check that the requested Q & A files exist in the input dir.")
+        print("  Check source code, fga:config_data() for correct a_fname and q_fname.")
+        raise SystemExit()
+
+
     print('Input files, q & a:\n' + q_infile + '\n' + a_infile)
     print()
 
