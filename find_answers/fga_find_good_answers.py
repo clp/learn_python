@@ -159,8 +159,7 @@ import nltk_ex25 as nl
 import sga_show_good_answers as sga
 
 
-log_msg = cf.log_file + ' - Start logging for ' + os.path.basename(__file__)
-cf.logger.info(log_msg)
+cf.logger.info(cf.log_file + ' - Start logging for ' + os.path.basename(__file__))
 
 
 DATADIR = 'data/'
@@ -171,7 +170,6 @@ MAX_COL_WID = 20
 MAX_HI_SCORE_TERMS = 10
 MAX_OWNERS = 20
 TMP = 'tmp/'
-TMPDIR = 'data/'
 popular_qa_df = pd.DataFrame()
 
 HEADER = '''
@@ -269,14 +267,14 @@ def main(popular_qa_df):
             outfile, header=True, index=None, sep=',', mode='w')
 
     # Save a df to a file for review & debug.
-    write_full_df_to_csv_file(popular_qa_df, TMPDIR, 'popular_qa.csv')
+    write_full_df_to_csv_file(popular_qa_df, DATADIR, 'popular_qa.csv')
 
     columns_l = []
-    write_full_df_to_html_file(popular_qa_df, TMPDIR, 'popular_qa.html', columns_l)
+    write_full_df_to_html_file(popular_qa_df, DATADIR, 'popular_qa.html', columns_l)
 
     # Save the Q&A title & body data as HTML.
     columns_l = ['Id', 'Title', 'Body']
-    write_full_df_to_html_file(popular_qa_df, TMPDIR, 'popular_qa_title_body.html', columns_l)
+    write_full_df_to_html_file(popular_qa_df, DATADIR, 'popular_qa_title_body.html', columns_l)
 
 
 def check_install():
@@ -863,7 +861,7 @@ def draw_histogram_plot(plot_df):
     plt.show(block=False)
 
     # Write data set to a csv file.
-    outfile = TMPDIR + 'dh_draw_histogram.csv'
+    outfile = DATADIR + 'dh_draw_histogram.csv'
     plot_df['Score'].to_csv(
         outfile,
         header=True,
