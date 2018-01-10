@@ -319,8 +319,8 @@ def config_data():
     #D q_fname = 'Questions.csv'
 
     # Smaller data sets, used for debugging.
-    q_fname = 'q6_999994.csv'
-    a_fname = 'a6_999999.csv'
+    #D q_fname = 'q6_999994.csv'
+    #D a_fname = 'a6_999999.csv'
     #D a_fname = 'a5_99998.csv'
     #D q_fname = 'q30_99993.csv'
     a_fname = 'a3_986.csv'
@@ -933,6 +933,7 @@ def save_prior_file(wdir, wfile):
     return
 
 
+#NEW def write_df_to_csv(in_df, wdir, wfile):
 def write_full_df_to_csv_file(in_df, wdir, wfile):
     """Write full contents of all columns of a data frame to a csv file.
     """
@@ -991,7 +992,7 @@ def write_full_df_to_html_file(in_df, wdir, wfile, columns_l):
 
     # Concatenate css w/ html file to format the o/p better.
     with open(outfile, 'w') as f:
-        print('\nNOTE: Writing data to html outfile: ' + outfile)
+        cf.logger.info('NOTE: Writing data to html outfile: ' + outfile)
         f.write(HEADER)
         f.write(in_s)
         f.write(FOOTER)
