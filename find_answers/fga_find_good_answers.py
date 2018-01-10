@@ -337,9 +337,7 @@ def config_data():
         print("  Check source code, fga:config_data() for correct a_fname and q_fname.")
         raise SystemExit()
 
-
     print('Input files, q & a:\n' + q_infile + '\n' + a_infile)
-    print()
 
     return a_fname, a_infile, q_infile
 
@@ -363,7 +361,6 @@ def read_data(ans_file, ques_file):
     numlines = len(ans_df)
     print('Number of answer records in i/p data frame, ans_df: ' + str(numlines))
     progress_msg_factor = int(round(numlines / 10))
-    print()
     return ans_df, ques_df, progress_msg_factor, numlines
 
 
@@ -927,9 +924,8 @@ def save_prior_file(wdir, wfile):
     # Save all backups to tmp/ dir.
     dst_filename = os.path.join(TMP, os.path.basename(outfile))
     shutil.move(outfile, dst_filename)
-    print(
-        '\nWARN: Moved old file to tmp storage; save it manually if needed: ' +
-        TMP + wfile)
+    cf.logger.info('WARN: Moved old file to tmp storage; save it manually if needed: ' +
+        TMP + wfile + '\n')
     return
 
 
