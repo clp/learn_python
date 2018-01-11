@@ -158,6 +158,9 @@ import config as cf
 import nltk_ex25 as nl
 import sga_show_good_answers as sga
 
+#TBD,Wed2018_0110_18:16  Move write funcs out of here.
+import util.write as wr
+
 
 cf.logger.info(cf.log_file + ' - Start logging for ' + os.path.basename(__file__))
 
@@ -267,14 +270,14 @@ def main(popular_qa_df):
             outfile, header=True, index=None, sep=',', mode='w')
 
     # Save a df to a file for review & debug.
-    write_full_df_to_csv_file(popular_qa_df, DATADIR, 'popular_qa.csv')
+    wr.write_full_df_to_csv_file(popular_qa_df, DATADIR, 'popular_qa.csv')
 
     columns_l = []
-    write_full_df_to_html_file(popular_qa_df, DATADIR, 'popular_qa.html', columns_l)
+    wr.write_full_df_to_html_file(popular_qa_df, DATADIR, 'popular_qa.html', columns_l)
 
     # Save the Q&A title & body data as HTML.
     columns_l = ['Id', 'Title', 'Body']
-    write_full_df_to_html_file(popular_qa_df, DATADIR, 'popular_qa_title_body.html', columns_l)
+    wr.write_full_df_to_html_file(popular_qa_df, DATADIR, 'popular_qa_title_body.html', columns_l)
 
 
 def check_install():
@@ -315,18 +318,19 @@ def init():
 def config_data():
     """Configure path and file names for i/o data.
     """
-    #D a_fname = 'Answers.csv'
-    #D q_fname = 'Questions.csv'
+    #D Uncomment the wanted i/p files.
+    # a_fname = 'Answers.csv'
+    # q_fname = 'Questions.csv'
 
     # Smaller data sets, used for debugging.
-    #D q_fname = 'q6_999994.csv'
-    #D a_fname = 'a6_999999.csv'
-    #D a_fname = 'a5_99998.csv'
-    #D q_fname = 'q30_99993.csv'
+    # q_fname = 'q6_999994.csv'
+    # a_fname = 'a6_999999.csv'
+    # a_fname = 'a5_99998.csv'
+    # q_fname = 'q30_99993.csv'
     a_fname = 'a3_986.csv'
     q_fname = 'q3_992.csv'
-    # D a_fname = 'a2.csv'
-    # D q_fname = 'q2.csv'
+    # a_fname = 'a2.csv'
+    # q_fname = 'q2.csv'
 
     a_infile = INDIR + a_fname
     q_infile = INDIR + q_fname
@@ -803,11 +807,11 @@ def build_stats(qa_df, or_df):
     qa_stats_df = qa_stats_df[['Id', 'ParentId', 'OwnerUserId', 'Score', 'BodyLength', 'OwnerRep', 'HSTCount']]
 
     stats_fname = DATADIR + 'qa_stats_by_dsm.csv'
-    save_prior_file('', stats_fname)
+    wr.save_prior_file('', stats_fname)
     qa_stats_df.to_csv(stats_fname)
 
     stats_fname = DATADIR + 'qa_stats_by_dsm.html'
-    save_prior_file('', stats_fname)
+    wr.save_prior_file('', stats_fname)
     qa_stats_df.to_html(stats_fname)
 
     return qa_stats_df
@@ -890,11 +894,11 @@ def draw_scatter_matrix_plot(plot_df):
 
     wdir = DATADIR
     wfile = 'scat_mat_plot.pdf'
-    save_prior_file(wdir, wfile)
+    wr.save_prior_file(wdir, wfile)
     plt.savefig(wdir + wfile)
 
     wfile = 'scat_mat_plot.png'
-    save_prior_file(wdir, wfile)
+    wr.save_prior_file(wdir, wfile)
     plt.savefig(wdir + wfile)
     return
 
@@ -904,96 +908,6 @@ def draw_scatter_plot(plot_df, xaxis, yaxis, xname, yname):
     """
     ax = plot_df[[yname, xname]].plot.scatter(x=xaxis, y=yaxis, table=False)
     plt.show(block=False)
-    return
-
-
-#TBD.1, Simplify this entire func.
-def save_prior_file(wdir, wfile):
-    """Save backup copy of a file w/ same name; add '.bak' extension.
-
-    Input wdir should have trailing slash, eg, data/.
-    Input wfile should have trailing extension name, eg, .csv.
-    """
-    import shutil
-
-    outfile = wdir + wfile
-    if not os.path.isfile(outfile):
-        # Skip the save operation if the file does not exist.
-        return
-
-    # Save all backups to tmp/ dir.
-    dst_filename = os.path.join(TMP, os.path.basename(outfile))
-    shutil.move(outfile, dst_filename)
-    cf.logger.info('WARN: Moved old file to tmp storage; save it manually if needed: ' +
-        TMP + wfile + '\n')
-    return
-
-
-#NEW def write_df_to_csv(in_df, wdir, wfile):
-def write_full_df_to_csv_file(in_df, wdir, wfile):
-    """Write full contents of all columns of a data frame to a csv file.
-    """
-    # Used for testing and debugging.
-    pd.set_option('display.max_colwidth', -1)  # -1=no limit, for debug
-    save_prior_file(wdir, wfile)
-    outfile = wdir + wfile
-    in_df.to_csv(outfile)
-    pd.set_option('display.max_colwidth', MAX_COL_WID)  # -1=no limit, for debug
-    return
-
-
-def replace_line_breaks(in_s):
-    """Replace escaped line break chars so text inside HTML
-    pre-blocks and code-blocks (inside HTML table cells)
-    is rendered properly on screen.
-    """
-    out_s = in_s.replace('\\r\\n', '\n')
-    out_s = out_s.replace('\\n\\n', '\n')
-    out_s = out_s.replace('\\n', '\n')
-    return out_s
-
-
-def write_full_df_to_html_file(in_df, wdir, wfile, columns_l):
-    """Write full contents of some columns of a data frame to an html file.
-
-    Use the list of columns included in this function
-    if caller does not specify any.
-    """
-    if in_df.empty:
-        print('WARN: write_full*(): Input dataframe empty or not found.')
-        return
-    pd.set_option('display.max_colwidth', -1)  # -1=no limit, for debug
-    outfile = wdir + wfile
-    save_prior_file(wdir, wfile)
-    # Specify default output columns to use.
-    if not columns_l:
-        columns_l = ['Id',
-                     'Title',
-                     'Body',
-                     'Score',
-                     'HSTCount',
-                     'HiScoreTerms',
-                     'OwnerUserId',
-                     'ParentId']
-    #
-    # Save o/p to a string and do not specify an output file in
-    # calling to_html().
-    # Use 'escape=False' to render HTML when outfile is opened in a browser.
-    # Use 'index=False' to prevent showing index in column 1.
-    in_s = in_df[columns_l].to_html(escape=False, index=False)
-
-    # Clean the newlines in the string
-    # so the HTML inside each table cell renders properly on screen.
-    in_s = replace_line_breaks(in_s)
-
-    # Concatenate css w/ html file to format the o/p better.
-    with open(outfile, 'w') as f:
-        cf.logger.info('NOTE: Writing data to html outfile: ' + outfile)
-        f.write(HEADER)
-        f.write(in_s)
-        f.write(FOOTER)
-
-    pd.set_option('display.max_colwidth', MAX_COL_WID)  # -1=no limit, for debug
     return
 
 

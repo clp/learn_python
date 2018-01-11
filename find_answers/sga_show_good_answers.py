@@ -107,7 +107,7 @@ import os
 import pandas as pd
 
 import config as cf
-import fga_find_good_answers as fga
+import util.write as wr
 
 
 cf.logger.info(cf.log_file + ' - Start logging for ' + os.path.basename(__file__))
@@ -277,13 +277,13 @@ def select_keyword_recs(keyword, qa_df, columns_l, opt_ns, DATADIR):
     # Write o/p to disk files.
     #
     search_fname = 'search_result_full.csv'
-    fga.save_prior_file(DATADIR, search_fname)
+    wr.save_prior_file(DATADIR, search_fname)
     qa_keyword_df.to_csv(DATADIR + search_fname)
     #
     search_fname = 'search_result_full.html'
-    fga.save_prior_file(DATADIR, search_fname)
+    wr.save_prior_file(DATADIR, search_fname)
     columns_l = ['HSTCount', 'Score', 'Id', 'Title', 'Body']
-    fga.write_full_df_to_html_file(qa_keyword_df, DATADIR, search_fname, columns_l)
+    wr.write_full_df_to_html_file(qa_keyword_df, DATADIR, search_fname, columns_l)
     #
     return  qa_keyword_df
 
