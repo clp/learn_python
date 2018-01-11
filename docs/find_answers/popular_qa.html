@@ -1,12 +1,39 @@
+
+<html>
+    <head>
+        <style type="text/css">
+        table{
+            /* max-width: 850px; */
+            width: 100%;
+        }
+
+        th, td {
+            overflow: auto;  /* Use auto to get H scroll bars */
+            text-align: left;
+            /* max-width helps line-wrap in a cell, and most code */ 
+            /* samples in cells have no H.scroll when width=700px: */ 
+            max-width: 700px;  
+            /* max-width: 50%; Using % breaks line-wrap inside a cell */
+            width: auto;    /* auto is better than using % */
+        }
+
+        pre,img {
+            padding: 0.1em 0.5em 0.3em 0.7em;
+            border-left: 11px solid #ccc;
+            margin: 1.7em 0 1.7em 0.3em;
+            overflow: auto;  /* Use auto to get H scroll bars */
+        }
+        </style>
+    </head>
+    <body>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
-      <th></th>
       <th>Id</th>
       <th>Title</th>
       <th>Body</th>
       <th>Score</th>
-      <th>hstCount</th>
+      <th>HSTCount</th>
       <th>HiScoreTerms</th>
       <th>OwnerUserId</th>
       <th>ParentId</th>
@@ -14,131 +41,380 @@
   </thead>
   <tbody>
     <tr>
-      <th>0</th>
-      <td>5313</td>
-      <td>Cross Platform, Language Agnostic GUI Markup Language?</td>
-      <td><p>I learned Swing back in the day but now I've moved to Python and want to make some apps with GUIs. I haven't had the time to learn a new GUI API so I've been using Jython, but I would prefer to use CPython. </p>\r\n\r\n<p>It would be great if I can have one simple markup that allows me to switch GUI libraries. It would be even better if I can use the same markup language across languages so I can quickly make GUIs for any language I'm using. Does anyone know of such a markup/library?</p>\r\n\r\n<p>I've seen markups like Glade and wxWidget's markup (I forget the name). They're partly what I'm looking for (making a GUI without coding it in a language) but they're intertwined with a specific library. And neither are really nice looking or friendly to human editting.</p></td>
-      <td>11</td>
+      <td>773</td>
+      <td>How do I use Python's itertools.groupby()?</td>
+      <td><p>I haven't been able to find an understandable explanation of how to actually use Python's <code>itertools.groupby()</code> function.  What I'm trying to do is this:</p>
+<ul>
+<li>Take a list - in this case, the children of an objectified <code>lxml</code> element</li>
+<li>Divide it into groups based on some criteria</li>
+<li>Then later iterate over each of these groups separately.</li>
+</ul>
+<p>I've reviewed <a href="https://docs.python.org/2/library/itertools.html">the documentation</a>, and <a href="https://docs.python.org/2/library/itertools.html#itertools.groupby">the examples</a>, but I've had trouble trying to apply them beyond a simple list of numbers. </p>
+<p>So, how do I use of <code>itertools.groupby()</code>?  Is there another technique I should be using?  Pointers to good "prerequisite" reading would also be appreciated.</p>
+</td>
+      <td>256</td>
       <td>0</td>
       <td>NaN</td>
-      <td>680</td>
-      <td>nan</td>
+      <td>207</td>
+      <td>0</td>
     </tr>
     <tr>
-      <th>1</th>
-      <td>5319</td>
+      <td>783</td>
       <td>NaN</td>
-      <td><p>erm.. HTML? (trying to be funny here... while we wait for real answers..)</p></td>
-      <td>8</td>
+      <td><p>Can you show us your code?</p>
+<p>The example on the Python docs is quite straightforward:</p>
+<pre><code>groups = []
+uniquekeys = []
+for k, g in groupby(data, keyfunc):
+    groups.append(list(g))      # Store group iterator as a list
+    uniquekeys.append(k)
+</code></pre>
+<p>So in your case, data is a list of nodes, keyfunc is where the logic of your criteria function goes and then <code>groupby()</code> groups the data.</p>
+<p>You must be careful to <strong>sort the data</strong> by the criteria before you call <code>groupby</code> or it won't work. <code>groupby</code> method actually just iterates through a list and whenever the key changes it creates a new group.</p>
+</td>
+      <td>52</td>
+      <td>3</td>
+      <td>store group iterator , store group iterator list , store group iterator list uniquekeys ,</td>
+      <td>189</td>
+      <td>773</td>
+    </tr>
+    <tr>
+      <td>7286</td>
+      <td>NaN</td>
+      <td><p>As Sebastjan said, <strong>you first have to sort your data. This is important.</strong></p>
+<p>The part I didn't get is that in the example construction</p>
+<pre><code>groups = []
+uniquekeys = []
+for k, g in groupby(data, keyfunc):
+   groups.append(list(g))    # Store group iterator as a list
+   uniquekeys.append(k)
+</code></pre>
+<p><code>k</code> is the current grouping key, and <code>g</code> is an iterator that you can use to iterate over the group defined by that grouping key. In other words, the <code>groupby</code> iterator itself returns iterators.</p>
+<p>Here's an example of that, using clearer variable names:</p>
+<pre><code>from itertools import groupby
+things = [("animal", "bear"), ("animal", "duck"), ("plant", "cactus"), ("vehicle", "speed boat"), ("vehicle", "school bus")]
+for key, group in groupby(things, lambda x: x[0]):
+    for thing in group:
+        print "A %s is a %s." % (thing[1], key)
+    print " "
+</code></pre>
+<p>This will give you the output:</p>
+<blockquote>
+  <p>A bear is a animal.<br>
+  A duck is a animal.</p>
+  
+  <p>A cactus is a plant.</p>
+  
+  <p>A speed boat is a vehicle.<br>
+  A school bus is a vehicle.</p>
+</blockquote>
+<p>In this example, <code>things</code> is a list of tuples where the first item in each tuple is the group the second item belongs to. </p>
+<p>The <code>groupby()</code> function takes two arguments: (1) the data to group and (2) the function to group it with. </p>
+<p>Here, <code>lambda x: x[0]</code> tells <code>groupby()</code> to use the first item in each tuple as the grouping key.</p>
+<p>In the above <code>for</code> statement, <code>groupby</code> returns three (key, group iterator) pairs - once for each unique key. You can use the returned iterator to iterate over each individual item in that group.</p>
+<p>Here's a slightly different example with the same data, using a list comprehension:</p>
+<pre><code>for key, group in groupby(things, lambda x: x[0]):
+    listOfThings = " and ".join([thing[1] for thing in group])
+    print key + "s:  " + listOfThings + "."
+</code></pre>
+<p>This will give you the output:</p>
+<blockquote>
+  <p>animals: bear and duck.<br>
+  plants: cactus.<br>
+  vehicles: speed boat and school bus.</p>
+</blockquote>
+</td>
+      <td>394</td>
+      <td>7</td>
+      <td>speed boat vehicle school , speed boat vehicle school bus , store group iterator , store group iterator list , store group iterator list uniquekeys , thing group print , vehicle school bus ,</td>
+      <td>207</td>
+      <td>773</td>
+    </tr>
+    <tr>
+      <td>2311</td>
+      <td>File size differences after copying a file to a server vÃ­a FTP</td>
+      <td><p>I have created a PHP-script to update a webserver that is live inside a local directory.
+I'm migrating the script into Python. It works fine for the most part, but after a PUT command the size of the file appears to change. Thus, the size of the file is different from that of the file on the server. </p>
+<p>Once I download again the file from the FTP server, the only difference is the CR/LF mark. This annoys me because the same script is comparing the size of the files to update. Also, in case it means anything, the script works perfectly in PHP vÃ­a ftp_put.</p>
+<pre><code>from ftplib import FTP
+ftpserver = "myserver"
+ftpuser = "myuser"
+ftppass = "mypwd"
+locfile =  "g:/test/style.css"
+ftpfile =  "/temp/style.css"
+try:
+    ftp = FTP(ftpserver, ftpuser, ftppass)
+except:
+    exit ("Cannot connect")
+f = open (locfile, "r")
+try:
+    ftp.delete (ftpfile)
+except:
+    pass
+# ftp.sendcmd ("TYPE I")
+# ftp.storlines("STOR %s" % ftpfile, f)
+ftp.storbinary("STOR %s" % ftpfile, f)
+f.close()
+ftp.dir (ftpfile)
+ftp.quit()
+</code></pre>
+<p>Any suggestions?</p>
+</td>
+      <td>26</td>
+      <td>4</td>
+      <td>works fine part , works fine part put , works fine part put command , works perfectly php ,</td>
+      <td>394</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>2316</td>
+      <td>NaN</td>
+      <td><p>Do you need to open the locfile in binary using <code>rb</code>?</p>
+<pre><code>f = open (locfile, "rb")
+</code></pre>
+</td>
+      <td>14</td>
       <td>0</td>
       <td>NaN</td>
-      <td>380</td>
-      <td>5313</td>
+      <td>259</td>
+      <td>2311</td>
     </tr>
     <tr>
-      <th>2</th>
-      <td>5320</td>
+      <td>2317</td>
       <td>NaN</td>
-      <td><p>The <a href="http://www.wxwidgets.org/" rel="nofollow" title="wxWidgets">wxWidgets</a> (formerly known as wxWindows) library might be what you're looking for. There's a particularly good port for Python, <a href="http://wxpython.org/" rel="nofollow" title="wxPython">wxPython</a>, as well as versions for different languages -- C#, C++, Perl and Ruby come to mind -- and for various GUIs: Win32, Mac OS X, GTK+, X11, Motif, WinCE. The library's been around for a while and is pretty solid.</p></td>
-      <td>1</td>
+      <td><p>Well if you go under the properties of your file in Windows or a *nix environment, you will notice two sizes.  One is the sector size, and one is the actual size.  The sector size is the number of sectors in bytes that are used up on your hard disk.  That is because two files cannot be in the same sector with most modern file systems, so if your file fills up half of the sector the whole sector is marked as filled.</p>
+
+<p>So you might be comparing the sector file size to the actual file size on the FTP server or vice versa.</p></td>
       <td>2</td>
-      <td>ruby come mind various , ruby come mind various guis ,</td>
-      <td>216</td>
-      <td>5313</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>5340</td>
-      <td>NaN</td>
-      <td><P>Not sure if this is what you're looking for, but there's <A href="http://glade.gnome.org/" rel="nofollow">Glade</A> (or <A href="http://gladewin32.sourceforge.net/" rel="nofollow">Windows download</A>) which is a designer for GTK+. It generates an XML file which can then be used to build the GUI in a number of different languages.</P></td>
-      <td>3</td>
-      <td>0</td>
-      <td>NaN</td>
-      <td>108</td>
-      <td>5313</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>5343</td>
-      <td>NaN</td>
-      <td><p><a href="http://en.wikipedia.org/wiki/Qt_%28toolkit%29">Qt</a> (pronounced "cute" by its creators[1]) is a cross-platform application development framework, widely used for the development of GUI programs.</p>\r\n\r\n<p>Qt uses <strong>C++</strong> with several non-standard extensions implemented by an additional pre-processor that generates standard C++ code before compilation. Qt can also be used in several other programming languages; bindings exist for <strong>Ada</strong> (QtAda)[4], C<strong>#</strong> (Qyoto/Kimono)[5], <strong>Java</strong> (Qt Jambi)[6], <strong>Pascal</strong>, <strong>Perl</strong>, <strong>PHP</strong> (PHP-Qt), <strong>Ruby</strong> (RubyQt), and <strong>Python</strong> (PyQt). It runs on all major platforms, and has extensive internationalization support. Non-GUI features include SQL database access, XML parsing, thread management, network support and a unified cross-platform API for file handling.</p></td>
-      <td>5</td>
-      <td>9</td>
-      <td>ruby rubyqt python , ruby rubyqt python pyqt , ruby rubyqt python pyqt runs , rubyqt python pyqt , rubyqt python pyqt runs , rubyqt python pyqt runs major , runs major platforms , runs major platforms extensive , runs major platforms extensive internationalization ,</td>
-      <td>25</td>
-      <td>5313</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>6616</td>
-      <td>NaN</td>
-      <td><p><a href="http://www.mozilla.org/projects/xul/" rel="nofollow">XML User Interface Language</a>. Don't know much about it so not sure if it meets your desires. Post back with your experience if you play with it.</p></td>
-      <td>3</td>
-      <td>3</td>
-      <td>user interface language , xml user interface , xml user interface language ,</td>
-      <td>488</td>
-      <td>5313</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>7496</td>
-      <td>NaN</td>
-      <td><p>I read a little on XML User Interface Language (XUL) and it looks really robust and well supported. The main problem for me is it's tied to the Gecko rendering engine so it's cross platform the way wxWidgets, QT and GTK+ are cross platform. Also, there Python bindings don't seem as good as those other libraries.</p>\n\n<p>GladeXML and XRC seem like better markups</p>\n</td>
-      <td>0</td>
-      <td>4</td>
-      <td>seem good libraries , user interface language , xml user interface , xml user interface language ,</td>
-      <td>680</td>
-      <td>5313</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>8109</td>
-      <td>NaN</td>
-      <td><p>@Cristian and Antony Cramp: while XUL is a nice choice for UI development (cross-platform, open-source licensed, used in Firefox and other major software), it's certainly not language agnostic. You're tied to Gecko, with JS for scripting. There is experimental support for Python scripting, but it's only experimental, AFAIK.</p>\n\n<p>You can define the UI in XUL+JS and use back-end components written in C++ though (there are Python and Java bridges available too).</p>\n</td>
-      <td>1</td>
       <td>6</td>
-      <td>scripting experimental afaik , scripting experimental afaik define , scripting experimental afaik define ui , scripting experimental support , scripting experimental support python , scripting experimental support python scripting ,</td>
-      <td>1026</td>
-      <td>5313</td>
+      <td>whole sector marked , whole sector marked filled , whole sector marked filled might , windows nix environment , windows nix environment notice , windows nix environment notice two ,</td>
+      <td>17</td>
+      <td>2311</td>
     </tr>
     <tr>
-      <th>8</th>
-      <td>8114</td>
+      <td>2510</td>
       <td>NaN</td>
-      <td><p>I seriously doubt you're going to find a markup language for GIU's that's <em>not</em> tied to a specific library.  For such a thing to exist, there would need to be a standardized GUI markup language, with several implementations.</p>\n</td>
-      <td>4</td>
+      <td><p>Small files take up a whole node on the filesystem whatever size that is.</p>
+
+<p>My host tends to report all small files as 4kb in ftp but in a shell gives an accurate size so it might be a 'feature' common to ftp clients.</p></td>
+      <td>0</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>269</td>
+      <td>2311</td>
+    </tr>
+    <tr>
+      <td>10123</td>
+      <td>How do I treat an integer as an array of bytes in Python?</td>
+      <td><p>I'm trying to decode the result of the Python os.wait() function. This returns, according to the Python docs:</p>
+<blockquote>
+  <p>a tuple containing its pid and exit status indication: a 16-bit number, whose low byte is the signal number that killed the process, and whose high byte is the exit status (if the signal number is zero); the high bit of the low byte is set if a core file was produced.</p>
+</blockquote>
+<p>How do I decode the exit status indication (which is an integer) to obtain the high and low byte? To be specific, how do I implement the decode function used in the following code snippet:</p>
+<pre><code>(pid,status) = os.wait()
+(exitstatus, signum) = decode(status)
+</code></pre>
+</td>
+      <td>8</td>
+      <td>9</td>
+      <td>os wait exitstatus , os wait exitstatus signum , pid status os , pid status os wait , pid status os wait exitstatus , status os wait , status os wait exitstatus , status os wait exitstatus signum , wait exitstatus signum ,</td>
+      <td>742</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>10129</td>
+      <td>NaN</td>
+      <td><p>This will do what you want:</p>
+<pre><code>signum = status &amp; 0xff
+exitstatus = (status &amp; 0xff00) &gt;&gt; 8
+</code></pre>
+</td>
+      <td>10</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>116</td>
+      <td>10123</td>
+    </tr>
+    <tr>
+      <td>10132</td>
+      <td>NaN</td>
+      <td><p>You can unpack the status using <a href="http://docs.python.org/ref/shifting.html" rel="nofollow">bit-shifting</a> and <a href="http://docs.python.org/ref/bitwise.html" rel="nofollow">masking</a> operators.</p>
+<pre><code>low = status &amp; 0x00FF
+high = (status &amp; 0xFF00) &gt;&gt; 8
+</code></pre>
+<p>I'm not a Python programmer, so I hope got the syntax correct.</p>
+</td>
+      <td>1</td>
       <td>0</td>
       <td>NaN</td>
       <td>872</td>
-      <td>5313</td>
+      <td>10123</td>
     </tr>
     <tr>
-      <th>9</th>
+      <td>10148</td>
+      <td>NaN</td>
+      <td><p>The folks before me've nailed it, but if you really want it on one line, you can do this:</p>
+<pre><code>(signum, exitstatus) = (status &amp; 0xFF, (status &gt;&gt; 8) &amp; 0xFF)
+</code></pre>
+<p>EDIT: Had it backwards.</p>
+</td>
+      <td>0</td>
+      <td>1</td>
+      <td>xff status xff ,</td>
+      <td>429</td>
+      <td>10123</td>
+    </tr>
+    <tr>
+      <td>10213</td>
+      <td>NaN</td>
+      <td><p>To answer your general question, you can use <a href="http://en.wikipedia.org/wiki/Bit_twiddling" rel="nofollow">bit manipulation</a> techniques:</p>
+<pre><code>pid, status = os.wait()
+exitstatus, signum = status &amp; 0xFF, (status &amp; 0xFF00) &gt;&gt; 8
+</code></pre>
+<p>However, there are also <a href="http://docs.python.org/lib/os-process.html#l2h-2780" rel="nofollow">built-in functions</a> for interpreting exit status values:</p>
+<pre><code>pid, status = os.wait()
+exitstatus, signum = os.WEXITSTATUS( status ), os.WTERMSIG( status )
+</code></pre>
+<p>See also:</p>
+<ul>
+<li>os.WCOREDUMP()</li>
+<li>os.WIFCONTINUED()</li>
+<li>os.WIFSTOPPED()</li>
+<li>os.WIFSIGNALED()</li>
+<li>os.WIFEXITED()</li>
+<li>os.WSTOPSIG()</li>
+</ul>
+</td>
+      <td>10</td>
+      <td>10</td>
+      <td>xff status xff , os wait exitstatus , os wait exitstatus signum , pid status os , pid status os wait , pid status os wait exitstatus , status os wait , status os wait exitstatus , status os wait exitstatus signum , wait exitstatus signum ,</td>
+      <td>99</td>
+      <td>10123</td>
+    </tr>
+    <tr>
+      <td>535</td>
+      <td>Continuous Integration System for a Python Codebase</td>
+      <td><p>I'm starting work on a hobby project with a python codebase and would like to set up some form of continuous integration (i.e. running a battery of test-cases each time a check-in is made and sending nag e-mails to responsible persons when the tests fail) similar to CruiseControl or TeamCity.</p>
+<p>I realize I could do this with hooks in most VCSes, but that requires that the tests run on the same machine as the version control server, which isn't as elegant as I would like. Does anyone have any suggestions for a small, user-friendly, open-source continuous integration system suitable for a Python codebase?</p>
+</td>
+      <td>40</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>154</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>538</td>
+      <td>NaN</td>
+      <td><p>One possibility is Hudson.  It's written in Java, but there's integration with Python projects:</p>
+<blockquote>
+  <p><a href="http://redsolo.blogspot.com/2007/11/hudson-embraces-python.html" rel="nofollow">Hudson embraces Python</a></p>
+</blockquote>
+<p>I've never tried it myself, however.</p>
+<p>(<strong>Update</strong>, Sept. 2011: After a trademark dispute Hudson has been renamed to <a href="http://jenkins-ci.org/" rel="nofollow">Jenkins</a>.)</p>
+</td>
+      <td>23</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>156</td>
+      <td>535</td>
+    </tr>
+    <tr>
+      <td>541</td>
+      <td>NaN</td>
+      <td><p>We run <a href="http://buildbot.net/trac">Buildbot - Trac</a> at work, I haven't used it too much since my code base isn't part of the release cycle yet. But we run the tests on different environments (OSX/Linux/Win) and it sends emails --and it's written in python.</p></td>
+      <td>20</td>
+      <td>1</td>
+      <td>yet run tests ,</td>
+      <td>157</td>
+      <td>535</td>
+    </tr>
+    <tr>
+      <td>660</td>
+      <td>NaN</td>
+      <td><p>Second the Buildbot - Trac integration. You can find more information about the integration on the <a href="http://buildbot.net/trac/wiki/BuildbotAndTrac">Buildbot website</a>. At my previous job, we wrote and used the plugin they mention (tracbb).
+What the plugin does is rewriting all of the Buildbot urls so you can use Buildbot from within Trac. (http://example.com/tracbb).</p>
+
+<p>The really nice thing about Buildbot is that the configuration is written in Python. You can integrate your own Python code directly to the configuration. It's also very easy to write your own BuildSteps to execute specific tasks.</p>
+
+<p>We used BuildSteps to get the source from SVN, pull the dependencies, publish test results to WebDAV, etcetera.</p>
+
+<p>I wrote an X10 interface so we could send signals with build results. When the build failed, we switched on a red lava lamp. When the build succeeded, a green lava lamp switched on. Good times :-)</p></td>
+      <td>14</td>
+      <td>6</td>
+      <td>written python integrate , written python integrate python , written python integrate python code , wrote used plugin , wrote used plugin mention , wrote used plugin mention tracbb ,</td>
+      <td>197</td>
+      <td>535</td>
+    </tr>
+    <tr>
       <td>1829</td>
       <td>How do I make a menu that does not require the user to press [enter] to make a selection?</td>
-      <td><p>I've got a menu in Python. That part was easy. I'm using <code>raw_input()</code> to get the selection from the user. </p>\n\n<p>The problem is that <code>raw_input</code> (and input) require the user to press <kbd>Enter</kbd> after they make a selection. Is there any way to make the program act immediately upon a keystroke? Here's what I've got so far:</p>\n\n<pre><code>import sys\nprint """Menu\n1) Say Foo\n2) Say Bar"""\nanswer = raw_input("Make a selection&gt; ")\n\nif "1" in answer: print "foo"\nelif "2" in answer: print "bar"\n</code></pre>\n\n<p>It would be great to have something like</p>\n\n<pre><code>print menu\nwhile lastKey = "":\n    lastKey = check_for_recent_keystrokes()\nif "1" in lastKey: #do stuff...\n</code></pre>\n</td>
+      <td><p>I've got a menu in Python. That part was easy. I'm using <code>raw_input()</code> to get the selection from the user. </p>
+<p>The problem is that <code>raw_input</code> (and input) require the user to press <kbd>Enter</kbd> after they make a selection. Is there any way to make the program act immediately upon a keystroke? Here's what I've got so far:</p>
+<pre><code>import sys
+print """Menu
+1) Say Foo
+2) Say Bar"""
+answer = raw_input("Make a selection&gt; ")
+if "1" in answer: print "foo"
+elif "2" in answer: print "bar"
+</code></pre>
+<p>It would be great to have something like</p>
+<pre><code>print menu
+while lastKey = "":
+    lastKey = check_for_recent_keystrokes()
+if "1" in lastKey: #do stuff...
+</code></pre>
+</td>
       <td>12</td>
-      <td>20</td>
-      <td>elif answer print , elif answer print bar , foo elif answer , foo elif answer print , foo elif answer print bar , foo say bar answer , print foo elif , print foo elif answer , print foo elif answer print , print menu say , print menu say foo , print menu say foo say , say bar answer , say foo say bar answer , foo say bar , menu say foo , menu say foo say , menu say foo say bar , say foo say , say foo say bar ,</td>
+      <td>10</td>
+      <td>print menu say foo , print menu say foo say , say bar answer , say foo say bar answer , foo say bar , menu say foo , menu say foo say , menu say foo say bar , say foo say , say foo say bar ,</td>
       <td>30</td>
-      <td>nan</td>
+      <td>0</td>
     </tr>
     <tr>
-      <th>10</th>
       <td>1840</td>
       <td>NaN</td>
-      <td><p><strong>On Linux:</strong></p>\n\n<ul>\n<li>set raw mode</li>\n<li>select and read the keystroke</li>\n<li>restore normal settings</li>\n</ul>\n\n<pre>\nimport sys\nimport select\nimport termios\nimport tty\n\ndef getkey():\n    old_settings = termios.tcgetattr(sys.stdin)\n    tty.setraw(sys.stdin.fileno())\n    select.select([sys.stdin], [], [], 0)\n    answer = sys.stdin.read(1)\n    termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)\n    return answer\n\nprint """Menu\n1) Say Foo\n2) Say Bar"""\n\nanswer=getkey()\n\nif "1" in answer: print "foo"\nelif "2" in answer: print "bar"\n\n</pre>\n</td>
+      <td><p><strong>On Linux:</strong></p>
+<ul>
+<li>set raw mode</li>
+<li>select and read the keystroke</li>
+<li>restore normal settings</li>
+</ul>
+<pre>
+import sys
+import select
+import termios
+import tty
+def getkey():
+    old_settings = termios.tcgetattr(sys.stdin)
+    tty.setraw(sys.stdin.fileno())
+    select.select([sys.stdin], [], [], 0)
+    answer = sys.stdin.read(1)
+    termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
+    return answer
+print """Menu
+1) Say Foo
+2) Say Bar"""
+answer=getkey()
+if "1" in answer: print "foo"
+elif "2" in answer: print "bar"
+</pre>
+</td>
       <td>8</td>
-      <td>20</td>
-      <td>elif answer print , elif answer print bar , foo elif answer , foo elif answer print , foo elif answer print bar , foo say bar answer , print foo elif , print foo elif answer , print foo elif answer print , print menu say , print menu say foo , print menu say foo say , say bar answer , say foo say bar answer , foo say bar , menu say foo , menu say foo say , menu say foo say bar , say foo say , say foo say bar ,</td>
+      <td>10</td>
+      <td>print menu say foo , print menu say foo say , say bar answer , say foo say bar answer , foo say bar , menu say foo , menu say foo say , menu say foo say bar , say foo say , say foo say bar ,</td>
       <td>116</td>
       <td>1829</td>
     </tr>
     <tr>
-      <th>11</th>
       <td>1852</td>
       <td>NaN</td>
-      <td><p><strong>On Windows:</strong></p>\n\n<pre><code>import msvcrt\nanswer=msvcrt.getch()\n</code></pre>\n</td>
+      <td><p><strong>On Windows:</strong></p>
+<pre><code>import msvcrt
+answer=msvcrt.getch()
+</code></pre>
+</td>
       <td>6</td>
       <td>0</td>
       <td>NaN</td>
@@ -146,21 +422,29 @@
       <td>1829</td>
     </tr>
     <tr>
-      <th>12</th>
       <td>1870</td>
       <td>NaN</td>
-      <td><p>Wow, that took forever. Ok, here's what I've ended up with </p>\r\n\r\n<pre><code>#!C:\python25\python.exe<br>import msvcrt<br>print """Menu<br>1) Say Foo <br>2) Say Bar"""<br>while 1:<br>    char = msvcrt.getch()<br>    if char == chr(27): #escape<br>        break<br>    if char == "1":<br>        print "foo"<br>        break<br>    if char == "2":<br>        print "Bar"<br>        break<br></code></pre>\r\n\r\n<p>It fails hard using IDLE, the python...thing...that comes with python. But once I tried it in DOS (er, CMD.exe), as a real program, then it ran fine.</p>\r\n\r\n<p>No one try it in IDLE, unless you have Task Manager handy.</p>\r\n\r\n<p>I've already forgotten how I lived with menus that arn't super-instant responsive.</p></td>
+      <td><p>Wow, that took forever. Ok, here's what I've ended up with </p>
+
+<pre><code>#!C:\python25\python.exe<br>import msvcrt<br>print """Menu<br>1) Say Foo <br>2) Say Bar"""<br>while 1:<br>    char = msvcrt.getch()<br>    if char == chr(27): #escape<br>        break<br>    if char == "1":<br>        print "foo"<br>        break<br>    if char == "2":<br>        print "Bar"<br>        break<br></code></pre>
+
+<p>It fails hard using IDLE, the python...thing...that comes with python. But once I tried it in DOS (er, CMD.exe), as a real program, then it ran fine.</p>
+
+<p>No one try it in IDLE, unless you have Task Manager handy.</p>
+
+<p>I've already forgotten how I lived with menus that arn't super-instant responsive.</p></td>
       <td>2</td>
-      <td>10</td>
-      <td>break char print , print menu say , print menu say foo , print menu say foo say , foo say bar , menu say foo , menu say foo say , menu say foo say bar , say foo say , say foo say bar ,</td>
+      <td>8</td>
+      <td>print menu say foo , print menu say foo say , foo say bar , menu say foo , menu say foo say , menu say foo say bar , say foo say , say foo say bar ,</td>
       <td>30</td>
       <td>1829</td>
     </tr>
     <tr>
-      <th>13</th>
       <td>1885</td>
       <td>NaN</td>
-      <td><p>The  reason msvcrt fails in IDLE is because IDLE is not accessing the library that runs msvcrt. Whereas when you run the program natively in cmd.exe it works nicely. For the same reason that your program blows up on Mac and Linux terminals.</p>\r\n\r\n<p>But I guess if you're going to be using this specifically for windows, more power to ya.</p></td>
+      <td><p>The  reason msvcrt fails in IDLE is because IDLE is not accessing the library that runs msvcrt. Whereas when you run the program natively in cmd.exe it works nicely. For the same reason that your program blows up on Mac and Linux terminals.</p>
+
+<p>But I guess if you're going to be using this specifically for windows, more power to ya.</p></td>
       <td>0</td>
       <td>0</td>
       <td>NaN</td>
@@ -168,439 +452,258 @@
       <td>1829</td>
     </tr>
     <tr>
-      <th>14</th>
-      <td>10123</td>
-      <td>How do I treat an integer as an array of bytes in Python?</td>
-      <td><p>I'm trying to decode the result of the Python os.wait() function. This returns, according to the Python docs:</p>\n\n<blockquote>\n  <p>a tuple containing its pid and exit status indication: a 16-bit number, whose low byte is the signal number that killed the process, and whose high byte is the exit status (if the signal number is zero); the high bit of the low byte is set if a core file was produced.</p>\n</blockquote>\n\n<p>How do I decode the exit status indication (which is an integer) to obtain the high and low byte? To be specific, how do I implement the decode function used in the following code snippet:</p>\n\n<pre><code>(pid,status) = os.wait()\n(exitstatus, signum) = decode(status)\n</code></pre>\n</td>
+      <td>5419</td>
+      <td>Python, Unicode, and the Windows console</td>
+      <td><p>When I try to print a Unicode string in a Windows console, I get a <code>UnicodeEncodeError: 'charmap' codec can't encode character ....</code> error.  I assume this is because the Windows console does not accept Unicode-only characters. What's the best way around this? Is there any way I can make Python automatically print a <code>?</code> instead of failing in this situation?</p>
+<p><strong>Edit:</strong>  I'm using Python 2.5.</p>
+<hr>
+<p><strong>Note:</strong> @LasseV.Karlsen answer with the checkmark is sort of outdated (from 2008). Please use the solutions/answers/suggestions below with care!!</p>
+<p><a href="http://stackoverflow.com/a/32176732/610569">@JFSebastian answer</a> is more relevant as of today (6 Jan 2016).</p>
+</td>
+      <td>72</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>207</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>5430</td>
+      <td>NaN</td>
+      <td><p><strong>Note:</strong> This answer is sort of outdated (from 2008). Please use the solution below with care!!</p>
+<hr>
+<p>Here is a page that details the problem and a solution (search the page for the text <em>Wrapping sys.stdout into an instance</em>):</p>
+<p><a href="http://wiki.python.org/moin/PrintFails">PrintFails - Python Wiki</a></p>
+<p>Here's a code excerpt from that page:</p>
+<pre><code>$ python -c 'import sys, codecs, locale; print sys.stdout.encoding; \
+    sys.stdout = codecs.getwriter(locale.getpreferredencoding())(sys.stdout); \
+    line = u"\u0411
+"; print type(line), len(line); \
+    sys.stdout.write(line); print line'
+  UTF-8
+  &lt;type 'unicode'&gt; 2
+  Ð
+  Ð
+  $ python -c 'import sys, codecs, locale; print sys.stdout.encoding; \
+    sys.stdout = codecs.getwriter(locale.getpreferredencoding())(sys.stdout); \
+    line = u"\u0411
+"; print type(line), len(line); \
+    sys.stdout.write(line); print line' | cat
+  None
+  &lt;type 'unicode'&gt; 2
+  Ð
+  Ð
+</code></pre>
+<p>There's some more information on that page, well worth a read.</p>
+</td>
+      <td>24</td>
       <td>8</td>
-      <td>11</td>
-      <td>zero high bit , exit status indication , os wait exitstatus , os wait exitstatus signum , pid status os , pid status os wait , pid status os wait exitstatus , status os wait , status os wait exitstatus , status os wait exitstatus signum , wait exitstatus signum ,</td>
+      <td>sys stdout write , sys stdout write line , sys stdout write line print , type line len , type line len line , type line len line sys , write line print , write line print line ,</td>
+      <td>267</td>
+      <td>5419</td>
+    </tr>
+    <tr>
+      <td>8020</td>
+      <td>NaN</td>
+      <td><p>The cause of your problem is <strong>NOT</strong> the Win console not willing to accept Unicode (as it does this since I guess Win2k by default). It is the default system encoding. Try this code and see what it gives you:</p>
+<pre><code>import sys
+sys.getdefaultencoding()
+</code></pre>
+<p>if it says ascii, there's your cause ;-)
+You have to create a file called sitecustomize.py and put it under python path (I put it under /usr/lib/python2.5/site-packages, but that is differen on Win - it is c:\python\lib\site-packages or something), with the following contents:</p>
+<pre><code>import sys
+sys.setdefaultencoding('utf-8')
+</code></pre>
+<p>and perhaps you might want to specify the encoding in your files as well:</p>
+<pre><code># -*- coding: UTF-8 -*-
+import sys,time
+</code></pre>
+<p>Edit: more info can be found <a href="http://www.diveintopython.net/xml_processing/unicode.html" rel="nofollow">in excellent the Dive into Python book</a></p>
+</td>
+      <td>-1</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>985</td>
+      <td>5419</td>
+    </tr>
+    <tr>
+      <td>12592</td>
+      <td>Can you check that an exception is thrown with doctest in Python?</td>
+      <td><p>Is it possible to write a doctest unit test that will check that an exception is raised?<br>
+For example, if I have a function <code>foo(x)</code> that is supposed to raise an exception if <code>x&lt;0</code>, how would I write the doctest for that? </p>
+</td>
+      <td>28</td>
+      <td>4</td>
+      <td>would write doctest , write doctest unit , write doctest unit test , write doctest unit test check ,</td>
       <td>742</td>
-      <td>nan</td>
-    </tr>
-    <tr>
-      <th>15</th>
-      <td>10129</td>
-      <td>NaN</td>
-      <td><p>This will do what you want:</p>\n\n<pre><code>signum = status &amp; 0xff\nexitstatus = (status &amp; 0xff00) &gt;&gt; 8\n</code></pre>\n</td>
-      <td>10</td>
-      <td>2</td>
-      <td>exitstatus status xff , signum status xff ,</td>
-      <td>116</td>
-      <td>10123</td>
-    </tr>
-    <tr>
-      <th>16</th>
-      <td>10132</td>
-      <td>NaN</td>
-      <td><p>You can unpack the status using <a href="http://docs.python.org/ref/shifting.html" rel="nofollow">bit-shifting</a> and <a href="http://docs.python.org/ref/bitwise.html" rel="nofollow">masking</a> operators.</p>\n\n<pre><code>low = status &amp; 0x00FF\nhigh = (status &amp; 0xFF00) &gt;&gt; 8\n</code></pre>\n\n<p>I'm not a Python programmer, so I hope got the syntax correct.</p>\n</td>
-      <td>1</td>
-      <td>1</td>
-      <td>xff python programmer hope got ,</td>
-      <td>872</td>
-      <td>10123</td>
-    </tr>
-    <tr>
-      <th>17</th>
-      <td>10148</td>
-      <td>NaN</td>
-      <td><p>The folks before me've nailed it, but if you really want it on one line, you can do this:</p>\n\n<pre><code>(signum, exitstatus) = (status &amp; 0xFF, (status &gt;&gt; 8) &amp; 0xFF)\n</code></pre>\n\n<p>EDIT: Had it backwards.</p>\n</td>
       <td>0</td>
-      <td>6</td>
-      <td>xff status xff edit , xff status xff edit backwards , exitstatus status xff , status xff status , status xff status xff , xff status xff ,</td>
-      <td>429</td>
-      <td>10123</td>
     </tr>
     <tr>
-      <th>18</th>
-      <td>10213</td>
+      <td>12609</td>
       <td>NaN</td>
-      <td><p>To answer your general question, you can use <a href="http://en.wikipedia.org/wiki/Bit_twiddling" rel="nofollow">bit manipulation</a> techniques:</p>\n\n<pre><code>pid, status = os.wait()\nexitstatus, signum = status &amp; 0xFF, (status &amp; 0xFF00) &gt;&gt; 8\n</code></pre>\n\n<p>However, there are also <a href="http://docs.python.org/lib/os-process.html#l2h-2780" rel="nofollow">built-in functions</a> for interpreting exit status values:</p>\n\n<pre><code>pid, status = os.wait()\nexitstatus, signum = os.WEXITSTATUS( status ), os.WTERMSIG( status )\n</code></pre>\n\n<p>See also:</p>\n\n<ul>\n<li>os.WCOREDUMP()</li>\n<li>os.WIFCONTINUED()</li>\n<li>os.WIFSTOPPED()</li>\n<li>os.WIFSIGNALED()</li>\n<li>os.WIFEXITED()</li>\n<li>os.WSTOPSIG()</li>\n</ul>\n</td>
-      <td>10</td>
-      <td>15</td>
-      <td>xff status xff however , xff status xff however also , signum status xff , status xff status , status xff status xff , xff status xff , os wait exitstatus , os wait exitstatus signum , pid status os , pid status os wait , pid status os wait exitstatus , status os wait , status os wait exitstatus , status os wait exitstatus signum , wait exitstatus signum ,</td>
-      <td>99</td>
-      <td>10123</td>
-    </tr>
-    <tr>
-      <th>19</th>
-      <td>683</td>
-      <td>Using 'in' to match an attribute of Python objects in an array</td>
-      <td><p>I don't remember whether I was dreaming or not but I seem to recall there being a function which allowed something like,</p>\r\n\r\n<pre><code>foo in iter_attr(array of python objects, attribute name)</code></pre>\r\n\r\n<p>I've looked over the docs but this kind of thing doesn't fall under any obvious listed headers</p></td>
-      <td>28</td>
-      <td>1</td>
-      <td>foo iter attr ,</td>
-      <td>199</td>
-      <td>nan</td>
-    </tr>
-    <tr>
-      <th>20</th>
-      <td>701</td>
-      <td>NaN</td>
-      <td><p>No, you were not dreaming.  Python has a pretty excellent list comprehension system that lets you manipulate lists pretty elegantly, and depending on exactly what you want to accomplish, this can be done a couple of ways.  In essence, what you're doing is saying "For item in list if criteria.matches", and from that you can just iterate through the results or dump the results into a new list.</p>\n\n<p>I'm going to crib an example from <a href="http://diveintopython.net/functional_programming/filtering_lists.html" rel="nofollow">Dive Into Python</a> here, because it's pretty elegant and they're smarter than I am.  Here they're getting a list of files in a directory, then filtering the list for all files that match a regular expression criteria.</p>\n\n<blockquote>\n<pre><code>    files = os.listdir(path)                               \n    test = re.compile("test\.py$", re.IGNORECASE)          \n    files = [f for f in files if test.search(f)]\n</code></pre>\n</blockquote>\n\n<p>You could do this without regular expressions, for your example, for anything where your expression at the end returns true for a match.  There are other options like using the filter() function, but if I were going to choose, I'd go with this.</p>\n\n<p>Eric Sipple</p>\n</td>
+      <td><p>Yes. You can do it. The <a href="https://docs.python.org/3/library/doctest.html">doctest module documentation</a> and Wikipedia has an <a href="http://en.wikipedia.org/wiki/Doctest#Example_2%3a_doctests_embedded_in_a_README.txt_file">example</a> of it.</p>
+<pre><code>   &gt;&gt;&gt; x
+   Traceback (most recent call last):
+     ...
+   NameError: name 'x' is not defined
+</code></pre>
+</td>
+      <td>45</td>
       <td>3</td>
-      <td>6</td>
-      <td>python pretty elegant , python pretty elegant smarter , python pretty elegant smarter getting , python pretty excellent , python pretty excellent list , python pretty excellent list comprehension ,</td>
-      <td>111</td>
-      <td>683</td>
+      <td>yes doctest module , yes doctest module documentation , yes doctest module documentation wikipedia ,</td>
+      <td>1448</td>
+      <td>12592</td>
     </tr>
     <tr>
-      <th>21</th>
-      <td>735</td>
-      <td>NaN</td>
-      <td><p>I think:</p>\r\n\r\n<pre><code>#!/bin/python<br>bar in dict(Foo)<br></code></pre>\r\n\r\n<p>Is what you are thinking of.  When trying to see if a certain key exists within a dictionary in python (python's version of a hash table) there are two ways to check.  First is the <strong><code>has_key()</code></strong> method attached to the dictionary and second is the example given above.  It will return a boolean value.</p>\r\n\r\n<p>That should answer your question.</p>\r\n\r\n<p>And now a little off topic to tie this in to the <em>list comprehension</em> answer previously given (for a bit more clarity).  <em>List Comprehensions</em> construct a list from a basic <em>for loop</em> with modifiers.  As an example (to clarify slightly), a way to use the <code>in dict</code> language construct in a _list comprehension_:</p>\r\n\r\n<p>Say you have a two dimensional dictionary <strong><code>foo</code></strong> and you only want the second dimension dictionaries which contain the key <strong><code>bar</code></strong>.  A relatively straightforward way to do so would be to use a <em>list comprehension</em> with a conditional as follows:</p>\r\n\r\n<pre><code>#!/bin/python<br>baz = dict([(key, value) for key, value in foo if bar in value])<br></code></pre>\r\n\r\n<p>Note the <strong><code>if bar in value</code></strong> at the end of the statement<strong>, this is a modifying clause which tells the <em>list comprehension</em> to only keep those key-value pairs which meet the conditional.</strong>  In this case <strong><code>baz</code></strong> is a new dictionary which contains only the dictionaries from foo which contain bar (Hopefully I didn't miss anything in that code example... you may have to take a look at the list comprehension documentation found in <a href="http://docs.python.org/tut/node7.html#SECTION007140000000000000000" rel="nofollow">docs.python.org tutorials</a> and at <a href="http://www.secnetix.de/olli/Python/list_comprehensions.hawk" rel="nofollow">secnetix.de</a>, both sites are good references if you have questions in the future.).</p></td>
-      <td>-2</td>
-      <td>12</td>
-      <td>python org tutorials secnetix , python org tutorials secnetix de , python python version , python python version hash , python python version hash table , python version hash , python version hash table , python version hash table two , pythonbar dict foo , pythonbar dict foo thinking , pythonbar dict foo thinking trying , pythonbaz dict key ,</td>
-      <td>145</td>
-      <td>683</td>
-    </tr>
-    <tr>
-      <th>22</th>
-      <td>745</td>
-      <td>NaN</td>
-      <td><p>Are you looking to get a list of objects that have a certain attribute? If so, a <a href="http://docs.python.org/tut/node7.html#SECTION007140000000000000000">list comprehension</a> is the right way to do this.</p>\r\n\r\n<pre><code>result = [obj for obj in listOfObjs if hasattr(obj, 'attributeName')]<br></code></pre></td>
-      <td>8</td>
-      <td>0</td>
-      <td>NaN</td>
-      <td>154</td>
-      <td>683</td>
-    </tr>
-    <tr>
-      <th>23</th>
-      <td>750</td>
-      <td>NaN</td>
-      <td><p>What I was thinking of can be achieved using list comprehensions, but I thought that there was a function that did this in a slightly neater way.</p>\r\n\r\n<p>i.e. 'bar' is a list of objects, all of which have the attribute 'id'</p>\r\n\r\n<p>The mythical functional way:</p>\r\n\r\n<pre><code>foo = 12<br>foo in iter_attr(bar, 'id')</code></pre>\r\n\r\n<p>The list comprehension way:</p>\r\n\r\n<pre><code>foo = 12<br>foo in [obj.id for obj in bar]</code></pre>\r\n\r\n<p>In retrospect the list comprehension way is pretty neat anyway.</p></td>
-      <td>2</td>
-      <td>3</td>
-      <td>foo iter attr , list comprehension way , way foo foo ,</td>
-      <td>199</td>
-      <td>683</td>
-    </tr>
-    <tr>
-      <th>24</th>
-      <td>5966</td>
-      <td>Best way to abstract season/show/episode data</td>
-      <td><p>Basically, I've written an API to www.thetvdb.com in Python. The current code can be found <a href="http://github.com/dbr/tvdb_api/tree/master/tvdb_api.py">here</a>.</p>\r\n\r\n<p>It grabs data from the API as requested, and has to store the data somehow, and make it available by doing:</p>\r\n\r\n<pre><code>print tvdbinstance[1][23]['episodename'] # get the name of episode 23 of season 1<br></code></pre>\r\n\r\n<p>What is the "best" way to abstract this data within the Tvdb() class?</p>\r\n\r\n<p>I originally used a extended Dict() that automatically created sub-dicts (so you could do <code>x[1][2][3][4] = "something"</code> without having to do <code>if x[1].has_key(2): x[1][2] = []</code> and so on)</p>\r\n\r\n<p>Then I just stored the data by doing <code>self.data[show_id][season_number][episode_number][attribute_name] = "something"</code></p>\r\n\r\n<p>This worked okay, but there was no easy way of checking if x[3][24] was supposed to exist or not (so I couldn't raise the season_not_found exception)</p>\r\n\r\n<p>Currently it's using four classes. ShowContainer, Show, Season and Episode. Each one is a very basic dict, which I can easily add extra functionality in (the search() function on Show() for example). Each has a <code>__setitem__</code>, <code>__getitem_</code> and <code>has_key</code></p>\r\n\r\n<p>This works mostly fine, I can check in Shows if it has that season in it's self.data dict, if not, raise season_not_found. Check in Season() if it has that episode and so on.</p>\r\n\r\n<p>The problem now is it's presenting itself as a dict, but doesn't have all the functionality, and because I'm overriding the <em>_getitem_</em> and <em>_setitem_</em> functions, it's easy to accidently recursively call <em>_getitem_</em> (so I'm not sure if extending the Dict class will cause problems)</p>\r\n\r\n<p>The other slight problem is adding data into the dict is a lot more work than the old Ddict method (which was <code>self.data[seas_no][ep_no]['attribute'] = 'something'</code>). See _setItem and _setData. It's not too bad, since it's currently only a read-only API interface (so the users of the API should only ever retrieve data, not add more), but it's hardly.. elegant..</p>\r\n\r\n<p>I think the series-of-classes system is probably the best way, but does anyone have a better idea for storing the data? And would extending the ShowContainer/etc classes with Dict cause problems?</p></td>
-      <td>10</td>
-      <td>9</td>
-      <td>raise season found , show season episode , supposed exist raise , easy way checking , okay easy way , okay easy way checking , worked okay easy , worked okay easy way , worked okay easy way checking ,</td>
-      <td>745</td>
-      <td>nan</td>
-    </tr>
-    <tr>
-      <th>25</th>
-      <td>6125</td>
-      <td>NaN</td>
-      <td><p>Why not use SQLite? There is good support in Python and you can write SQL queries to get the data out. Here is the Python docs for <a href="http://docs.python.org/lib/module-sqlite3.html" rel="nofollow">sqlite3</a></p>\r\n\r\n<hr>\r\n\r\n<p>If you don't want to use SQLite you could do an array of dicts.</p>\r\n\r\n<pre><code>episodes = []<br>episodes.append({'season':1, 'episode': 2, 'name':'Something'})<br>episodes.append({'season':1, 'episode': 2, 'name':'Something', 'actors':['Billy Bob', 'Sean Penn']})<br></code></pre>\r\n\r\n<p>That way you add metadata to any record and search it very easily</p>\r\n\r\n<pre><code>season_1 = [e for e in episodes if e['season'] == 1]<br>billy_bob = [e for e in episodes if 'actors' in e and 'Billy Bob' in e['actors']]<br><br>for episode in billy_bob:<br>    print "Billy bob was in Season %s Episode %s" % (episode['season'], episode['episode'])<br></code></pre></td>
-      <td>3</td>
-      <td>4</td>
-      <td>episodes append season episode name , season episode episode , season episode name , season episode name something ,</td>
-      <td>309844</td>
-      <td>5966</td>
-    </tr>
-    <tr>
-      <th>26</th>
-      <td>6805</td>
-      <td>NaN</td>
-      <td><P>I have done something similar in the past and used an in-memory XML document as a quick and dirty hierachical database for storage. You can store each show/season/episode as an element (nested appropriately) and attributes of these things as xml attributes on the elements. Then you can use XQuery to get info back out.</P>\r\n<P><STRONG>NOTE:</STRONG> I'm not a Python guy so I don't know what your xml support is like.</P>\r\n<P><STRONG>NOTE 2:</STRONG> You'll want to profile this because it'll be bigger and slower than the solution you've already got. Likely enough if you are doing some high-volume processing then XML is probably not going to be your friend.</P></td>
-      <td>0</td>
-      <td>1</td>
-      <td>show season episode ,</td>
-      <td>358</td>
-      <td>5966</td>
-    </tr>
-    <tr>
-      <th>27</th>
-      <td>8165</td>
-      <td>NaN</td>
-      <td><p>I don't get this part here:</p>\n\n<blockquote>\n  <p>This worked okay, but there was no easy way of checking if x[3][24] was supposed to exist or not (so I couldn't raise the season<em>not</em>found exception)</p>\n</blockquote>\n\n<p>There is a way to do it - called <strong>in</strong>:</p>\n\n<pre><code>&gt;&gt;&gt;x={}\n&gt;&gt;&gt;x[1]={}\n&gt;&gt;&gt;x[1][2]={}\n&gt;&gt;&gt;x\n{1: {2: {}}}\n&gt;&gt;&gt; 2 in x[1]\nTrue\n&gt;&gt;&gt; 3 in x[1]\nFalse\n</code></pre>\n\n<p>what seems to be the problem with that?</p>\n</td>
-      <td>0</td>
-      <td>7</td>
-      <td>supposed exist raise , easy way checking , okay easy way , okay easy way checking , worked okay easy , worked okay easy way , worked okay easy way checking ,</td>
-      <td>985</td>
-      <td>5966</td>
-    </tr>
-    <tr>
-      <th>28</th>
-      <td>9080</td>
-      <td>NaN</td>
-      <td><p>Bartosz/To clarify "This worked okay, but there was no easy way of checking if x[3][24] was supposed to exist or not"</p>\n\n<p><code>x['some show'][3][24]</code> would return season 3, episode 24 of "some show". If there was no season 3, I want the pseudo-dict to raise tvdb<em>seasonnotfound, if "some show" doesn't exist, then raise tvdb</em>shownotfound</p>\n\n<p>The current system of a series of classes, each with a <code>__getitem__</code> - Show checks <code>if self.seasons.has_key(requested_season_number)</code>, the Season class checks <code>if self.episodes.has_key(requested_episode_number)</code> and so on.</p>\n\n<p>It works, but it there seems to be a lot of repeated code (each class is basically the same, but raises a different error)</p>\n</td>
-      <td>0</td>
-      <td>6</td>
-      <td>easy way checking , okay easy way , okay easy way checking , worked okay easy , worked okay easy way , worked okay easy way checking ,</td>
-      <td>745</td>
-      <td>5966</td>
-    </tr>
-    <tr>
-      <th>29</th>
-      <td>10778</td>
-      <td>NaN</td>
-      <td><p>OK, what you need is <code>classobj</code> from new module. That would allow you to construct exception classes dynamically (<code>classobj</code> takes a string as an argument for the class name). </p>\n\n<pre><code>import new\nmyexc=new.classobj("ExcName",(Exception,),{})\ni=myexc("This is the exc msg!")\nraise i\n</code></pre>\n\n<p>this gives you:</p>\n\n<pre><code>Traceback (most recent call last):\nFile "&lt;stdin&gt;", line 1, in &lt;module&gt;\n__main__.ExcName: This is the exc msg!\n</code></pre>\n\n<p>remember that you can always get the class name through:</p>\n\n<pre><code>self.__class__.__name__\n</code></pre>\n\n<p>So, after some string mangling and concatenation, you should be able to obtain appropriate exception class name and construct a class object using that name and then raise that exception.</p>\n\n<p>P.S. - you can also raise strings, but this is deprecated.</p>\n\n<pre><code>raise(self.__class__.__name__+"Exception")\n</code></pre>\n</td>
-      <td>5</td>
-      <td>1</td>
-      <td>self class name ,</td>
-      <td>985</td>
-      <td>5966</td>
-    </tr>
-    <tr>
-      <th>30</th>
-      <td>8948</td>
-      <td>Accessing mp3 Meta-Data with Python</td>
-      <td><p>What is the best way to retrieve mp3 metadata in python?  I've seen a couple frameworks out there, but I'm unsure as to which would be the best to use.... Any ideas?</p>\n</td>
-      <td>81</td>
-      <td>5</td>
-      <td>way retrieve mp , way retrieve mp metadata , way retrieve mp metadata python , would best use , would best use ideas ,</td>
-      <td>145</td>
-      <td>nan</td>
-    </tr>
-    <tr>
-      <th>31</th>
-      <td>8972</td>
-      <td>NaN</td>
-      <td><p><a href="http://www.dotfunk.com/projects/mp3/" rel="nofollow">This toolkit</a> may do what you need. I can't say if it's the "best", but really, if it does what you need, that's all that matters, right?</p>\n\n<p>HTH</p>\n</td>
-      <td>1</td>
-      <td>0</td>
-      <td>NaN</td>
-      <td>722</td>
-      <td>8948</td>
-    </tr>
-    <tr>
-      <th>32</th>
-      <td>8974</td>
-      <td>NaN</td>
-      <td><p>A simple example from the book Dive Into Python works ok for me, <a href="http://www.diveintopython.org/download/diveintopython-examples-5.4.zip" rel="nofollow">this</a> is the download link, the example is fileinfo.py. Don't know if it's the best, but it can do the basic job.</p>\n\n<p>The entire book is available online <a href="http://www.diveintopython.org/" rel="nofollow">here</a>.</p>\n</td>
-      <td>6</td>
-      <td>3</td>
-      <td>works ok download , works ok download link , works ok download link example ,</td>
-      <td>394</td>
-      <td>8948</td>
-    </tr>
-    <tr>
-      <th>33</th>
-      <td>8976</td>
-      <td>NaN</td>
-      <td><p>It can depend on exactly what you want to do in addition to reading the metadata. If it is just simply the bitrate / name etc. that you need, and nothing else, something lightweight is probably best.</p>\n\n<p>If you're manipulating the mp3 past that PyMedia may be suitable.</p>\n\n<p>There are quite a few, whatever you do get, make sure and test it out on plenty of sample media. There are a few different versions of ID3 tags in particular, so make sure it's not too out of date. </p>\n\n<p>Personally I've used this small MP3Info class with luck. It is quite old though.</p>\n\n<p><a href="http://www.omniscia.org/~vivake/python/MP3Info.py" rel="nofollow">http://www.omniscia.org/~vivake/python/MP3Info.py</a></p>\n</td>
-      <td>1</td>
-      <td>10</td>
-      <td>vivake python mp , vivake python mp info , vivake python mp info py , want addition reading , want addition reading metadata , want addition reading metadata simply , whatever get make , whatever get make sure , whatever get make sure test , www omniscia org ,</td>
-      <td>1087</td>
-      <td>8948</td>
-    </tr>
-    <tr>
-      <th>34</th>
-      <td>9358</td>
-      <td>NaN</td>
-      <td><p>What you're after is the <a href="http://id3-py.sourceforge.net/">ID3</a> module.  It's very simple and will give you exactly what you need.  Just copy the ID3.py file into your site-packages directory and you'll be able to do something like the following:</p>\n\n<pre><code>from ID3 import *\ntry:\n  id3info = ID3('file.mp3')\n  print id3info\n  # Change the tags\n  id3info['TITLE'] = "Green Eggs and Ham"\n  id3info['ARTIST'] = "Dr. Seuss"\n  for k, v in id3info.items():\n    print k, ":", v\nexcept InvalidTagError, message:\n  print "Invalid ID3 tag:", message\n</code></pre>\n</td>
-      <td>11</td>
-      <td>0</td>
-      <td>NaN</td>
-      <td>1057</td>
-      <td>8948</td>
-    </tr>
-    <tr>
-      <th>35</th>
-      <td>10845</td>
-      <td>NaN</td>
-      <td><p>I've used <a href="https://bitbucket.org/lazka/mutagen">mutagen</a> to edit tags in media files before.  The nice thing about mutagen is that it can handle other formats, such as mp4, FLAC etc.  I've written several scripts with a lot of success using this API.</p>\n</td>
-      <td>25</td>
-      <td>3</td>
-      <td>written several scripts , written several scripts lot , written several scripts lot success ,</td>
-      <td>912</td>
-      <td>8948</td>
-    </tr>
-    <tr>
-      <th>36</th>
-      <td>2933</td>
-      <td>How can I create a directly-executable cross-platform GUI app using Python?</td>
-      <td><p>Python works on multiple platforms and can be used for desktop and web applications, thus I conclude that there is some way to compile it into an executable for Mac, Windows and Linux.</p>\r\n\r\n<p>The problem being I have no idea where to start or how to write a GUI with it, can anybody shed some light on this and point me in the right direction please?</p></td>
-      <td>171</td>
-      <td>4</td>
-      <td>shed light point , shed light point right , shed light point right direction , mac windows linux ,</td>
-      <td>1384652</td>
-      <td>nan</td>
-    </tr>
-    <tr>
-      <th>37</th>
-      <td>2937</td>
-      <td>NaN</td>
-      <td><p>First you will need some GUI library with Python bindings and then (if you want) some program that will convert your python scripts into standalone executables.</p>\n\n<p><strong>Cross-platform GUI libraries with Python bindings (Windows, Linux, Mac)</strong></p>\n\n<p>Of course, there are many, but the most popular that I've seen in wild are:</p>\n\n<ul>\n<li><a href="http://wiki.python.org/moin/TkInter">Tkinter</a>  - based on <a href="http://www.tcl.tk/">Tk GUI toolkit</a> (de-facto standard GUI library for python, free for commercial projects)</li>\n<li><a href="http://www.wxpython.org/">WxPython</a> - based on <a href="http://www.wxwidgets.org/">WxWidgets</a> (very popular, free for commercial projects)</li>\n<li><a href="http://www.riverbankcomputing.co.uk/news">PyQt</a> - based on <a href="http://trolltech.com/products/qt/">Qt</a> (also very popular and more stable than WxWidgets but costly license for commercial projects)</li>\n</ul>\n\n<p>Complete list is at <a href="http://wiki.python.org/moin/GuiProgramming">http://wiki.python.org/moin/GuiProgramming</a></p>\n\n<p><strong>Single executable (Windows)</strong></p>\n\n<ul>\n<li><a href="http://www.py2exe.org/">py2exe</a> - Probably the most popular out there (<a href="http://stackoverflow.com/questions/2933/an-executable-python-app/31859#31859">PyInstaller</a> is also gaining in popularity)</li>\n</ul>\n\n<p><strong>Single executable (Linux)</strong></p>\n\n<ul>\n<li><a href="http://wiki.python.org/moin/Freeze">Freeze</a> - works the same way like py2exe but targets Linux platform</li>\n</ul>\n\n<p><strong>Single executable (Mac)</strong></p>\n\n<ul>\n<li><a href="https://pythonhosted.org/py2app/">py2app</a> - again, works like py2exe but targets Mac OS</li>\n</ul>\n</td>
-      <td>189</td>
-      <td>7</td>
-      <td>seen wild tkinter based , seen wild tkinter based tk , free commercial projects , gui library python , like py exe , like py exe targets , py exe targets ,</td>
-      <td>275</td>
-      <td>2933</td>
-    </tr>
-    <tr>
-      <th>38</th>
-      <td>2941</td>
-      <td>NaN</td>
-      <td><p>You don't need to <em>compile</em> python for Mac/Windows/Linux.  It is an interpreted language, so you simply need to have the Python interpreter installed on the system of your choice (it is available for all three platforms).</p>\r\n\r\n<p>As for a GUI library that works cross platform, Python's <a href="http://www.tcl.tk/" rel="nofollow">Tk/Tcl</a> widget library works very well, and I believe is sufficiently cross platform.</p>\r\n\r\n<p><a href="http://docs.python.org/lib/module-Tkinter.html" rel="nofollow">Tkinter</a> is the python interface to Tk/Tcl</p>\r\n\r\n<p>From the python project webpage: </p>\r\n\r\n<blockquote>\r\n  <p>Tkinter is not the only GuiProgramming\r\n  toolkit for Python.  It is however the\r\n  most commonly used one, and almost the\r\n  only  one that is portable between\r\n  Unix, Mac and Windows</p>\r\n</blockquote></td>
-      <td>0</td>
-      <td>4</td>
-      <td>simply need python , simply need python interpreter , simply need python interpreter installed , mac windows linux ,</td>
-      <td>92</td>
-      <td>2933</td>
-    </tr>
-    <tr>
-      <th>39</th>
-      <td>2980</td>
-      <td>NaN</td>
-      <td><p>Since python is installed on nearly every non-Windows OS by default now, the only thing you really need to make sure of is that all of the non-standard libraries you use are installed.</p>\r\n\r\n<p>Having said that, it is possible to build executables that include the python interpreter, and any libraries you use.  This is likely to create a large executable, however.</p>\r\n\r\n<p>MacOS X even includes support in the Xcode IDE for creating full standalone GUI apps.  These can be run by any user running OS X.</p></td>
-      <td>2</td>
-      <td>3</td>
-      <td>since python installed , since python installed nearly , since python installed nearly every ,</td>
-      <td>188</td>
-      <td>2933</td>
-    </tr>
-    <tr>
-      <th>40</th>
-      <td>12166</td>
-      <td>NaN</td>
-      <td><p>An alternative tool to py2exe is <a href="http://pypi.python.org/pypi/bbfreeze/">bbfreeze</a> which generates executables for windows and linux. It's newer than py2exe and handles eggs quite well. I've found it magically works better without configuration for a wide variety of applications.</p>\n</td>
-      <td>13</td>
-      <td>1</td>
-      <td>well found magically works ,</td>
-      <td>995</td>
-      <td>2933</td>
-    </tr>
-    <tr>
-      <th>41</th>
-      <td>12167</td>
-      <td>NaN</td>
-      <td><p>I'm not sure that this is the best way to do it, but when I'm deploying Ruby GUI apps (not Python, but has the same "problem" as far as .exe's are concerned) on Windows, I just write a short launcher in C# that calls on my main script. It compiles to an executable, and I then have an application executable.</p>\n</td>
-      <td>2</td>
-      <td>0</td>
-      <td>NaN</td>
-      <td>1344</td>
-      <td>2933</td>
-    </tr>
-    <tr>
-      <th>42</th>
-      <td>5909</td>
-      <td>Get size of a file before downloading in Python</td>
-      <td><p>I'm downloading an entire directory from a web server. It works OK, but I can't figure how to get the file size before download to compare if it was updated on the server or not. Can this be done as if I was downloading the file from a FTP server?</p>\n\n<pre><code>import urllib\nimport re\n\nurl = "http://www.someurl.com"\n\n# Download the page locally\nf = urllib.urlopen(url)\nhtml = f.read()\nf.close()\n\nf = open ("temp.htm", "w")\nf.write (html)\nf.close()\n\n# List only the .TXT / .ZIP files\nfnames = re.findall('^.*&lt;a href="(\w+(?:\.txt|.zip)?)".*$', html, re.MULTILINE)\n\nfor fname in fnames:\n    print fname, "..."\n\n    f = urllib.urlopen(url + "/" + fname)\n\n    #### Here I want to check the filesize to download or not #### \n    file = f.read()\n    f.close()\n\n    f = open (fname, "w")\n    f.write (file)\n    f.close()\n</code></pre>\n\n<hr>\n\n<p>@Jon: thank for your quick answer. It works, but the filesize on the web server is slightly less than the filesize of the downloaded file. </p>\n\n<p>Examples:</p>\n\n<pre><code>Local Size  Server Size\n 2.223.533  2.115.516\n   664.603    662.121\n</code></pre>\n\n<p>It has anything to do with the CR/LF conversion?</p>\n</td>
-      <td>28</td>
-      <td>0</td>
-      <td>NaN</td>
-      <td>394</td>
-      <td>nan</td>
-    </tr>
-    <tr>
-      <th>43</th>
-      <td>5927</td>
-      <td>NaN</td>
-      <td><p>The size of the file is sent as the Content-Length header. Here is how to get it with urllib:</p>\r\n\r\n<pre><code>&gt;&gt;&gt; site = urllib.urlopen("http://python.org")<br>&gt;&gt;&gt; meta = site.info()<br>&gt;&gt;&gt; print meta.getheaders("Content-Length")<br>['16535']<br>&gt;&gt;&gt;<br></code></pre></td>
-      <td>6</td>
-      <td>7</td>
-      <td>getheaders content length , http python org , meta getheaders content , meta getheaders content length , meta site info , meta site info print , site info print ,</td>
-      <td>309844</td>
-      <td>5909</td>
-    </tr>
-    <tr>
-      <th>44</th>
-      <td>5935</td>
-      <td>NaN</td>
-      <td><p>Using the returned-urllib-object method <code>info()</code>, you can get various information on the retrived document. Example of grabbing the current Google logo:</p>\r\n\r\n<pre><code>&gt;&gt;&gt; import urllib<br>&gt;&gt;&gt; d = urllib.urlopen("http://www.google.co.uk/logos/olympics08_opening.gif")<br>&gt;&gt;&gt; print d.info()<br><br>Content-Type: image/gif<br>Last-Modified: Thu, 07 Aug 2008 16:20:19 GMT  <br>Expires: Sun, 17 Jan 2038 19:14:07 GMT <br>Cache-Control: public <br>Date: Fri, 08 Aug 2008 13:40:41 GMT <br>Server: gws <br>Content-Length: 20172 <br>Connection: Close<br></code></pre>\r\n\r\n<p>It's a dict, so to get the size of the file, you do <code>urllibobject.info()['Content-Length']</code></p>\r\n\r\n<pre><code>print f.info()['Content-Length']<br></code></pre>\r\n\r\n<p>And to get the size of the local file (for comparison), you can use the os.stat() command:</p>\r\n\r\n<pre><code>os.stat("/the/local/file.zip").st_size<br></code></pre></td>
-      <td>16</td>
-      <td>0</td>
-      <td>NaN</td>
-      <td>745</td>
-      <td>5909</td>
-    </tr>
-    <tr>
-      <th>45</th>
-      <td>5938</td>
-      <td>NaN</td>
-      <td><p>Also if the server you are connecting to supports it, look at <a href="http://en.wikipedia.org/wiki/HTTP_ETag" rel="nofollow">Etags</a> and the <a href="http://en.wikipedia.org/wiki/List_of_HTTP_headers#Requests" rel="nofollow">If-Modified-Since</a> and <a href="http://en.wikipedia.org/wiki/List_of_HTTP_headers#Requests" rel="nofollow">If-None-Match</a> headers.</p>\r\n\r\n<p>Using these will take advantage of the webserver's caching rules and will return a <a href="http://en.wikipedia.org/wiki/List_of_HTTP_status_codes#3xx_Redirection" rel="nofollow">304 Not Modified</a> status code if the content hasn't changed.</p></td>
-      <td>4</td>
-      <td>0</td>
-      <td>NaN</td>
-      <td>309844</td>
-      <td>5909</td>
-    </tr>
-    <tr>
-      <th>46</th>
-      <td>5985</td>
-      <td>NaN</td>
-      <td><p>I have reproduced what you are seeing:</p>\r\n\r\n<pre><code>import urllib, os<br>link = "http://python.org"<br>print "opening url:", link<br>site = urllib.urlopen(link)<br>meta = site.info()<br>print "Content-Length:", meta.getheaders("Content-Length")[0]<br><br>f = open("out.txt", "r")<br>print "File on disk:",len(f.read())<br>f.close()<br><br><br>f = open("out.txt", "w")<br>f.write(site.read())<br>site.close()<br>f.close()<br><br>f = open("out.txt", "r")<br>print "File on disk after download:",len(f.read())<br>f.close()<br><br>print "os.stat().st_size returns:", os.stat("out.txt").st_size<br></code></pre>\r\n\r\n<p>Outputs this:</p>\r\n\r\n<pre><code>opening url: http://python.org<br>Content-Length: 16535<br>File on disk: 16535<br>File on disk after download: 16535<br>os.stat().st_size returns: 16861<br></code></pre>\r\n\r\n<p>What am I doing wrong here? Is os.stat().st_size not returning the correct size?</p>\r\n\r\n<hr>\r\n\r\n<p>Edit:\r\nOK, I figured out what the problem was:</p>\r\n\r\n<pre><code>import urllib, os<br>link = "http://python.org"<br>print "opening url:", link<br>site = urllib.urlopen(link)<br>meta = site.info()<br>print "Content-Length:", meta.getheaders("Content-Length")[0]<br><br>f = open("out.txt", "rb")<br>print "File on disk:",len(f.read())<br>f.close()<br><br><br>f = open("out.txt", "wb")<br>f.write(site.read())<br>site.close()<br>f.close()<br><br>f = open("out.txt", "rb")<br>print "File on disk after download:",len(f.read())<br>f.close()<br><br>print "os.stat().st_size returns:", os.stat("out.txt").st_size<br></code></pre>\r\n\r\n<p>this outputs:</p>\r\n\r\n<pre><code>$ python test.py<br>opening url: http://python.org<br>Content-Length: 16535<br>File on disk: 16535<br>File on disk after download: 16535<br>os.stat().st_size returns: 16535<br></code></pre>\r\n\r\n<p>Make sure you are opening both files for binary read/write.</p>\r\n\r\n<pre><code>// open for binary write<br>open(filename, "wb")<br>// open for binary read<br>open(filename, "rb")<br></code></pre></td>
-      <td>19</td>
+      <td>11060</td>
+      <td>How should I unit test a code-generator?</td>
+      <td><p>This is a difficult and open-ended question I know, but I thought I'd throw it to the floor and see if anyone had any interesting suggestions.</p>
+<p>I have developed a code-generator that takes our python interface to our C++ code (generated via SWIG) and generates code needed to expose this as WebServices.  When I developed this code I did it using TDD, but I've found my tests to be brittle as hell.  Because each test essentially wanted to verify that for a given bit of input code (which happens to be a C++ header) I'd get a given bit of outputted code I wrote a small engine that reads test definitions from XML input files and generates test cases from these expectations.</p>
+<p>The problem is I dread going in to modify the code at all.  That and the fact that the unit tests themselves are a: complex, and b: brittle.</p>
+<p>So I'm trying to think of alternative approaches to this problem, and it strikes me I'm perhaps tackling it the wrong way.  Maybe I need to focus more on the outcome, IE: does the code I generate actually run and do what I want it to, rather than, does the code look the way I want it to.</p>
+<p>Has anyone got any experiences of something similar to this they would care to share?</p>
+</td>
       <td>18</td>
-      <td>write site read , write site read site , write site read site close , getheaders content length , http python org , meta getheaders content , meta getheaders content length , meta site info , meta site info print , site info print , file disk download , os stat st size returns , print file disk , st size returns , stat st size returns , os stat st , os stat st size , stat st size ,</td>
-      <td>309844</td>
-      <td>5909</td>
+      <td>7</td>
+      <td>similar would care share , small engine reads , small engine reads test , small engine reads test definitions , something similar would , something similar would care , something similar would care share ,</td>
+      <td>912</td>
+      <td>0</td>
     </tr>
     <tr>
-      <th>47</th>
-      <td>766</td>
-      <td>Python and MySQL</td>
-      <td><p>I can get Python to work with Postgresql but I cannot get it to work with MySQL. The main problem is that on the shared hosting account I have I do not have the ability to install things such as Django or PySQL, I generally fail when installing them on my computer so maybe it's good I can't install on the host.</p>\r\n\r\n<p>I found <a href="http://barryp.org/software/bpgsql/">bpgsql</a> really good because it does not require an install, it's a single file that I can look at, read and then call the functions of. Does anybody know of something like this for MySQL?</p></td>
-      <td>20</td>
-      <td>5</td>
-      <td>work mysql main problem , work mysql main problem shared , work postgresql cannot , work postgresql cannot get , work postgresql cannot get work ,</td>
-      <td>1384652</td>
-      <td>nan</td>
-    </tr>
-    <tr>
-      <th>48</th>
-      <td>777</td>
+      <td>11074</td>
       <td>NaN</td>
-      <td><p>I don't have any experience with <a href="http://www.SiteGround.com" rel="nofollow">http://www.SiteGround.com</a> as a web host personally.  </p>\r\n\r\n<p>This is just a guess, but it's common for a shared host to support Python and MySQL with the MySQLdb module (e.g., GoDaddy does this).  Try the following CGI script to see if MySQLdb is installed.</p>\r\n\r\n<pre><code>#!/usr/bin/python<br><br>module_name = 'MySQLdb'<br>head = '''Content-Type: text/html<br><br>%s is ''' % module_name<br><br>try:<br>    __import__(module_name)<br>    print head + 'installed'<br>except ImportError:<br>    print head + 'not installed'<br></code></pre></td>
-      <td>5</td>
+      <td><p>I started writing up a summary of my experience with my own code generator, then went back and re-read your question and found you had already touched upon the same issues yourself, focus on the execution results instead of the code layout/look.</p>
+<p>Problem is, this is hard to test, the generated code might not be suited to actually run in the environment of the unit test system, and how do you encode the expected results?</p>
+<p>I've found that you need to break down the code generator into smaller pieces and unit test those. Unit testing a full code generator is more like integration testing than unit testing if you ask me.</p>
+</td>
+      <td>8</td>
       <td>3</td>
-      <td>usr bin pythonmodule , usr bin pythonmodule name mysqldb , print head installed ,</td>
-      <td>150</td>
-      <td>766</td>
+      <td>smaller pieces unit , smaller pieces unit test , smaller pieces unit test unit ,</td>
+      <td>267</td>
+      <td>11060</td>
     </tr>
     <tr>
-      <th>49</th>
-      <td>802</td>
+      <td>11128</td>
       <td>NaN</td>
-      <td><p>I uploaded it and got an internal error</p>\r\n\r\n<pre><code>Premature end of script headers<br></code></pre>\r\n\r\n<p>After much playing around, I found that if I had</p>\r\n\r\n<pre><code>import cgi<br>import cgitb; cgitb.enable()<br>import MySQLdb<br></code></pre>\r\n\r\n<p>It would give me a much more useful answer and say that it was not installed, you can see it yourself -> <a href="http://woarl.com/db.py" rel="nofollow">http://woarl.com/db.py</a></p>\r\n\r\n<p>Oddly enough, this would produce an error</p>\r\n\r\n<pre><code>import MySQLdb<br>import cgi<br>import cgitb; cgitb.enable()<br></code></pre>\r\n\r\n<p>I looked at some of the other files I had up there and it seems that library was one of the ones I had already tried.</p></td>
-      <td>4</td>
-      <td>4</td>
-      <td>useful answer say installed see , cgiimport cgitb cgitb , cgiimport cgitb cgitb enable , cgitb cgitb enable ,</td>
-      <td>1384652</td>
-      <td>766</td>
-    </tr>
-    <tr>
-      <th>50</th>
-      <td>1619</td>
+      <td><p>Yes, results are the ONLY thing that matters. The real chore is writing a framework that allows your generated code to run independently... spend your time there.</p>
+</td>
+      <td>0</td>
+      <td>0</td>
       <td>NaN</td>
-      <td><p>MySQLdb is what I have used before.</p>\r\n\r\n<p>If you host is using Python version 2.5 or higher, support for sqlite3 databases is built in (sqlite allows you to have a relational database that is simply a file in your filesystem).  But buyer beware, sqlite is not suited for production, so it may depend what you are trying to do with it.</p>\r\n\r\n<p>Another option may be to call your host and complain, or change hosts.  Honestly these days, any self respecting web host that supports python and mysql ought to have MySQLdb pre installed.</p></td>
-      <td>17</td>
-      <td>3</td>
-      <td>using python version , using python version higher , using python version higher support ,</td>
-      <td>92</td>
-      <td>766</td>
+      <td>414</td>
+      <td>11060</td>
     </tr>
     <tr>
-      <th>51</th>
-      <td>8332</td>
+      <td>11235</td>
       <td>NaN</td>
-      <td><p>You could try setting up your own python installation using <a href="http://peak.telecommunity.com/DevCenter/EasyInstall#creating-a-virtual-python" rel="nofollow">Virtual Python</a>.  Check out how to setup Django using it <a href="http://forums.site5.com/showthread.php?t=10236" rel="nofollow">here</a>.  That was written a long time ago, but it shows how I got MySQLdb setup without having root access or anything like it.  Once you've got the basics going, you can install any python library you want.</p>\n</td>
-      <td>4</td>
-      <td>6</td>
-      <td>using virtual python , using virtual python check , using virtual python check setup , using written long , using written long time , using written long time ago ,</td>
-      <td>1057</td>
-      <td>766</td>
+      <td><p>If you are running on *nux you might consider dumping the unittest framework in favor of a bash script or makefile. on windows you might consider building a shell app/function that runs the generator and then uses the code (as another process) and unittest that.</p>
+<p>A third option would be to generate the code and then build an app from it that includes nothing but a unittest. Again you would need a shell script or whatnot to run this for each input. As to how to encode the expected behavior, it occurs to me that it could be done in much the same way as you would for the C++ code just using the generated interface rather than the C++ one.</p>
+</td>
+      <td>0</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>1343</td>
+      <td>11060</td>
     </tr>
     <tr>
-      <th>52</th>
+      <td>11443</td>
+      <td>NaN</td>
+      <td><p>Recall that "unit testing" is only one kind of testing.  You should be able to unit test the <strong>internal</strong> pieces of your code generator.  What you're really looking at here is system level testing (a.k.a. regression testing).  It's not just semantics... there are different mindsets, approaches, expectations, etc.  It's certainly more work, but you probably need to bite the bullet and set up an end-to-end regression test suite: fixed C++ files -> SWIG interfaces -> python modules -> known output.  You really want to check the known input (fixed C++ code) against expected output (what comes out of the final Python program).  Checking the code generator results directly would be like diffing object files...</p>
+</td>
+      <td>4</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>825</td>
+      <td>11060</td>
+    </tr>
+    <tr>
+      <td>1854</td>
+      <td>How to check what OS am I running on in Python?</td>
+      <td><p>What do I need to look at to see if I'm on Windows, Unix, etc?</p>
+</td>
+      <td>270</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>116</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>1857</td>
+      <td>NaN</td>
+      <td><pre><code>&gt;&gt;&gt; import os
+&gt;&gt;&gt; print os.name
+posix
+&gt;&gt;&gt; import platform
+&gt;&gt;&gt; platform.system()
+'Linux'
+&gt;&gt;&gt; platform.release()
+'2.6.22-15-generic'
+</code></pre>
+<p>See: <a href="https://docs.python.org/2/library/platform.html">platform â Access to underlying platformâs identifying data</a></p>
+</td>
+      <td>341</td>
+      <td>9</td>
+      <td>os name posix , os name posix import , os name posix import platform , posix import platform , posix import platform platform , posix import platform platform system , import platform platform , import platform platform system , platform platform system ,</td>
+      <td>2089740</td>
+      <td>1854</td>
+    </tr>
+    <tr>
+      <td>1871</td>
+      <td>NaN</td>
+      <td><p>Dang -- lbrandy beat me to the punch, but that doesn't mean I can't provide you with the system results for Vista!</p>
+<pre><code>&gt;&gt;&gt; import os
+&gt;&gt;&gt; os.name
+'nt'
+&gt;&gt;&gt; import platform
+&gt;&gt;&gt; platform.system()
+'Windows'
+&gt;&gt;&gt; platform.release()
+'Vista'
+</code></pre>
+</td>
+      <td>112</td>
+      <td>4</td>
+      <td>os os name , import platform platform , import platform platform system , platform platform system ,</td>
+      <td>216</td>
+      <td>1854</td>
+    </tr>
+    <tr>
+      <td>1879</td>
+      <td>NaN</td>
+      <td><p>For the record here's the results on Mac:</p>
+<pre><code>&gt;&gt;&gt; import os
+&gt;&gt;&gt; os.name
+'posix'
+&gt;&gt;&gt; import platform
+&gt;&gt;&gt; platform.system()
+'Darwin'
+&gt;&gt;&gt; platform.release()
+'8.11.1'
+</code></pre>
+</td>
+      <td>91</td>
+      <td>10</td>
+      <td>os name posix , os name posix import , os name posix import platform , os os name , posix import platform , posix import platform platform , posix import platform platform system , import platform platform , import platform platform system , platform platform system ,</td>
+      <td>116</td>
+      <td>1854</td>
+    </tr>
+    <tr>
       <td>1983</td>
       <td>Python: what is the difference between (1,2,3) and [1,2,3], and when should I use each?</td>
-      <td><p>In many places, <code>(1,2,3)</code> and <code>[1,2,3]</code> can be used interchangeably.</p>\n\n<p>When should I use one or the other, and why?</p>\n</td>
+      <td><p>In many places, <code>(1,2,3)</code> and <code>[1,2,3]</code> can be used interchangeably.</p>
+<p>When should I use one or the other, and why?</p>
+</td>
       <td>31</td>
       <td>0</td>
       <td>NaN</td>
       <td>116</td>
-      <td>nan</td>
+      <td>0</td>
     </tr>
     <tr>
-      <th>53</th>
       <td>1987</td>
       <td>NaN</td>
-      <td><p>The list [1,2,3] is dynamic and flexible but that flexibility comes at a speed cost.</p>\n\n<p>The tuple (1,2,3) is fixed (immutable) and therefore faster.</p>\n</td>
+      <td><p>The list [1,2,3] is dynamic and flexible but that flexibility comes at a speed cost.</p>
+<p>The tuple (1,2,3) is fixed (immutable) and therefore faster.</p>
+</td>
       <td>19</td>
       <td>0</td>
       <td>NaN</td>
@@ -608,32 +711,47 @@
       <td>1983</td>
     </tr>
     <tr>
-      <th>54</th>
       <td>2277</td>
       <td>NaN</td>
-      <td><p>From the <a href="http://www.python.org/doc/faq/general/#why-are-there-separate-tuple-and-list-data-types">Python FAQ</a>:</p>\r\n\r\n<blockquote>\r\n  <p>Lists and tuples, while similar in many respects, are generally used in fundamentally different ways. Tuples can be thought of as being similar to Pascal records or C structs; they're small collections of related data which may be of different types which are operated on as a group. For example, a Cartesian coordinate is appropriately represented as a tuple of two or three numbers.</p>\r\n  \r\n  <p>Lists, on the other hand, are more like arrays in other languages. They tend to hold a varying number of objects all of which have the same type and which are operated on one-by-one.</p>\r\n</blockquote>\r\n\r\n<p>Generally by convention you wouldn't choose a list or a tuple just based on its (im)mutability.  You would choose a tuple for small collections of completely different pieces of data in which a full-blown class would be too heavyweight, and a list for collections of any reasonable size where you have a homogeneous set of data.</p></td>
+      <td><p>From the <a href="http://www.python.org/doc/faq/general/#why-are-there-separate-tuple-and-list-data-types">Python FAQ</a>:</p>
+
+<blockquote>
+  <p>Lists and tuples, while similar in many respects, are generally used in fundamentally different ways. Tuples can be thought of as being similar to Pascal records or C structs; they're small collections of related data which may be of different types which are operated on as a group. For example, a Cartesian coordinate is appropriately represented as a tuple of two or three numbers.</p>
+  
+  <p>Lists, on the other hand, are more like arrays in other languages. They tend to hold a varying number of objects all of which have the same type and which are operated on one-by-one.</p>
+</blockquote>
+
+<p>Generally by convention you wouldn't choose a list or a tuple just based on its (im)mutability.  You would choose a tuple for small collections of completely different pieces of data in which a full-blown class would be too heavyweight, and a list for collections of any reasonable size where you have a homogeneous set of data.</p></td>
       <td>26</td>
-      <td>7</td>
-      <td>respects generally used , respects generally used fundamentally , respects generally used fundamentally different , similar many respects , similar many respects generally , similar many respects generally used , similar pascal records ,</td>
+      <td>4</td>
+      <td>similar many respects , similar many respects generally , similar many respects generally used , similar pascal records ,</td>
       <td>156</td>
       <td>1983</td>
     </tr>
     <tr>
-      <th>55</th>
       <td>4595</td>
       <td>NaN</td>
-      <td><p>Tuples are a quick\flexible way to create <em>composite</em> data-types.\r\nLists are containers for, well, lists of objects.</p>\r\n\r\n<p>For example, you would use a List to store a list of student details in a class.</p>\r\n\r\n<p>Each student detail in that list may be a 3-tuple containing their roll number, name and test score.</p>\r\n\r\n<pre><code> `[(1,'Mark',86),(2,'John',34)...]`<br></code></pre>\r\n\r\n<p>Also, because tuples are immutable they can be used as keys in dictionaries.</p></td>
+      <td><p>Tuples are a quick\flexible way to create <em>composite</em> data-types.
+Lists are containers for, well, lists of objects.</p>
+
+<p>For example, you would use a List to store a list of student details in a class.</p>
+
+<p>Each student detail in that list may be a 3-tuple containing their roll number, name and test score.</p>
+
+<pre><code> `[(1,'Mark',86),(2,'John',34)...]`<br></code></pre>
+
+<p>Also, because tuples are immutable they can be used as keys in dictionaries.</p></td>
       <td>10</td>
-      <td>6</td>
-      <td>roll number name , roll number name test , roll number name test score , score mark john , score mark john also , score mark john also tuples ,</td>
+      <td>1</td>
+      <td>score mark john also tuples ,</td>
       <td>618</td>
       <td>1983</td>
     </tr>
     <tr>
-      <th>56</th>
       <td>5719</td>
       <td>NaN</td>
-      <td><P>As others have mentioned, Lists and tuples are both containers which can be used to store python objects. Lists are extensible and their contents can change by assignment, on the other hand tuples are immutable.</P>\r\n<P>Also, lists cannot be used as keys in a dictionary whereas tuples can. </P></td>
+      <td><P>As others have mentioned, Lists and tuples are both containers which can be used to store python objects. Lists are extensible and their contents can change by assignment, on the other hand tuples are immutable.</P>
+<P>Also, lists cannot be used as keys in a dictionary whereas tuples can. </P></td>
       <td>1</td>
       <td>0</td>
       <td>NaN</td>
@@ -641,7 +759,6 @@
       <td>1983</td>
     </tr>
     <tr>
-      <th>57</th>
       <td>5746</td>
       <td>NaN</td>
       <td><p>If you can find a solution that works with tuples, use them, as it forces immutability which kind of drives you down a more functional path. You almost never regret going down the functional/immutable path.</p></td>
@@ -652,10 +769,12 @@
       <td>1983</td>
     </tr>
     <tr>
-      <th>58</th>
       <td>12454</td>
       <td>NaN</td>
-      <td><p>Whenever I need to pass in a collection of items to a function, if I want the function to not change the values passed in - I use tuples. </p>\n\n<p>Else if I want to have the function to alter the values, I use list. </p>\n\n<p>Always if you are using external libraries and need to pass in a list of values to a function and are unsure about the integrity of the data, use a tuple. </p>\n</td>
+      <td><p>Whenever I need to pass in a collection of items to a function, if I want the function to not change the values passed in - I use tuples. </p>
+<p>Else if I want to have the function to alter the values, I use list. </p>
+<p>Always if you are using external libraries and need to pass in a list of values to a function and are unsure about the integrity of the data, use a tuple. </p>
+</td>
       <td>2</td>
       <td>0</td>
       <td>NaN</td>
@@ -663,15 +782,927 @@
       <td>1983</td>
     </tr>
     <tr>
-      <th>59</th>
       <td>12557</td>
       <td>NaN</td>
-      <td><p>The notion of tuples are highly expressive:</p>\n\n<ul>\n<li><p>Pragmatically, they are great for packing and unpacking values (<code>x,y=coord</code>).</p></li>\n<li><p>In combination with dictionaries (hash tables), they allow forms of mapping that would otherwise require many levels of association.  For example, consider marking that (x,y) has been found.</p>\n\n<pre><code>// PHP\nif (!isset($found[$x])) {\n    $found[$x] = Array();\n    $found[$x][$y] = true;\n} else if (!isset($found[$x][$y])) {\n    $found[$x][$y] = true;\n}\n\n\n# Python\nfound[(x,y)] = True # parens added for clarity\n</code></pre></li>\n<li><p>Lists should be used with the expectation of operations on its contents (hence the various mentions of immutability).  One will want to pop, push, splice, slice, search, insert before, insert after, etc with a list.</p></li>\n<li><p>Tuples should be a low-level representation of an object, where simple comparisons are made, or operations such as extracting the n'th element or n elements in a predictable fashion, such as the coordinates example given earlier.</p></li>\n<li><p>Lastly, lists are not hashable, so the type of mapping done with dictionaries (hash tables in Perl, associative arrays in PHP) must be done with tuples.</p>\n\n<p>Here's a simple example of tuples and dictionaries, together at last:</p>\n\n<pre><code>"""\ncouple is a tuple of two people\ndoesLike is a dictionary mapping couples to True or False\n"""\ncouple = "john", "jane"\ndoesLike = dict()\ndoesLike[couple] = True\ndoesLike["jane", "john"] = False # unrequited love :'(\n</code></pre></li>\n</ul>\n</td>
+      <td><p>The notion of tuples are highly expressive:</p>
+<ul>
+<li><p>Pragmatically, they are great for packing and unpacking values (<code>x,y=coord</code>).</p></li>
+<li><p>In combination with dictionaries (hash tables), they allow forms of mapping that would otherwise require many levels of association.  For example, consider marking that (x,y) has been found.</p>
+<pre><code>// PHP
+if (!isset($found[$x])) {
+    $found[$x] = Array();
+    $found[$x][$y] = true;
+} else if (!isset($found[$x][$y])) {
+    $found[$x][$y] = true;
+}
+
+# Python
+found[(x,y)] = True # parens added for clarity
+</code></pre></li>
+<li><p>Lists should be used with the expectation of operations on its contents (hence the various mentions of immutability).  One will want to pop, push, splice, slice, search, insert before, insert after, etc with a list.</p></li>
+<li><p>Tuples should be a low-level representation of an object, where simple comparisons are made, or operations such as extracting the n'th element or n elements in a predictable fashion, such as the coordinates example given earlier.</p></li>
+<li><p>Lastly, lists are not hashable, so the type of mapping done with dictionaries (hash tables in Perl, associative arrays in PHP) must be done with tuples.</p>
+<p>Here's a simple example of tuples and dictionaries, together at last:</p>
+<pre><code>"""
+couple is a tuple of two people
+doesLike is a dictionary mapping couples to True or False
+"""
+couple = "john", "jane"
+doesLike = dict()
+doesLike[couple] = True
+doesLike["jane", "john"] = False # unrequited love :'(
+</code></pre></li>
+</ul>
+</td>
       <td>7</td>
-      <td>7</td>
-      <td>require many levels , require many levels association , require many levels association example , search insert insert , search insert insert etc , search insert insert etc list , dictionaries hash tables ,</td>
+      <td>4</td>
+      <td>search insert insert , search insert insert etc , search insert insert etc list , dictionaries hash tables ,</td>
       <td>1416</td>
       <td>1983</td>
     </tr>
+    <tr>
+      <td>5313</td>
+      <td>Cross Platform, Language Agnostic GUI Markup Language?</td>
+      <td><p>I learned Swing back in the day but now I've moved to Python and want to make some apps with GUIs. I haven't had the time to learn a new GUI API so I've been using Jython, but I would prefer to use CPython. </p>
+
+<p>It would be great if I can have one simple markup that allows me to switch GUI libraries. It would be even better if I can use the same markup language across languages so I can quickly make GUIs for any language I'm using. Does anyone know of such a markup/library?</p>
+
+<p>I've seen markups like Glade and wxWidget's markup (I forget the name). They're partly what I'm looking for (making a GUI without coding it in a language) but they're intertwined with a specific library. And neither are really nice looking or friendly to human editting.</p></td>
+      <td>11</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>680</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>5319</td>
+      <td>NaN</td>
+      <td><p>erm.. HTML? (trying to be funny here... while we wait for real answers..)</p></td>
+      <td>8</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>380</td>
+      <td>5313</td>
+    </tr>
+    <tr>
+      <td>5320</td>
+      <td>NaN</td>
+      <td><p>The <a href="http://www.wxwidgets.org/" rel="nofollow" title="wxWidgets">wxWidgets</a> (formerly known as wxWindows) library might be what you're looking for. There's a particularly good port for Python, <a href="http://wxpython.org/" rel="nofollow" title="wxPython">wxPython</a>, as well as versions for different languages -- C#, C++, Perl and Ruby come to mind -- and for various GUIs: Win32, Mac OS X, GTK+, X11, Motif, WinCE. The library's been around for a while and is pretty solid.</p></td>
+      <td>1</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>216</td>
+      <td>5313</td>
+    </tr>
+    <tr>
+      <td>5340</td>
+      <td>NaN</td>
+      <td><P>Not sure if this is what you're looking for, but there's <A href="http://glade.gnome.org/" rel="nofollow">Glade</A> (or <A href="http://gladewin32.sourceforge.net/" rel="nofollow">Windows download</A>) which is a designer for GTK+. It generates an XML file which can then be used to build the GUI in a number of different languages.</P></td>
+      <td>3</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>108</td>
+      <td>5313</td>
+    </tr>
+    <tr>
+      <td>5343</td>
+      <td>NaN</td>
+      <td><p><a href="http://en.wikipedia.org/wiki/Qt_%28toolkit%29">Qt</a> (pronounced "cute" by its creators[1]) is a cross-platform application development framework, widely used for the development of GUI programs.</p>
+
+<p>Qt uses <strong>C++</strong> with several non-standard extensions implemented by an additional pre-processor that generates standard C++ code before compilation. Qt can also be used in several other programming languages; bindings exist for <strong>Ada</strong> (QtAda)[4], C<strong>#</strong> (Qyoto/Kimono)[5], <strong>Java</strong> (Qt Jambi)[6], <strong>Pascal</strong>, <strong>Perl</strong>, <strong>PHP</strong> (PHP-Qt), <strong>Ruby</strong> (RubyQt), and <strong>Python</strong> (PyQt). It runs on all major platforms, and has extensive internationalization support. Non-GUI features include SQL database access, XML parsing, thread management, network support and a unified cross-platform API for file handling.</p></td>
+      <td>5</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>25</td>
+      <td>5313</td>
+    </tr>
+    <tr>
+      <td>6616</td>
+      <td>NaN</td>
+      <td><p><a href="http://www.mozilla.org/projects/xul/" rel="nofollow">XML User Interface Language</a>. Don't know much about it so not sure if it meets your desires. Post back with your experience if you play with it.</p></td>
+      <td>3</td>
+      <td>3</td>
+      <td>user interface language , xml user interface , xml user interface language ,</td>
+      <td>488</td>
+      <td>5313</td>
+    </tr>
+    <tr>
+      <td>7496</td>
+      <td>NaN</td>
+      <td><p>I read a little on XML User Interface Language (XUL) and it looks really robust and well supported. The main problem for me is it's tied to the Gecko rendering engine so it's cross platform the way wxWidgets, QT and GTK+ are cross platform. Also, there Python bindings don't seem as good as those other libraries.</p>
+<p>GladeXML and XRC seem like better markups</p>
+</td>
+      <td>0</td>
+      <td>4</td>
+      <td>seem good libraries , user interface language , xml user interface , xml user interface language ,</td>
+      <td>680</td>
+      <td>5313</td>
+    </tr>
+    <tr>
+      <td>8109</td>
+      <td>NaN</td>
+      <td><p>@Cristian and Antony Cramp: while XUL is a nice choice for UI development (cross-platform, open-source licensed, used in Firefox and other major software), it's certainly not language agnostic. You're tied to Gecko, with JS for scripting. There is experimental support for Python scripting, but it's only experimental, AFAIK.</p>
+<p>You can define the UI in XUL+JS and use back-end components written in C++ though (there are Python and Java bridges available too).</p>
+</td>
+      <td>1</td>
+      <td>6</td>
+      <td>scripting experimental afaik , scripting experimental afaik define , scripting experimental afaik define ui , scripting experimental support , scripting experimental support python , scripting experimental support python scripting ,</td>
+      <td>1026</td>
+      <td>5313</td>
+    </tr>
+    <tr>
+      <td>8114</td>
+      <td>NaN</td>
+      <td><p>I seriously doubt you're going to find a markup language for GIU's that's <em>not</em> tied to a specific library.  For such a thing to exist, there would need to be a standardized GUI markup language, with several implementations.</p>
+</td>
+      <td>4</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>872</td>
+      <td>5313</td>
+    </tr>
+    <tr>
+      <td>1476</td>
+      <td>How do you express binary literals in Python?</td>
+      <td><p>How do you express an integer as a binary number with Python literals?</p>
+<p>I was easily able to find the answer for hex:</p>
+<pre><code>    &gt;&gt;&gt; 0x12AF
+    4783
+    &gt;&gt;&gt; 0x100
+    256
+</code></pre>
+<p>and octal:</p>
+<pre><code>    &gt;&gt;&gt; 01267
+    695
+    &gt;&gt;&gt; 0100
+    64
+</code></pre>
+<p><strong>How do you use literals to express binary in Python?</strong></p>
+<hr>
+<p><strong><em>Summary of Answers</em></strong></p>
+<ul>
+<li>Python 2.5 and earlier: can express binary using <code>int('01010101111',2)</code> but not with a literal.</li>
+<li>Python 2.5 and earlier: there is <em>no way</em> to express binary literals.</li>
+<li>Python 2.6 beta: You can do like so: <code>0b1100111</code> or <code>0B1100111</code>.</li>
+<li>Python 2.6 beta: will also allow <code>0o27</code> or <code>0O27</code> (second character is the letter O) to represent an octal.</li>
+<li>Python 3.0 beta: Same as 2.6, but will no longer allow the older <code>027</code> syntax for octals.</li>
+</ul>
+</td>
+      <td>251</td>
+      <td>8</td>
+      <td>use literals express , use literals express binary , use literals express binary python , using int literal , using int literal python , using int literal python earlier , way express binary , way express binary literals ,</td>
+      <td>92</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>1478</td>
+      <td>NaN</td>
+      <td><p>As far as I can tell Python, up through 2.5, only supports hexadecimal &amp; octal literals.  I did find some discussions about adding binary to future versions but nothing definite.</p></td>
+      <td>-1</td>
+      <td>1</td>
+      <td>versions nothing definite ,</td>
+      <td>305</td>
+      <td>1476</td>
+    </tr>
+    <tr>
+      <td>1479</td>
+      <td>NaN</td>
+      <td><p>I am pretty sure this is one of the things due to change in Python 3.0 with perhaps bin() to go with hex() and oct().</p>
+<p>EDIT:
+lbrandy's answer is correct in all cases.</p>
+</td>
+      <td>-1</td>
+      <td>1</td>
+      <td>things due change python perhaps ,</td>
+      <td>269</td>
+      <td>1476</td>
+    </tr>
+    <tr>
+      <td>1484</td>
+      <td>NaN</td>
+      <td><pre><code>&gt;&gt;&gt; print int('01010101111',2)
+687
+&gt;&gt;&gt; print int('11111111',2)
+255
+</code></pre>
+<p>Another way.</p>
+</td>
+      <td>57</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>2089740</td>
+      <td>1476</td>
+    </tr>
+    <tr>
+      <td>972</td>
+      <td>Adding a Method to an Existing Object Instance</td>
+      <td><p>I've read that it is possible to add a method to an existing object (e.g. not in the class definition) in <strong>Python</strong>, I think this is called <em>Monkey Patching</em> (or in some cases <em>Duck Punching</em>). I understand that it's not always a good decision to do so. But, how might one do this?</p>
+<p><strong>UPDATE 8/04/2008 00:21:01 EST:</strong></p>
+<p><a href="http://stackoverflow.com/a/982">That</a> looks like a good answer John Downey, I tried it but it appears that it ends up being not a <em>true</em> method.</p>
+<p>Your example defines the new patch function with an argument of <strong><code>self</code></strong>, but if you write actual code that way, the now patched class method asks for an argument named <code>self</code> (it doesn't automagically recognize it as the object to which it is supposed to bind, which is what would happen if defined within the class definition), meaning you have to call <strong><code>class.patch(obj)</code></strong> instead of just <strong><code>class.patch()</code></strong> if you want the same functionality as a <em>true</em> method.</p>
+<p><strong>It looks like Python isn't really treating it as a method, but more just as a variable which happens to be a function</strong> (and as such is callable).  Is there any way to attach an actual method to a class?</p>
+<p>Oh, and Ryan, <a href="http://pypi.python.org/pypi/monkey">that</a> isn't exactly what I was looking for (it isn't a builtin functionality), but it is quite cool nonetheless.</p>
+</td>
+      <td>364</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>145</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>982</td>
+      <td>NaN</td>
+      <td><p>In Python monkey patching generally works by overwriting a class or functions signature with your own. Below is an example from the <a href="http://wiki.zope.org/zope2/MonkeyPatch">Zope Wiki</a>:</p>
+
+<pre><code>from SomeOtherProduct.SomeModule import SomeClass<br>def speak(self):<br>   return "ook ook eee eee eee!"<br>SomeClass.speak = speak<br></code></pre>
+
+<p>That code will overwrite/create a method called speak on the class. In Jeff Atwood's <a href="http://www.codinghorror.com/blog/archives/001151.html">recent post on monkey patching</a>. He shows an example in C# 3.0 which is the current language I use for work.</p></td>
+      <td>14</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>200</td>
+      <td>972</td>
+    </tr>
+    <tr>
+      <td>984</td>
+      <td>NaN</td>
+      <td><p>I don't know Python syntax, but I know Ruby can do it, and it is rather trivial.  Let's say you want to add a method to Array that prints the length to standard out:</p>
+
+<pre><code>class Array<br>  def print_length<br>    puts length<br>  end<br>end<br></code></pre>
+
+<p>If you don't want to modify the whole class, you can just add the method to a single instance of the array, and no other arrays will have the method:</p>
+
+<pre><code>array = [1, 2, 3]<br>def array.print_length<br>  puts length<br>end<br></code></pre>
+
+<p>Just be aware of the issues involved in using this feature.  Jeff Atwood actually <a href="http://www.codinghorror.com/blog/archives/001151.html" rel="nofollow">wrote about it</a> not too long ago.</p></td>
+      <td>-6</td>
+      <td>2</td>
+      <td>method single instance , print length puts ,</td>
+      <td>122</td>
+      <td>972</td>
+    </tr>
+    <tr>
+      <td>2982</td>
+      <td>NaN</td>
+      <td><p>In Python, there is a difference between functions and bound methods.</p>
+<pre><code>&gt;&gt;&gt; def foo():
+...     print "foo"
+...
+&gt;&gt;&gt; class A:
+...     def bar( self ):
+...         print "bar"
+...
+&gt;&gt;&gt; a = A()
+&gt;&gt;&gt; foo
+&lt;function foo at 0x00A98D70&gt;
+&gt;&gt;&gt; a.bar
+&lt;bound method A.bar of &lt;__main__.A instance at 0x00A9BC88&gt;&gt;
+&gt;&gt;&gt;
+</code></pre>
+<p>Bound methods have been "bound" (how descriptive) to an instance, and that instance will be passed as the first argument whenever the method is called.</p>
+<p>Callables that are attributes of a class (as opposed to an instance) are still unbound, though, so you can modify the class definition whenever you want:</p>
+<pre><code>&gt;&gt;&gt; def fooFighters( self ):
+...     print "fooFighters"
+...
+&gt;&gt;&gt; A.fooFighters = fooFighters
+&gt;&gt;&gt; a2 = A()
+&gt;&gt;&gt; a2.fooFighters
+&lt;bound method A.fooFighters of &lt;__main__.A instance at 0x00A9BEB8&gt;&gt;
+&gt;&gt;&gt; a2.fooFighters()
+fooFighters
+</code></pre>
+<p>Previously defined instances are updated as well (as long as they haven't overridden the attribute themselves):</p>
+<pre><code>&gt;&gt;&gt; a.fooFighters()
+fooFighters
+</code></pre>
+<p>The problem comes when you want to attach a method to a single instance:</p>
+<pre><code>&gt;&gt;&gt; def barFighters( self ):
+...     print "barFighters"
+...
+&gt;&gt;&gt; a.barFighters = barFighters
+&gt;&gt;&gt; a.barFighters()
+Traceback (most recent call last):
+  File "&lt;stdin&gt;", line 1, in &lt;module&gt;
+TypeError: barFighters() takes exactly 1 argument (0 given)
+</code></pre>
+<p>The function is not automatically bound when it's attached directly to an instance:</p>
+<pre><code>&gt;&gt;&gt; a.barFighters
+&lt;function barFighters at 0x00A98EF0&gt;
+</code></pre>
+<p>To bind it, we can use the <a href="http://docs.python.org/library/types.html?highlight=methodtype#module-types">MethodType function in the types module</a>:</p>
+<pre><code>&gt;&gt;&gt; import types
+&gt;&gt;&gt; a.barFighters = types.MethodType( barFighters, a )
+&gt;&gt;&gt; a.barFighters
+&lt;bound method ?.barFighters of &lt;__main__.A instance at 0x00A9BC88&gt;&gt;
+&gt;&gt;&gt; a.barFighters()
+barFighters
+</code></pre>
+<p>This time other instances of the class have not been affected:</p>
+<pre><code>&gt;&gt;&gt; a2.barFighters()
+Traceback (most recent call last):
+  File "&lt;stdin&gt;", line 1, in &lt;module&gt;
+AttributeError: A instance has no attribute 'barFighters'
+</code></pre>
+<p>More information can be found by reading about <a href="http://users.rcn.com/python/download/Descriptor.htm">descriptors</a> and <a href="http://www.onlamp.com/pub/a/python/2003/04/17/metaclasses.html">metaclass</a> <a href="http://www.gnosis.cx/publish/programming/metaclass_2.html">programming</a>.</p>
+</td>
+      <td>576</td>
+      <td>8</td>
+      <td>method single instance , recent call last , recent call last file , recent call last file stdin , stdin line module , traceback recent call , traceback recent call last , traceback recent call last file ,</td>
+      <td>99</td>
+      <td>972</td>
+    </tr>
+    <tr>
+      <td>4600</td>
+      <td>NaN</td>
+      <td><p>What you're looking for is <code>setattr</code> I believe.
+Use this to set an attribute on an object.</p>
+
+<pre><code>&gt;&gt;&gt; def printme(s): print repr(s)<br>&gt;&gt;&gt; class A: pass<br>&gt;&gt;&gt; setattr(A,'printme',printme)<br>&gt;&gt;&gt; a = A()<br>&gt;&gt;&gt; a.printme() # s becomes the implicit 'self' variable<br>&lt; __ main __ . A instance at 0xABCDEFG&gt;<br></code></pre></td>
+      <td>4</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>618</td>
+      <td>972</td>
+    </tr>
+    <tr>
+      <td>4942</td>
+      <td>How to sell Python to a client/boss/person with lots of cash</td>
+      <td><p>When asked to create system XYZ and you ask to do it in Python over PHP or Ruby, what are the main features you can mention when they require you to explain it?</p></td>
+      <td>5</td>
+      <td>1</td>
+      <td>xyz ask python ,</td>
+      <td>1384652</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>4958</td>
+      <td>NaN</td>
+      <td><p>Focus on the shorter time needed for development/prototype and possibly easier maintenance (none of this may apply against Ruby).</p></td>
+      <td>2</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>613</td>
+      <td>4942</td>
+    </tr>
+    <tr>
+      <td>4978</td>
+      <td>NaN</td>
+      <td><p>This is one of those cases that really boil down to personal preference or situational details. If you're more comfortable and experienced with Python, then say so. Are they asking you to justify it because they're more comfortable with one of the other environments? After you're done, will the system be passed off to someone else for long-term maintenance?</p>
+
+<p>If they ask you to use a technology or language that you're not as familiar with, then make sure they know up-front that it's going to take you longer.</p></td>
+      <td>11</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>676</td>
+      <td>4942</td>
+    </tr>
+    <tr>
+      <td>5014</td>
+      <td>NaN</td>
+      <td><p>I would consider that using python on a new project is completely dependent on what problem you are trying to solve with python.  If you want someone to agree with you that you should use python, then show them how python's features apply specifically to that problem.</p>
+
+<p>In the case of web development with python, talk about WSGI and other web libraries and frameworks you could use that would make your life easier.  One note for python is that most of the frameworks for python web development can be plugged right into any current project. With ruby on rails, you're practically working in a DSL that anyone who uses your project will have to learn.  If they know python, then they can figure out what you are doing with django, etc in a day.</p>
+
+<p>I'm only talking about web development because it appears that's what you are going to be working on seeing ruby, python and PHP in the same list.  The real message that's important is applying to whatever it is you like about python <em>directly</em> to some problem you are trying to solve.</p></td>
+      <td>3</td>
+      <td>9</td>
+      <td>would consider using python , would consider using python new , would make life , would make life easier , would make life easier one , wsgi web libraries , wsgi web libraries frameworks , wsgi web libraries frameworks could , problem trying solve ,</td>
+      <td>660</td>
+      <td>4942</td>
+    </tr>
+    <tr>
+      <td>594</td>
+      <td>cx_Oracle: How do I iterate over a result set?</td>
+      <td><p>There are several ways to iterate over a result set. What are the tradeoff of each?</p>
+</td>
+      <td>25</td>
+      <td>1</td>
+      <td>ways iterate result ,</td>
+      <td>116</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>595</td>
+      <td>NaN</td>
+      <td><p>The canonical way is to use the built-in cursor iterator.</p>
+<pre><code>curs.execute('select * from people')
+for row in curs:
+    print row
+</code></pre>
+<hr>
+<p>You can use <code>fetchall()</code> to get all rows at once.</p>
+<pre><code>for row in curs.fetchall():
+    print row
+</code></pre>
+<p>It can be convenient to use this to create a Python list containing the values returned:</p>
+<pre><code>curs.execute('select first_name from people')
+names = [row[0] for row in curs.fetchall()]
+</code></pre>
+<p>This can be useful for smaller result sets, but can have bad side effects if the result set is large.</p>
+<ul>
+<li><p>You have to wait for the entire result set to be returned to
+your client process.</p></li>
+<li><p>You may eat up a lot of memory in your client to hold
+the built-up list.</p></li>
+<li><p>It may take a while for Python to construct and deconstruct the
+list which you are going to immediately discard anyways.</p></li>
+</ul>
+<hr>
+<p>If you know there's a single row being returned in the result set you can call <code>fetchone()</code> to get the single row.</p>
+<pre><code>curs.execute('select max(x) from t')
+maxValue = curs.fetchone()[0]
+</code></pre>
+<hr>
+<p>Finally, you can loop over the result set fetching one row at a time.  In general, there's no particular advantage in doing this over using the iterator.</p>
+<pre><code>row = curs.fetchone()
+while row:
+    print row
+    row = curs.fetchone()
+</code></pre>
+</td>
+      <td>25</td>
+      <td>9</td>
+      <td>wait entire result set , wait entire result set returned , way use built , way use built cursor , way use built cursor iterator , row curs fetchall , row curs fetchone , row row curs , curs execute select ,</td>
+      <td>116</td>
+      <td>594</td>
+    </tr>
+    <tr>
+      <td>469</td>
+      <td>How can I find the full path to a font from its display name on a Mac?</td>
+      <td><p>I am using the Photoshop's javascript API to find the fonts in a given PSD.</p>
+<p>Given a font name returned by the API, I want to find the actual physical font file that that font name corresponds to on the disc.</p>
+<p>This is all happening in a python program running on OSX so I guess I'm looking for one of:</p>
+<ul>
+<li>Some Photoshop javascript</li>
+<li>A Python function</li>
+<li>An OSX API that I can call from python</li>
+</ul>
+</td>
+      <td>21</td>
+      <td>3</td>
+      <td>want find actual , want find actual physical , want find actual physical font ,</td>
+      <td>147</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>497</td>
+      <td>NaN</td>
+      <td><p>open up a terminal (Applications-&gt;Utilities-&gt;Terminal) and type this in:</p>
+
+<pre><code>locate InsertFontHere<br></code></pre>
+
+<p>This will spit out every file that has the name you want.</p>
+
+<p>Warning: there may be alot to wade through.</p></td>
+      <td>4</td>
+      <td>4</td>
+      <td>want warning may , want warning may alot , want warning may alot wade , warning may alot ,</td>
+      <td>50</td>
+      <td>469</td>
+    </tr>
+    <tr>
+      <td>518</td>
+      <td>NaN</td>
+      <td><p>I haven't been able to find anything that does this directly.  I think you'll have to iterate through the various font folders on the system: <code>/System/Library/Fonts</code>, <code>/Library/Fonts</code>, and there can probably be a user-level directory as well <code>~/Library/Fonts</code>.</p>
+</td>
+      <td>2</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>153</td>
+      <td>469</td>
+    </tr>
+    <tr>
+      <td>3040</td>
+      <td>NaN</td>
+      <td><p>Unfortunately the only API that isn't deprecated is located in the ApplicationServices framework, which doesn't have a bridge support file, and thus isn't available in the bridge. If you're wanting to use ctypes, you can use ATSFontGetFileReference after looking up the ATSFontRef.</p>
+
+<p>Cocoa doesn't have any native support, at least as of 10.5, for getting the location of a font.</p></td>
+      <td>12</td>
+      <td>3</td>
+      <td>wanting use ctypes , wanting use ctypes use , wanting use ctypes use atsfontgetfilereference ,</td>
+      <td>457</td>
+      <td>469</td>
+    </tr>
+    <tr>
+      <td>5102</td>
+      <td>How do you set up Python scripts to work in Apache 2.0?</td>
+      <td><p>I tried to follow a couple of googled up tutorials on setting up mod_python, but failed every time. Do you have a good, step-by step, rock-solid howto?</p>
+
+<p>My dev box is OS X, production - Centos.</p></td>
+      <td>14</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>556</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>5129</td>
+      <td>NaN</td>
+      <td><p>There are two main ways of running Python on Apache. The simplest would be to use CGI and write normal Python scripts while the second is using a web framework like Django or Pylons.</p>
+<p>Using CGI is straightforward. Make sure your Apache config file has a cgi-bin set up. If not, follow their documentation (<a href="http://httpd.apache.org/docs/2.0/howto/cgi.html" rel="nofollow">http://httpd.apache.org/docs/2.0/howto/cgi.html</a>). At that point all you need to do is place your Python scripts in the cgi-bin directory and the standard output will become the HTTP response. Refer to Python's documentation for further info (<a href="https://docs.python.org/library/cgi.html" rel="nofollow">https://docs.python.org/library/cgi.html</a>).</p>
+<p>If you want to use a web framework you'll need to setup mod_python or FastCGI. These steps are dependent on which framework you want to use. Django provides clear instructions on how to setup mod_python and Django with Apache (<a href="http://www.djangoproject.com/documentation/modpython/" rel="nofollow">http://www.djangoproject.com/documentation/modpython/</a>)</p>
+</td>
+      <td>12</td>
+      <td>2</td>
+      <td>mod python fastcgi , setup mod python ,</td>
+      <td>680</td>
+      <td>5102</td>
+    </tr>
+    <tr>
+      <td>5165</td>
+      <td>NaN</td>
+      <td><p>Yes, mod_python is pretty confusing to set up.  Here's how I did it.</p>
+
+<p>In httpd.conf:</p>
+
+<pre><code>LoadModule python_module modules/mod_python.so<br><br>&lt;Directory "/serverbase/htdocs/myapp"&gt;<br>  AddHandler mod_python .py<br>  PythonHandler myapp<br>  PythonDebug On<br></code></pre>
+
+<p>and in your application directory:</p>
+
+<pre><code>$ /serverbase/htdocs/myapp$ ls -l<br>total 16<br>-r-xr-xr-x 1 root sys        6484 May 21 15:54 myapp.py<br></code></pre>
+
+<p>Repeat the configuration for each python program you wish to have running under mod_python.</p></td>
+      <td>8</td>
+      <td>4</td>
+      <td>yes mod python , directory serverbase htdocs , directory serverbase htdocs myapp , serverbase htdocs myapp ,</td>
+      <td>116</td>
+      <td>5102</td>
+    </tr>
+    <tr>
+      <td>5168</td>
+      <td>NaN</td>
+      <td><p>Are you running Python on UNIX or Windows?</p>
+<p>An alternative to mod_python and FastCGI is mod_wsgi. You can find out more at <a href="http://code.google.com/p/modwsgi/" rel="nofollow">modwsgi</a></p>
+<p>I have built and installed this on Solaris without problems. I had previously tried mod_python but ran into problems with shared libraries as part of the build. There are <a href="http://code.google.com/p/modwsgi/wiki/InstallationInstructions" rel="nofollow">good install docs</a> available.</p>
+</td>
+      <td>5</td>
+      <td>1</td>
+      <td>mod python fastcgi ,</td>
+      <td>636</td>
+      <td>5102</td>
+    </tr>
+    <tr>
+      <td>8948</td>
+      <td>Accessing mp3 Meta-Data with Python</td>
+      <td><p>What is the best way to retrieve mp3 metadata in python?  I've seen a couple frameworks out there, but I'm unsure as to which would be the best to use.... Any ideas?</p>
+</td>
+      <td>81</td>
+      <td>2</td>
+      <td>would best use , would best use ideas ,</td>
+      <td>145</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>8972</td>
+      <td>NaN</td>
+      <td><p><a href="http://www.dotfunk.com/projects/mp3/" rel="nofollow">This toolkit</a> may do what you need. I can't say if it's the "best", but really, if it does what you need, that's all that matters, right?</p>
+<p>HTH</p>
+</td>
+      <td>1</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>722</td>
+      <td>8948</td>
+    </tr>
+    <tr>
+      <td>8974</td>
+      <td>NaN</td>
+      <td><p>A simple example from the book Dive Into Python works ok for me, <a href="http://www.diveintopython.org/download/diveintopython-examples-5.4.zip" rel="nofollow">this</a> is the download link, the example is fileinfo.py. Don't know if it's the best, but it can do the basic job.</p>
+<p>The entire book is available online <a href="http://www.diveintopython.org/" rel="nofollow">here</a>.</p>
+</td>
+      <td>6</td>
+      <td>3</td>
+      <td>works ok download , works ok download link , works ok download link example ,</td>
+      <td>394</td>
+      <td>8948</td>
+    </tr>
+    <tr>
+      <td>8976</td>
+      <td>NaN</td>
+      <td><p>It can depend on exactly what you want to do in addition to reading the metadata. If it is just simply the bitrate / name etc. that you need, and nothing else, something lightweight is probably best.</p>
+<p>If you're manipulating the mp3 past that PyMedia may be suitable.</p>
+<p>There are quite a few, whatever you do get, make sure and test it out on plenty of sample media. There are a few different versions of ID3 tags in particular, so make sure it's not too out of date. </p>
+<p>Personally I've used this small MP3Info class with luck. It is quite old though.</p>
+<p><a href="http://www.omniscia.org/~vivake/python/MP3Info.py" rel="nofollow">http://www.omniscia.org/~vivake/python/MP3Info.py</a></p>
+</td>
+      <td>1</td>
+      <td>2</td>
+      <td>whatever get make sure test , www omniscia org ,</td>
+      <td>1087</td>
+      <td>8948</td>
+    </tr>
+    <tr>
+      <td>9358</td>
+      <td>NaN</td>
+      <td><p>What you're after is the <a href="http://id3-py.sourceforge.net/">ID3</a> module.  It's very simple and will give you exactly what you need.  Just copy the ID3.py file into your site-packages directory and you'll be able to do something like the following:</p>
+<pre><code>from ID3 import *
+try:
+  id3info = ID3('file.mp3')
+  print id3info
+  # Change the tags
+  id3info['TITLE'] = "Green Eggs and Ham"
+  id3info['ARTIST'] = "Dr. Seuss"
+  for k, v in id3info.items():
+    print k, ":", v
+except InvalidTagError, message:
+  print "Invalid ID3 tag:", message
+</code></pre>
+</td>
+      <td>11</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>1057</td>
+      <td>8948</td>
+    </tr>
+    <tr>
+      <td>10845</td>
+      <td>NaN</td>
+      <td><p>I've used <a href="https://bitbucket.org/lazka/mutagen">mutagen</a> to edit tags in media files before.  The nice thing about mutagen is that it can handle other formats, such as mp4, FLAC etc.  I've written several scripts with a lot of success using this API.</p>
+</td>
+      <td>25</td>
+      <td>3</td>
+      <td>written several scripts , written several scripts lot , written several scripts lot success ,</td>
+      <td>912</td>
+      <td>8948</td>
+    </tr>
+    <tr>
+      <td>8692</td>
+      <td>How to use Xpath in Python?</td>
+      <td><p>What is the library? Is there a full implementation? How is the library used? Where is its website?</p>
+</td>
+      <td>164</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>8699</td>
+      <td>NaN</td>
+      <td><p>The <a href="http://lxml.de/">lxml package</a> supports xpath.  It seems to work pretty well, although I've had some trouble with the self:: axis.  There's also <a href="http://pypi.python.org/pypi/Amara/1.1.6">Amara</a>, but I haven't used it personally.</p>
+</td>
+      <td>74</td>
+      <td>3</td>
+      <td>xpath seems work , xpath seems work pretty , xpath seems work pretty well ,</td>
+      <td>207</td>
+      <td>8692</td>
+    </tr>
+    <tr>
+      <td>9171</td>
+      <td>NaN</td>
+      <td><p><a href="http://pyxml.sourceforge.net" rel="nofollow" title="PyXML">PyXML</a> works well.  </p>
+<p>You didn't say what platform you're using, however if you're on Ubuntu you can get it with <code>sudo apt-get install python-xml</code>.  I'm sure other Linux distros have it as well.  </p>
+<p>If you're on a Mac, xpath is already installed but not immediately accessible.  You can set <code>PY_USE_XMLPLUS</code> in your environment or do it the Python way before you import xml.xpath:</p>
+<pre><code>if sys.platform.startswith('darwin'):
+    os.environ['PY_USE_XMLPLUS'] = '1'
+</code></pre>
+<p>In the worst case you may have to build it yourself.  This package is no longer maintained but still builds fine and works with modern 2.x Pythons.  Basic docs are <a href="http://pyxml.sourceforge.net/topics/howto/section-XPath.html" rel="nofollow">here</a>.</p>
+</td>
+      <td>2</td>
+      <td>2</td>
+      <td>xpath sys platform , py use xmlplus ,</td>
+      <td>1146</td>
+      <td>8692</td>
+    </tr>
+    <tr>
+      <td>10846</td>
+      <td>NaN</td>
+      <td><p>The latest version of <a href="http://effbot.org/zone/element-xpath.htm">elementtree</a> supports XPath pretty well.  Not being an XPath expert I can't say for sure if the implementation is full but it has satisfied most of my needs when working in Python.  I've also use lxml and PyXML and I find etree nice because it's a standard module.</p>
+<p>NOTE: I've since found lxml and for me it's definitely the best XML lib out there for Python.  It does XPath nicely as well (though again perhaps not a full implementation).</p>
+</td>
+      <td>7</td>
+      <td>5</td>
+      <td>xpath nicely well though , xpath nicely well though perhaps , xpath pretty well , xpath pretty well xpath , xpath pretty well xpath expert ,</td>
+      <td>912</td>
+      <td>8692</td>
+    </tr>
+    <tr>
+      <td>502</td>
+      <td>Get a preview JPEG of a PDF on Windows?</td>
+      <td><p>I have a cross-platform (Python) application which needs to generate a JPEG preview of the first page of a PDF.</p>
+<p>On the Mac I am spawning <a href="http://developer.apple.com/documentation/Darwin/Reference/ManPages/man1/sips.1.html">sips</a>.  Is there something similarly simple I can do on Windows?</p>
+</td>
+      <td>27</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>147</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>536</td>
+      <td>NaN</td>
+      <td><p>You can use ImageMagick's convert utility for this, see some examples in <a href="https://web.archive.org/web/20120413111338/http://studio.imagemagick.org/pipermail/magick-users/2002-May/002636.html" rel="nofollow">http://studio.imagemagick.org/pipermail/magick-users/2002-May/002636.html</a>
+:</p>
+<blockquote>
+<pre><code>Convert taxes.pdf taxes.jpg 
+</code></pre>
+  
+  <p>Will convert a two page PDF file into [2] jpeg files: taxes.jpg.0,
+  taxes.jpg.1</p>
+  
+  <p>I can also convert these JPEGS to a thumbnail as follows:</p>
+<pre><code>convert -size 120x120 taxes.jpg.0 -geometry 120x120 +profile '*' thumbnail.jpg
+</code></pre>
+  
+  <p>I can even convert the PDF directly to a jpeg thumbnail as follows:</p>
+<pre><code>convert -size 120x120 taxes.pdf -geometry 120x120 +profile '*' thumbnail.jpg
+</code></pre>
+  
+  <p>This will result in a thumbnail.jpg.0 and thumbnail.jpg.1 for the two
+  pages.</p>
+</blockquote>
+</td>
+      <td>9</td>
+      <td>3</td>
+      <td>profile thumbnail jpg , thumbnail follows convert , thumbnail follows convert size ,</td>
+      <td>161</td>
+      <td>502</td>
+    </tr>
+    <tr>
+      <td>7073</td>
+      <td>NaN</td>
+      <td><p>Is the PC likely to have Acrobat installed? I think Acrobat installs a shell extension so previews of the first page of a PDF document appear in Windows Explorer's thumbnail view. You can get thumbnails yourself via the IExtractImage COM API, which you'll need to wrap. <a href="http://www.vbaccelerator.com/home/net/code/libraries/shell_projects/Thumbnail_Extraction/article.asp" rel="nofollow" title="Domain Specific Development with Visual Studio DSL Tools.">VBAccelerator has an example in C#</a> that you could port to Python.</p>
+</td>
+      <td>2</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>878</td>
+      <td>502</td>
+    </tr>
+    <tr>
+      <td>7090</td>
+      <td>NaN</td>
+      <td><p>ImageMagick delegates the PDF->bitmap conversion to GhostScript anyway, so here's a command you can use (it's based on the actual command listed by the <code>ps:alpha</code> delegate in ImageMagick, just adjusted to use JPEG as output):</p>
+<pre><code>gs -q -dQUIET -dPARANOIDSAFER -dBATCH -dNOPAUSE -dNOPROMPT \
+-dMaxBitmap=500000000 -dLastPage=1 -dAlignToPixels=0 -dGridFitTT=0 \
+-sDEVICE=jpeg -dTextAlphaBits=4 -dGraphicsAlphaBits=4 -r72x72 \
+-sOutputFile=$OUTPUT -f$INPUT
+</code></pre>
+<p>where <code>$OUTPUT</code> and <code>$INPUT</code> are the output and input filenames. Adjust the <code>72x72</code> to whatever resolution you need. (Obviously, strip out the backslashes if you're writing out the whole command as one line.)</p>
+<p>This is good for two reasons:</p>
+<ol>
+<li>You don't need to have ImageMagick installed anymore. Not that I have anything against ImageMagick (I love it to bits), but I believe in simple solutions.</li>
+<li>ImageMagick does a two-step conversion. First PDF->PPM, then PPM->JPEG. This way, the conversion is one-step.</li>
+</ol>
+<p>Other things to consider: with the files I've tested, PNG compresses better than JPEG. If you want to use PNG, change the <code>-sDEVICE=jpeg</code> to <code>-sDEVICE=png16m</code>.</p>
+</td>
+      <td>25</td>
+      <td>3</td>
+      <td>input output input , output input output , output input output input ,</td>
+      <td>13</td>
+      <td>502</td>
+    </tr>
+    <tr>
+      <td>3061</td>
+      <td>Calling a function of a module from a string with the function's name in Python</td>
+      <td><p>What is the best way to go about calling a function given a string with the function's name in a Python program.  For example, let's say that I have a module <code>foo</code>, and I have a string whose contents are <code>"bar"</code>. What is the best way to go about calling <code>foo.bar()</code>?</p>
+<p>I need to get the return value of the function, which is why I don't just use <code>eval</code>. I figured out how to do it by using <code>eval</code> to define a temp function that returns the result of that function call, but I'm hoping that there is a more elegant way to do this.</p>
+</td>
+      <td>761</td>
+      <td>6</td>
+      <td>way go calling function given , whose contents bar , whose contents bar best , best way go , best way go calling , way go calling ,</td>
+      <td>121</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>3071</td>
+      <td>NaN</td>
+      <td><p>Assuming module <code>foo</code> with method <code>bar</code>:</p>
+<pre><code>import foo
+methodToCall = getattr(foo, 'bar')
+result = methodToCall()
+</code></pre>
+<p>As far as that goes, lines 2 and 3 can be compressed to:</p>
+<pre><code>result = getattr(foo, 'bar')()
+</code></pre>
+<p>if that makes more sense for your use case.  You can use <code>getattr</code> in this fashion on class instance bound methods, module-level methods, class methods... the list goes on.</p>
+</td>
+      <td>925</td>
+      <td>1</td>
+      <td>getattr foo bar ,</td>
+      <td>363</td>
+      <td>3061</td>
+    </tr>
+    <tr>
+      <td>4605</td>
+      <td>NaN</td>
+      <td><p>Patrick's solution is probably the cleanest.
+If you need to dynamically pick up the module as well, you can import it like:</p>
+<pre><code>m = __import__ ('foo')
+func = getattr(m,'bar')
+func()
+</code></pre>
+</td>
+      <td>145</td>
+      <td>3</td>
+      <td>well import like , well import like import , well import like import foo ,</td>
+      <td>618</td>
+      <td>3061</td>
+    </tr>
+    <tr>
+      <td>2933</td>
+      <td>How can I create a directly-executable cross-platform GUI app using Python?</td>
+      <td><p>Python works on multiple platforms and can be used for desktop and web applications, thus I conclude that there is some way to compile it into an executable for Mac, Windows and Linux.</p>
+
+<p>The problem being I have no idea where to start or how to write a GUI with it, can anybody shed some light on this and point me in the right direction please?</p></td>
+      <td>171</td>
+      <td>1</td>
+      <td>mac windows linux ,</td>
+      <td>1384652</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>2937</td>
+      <td>NaN</td>
+      <td><p>First you will need some GUI library with Python bindings and then (if you want) some program that will convert your python scripts into standalone executables.</p>
+<p><strong>Cross-platform GUI libraries with Python bindings (Windows, Linux, Mac)</strong></p>
+<p>Of course, there are many, but the most popular that I've seen in wild are:</p>
+<ul>
+<li><a href="http://wiki.python.org/moin/TkInter">Tkinter</a>  - based on <a href="http://www.tcl.tk/">Tk GUI toolkit</a> (de-facto standard GUI library for python, free for commercial projects)</li>
+<li><a href="http://www.wxpython.org/">WxPython</a> - based on <a href="http://www.wxwidgets.org/">WxWidgets</a> (very popular, free for commercial projects)</li>
+<li><a href="http://www.riverbankcomputing.co.uk/news">PyQt</a> - based on <a href="http://trolltech.com/products/qt/">Qt</a> (also very popular and more stable than WxWidgets but costly license for commercial projects)</li>
+</ul>
+<p>Complete list is at <a href="http://wiki.python.org/moin/GuiProgramming">http://wiki.python.org/moin/GuiProgramming</a></p>
+<p><strong>Single executable (Windows)</strong></p>
+<ul>
+<li><a href="http://www.py2exe.org/">py2exe</a> - Probably the most popular out there (<a href="http://stackoverflow.com/questions/2933/an-executable-python-app/31859#31859">PyInstaller</a> is also gaining in popularity)</li>
+</ul>
+<p><strong>Single executable (Linux)</strong></p>
+<ul>
+<li><a href="http://wiki.python.org/moin/Freeze">Freeze</a> - works the same way like py2exe but targets Linux platform</li>
+</ul>
+<p><strong>Single executable (Mac)</strong></p>
+<ul>
+<li><a href="https://pythonhosted.org/py2app/">py2app</a> - again, works like py2exe but targets Mac OS</li>
+</ul>
+</td>
+      <td>189</td>
+      <td>5</td>
+      <td>free commercial projects , gui library python , like py exe , like py exe targets , py exe targets ,</td>
+      <td>275</td>
+      <td>2933</td>
+    </tr>
+    <tr>
+      <td>2941</td>
+      <td>NaN</td>
+      <td><p>You don't need to <em>compile</em> python for Mac/Windows/Linux.  It is an interpreted language, so you simply need to have the Python interpreter installed on the system of your choice (it is available for all three platforms).</p>
+
+<p>As for a GUI library that works cross platform, Python's <a href="http://www.tcl.tk/" rel="nofollow">Tk/Tcl</a> widget library works very well, and I believe is sufficiently cross platform.</p>
+
+<p><a href="http://docs.python.org/lib/module-Tkinter.html" rel="nofollow">Tkinter</a> is the python interface to Tk/Tcl</p>
+
+<p>From the python project webpage: </p>
+
+<blockquote>
+  <p>Tkinter is not the only GuiProgramming
+  toolkit for Python.  It is however the
+  most commonly used one, and almost the
+  only  one that is portable between
+  Unix, Mac and Windows</p>
+</blockquote></td>
+      <td>0</td>
+      <td>1</td>
+      <td>mac windows linux ,</td>
+      <td>92</td>
+      <td>2933</td>
+    </tr>
+    <tr>
+      <td>2980</td>
+      <td>NaN</td>
+      <td><p>Since python is installed on nearly every non-Windows OS by default now, the only thing you really need to make sure of is that all of the non-standard libraries you use are installed.</p>
+
+<p>Having said that, it is possible to build executables that include the python interpreter, and any libraries you use.  This is likely to create a large executable, however.</p>
+
+<p>MacOS X even includes support in the Xcode IDE for creating full standalone GUI apps.  These can be run by any user running OS X.</p></td>
+      <td>2</td>
+      <td>3</td>
+      <td>since python installed , since python installed nearly , since python installed nearly every ,</td>
+      <td>188</td>
+      <td>2933</td>
+    </tr>
+    <tr>
+      <td>12166</td>
+      <td>NaN</td>
+      <td><p>An alternative tool to py2exe is <a href="http://pypi.python.org/pypi/bbfreeze/">bbfreeze</a> which generates executables for windows and linux. It's newer than py2exe and handles eggs quite well. I've found it magically works better without configuration for a wide variety of applications.</p>
+</td>
+      <td>13</td>
+      <td>1</td>
+      <td>well found magically works ,</td>
+      <td>995</td>
+      <td>2933</td>
+    </tr>
+    <tr>
+      <td>12167</td>
+      <td>NaN</td>
+      <td><p>I'm not sure that this is the best way to do it, but when I'm deploying Ruby GUI apps (not Python, but has the same "problem" as far as .exe's are concerned) on Windows, I just write a short launcher in C# that calls on my main script. It compiles to an executable, and I then have an application executable.</p>
+</td>
+      <td>2</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>1344</td>
+      <td>2933</td>
+    </tr>
   </tbody>
 </table>
+    </body>
+</html>
