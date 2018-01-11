@@ -64,14 +64,11 @@ Subsequent Runs
      to your opinion of each answer.
      This is one way
      to evaluate how well the program finds good answers.
-
-     TBD, At least one data file in the package includes
-     graded answers.
+     There is no such tool in this project at this time.
 
   #. TBD, To find what program settings produce good results:
      review results; change the program; repeat tests.
 
-  #. TBD, To analyze the text run nltk_ex25.py.
 
 
 Input data format
@@ -95,14 +92,15 @@ Notes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #. The number of o/p records can be varied by changing
-   the num_owners variable.
-   Original setting of num_owners is 10.
+   the MAX_OWNERS variable.
+   Original setting of MAX_OWNERS is 10.
 
   * When using the full Questions.csv and Answers.csv i/p files,
+    with MAX_OWNERS set to 10, 
     the o/p file was 8749 lines long and was built in 36 sec
     on my system.
 
-  * With num_owners set to 50 for the same data set, 
+  * With MAX_OWNERS set to 50 for the same data set, 
     the o/p file was 22023 lines long and was built in 59 sec.
 
 #. One way to use the data: run the grade_each_answer.py program
@@ -115,13 +113,13 @@ Notes
 
 
 
-Program: **nltk_ex25.py**
+Module: **nltk_ex25.py**
 ================================================
 
 Introduction
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The nltk_ex25 program is an experiment to learn about text processing
+The nltk_ex25 module is an experiment to learn about text processing
 using the Natural Language Toolkit, NLTK.
 It processes Q & A data from stackoverflow
 (needs more than one answer for a question).
@@ -138,14 +136,10 @@ Usage
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 At this time, the natural language processing routines
-included in the nltk_ex25.py program
+included in the nltk_ex25.py module
 are called from the main fga*.py program.
-You need not run the nltk*.py program separately.
+Do not run the nltk*.py module separately.
 
-For debugging and development,
-you can run this program directly, eg:
-
- * ``python nltk_ex25.py``
 
 
 Notes
@@ -153,15 +147,8 @@ Notes
 
 #. The number of high-score terms used for comparison can be varied
    by changing
-   the num_hi_score_terms variable.
-   Original setting of num_hi_score_terms is 22.
+   the MAX_HI_SCORE_TERMS variable in fga*py.
 
-#. The program is now hard-coded to use a single,
-   specific input file during initial debugging,
-   data/pid_231767.csv.
-   When run directly, it will use this data set by default.
-   When called via fga*.py,
-   it will use the data provided by fga.
 
 
 

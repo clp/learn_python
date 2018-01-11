@@ -22,6 +22,7 @@ It includes the following programs.
 
  * fga_find_good_answers.py (fga), main control program.
  * nltk_ex25.py, analyze text with natural language toolkit.
+ * sga_show_good_answers.py, search for text in the data.
  * grade_each_answer.py, a user can read & grade answers, from A to F.
 
 
@@ -53,6 +54,7 @@ Start the program with one of these commands:
   * ``python fga_find_good_answers.py``
 
 Respond to the prompt with 'm' to see the menu.
+Enter 'h' to see help.
 Enter 'q' to quit the program.
 
 
@@ -69,7 +71,53 @@ Notes
 
 
 
-Program: **nltk_ex25.py**
+
+Module: **sga_show_good_answers.py**
+============================================
+
+Introduction
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The sga_show_good_answers module
+searches the input data
+and collects all questions and answers that contain
+the search terms,
+and includes related Q's and A's.
+
+
+Usage
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Import the module to use it.
+Do not run the module directly.
+
+See the fga_find_good_answers.py program for an example that
+uses this module.
+
+In fga*py, respond to the prompt with 'lek' (look for exact
+keywords)
+to enter a search term,
+which is then handled by this module.
+
+The fga*py program also has a command-line option
+to enter a search term, eg,
+
+  python fga_find_good_answers.py -s word1 word2
+
+It returns a dataframe containing the Q's and A's that it found,
+in an order based on the results of the NLP analysis.
+
+
+Notes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#. One way to examine the output: open the search_result_full.html
+   file with a web browser or other tool that renders HTML
+   properly.
+
+
+
+Module: **nltk_ex25.py**
 ================================================
 
 Introduction
@@ -82,7 +130,7 @@ It processes Q & A data from stackoverflow
 one answer for a question).
 
 One way that it can identify useful answers is
-based on the terms that they contain
+based on the terms that each answer contains,
 compared to terms that are found in high-score answers.
 
 The o/p is a csv file containing a question followed
@@ -95,7 +143,7 @@ Usage
 At this time, the natural language processing routines
 included in the nltk_ex25.py program
 are called from the main fga*.py program.
-You do not run the nltk*.py program directly.
+Do not run the nltk*.py module directly.
 
 
 Notes
