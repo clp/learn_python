@@ -103,21 +103,10 @@ Requirements
 
 """
 
-#TBD,Wed2018_0110_18:07  to update
-#TBR import argparse
-#TBR import nltk
-#TBR import matplotlib.pyplot as plt
-#TBR import matplotlib
-#TBR matplotlib.style.use('ggplot')
-#TBR import numpy as np
 import os
 import pandas as pd
-#TBR import random
-#TBR from pandas.plotting import scatter_matrix
 
 import config as cf
-#TBR import nltk_ex25 as nl
-#TBR import sga_show_good_answers as sga
 
 
 cf.logger.info(cf.log_file + ' - Start logging for ' + os.path.basename(__file__))
@@ -190,12 +179,6 @@ def main(popular_qa_df):
 def init():
     """Initialize some settings for the program.
     """
-    #TBR,Tue2018_0109_11:19  Not in use?
-    if opt_ns.debug:
-        END = 55
-        print('Running in debug mode.')
-        print('  end set to: ', END)
-        print()
 
     # Initialize settings for pandas.
     pd.set_option('display.width', 0)  # 0=no limit, for debug
@@ -297,8 +280,6 @@ def write_full_df_to_html_file(in_df, wdir, wfile, columns_l):
 
 
 if __name__ == '__main__':
-
-    check_install()
 
     main()
 
