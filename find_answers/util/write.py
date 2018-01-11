@@ -4,7 +4,6 @@
 # Using Python 3.4.5 :: Anaconda 4.3.0 (64-bit), since Tue2017_0710
 # Requires Python 3; does not work w/ Python 2.
 #
-#TBD,Wed2018_0110_18:07  to update
 """write.py
 
 A module that contains functions that write data to disk files.
@@ -140,7 +139,6 @@ def init():
     pd.options.display.float_format = '{:.0f}'.format
 
 
-#TBD.1, Simplify this entire func.
 def save_prior_file(wdir, wfile):
     """Save backup copy of a file w/ same name.
 
@@ -234,11 +232,9 @@ init()
 
 
 if __name__ == '__main__':
-
     main()
 
     log_msg = cf.log_file + ' - Finish logging for ' + \
         os.path.basename(__file__) + '\n'
     cf.logger.warning(log_msg)
 
-'bye'
