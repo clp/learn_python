@@ -1,0 +1,575 @@
+
+<html>
+    <head>
+        <style type="text/css">
+        table{
+            /* max-width: 850px; */
+            width: 100%;
+        }
+
+        th, td {
+            overflow: auto;  /* Use auto to get H scroll bars */
+            text-align: left;
+            /* max-width helps line-wrap in a cell, and most code */ 
+            /* samples in cells have no H.scroll when width=700px: */ 
+            max-width: 700px;  
+            /* max-width: 50%; Using % breaks line-wrap inside a cell */
+            width: auto;    /* auto is better than using % */
+        }
+
+        pre,img {
+            padding: 0.1em 0.5em 0.3em 0.7em;
+            border-left: 11px solid #ccc;
+            margin: 1.7em 0 1.7em 0.3em;
+            overflow: auto;  /* Use auto to get H scroll bars */
+        }
+        </style>
+    </head>
+    <body>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>HSTCount</th>
+      <th>Score</th>
+      <th>Id</th>
+      <th>Title</th>
+      <th>Body</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>9</td>
+      <td>8</td>
+      <td>10123</td>
+      <td>How do I treat an integer as an array of bytes in Python?</td>
+      <td><p>I'm trying to decode the result of the Python os.wait() function. This returns, according to the Python docs:</p>
+<blockquote>
+  <p>a tuple containing its pid and exit status indication: a 16-bit number, whose low byte is the signal number that killed the process, and whose high byte is the exit status (if the signal number is zero); the high bit of the low byte is set if a core file was produced.</p>
+</blockquote>
+<p>How do I decode the exit status indication (which is an integer) to obtain the high and low byte? To be specific, how do I implement the decode function used in the following code snippet:</p>
+<pre><code>(pid,status) = os.wait()
+(exitstatus, signum) = decode(status)
+</code></pre>
+</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>10</td>
+      <td>10213</td>
+      <td>NaN</td>
+      <td><p>To answer your general question, you can use <a href="http://en.wikipedia.org/wiki/Bit_twiddling" rel="nofollow">bit manipulation</a> techniques:</p>
+<pre><code>pid, status = os.wait()
+exitstatus, signum = status &amp; 0xFF, (status &amp; 0xFF00) &gt;&gt; 8
+</code></pre>
+<p>However, there are also <a href="http://docs.python.org/lib/os-process.html#l2h-2780" rel="nofollow">built-in functions</a> for interpreting exit status values:</p>
+<pre><code>pid, status = os.wait()
+exitstatus, signum = os.WEXITSTATUS( status ), os.WTERMSIG( status )
+</code></pre>
+<p>See also:</p>
+<ul>
+<li>os.WCOREDUMP()</li>
+<li>os.WIFCONTINUED()</li>
+<li>os.WIFSTOPPED()</li>
+<li>os.WIFSIGNALED()</li>
+<li>os.WIFEXITED()</li>
+<li>os.WSTOPSIG()</li>
+</ul>
+</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>0</td>
+      <td>10148</td>
+      <td>NaN</td>
+      <td><p>The folks before me've nailed it, but if you really want it on one line, you can do this:</p>
+<pre><code>(signum, exitstatus) = (status &amp; 0xFF, (status &gt;&gt; 8) &amp; 0xFF)
+</code></pre>
+<p>EDIT: Had it backwards.</p>
+</td>
+    </tr>
+    <tr>
+      <td>0</td>
+      <td>10</td>
+      <td>10129</td>
+      <td>NaN</td>
+      <td><p>This will do what you want:</p>
+<pre><code>signum = status &amp; 0xff
+exitstatus = (status &amp; 0xff00) &gt;&gt; 8
+</code></pre>
+</td>
+    </tr>
+    <tr>
+      <td>0</td>
+      <td>1</td>
+      <td>10132</td>
+      <td>NaN</td>
+      <td><p>You can unpack the status using <a href="http://docs.python.org/ref/shifting.html" rel="nofollow">bit-shifting</a> and <a href="http://docs.python.org/ref/bitwise.html" rel="nofollow">masking</a> operators.</p>
+<pre><code>low = status &amp; 0x00FF
+high = (status &amp; 0xFF00) &gt;&gt; 8
+</code></pre>
+<p>I'm not a Python programmer, so I hope got the syntax correct.</p>
+</td>
+    </tr>
+    <tr>
+      <td>0</td>
+      <td>364</td>
+      <td>972</td>
+      <td>Adding a Method to an Existing Object Instance</td>
+      <td><p>I've read that it is possible to add a method to an existing object (e.g. not in the class definition) in <strong>Python</strong>, I think this is called <em>Monkey Patching</em> (or in some cases <em>Duck Punching</em>). I understand that it's not always a good decision to do so. But, how might one do this?</p>
+<p><strong>UPDATE 8/04/2008 00:21:01 EST:</strong></p>
+<p><a href="http://stackoverflow.com/a/982">That</a> looks like a good answer John Downey, I tried it but it appears that it ends up being not a <em>true</em> method.</p>
+<p>Your example defines the new patch function with an argument of <strong><code>self</code></strong>, but if you write actual code that way, the now patched class method asks for an argument named <code>self</code> (it doesn't automagically recognize it as the object to which it is supposed to bind, which is what would happen if defined within the class definition), meaning you have to call <strong><code>class.patch(obj)</code></strong> instead of just <strong><code>class.patch()</code></strong> if you want the same functionality as a <em>true</em> method.</p>
+<p><strong>It looks like Python isn't really treating it as a method, but more just as a variable which happens to be a function</strong> (and as such is callable).  Is there any way to attach an actual method to a class?</p>
+<p>Oh, and Ryan, <a href="http://pypi.python.org/pypi/monkey">that</a> isn't exactly what I was looking for (it isn't a builtin functionality), but it is quite cool nonetheless.</p>
+</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>576</td>
+      <td>2982</td>
+      <td>NaN</td>
+      <td><p>In Python, there is a difference between functions and bound methods.</p>
+<pre><code>&gt;&gt;&gt; def foo():
+...     print "foo"
+...
+&gt;&gt;&gt; class A:
+...     def bar( self ):
+...         print "bar"
+...
+&gt;&gt;&gt; a = A()
+&gt;&gt;&gt; foo
+&lt;function foo at 0x00A98D70&gt;
+&gt;&gt;&gt; a.bar
+&lt;bound method A.bar of &lt;__main__.A instance at 0x00A9BC88&gt;&gt;
+&gt;&gt;&gt;
+</code></pre>
+<p>Bound methods have been "bound" (how descriptive) to an instance, and that instance will be passed as the first argument whenever the method is called.</p>
+<p>Callables that are attributes of a class (as opposed to an instance) are still unbound, though, so you can modify the class definition whenever you want:</p>
+<pre><code>&gt;&gt;&gt; def fooFighters( self ):
+...     print "fooFighters"
+...
+&gt;&gt;&gt; A.fooFighters = fooFighters
+&gt;&gt;&gt; a2 = A()
+&gt;&gt;&gt; a2.fooFighters
+&lt;bound method A.fooFighters of &lt;__main__.A instance at 0x00A9BEB8&gt;&gt;
+&gt;&gt;&gt; a2.fooFighters()
+fooFighters
+</code></pre>
+<p>Previously defined instances are updated as well (as long as they haven't overridden the attribute themselves):</p>
+<pre><code>&gt;&gt;&gt; a.fooFighters()
+fooFighters
+</code></pre>
+<p>The problem comes when you want to attach a method to a single instance:</p>
+<pre><code>&gt;&gt;&gt; def barFighters( self ):
+...     print "barFighters"
+...
+&gt;&gt;&gt; a.barFighters = barFighters
+&gt;&gt;&gt; a.barFighters()
+Traceback (most recent call last):
+  File "&lt;stdin&gt;", line 1, in &lt;module&gt;
+TypeError: barFighters() takes exactly 1 argument (0 given)
+</code></pre>
+<p>The function is not automatically bound when it's attached directly to an instance:</p>
+<pre><code>&gt;&gt;&gt; a.barFighters
+&lt;function barFighters at 0x00A98EF0&gt;
+</code></pre>
+<p>To bind it, we can use the <a href="http://docs.python.org/library/types.html?highlight=methodtype#module-types">MethodType function in the types module</a>:</p>
+<pre><code>&gt;&gt;&gt; import types
+&gt;&gt;&gt; a.barFighters = types.MethodType( barFighters, a )
+&gt;&gt;&gt; a.barFighters
+&lt;bound method ?.barFighters of &lt;__main__.A instance at 0x00A9BC88&gt;&gt;
+&gt;&gt;&gt; a.barFighters()
+barFighters
+</code></pre>
+<p>This time other instances of the class have not been affected:</p>
+<pre><code>&gt;&gt;&gt; a2.barFighters()
+Traceback (most recent call last):
+  File "&lt;stdin&gt;", line 1, in &lt;module&gt;
+AttributeError: A instance has no attribute 'barFighters'
+</code></pre>
+<p>More information can be found by reading about <a href="http://users.rcn.com/python/download/Descriptor.htm">descriptors</a> and <a href="http://www.onlamp.com/pub/a/python/2003/04/17/metaclasses.html">metaclass</a> <a href="http://www.gnosis.cx/publish/programming/metaclass_2.html">programming</a>.</p>
+</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>-6</td>
+      <td>984</td>
+      <td>NaN</td>
+      <td><p>I don't know Python syntax, but I know Ruby can do it, and it is rather trivial.  Let's say you want to add a method to Array that prints the length to standard out:</p>
+
+<pre><code>class Array<br>  def print_length<br>    puts length<br>  end<br>end<br></code></pre>
+
+<p>If you don't want to modify the whole class, you can just add the method to a single instance of the array, and no other arrays will have the method:</p>
+
+<pre><code>array = [1, 2, 3]<br>def array.print_length<br>  puts length<br>end<br></code></pre>
+
+<p>Just be aware of the issues involved in using this feature.  Jeff Atwood actually <a href="http://www.codinghorror.com/blog/archives/001151.html" rel="nofollow">wrote about it</a> not too long ago.</p></td>
+    </tr>
+    <tr>
+      <td>0</td>
+      <td>14</td>
+      <td>982</td>
+      <td>NaN</td>
+      <td><p>In Python monkey patching generally works by overwriting a class or functions signature with your own. Below is an example from the <a href="http://wiki.zope.org/zope2/MonkeyPatch">Zope Wiki</a>:</p>
+
+<pre><code>from SomeOtherProduct.SomeModule import SomeClass<br>def speak(self):<br>   return "ook ook eee eee eee!"<br>SomeClass.speak = speak<br></code></pre>
+
+<p>That code will overwrite/create a method called speak on the class. In Jeff Atwood's <a href="http://www.codinghorror.com/blog/archives/001151.html">recent post on monkey patching</a>. He shows an example in C# 3.0 which is the current language I use for work.</p></td>
+    </tr>
+    <tr>
+      <td>0</td>
+      <td>4</td>
+      <td>4600</td>
+      <td>NaN</td>
+      <td><p>What you're looking for is <code>setattr</code> I believe.
+Use this to set an attribute on an object.</p>
+
+<pre><code>&gt;&gt;&gt; def printme(s): print repr(s)<br>&gt;&gt;&gt; class A: pass<br>&gt;&gt;&gt; setattr(A,'printme',printme)<br>&gt;&gt;&gt; a = A()<br>&gt;&gt;&gt; a.printme() # s becomes the implicit 'self' variable<br>&lt; __ main __ . A instance at 0xABCDEFG&gt;<br></code></pre></td>
+    </tr>
+    <tr>
+      <td>0</td>
+      <td>256</td>
+      <td>773</td>
+      <td>How do I use Python's itertools.groupby()?</td>
+      <td><p>I haven't been able to find an understandable explanation of how to actually use Python's <code>itertools.groupby()</code> function.  What I'm trying to do is this:</p>
+<ul>
+<li>Take a list - in this case, the children of an objectified <code>lxml</code> element</li>
+<li>Divide it into groups based on some criteria</li>
+<li>Then later iterate over each of these groups separately.</li>
+</ul>
+<p>I've reviewed <a href="https://docs.python.org/2/library/itertools.html">the documentation</a>, and <a href="https://docs.python.org/2/library/itertools.html#itertools.groupby">the examples</a>, but I've had trouble trying to apply them beyond a simple list of numbers. </p>
+<p>So, how do I use of <code>itertools.groupby()</code>?  Is there another technique I should be using?  Pointers to good "prerequisite" reading would also be appreciated.</p>
+</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>394</td>
+      <td>7286</td>
+      <td>NaN</td>
+      <td><p>As Sebastjan said, <strong>you first have to sort your data. This is important.</strong></p>
+<p>The part I didn't get is that in the example construction</p>
+<pre><code>groups = []
+uniquekeys = []
+for k, g in groupby(data, keyfunc):
+   groups.append(list(g))    # Store group iterator as a list
+   uniquekeys.append(k)
+</code></pre>
+<p><code>k</code> is the current grouping key, and <code>g</code> is an iterator that you can use to iterate over the group defined by that grouping key. In other words, the <code>groupby</code> iterator itself returns iterators.</p>
+<p>Here's an example of that, using clearer variable names:</p>
+<pre><code>from itertools import groupby
+things = [("animal", "bear"), ("animal", "duck"), ("plant", "cactus"), ("vehicle", "speed boat"), ("vehicle", "school bus")]
+for key, group in groupby(things, lambda x: x[0]):
+    for thing in group:
+        print "A %s is a %s." % (thing[1], key)
+    print " "
+</code></pre>
+<p>This will give you the output:</p>
+<blockquote>
+  <p>A bear is a animal.<br>
+  A duck is a animal.</p>
+  
+  <p>A cactus is a plant.</p>
+  
+  <p>A speed boat is a vehicle.<br>
+  A school bus is a vehicle.</p>
+</blockquote>
+<p>In this example, <code>things</code> is a list of tuples where the first item in each tuple is the group the second item belongs to. </p>
+<p>The <code>groupby()</code> function takes two arguments: (1) the data to group and (2) the function to group it with. </p>
+<p>Here, <code>lambda x: x[0]</code> tells <code>groupby()</code> to use the first item in each tuple as the grouping key.</p>
+<p>In the above <code>for</code> statement, <code>groupby</code> returns three (key, group iterator) pairs - once for each unique key. You can use the returned iterator to iterate over each individual item in that group.</p>
+<p>Here's a slightly different example with the same data, using a list comprehension:</p>
+<pre><code>for key, group in groupby(things, lambda x: x[0]):
+    listOfThings = " and ".join([thing[1] for thing in group])
+    print key + "s:  " + listOfThings + "."
+</code></pre>
+<p>This will give you the output:</p>
+<blockquote>
+  <p>animals: bear and duck.<br>
+  plants: cactus.<br>
+  vehicles: speed boat and school bus.</p>
+</blockquote>
+</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>52</td>
+      <td>783</td>
+      <td>NaN</td>
+      <td><p>Can you show us your code?</p>
+<p>The example on the Python docs is quite straightforward:</p>
+<pre><code>groups = []
+uniquekeys = []
+for k, g in groupby(data, keyfunc):
+    groups.append(list(g))      # Store group iterator as a list
+    uniquekeys.append(k)
+</code></pre>
+<p>So in your case, data is a list of nodes, keyfunc is where the logic of your criteria function goes and then <code>groupby()</code> groups the data.</p>
+<p>You must be careful to <strong>sort the data</strong> by the criteria before you call <code>groupby</code> or it won't work. <code>groupby</code> method actually just iterates through a list and whenever the key changes it creates a new group.</p>
+</td>
+    </tr>
+    <tr>
+      <td>0</td>
+      <td>31</td>
+      <td>1983</td>
+      <td>Python: what is the difference between (1,2,3) and [1,2,3], and when should I use each?</td>
+      <td><p>In many places, <code>(1,2,3)</code> and <code>[1,2,3]</code> can be used interchangeably.</p>
+<p>When should I use one or the other, and why?</p>
+</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>26</td>
+      <td>2277</td>
+      <td>NaN</td>
+      <td><p>From the <a href="http://www.python.org/doc/faq/general/#why-are-there-separate-tuple-and-list-data-types">Python FAQ</a>:</p>
+
+<blockquote>
+  <p>Lists and tuples, while similar in many respects, are generally used in fundamentally different ways. Tuples can be thought of as being similar to Pascal records or C structs; they're small collections of related data which may be of different types which are operated on as a group. For example, a Cartesian coordinate is appropriately represented as a tuple of two or three numbers.</p>
+  
+  <p>Lists, on the other hand, are more like arrays in other languages. They tend to hold a varying number of objects all of which have the same type and which are operated on one-by-one.</p>
+</blockquote>
+
+<p>Generally by convention you wouldn't choose a list or a tuple just based on its (im)mutability.  You would choose a tuple for small collections of completely different pieces of data in which a full-blown class would be too heavyweight, and a list for collections of any reasonable size where you have a homogeneous set of data.</p></td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>7</td>
+      <td>12557</td>
+      <td>NaN</td>
+      <td><p>The notion of tuples are highly expressive:</p>
+<ul>
+<li><p>Pragmatically, they are great for packing and unpacking values (<code>x,y=coord</code>).</p></li>
+<li><p>In combination with dictionaries (hash tables), they allow forms of mapping that would otherwise require many levels of association.  For example, consider marking that (x,y) has been found.</p>
+<pre><code>// PHP
+if (!isset($found[$x])) {
+    $found[$x] = Array();
+    $found[$x][$y] = true;
+} else if (!isset($found[$x][$y])) {
+    $found[$x][$y] = true;
+}
+
+# Python
+found[(x,y)] = True # parens added for clarity
+</code></pre></li>
+<li><p>Lists should be used with the expectation of operations on its contents (hence the various mentions of immutability).  One will want to pop, push, splice, slice, search, insert before, insert after, etc with a list.</p></li>
+<li><p>Tuples should be a low-level representation of an object, where simple comparisons are made, or operations such as extracting the n'th element or n elements in a predictable fashion, such as the coordinates example given earlier.</p></li>
+<li><p>Lastly, lists are not hashable, so the type of mapping done with dictionaries (hash tables in Perl, associative arrays in PHP) must be done with tuples.</p>
+<p>Here's a simple example of tuples and dictionaries, together at last:</p>
+<pre><code>"""
+couple is a tuple of two people
+doesLike is a dictionary mapping couples to True or False
+"""
+couple = "john", "jane"
+doesLike = dict()
+doesLike[couple] = True
+doesLike["jane", "john"] = False # unrequited love :'(
+</code></pre></li>
+</ul>
+</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>10</td>
+      <td>4595</td>
+      <td>NaN</td>
+      <td><p>Tuples are a quick\flexible way to create <em>composite</em> data-types.
+Lists are containers for, well, lists of objects.</p>
+
+<p>For example, you would use a List to store a list of student details in a class.</p>
+
+<p>Each student detail in that list may be a 3-tuple containing their roll number, name and test score.</p>
+
+<pre><code> `[(1,'Mark',86),(2,'John',34)...]`<br></code></pre>
+
+<p>Also, because tuples are immutable they can be used as keys in dictionaries.</p></td>
+    </tr>
+    <tr>
+      <td>0</td>
+      <td>19</td>
+      <td>1987</td>
+      <td>NaN</td>
+      <td><p>The list [1,2,3] is dynamic and flexible but that flexibility comes at a speed cost.</p>
+<p>The tuple (1,2,3) is fixed (immutable) and therefore faster.</p>
+</td>
+    </tr>
+    <tr>
+      <td>0</td>
+      <td>2</td>
+      <td>12454</td>
+      <td>NaN</td>
+      <td><p>Whenever I need to pass in a collection of items to a function, if I want the function to not change the values passed in - I use tuples. </p>
+<p>Else if I want to have the function to alter the values, I use list. </p>
+<p>Always if you are using external libraries and need to pass in a list of values to a function and are unsure about the integrity of the data, use a tuple. </p>
+</td>
+    </tr>
+    <tr>
+      <td>0</td>
+      <td>1</td>
+      <td>5719</td>
+      <td>NaN</td>
+      <td><P>As others have mentioned, Lists and tuples are both containers which can be used to store python objects. Lists are extensible and their contents can change by assignment, on the other hand tuples are immutable.</P>
+<P>Also, lists cannot be used as keys in a dictionary whereas tuples can. </P></td>
+    </tr>
+    <tr>
+      <td>0</td>
+      <td>1</td>
+      <td>5746</td>
+      <td>NaN</td>
+      <td><p>If you can find a solution that works with tuples, use them, as it forces immutability which kind of drives you down a more functional path. You almost never regret going down the functional/immutable path.</p></td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>18</td>
+      <td>11060</td>
+      <td>How should I unit test a code-generator?</td>
+      <td><p>This is a difficult and open-ended question I know, but I thought I'd throw it to the floor and see if anyone had any interesting suggestions.</p>
+<p>I have developed a code-generator that takes our python interface to our C++ code (generated via SWIG) and generates code needed to expose this as WebServices.  When I developed this code I did it using TDD, but I've found my tests to be brittle as hell.  Because each test essentially wanted to verify that for a given bit of input code (which happens to be a C++ header) I'd get a given bit of outputted code I wrote a small engine that reads test definitions from XML input files and generates test cases from these expectations.</p>
+<p>The problem is I dread going in to modify the code at all.  That and the fact that the unit tests themselves are a: complex, and b: brittle.</p>
+<p>So I'm trying to think of alternative approaches to this problem, and it strikes me I'm perhaps tackling it the wrong way.  Maybe I need to focus more on the outcome, IE: does the code I generate actually run and do what I want it to, rather than, does the code look the way I want it to.</p>
+<p>Has anyone got any experiences of something similar to this they would care to share?</p>
+</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>8</td>
+      <td>11074</td>
+      <td>NaN</td>
+      <td><p>I started writing up a summary of my experience with my own code generator, then went back and re-read your question and found you had already touched upon the same issues yourself, focus on the execution results instead of the code layout/look.</p>
+<p>Problem is, this is hard to test, the generated code might not be suited to actually run in the environment of the unit test system, and how do you encode the expected results?</p>
+<p>I've found that you need to break down the code generator into smaller pieces and unit test those. Unit testing a full code generator is more like integration testing than unit testing if you ask me.</p>
+</td>
+    </tr>
+    <tr>
+      <td>0</td>
+      <td>4</td>
+      <td>11443</td>
+      <td>NaN</td>
+      <td><p>Recall that "unit testing" is only one kind of testing.  You should be able to unit test the <strong>internal</strong> pieces of your code generator.  What you're really looking at here is system level testing (a.k.a. regression testing).  It's not just semantics... there are different mindsets, approaches, expectations, etc.  It's certainly more work, but you probably need to bite the bullet and set up an end-to-end regression test suite: fixed C++ files -> SWIG interfaces -> python modules -> known output.  You really want to check the known input (fixed C++ code) against expected output (what comes out of the final Python program).  Checking the code generator results directly would be like diffing object files...</p>
+</td>
+    </tr>
+    <tr>
+      <td>0</td>
+      <td>0</td>
+      <td>11128</td>
+      <td>NaN</td>
+      <td><p>Yes, results are the ONLY thing that matters. The real chore is writing a framework that allows your generated code to run independently... spend your time there.</p>
+</td>
+    </tr>
+    <tr>
+      <td>0</td>
+      <td>0</td>
+      <td>11235</td>
+      <td>NaN</td>
+      <td><p>If you are running on *nux you might consider dumping the unittest framework in favor of a bash script or makefile. on windows you might consider building a shell app/function that runs the generator and then uses the code (as another process) and unittest that.</p>
+<p>A third option would be to generate the code and then build an app from it that includes nothing but a unittest. Again you would need a shell script or whatnot to run this for each input. As to how to encode the expected behavior, it occurs to me that it could be done in much the same way as you would for the C++ code just using the generated interface rather than the C++ one.</p>
+</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>28</td>
+      <td>12592</td>
+      <td>Can you check that an exception is thrown with doctest in Python?</td>
+      <td><p>Is it possible to write a doctest unit test that will check that an exception is raised?<br>
+For example, if I have a function <code>foo(x)</code> that is supposed to raise an exception if <code>x&lt;0</code>, how would I write the doctest for that? </p>
+</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>45</td>
+      <td>12609</td>
+      <td>NaN</td>
+      <td><p>Yes. You can do it. The <a href="https://docs.python.org/3/library/doctest.html">doctest module documentation</a> and Wikipedia has an <a href="http://en.wikipedia.org/wiki/Doctest#Example_2%3a_doctests_embedded_in_a_README.txt_file">example</a> of it.</p>
+<pre><code>   &gt;&gt;&gt; x
+   Traceback (most recent call last):
+     ...
+   NameError: name 'x' is not defined
+</code></pre>
+</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>21</td>
+      <td>469</td>
+      <td>How can I find the full path to a font from its display name on a Mac?</td>
+      <td><p>I am using the Photoshop's javascript API to find the fonts in a given PSD.</p>
+<p>Given a font name returned by the API, I want to find the actual physical font file that that font name corresponds to on the disc.</p>
+<p>This is all happening in a python program running on OSX so I guess I'm looking for one of:</p>
+<ul>
+<li>Some Photoshop javascript</li>
+<li>A Python function</li>
+<li>An OSX API that I can call from python</li>
+</ul>
+</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>4</td>
+      <td>497</td>
+      <td>NaN</td>
+      <td><p>open up a terminal (Applications-&gt;Utilities-&gt;Terminal) and type this in:</p>
+
+<pre><code>locate InsertFontHere<br></code></pre>
+
+<p>This will spit out every file that has the name you want.</p>
+
+<p>Warning: there may be alot to wade through.</p></td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>12</td>
+      <td>3040</td>
+      <td>NaN</td>
+      <td><p>Unfortunately the only API that isn't deprecated is located in the ApplicationServices framework, which doesn't have a bridge support file, and thus isn't available in the bridge. If you're wanting to use ctypes, you can use ATSFontGetFileReference after looking up the ATSFontRef.</p>
+
+<p>Cocoa doesn't have any native support, at least as of 10.5, for getting the location of a font.</p></td>
+    </tr>
+    <tr>
+      <td>0</td>
+      <td>2</td>
+      <td>518</td>
+      <td>NaN</td>
+      <td><p>I haven't been able to find anything that does this directly.  I think you'll have to iterate through the various font folders on the system: <code>/System/Library/Fonts</code>, <code>/Library/Fonts</code>, and there can probably be a user-level directory as well <code>~/Library/Fonts</code>.</p>
+</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>761</td>
+      <td>3061</td>
+      <td>Calling a function of a module from a string with the function's name in Python</td>
+      <td><p>What is the best way to go about calling a function given a string with the function's name in a Python program.  For example, let's say that I have a module <code>foo</code>, and I have a string whose contents are <code>"bar"</code>. What is the best way to go about calling <code>foo.bar()</code>?</p>
+<p>I need to get the return value of the function, which is why I don't just use <code>eval</code>. I figured out how to do it by using <code>eval</code> to define a temp function that returns the result of that function call, but I'm hoping that there is a more elegant way to do this.</p>
+</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>145</td>
+      <td>4605</td>
+      <td>NaN</td>
+      <td><p>Patrick's solution is probably the cleanest.
+If you need to dynamically pick up the module as well, you can import it like:</p>
+<pre><code>m = __import__ ('foo')
+func = getattr(m,'bar')
+func()
+</code></pre>
+</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>925</td>
+      <td>3071</td>
+      <td>NaN</td>
+      <td><p>Assuming module <code>foo</code> with method <code>bar</code>:</p>
+<pre><code>import foo
+methodToCall = getattr(foo, 'bar')
+result = methodToCall()
+</code></pre>
+<p>As far as that goes, lines 2 and 3 can be compressed to:</p>
+<pre><code>result = getattr(foo, 'bar')()
+</code></pre>
+<p>if that makes more sense for your use case.  You can use <code>getattr</code> in this fashion on class instance bound methods, module-level methods, class methods... the list goes on.</p>
+</td>
+    </tr>
+  </tbody>
+</table>
+    </body>
+</html>
