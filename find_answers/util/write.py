@@ -5,96 +5,67 @@
 # Requires Python 3; does not work w/ Python 2.
 #
 #TBD,Wed2018_0110_18:07  to update
-"""fga_find_good_answers.py
+"""write.py
+
+A module that contains functions that write data to disk files.
+
+Input from the calling routine is now a pandas dataframe.
+
+Output includes files on disk in csv and html formats.
 
 
-Find answers in stackoverflow data that might be good,
-but 'hidden' because they have low scores.
-Look for such answers from contributors who have high scores
-based on their other questions & answers.
-Save the o/p to a file for further evaluation & processing.
+
+Reference:
+
+    This file is part of the learn_python/find_answers project
+    at this URL:
+
+        https://github.com/clp/learn_python/tree/master/find_answers
+
+
 
 Usage:
-    fga_find_good_answers.sh
-    python fga_find_good_answers.py
-    pydoc  fga_find_good_answers
+    import util/write as wr
+
+    pydoc  util/write.py
+
+    See the fga_find_good_answers.py program for an example that
+    uses this module.
 
 
-Initialization
 
-    Set the value of global constant MAX_OWNERS near the top
-    of the file; default is 10.  It determines how much o/p data
-    will be saved.
+Initialization and Operation:
 
-    Set the value of global constant MAX_HI_SCORE_TERMS
-    near the top of the file.
-    It determines how many hi-score terms are used to search
-    for text in low-score answers.  A bigger number will cause the
-    program to process more data, and might find more 'hidden'
-    answers that could be valuable.
+    Run the fga*.py program to build the required data set.
+    It calls this module's functions to write processed data
+    to the o/p files.  See these files in the data/ dir:
+        popular_qa.csv
+        popular_qa.html
+        popular_qa_title_body.html
 
-    Set the value of keyword in response to the prompt.  The i/p
-    data will be searched, and matching records will be shown
-    and saved to disk files.
-
-
-Overview of Program Actions
-
-    Read and parse the command-line options.
-
-    Read the separate question and answer i/p files.
-
-    Find popular questions, those which have several answers.
-
-    Find top-scoring owners, those who have the highest mean scores.
-
-    Select some questions that are popular AND that have answers
-    from top-scoring owners.  These are the pop_and_top questions.
-
-    Build a combined collection of pop_and_top questions with their
-    answers into Q&A groups.  The NLP tools can work with these data.
-
-    Show a menu with choices, to examine the data or to analyze
-    the data and present various plots, eg, scatter plots or
-    histogram plots.  Several menu choices require the NLP-ready
-    data.
-
-    Some menu actions use the following functions.
-
-    build_stats():
-    Compute and save statistics about the selected data, to use
-    in further analysis and plotting, eg, owner reputation (mean
-    score) and length of the body text of the record.
-
-    check_owner_reputation():
-    Provide reputation data from a data frame or a file.  If it
-    does not exist, call the function to build it.
-
-    group_data():
-    Group the data by owner, and sort by mean score.
-
-    analyze_text():
-    Call functions in the nltk module to analyze the text data and
-    to provide data that might reveal good but 'hidden' answers.
+    When prompted from the fga menu, choose "lek: look for
+    exact keyword in questions and answers".  Enter a search
+    term that is in the data set and that produces output.
+    See these additional files in the data/ dir:
+        search_result*.csv
+        search_result*.html
 
 
-Other Actions
 
-    Several functions draw specific plots, using matplotlib tools.
+Overview of Program Actions:
 
-    Several functions write data to disk in csv or html formats.
+    Receive the search term, Q & A data, and other data
+    from the calling code.
 
-    One program option is to select records that contain
-    a specific keyword, and save them to a file.
+    Prepare the data by selecting columns from the dataframe.
+
+    Filter the data as needed, eg, modify line breaks so the
+    HTML o/p is correct.
+
+    Write a pandas dataframe to a disk file using the pandas
+    functions, to_csv() and to_html().
 
 ----------------------------------------------------------
-
-Input data format of stackoverflow.com python file from kaggle.com.
-
-
-#TBD.Mon2018_0108_22:23  Update this text.
-
-Output data format of popular_qa.csv o/p file from this program.
 
 
 Requirements
@@ -111,15 +82,15 @@ import config as cf
 
 cf.logger.info(cf.log_file + ' - Start logging for ' + os.path.basename(__file__))
 
-DATADIR = 'data/'
-FILEA3 = 'a3_986.csv'
-INDIR = 'indir/'
-LINE_COUNT = 10
+#TBR DATADIR = 'data/'
+#TBR FILEA3 = 'a3_986.csv'
+#TBR INDIR = 'indir/'
+#TBR LINE_COUNT = 10
 MAX_COL_WID = 20
-MAX_HI_SCORE_TERMS = 10
-MAX_OWNERS = 20
+#TBR MAX_HI_SCORE_TERMS = 10
+#TBR MAX_OWNERS = 20
 TMP = 'tmp/'
-popular_qa_df = pd.DataFrame()
+#TBR popular_qa_df = pd.DataFrame()
 
 HEADER = '''
 <html>
@@ -156,26 +127,11 @@ FOOTER = '''
 </html>
 '''
 
-#TBD,Wed2018_0110_18:07  to update
 
-def main(popular_qa_df):
-    """Read input data and prepare a subset of question
-    and answer records for analysis by natural language
-    processing (NLP) tools, which reside in external
-    modules.
-    When finished, present user with a menu and prompt
-    them for the next action.
-    """
-
-    global all_ans_df
-
-    init()
-
-    a_fname, a_infile, q_infile = \
-        config_data()
+def main():
+    pass
 
 
-#TBD,Wed2018_0110_18:07  to update
 def init():
     """Initialize some settings for the program.
     """
@@ -227,7 +183,7 @@ def write_full_df_to_csv_file(in_df, wdir, wfile):
 def replace_line_breaks(in_s):
     """Replace escaped line break chars so text inside HTML
     pre-blocks and code-blocks (inside HTML table cells)
-    is rendered properly on screen.
+    is rendered properly.
     """
     out_s = in_s.replace('\\r\\n', '\n')
     out_s = out_s.replace('\\n\\n', '\n')
@@ -265,7 +221,7 @@ def write_full_df_to_html_file(in_df, wdir, wfile, columns_l):
     in_s = in_df[columns_l].to_html(escape=False, index=False)
 
     # Clean the newlines in the string
-    # so the HTML inside each table cell renders properly on screen.
+    # so the HTML inside each table cell renders properly.
     in_s = replace_line_breaks(in_s)
 
     # Concatenate css w/ html file to format the o/p better.
@@ -277,6 +233,9 @@ def write_full_df_to_html_file(in_df, wdir, wfile, columns_l):
 
     pd.set_option('display.max_colwidth', MAX_COL_WID)  # -1=no limit, for debug
     return
+
+
+init()
 
 
 if __name__ == '__main__':
