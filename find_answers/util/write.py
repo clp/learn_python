@@ -9,7 +9,7 @@
 
 A module that contains functions that write data to disk files.
 
-Input from the calling routine is now a pandas dataframe.
+Input data from the calling routine is a pandas dataframe.
 
 Output includes files on disk in csv and html formats.
 
@@ -26,6 +26,8 @@ Reference:
 
 Usage:
     import util/write as wr
+    wr.save_prior_file(wdir, wfile)
+    wr.write_full_df_to_csv_file(popular_qa_df, DATADIR, 'popular_qa.csv')
 
     pydoc  util/write.py
 
@@ -82,15 +84,8 @@ import config as cf
 
 cf.logger.info(cf.log_file + ' - Start logging for ' + os.path.basename(__file__))
 
-#TBR DATADIR = 'data/'
-#TBR FILEA3 = 'a3_986.csv'
-#TBR INDIR = 'indir/'
-#TBR LINE_COUNT = 10
 MAX_COL_WID = 20
-#TBR MAX_HI_SCORE_TERMS = 10
-#TBR MAX_OWNERS = 20
 TMP = 'tmp/'
-#TBR popular_qa_df = pd.DataFrame()
 
 HEADER = '''
 <html>
@@ -100,7 +95,6 @@ HEADER = '''
             /* max-width: 850px; */
             width: 100%;
         }
-
 
         th, td {
             overflow: auto;  /* Use auto to get H scroll bars */
@@ -122,6 +116,7 @@ HEADER = '''
     </head>
     <body>
 '''
+
 FOOTER = '''
     </body>
 </html>
@@ -147,7 +142,7 @@ def init():
 
 #TBD.1, Simplify this entire func.
 def save_prior_file(wdir, wfile):
-    """Save backup copy of a file w/ same name; add '.bak' extension.
+    """Save backup copy of a file w/ same name.
 
     Input wdir should have trailing slash, eg, data/.
     Input wfile should have trailing extension name, eg, .csv.
@@ -224,7 +219,7 @@ def write_full_df_to_html_file(in_df, wdir, wfile, columns_l):
     # so the HTML inside each table cell renders properly.
     in_s = replace_line_breaks(in_s)
 
-    # Concatenate css w/ html file to format the o/p better.
+    # Concatenate css w/ html file to format the o/p.
     with open(outfile, 'w') as f:
         cf.logger.info('NOTE: Writing data to html outfile: ' + outfile)
         f.write(HEADER)
