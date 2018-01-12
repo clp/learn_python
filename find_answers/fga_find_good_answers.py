@@ -144,14 +144,12 @@ Requirements
 """
 
 import argparse
-import nltk
 import matplotlib.pyplot as plt
 import matplotlib
 matplotlib.style.use('ggplot')
 import numpy as np
 import os
 import pandas as pd
-import random
 from pandas.plotting import scatter_matrix
 
 import config as cf
@@ -188,9 +186,9 @@ HEADER = '''
         th, td {
             overflow: auto;  /* Use auto to get H scroll bars */
             text-align: left;
-            /* max-width helps line-wrap in a cell, and most code */ 
-            /* samples in cells have no H.scroll when width=700px: */ 
-            max-width: 700px;  
+            /* max-width helps line-wrap in a cell, and most code */
+            /* samples in cells have no H.scroll when width=700px: */
+            max-width: 700px;
             /* max-width: 50%; Using % breaks line-wrap inside a cell */
             width: auto;    /* auto is better than using % */
         }
@@ -250,7 +248,6 @@ def main(popular_qa_df):
         combine_related_q_and_a(
             ques_ids_pop_and_top_l, all_ques_df, all_ans_df)
 
-
     columns_l = ['Id', 'ParentId', 'Title', 'Body', 'HSTCount', 'Score']
     if keyword:
         qa_with_keyword_df = sga.select_keyword_recs(
@@ -263,7 +260,7 @@ def main(popular_qa_df):
             log_msg = 'fga.main(): Missing data, qa_with_keyword_df is empty.'
             print(log_msg)
             cf.logger.warning(log_msg)
-            return #TBD. What debug data to print here?
+            return  #TBD. What debug data to print here?
 
         outfile = DATADIR + 'qa_with_keyword.csv'
         qa_with_keyword_df[columns_l].to_csv(
@@ -299,12 +296,6 @@ def check_install():
 def init():
     """Initialize some settings for the program.
     """
-    #TBR,Tue2018_0109_11:19  Not in use?
-    if opt_ns.debug:
-        END = 55
-        print('Running in debug mode.')
-        print('  end set to: ', END)
-        print()
 
     # Initialize settings for pandas.
     pd.set_option('display.width', 0)  # 0=no limit, for debug
@@ -741,7 +732,7 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df, opt_ns):
             user_cmd = 'lek'  # Force menu to always repeat the lek prompt.
             search_prompt = "\nPlease type a search term; or press Enter alone to return to main menu: "
             search_term = input(search_prompt)
-            if search_term == "": # Return to main menu and ask for a cmd.
+            if search_term == "":  # Return to main menu and ask for a cmd.
                 user_cmd = 'm'
                 continue
             print("User entered this search_term: ", search_term)
@@ -750,7 +741,7 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df, opt_ns):
             cf.logger.warning(log_msg)
             #
             columns_l = ['Id', 'ParentId', 'Title', 'Body', 'HSTCount', 'HiScoreTerms', 'Score']
-            q_a_group_with_keyword_df = pd.DataFrame() # Initlz at each call
+            q_a_group_with_keyword_df = pd.DataFrame()  # Initlz at each call
             #
             #TBD Chg popular_qa_df to a df w/ more records, for dbg & initial use.
             q_a_group_with_keyword_df = sga.select_keyword_recs(
@@ -856,7 +847,7 @@ def draw_histogram_plot(plot_df):
     plot_df = plot_df[['Score']]
     #TBD These custom sized bins are used for debugging; change later.
     # histo_bins = [-10, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
-                  # 13, 14, 15, 16, 17, 18, 19, 20, 25, 30, 35, 40, 45, 50]
+    #               13, 14, 15, 16, 17, 18, 19, 20, 25, 30, 35, 40, 45, 50]
     histo_bins = [-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
     plot_df.plot.hist(ax=ax, figsize=(6, 6), bins=histo_bins)
     plt.show(block=False)
@@ -956,7 +947,7 @@ if __name__ == '__main__':
     parser = get_parser()
     opt_ns = parser.parse_args()
 
-    keyword = False # Init before reading CLI argument.
+    keyword = False  # Init before reading CLI argument.
 
     if opt_ns.search:
         keyword = opt_ns.search
@@ -980,4 +971,3 @@ if __name__ == '__main__':
         os.path.basename(__file__) + '\n'
     cf.logger.warning(log_msg)
 
-'bye'
