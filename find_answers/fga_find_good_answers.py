@@ -93,14 +93,16 @@ Input data format of stackoverflow.com python file from kaggle.com.
 ==> Answers.csv <==
     Id,OwnerUserId,CreationDate,ParentId,Score,Body
     497,50,2008-08-02T16:56:53Z,469,4,
-    "<p>open up a terminal (Applications-&gt;Utilities-&gt;Terminal) and type this in:</p>
+    "<p>open up a terminal (Applications-&gt;Utilities-&gt;Terminal)
+    and type this in:</p>
     ..."
 
 ==> Questions.csv <==
     Id,OwnerUserId,CreationDate,Score,Title,Body
     469,147,2008-08-02T15:11:16Z,21,How can I find the full path to a font
     from its display name on a Mac?,
-    "<p>I am using the Photoshop's javascript API to find the fonts in a given PSD.</p>
+    "<p>I am using the Photoshop's javascript API to find the fonts
+    in a given PSD.</p>
     ..."
 
 #TBD.Mon2018_0108_22:23  Update this text.
@@ -343,8 +345,8 @@ def config_data():
 
     if not os.path.isfile(a_infile):
         print("ERR, Did not find the requested input file: [", a_infile + "]")
-        print("  Check that the requested Q & A files exist in the input dir.")
-        print("  Check source code, fga:config_data() for correct a_fname and q_fname.")
+        print("  Check that the requested Q & A files exist in the i/p dir.")
+        print("  Chk src, fga:config_data() for correct a_fname and q_fname.")
         raise SystemExit()
 
     print('Input files, q & a:\n' + q_infile + '\n' + a_infile)
@@ -369,7 +371,7 @@ def read_data(ans_file, ques_file):
         error_bad_lines=False)
 
     numlines = len(ans_df)
-    print('Number of answer records in i/p data frame, ans_df: ' + str(numlines))
+    print('Num of answer records in i/p data frame, ans_df: ' + str(numlines))
     progress_msg_factor = int(round(numlines / 10))
     return ans_df, ques_df, progress_msg_factor, numlines
 
@@ -408,7 +410,7 @@ def gd2_group_data(aa_df):
 
     if opt_ns.verbose:
         print()
-        print('#D gd2: len(owner_grouped_df): number of unique OwnerUserId values: ' +
+        print('gd2: len(owner_grouped_df): num of unique OwnerUserId values: ' +
               str(len(owner_grouped_df)))
         print()
     cf.logger.info('gd2_group_data(): Show owners with highest MeanScores.')
@@ -440,7 +442,7 @@ def group_data(aa_df):
 
     if opt_ns.verbose:
         print()
-        print('len(owner_grouped_df): number of unique OwnerUserId values: ' +
+        print('len(owner_grouped_df): num of unique OwnerUserId values: ' +
               str(len(owner_grouped_df)))
         print()
     cf.logger.info('group_data(): Show owners with highest MeanScores.')
@@ -526,15 +528,17 @@ def find_pop_and_top_ques_ids(ques_ids_from_top_own_l, popular_ids_a):
     Return the list of question id's in ques_ids_pop_and_top_l.
     """
     # D Notes on settings used below:
-    # For q6 & a6 data: set(ques_ids_from_top_own_l[:500]).intersection(set(popular_ids_a[:500])))
+    # For q6 & a6 data: set(ques_ids_from_top_own_l[:500]).intersection(
+    # set(popular_ids_a[:500])))
     # For q3 & a3 data:
-    # set(ques_ids_from_top_own_l[:40]).intersection(set(popular_ids_a[:10])))
+    # set(ques_ids_from_top_own_l[:40]).intersection(
+    # set(popular_ids_a[:10])))
     ques_ids_pop_and_top_l = list(
         set(ques_ids_from_top_own_l[:900]).intersection(set(popular_ids_a[:900])))
     log_msg = 'find_pop_and_top_ques_ids(): len(ques_ids_pop_and_top_l) : ' + \
         str(len(ques_ids_pop_and_top_l))
     cf.logger.info(log_msg)
-    log_msg = "find_pop_and_top_ques_ids(): ques_ids_pop_and_top_l, top-N parent id\'s to examine: " + \
+    log_msg = "find_pop*(): ques_ids_pop_and_top_l, top-N parent id\'s to chk: " + \
         str(ques_ids_pop_and_top_l[0:10])
     cf.logger.info(log_msg)
     if opt_ns.verbose:
@@ -679,7 +683,7 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df, opt_ns):
             user_cmd = ''
         elif user_cmd.lower() == 'q':
             print("Quit the program.")
-            log_msg = cf.log_file + ' - Quit by user request; Finish logging for ' + \
+            log_msg = cf.log_file + ' - Quit, user req; Finish logging for ' + \
                 os.path.basename(__file__) + '\n'
             cf.logger.warning(log_msg)
             raise SystemExit()
@@ -761,7 +765,7 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df, opt_ns):
         # lek: Look for exact keywords in the Q&A df; now case sensitive.
         elif user_cmd.lower() == 'lek':
             user_cmd = 'lek'  # Force menu to always repeat the lek prompt.
-            search_prompt = "\nPlease type a search term; or press Enter alone to return to main menu: "
+            search_prompt = "\nType a search term; or press Enter for main menu: "
             search_term = input(search_prompt)
             if search_term == "":  # Return to main menu and ask for a cmd.
                 user_cmd = 'm'
@@ -829,10 +833,11 @@ def build_stats(qa_df, or_df):
             # TBD, Some answers in the data file were made by Owners
             # who are not yet in the reputation df.
             print(
-                "NOTE: build_stats(): Did not find ouid in owner reputation dataframe; index,ouid: ",
+                "build_stats(): ouid not in owner reputation dataframe;",
+                " index,ouid: ",
                 index,
                 ouid)
-            print("NOTE: build_stats():data from the problem row in qa_df:\n", row)
+            print("build_stats():data from the problem row in qa_df:\n", row)
             print()
 
         # Save length of body text of each answer.
@@ -859,8 +864,8 @@ def build_stats(qa_df, or_df):
 
 def check_owner_reputation(all_ans_df, owner_reputation_df):
     """Check for dataframe with reputation of each OwnerUserId.
-    If not found, then calculate reputation of each OwnerUserId in the i/p data,
-    based on Score of all answers they provided.
+    If not found, then calculate reputation of each OwnerUserId
+    in the i/p data, based on Score of all answers they provided.
     Save the data to a disk file and use it when needed, so the
     calculation need not be done every time this program runs.
     """
@@ -873,7 +878,7 @@ def check_owner_reputation(all_ans_df, owner_reputation_df):
         return owner_reputation_df
 
     if os.path.exists(own_rep_file):
-        print("NOTE: owner rep file, " + own_rep_file + ", found; read it.")
+        print("owner rep file, " + own_rep_file + ", found; read it.")
         owner_reputation_df = pd.read_csv(
             own_rep_file,
             encoding='latin-1',
@@ -882,10 +887,10 @@ def check_owner_reputation(all_ans_df, owner_reputation_df):
         return owner_reputation_df
     else:
         print(
-            "NOTE: owner rep file, " +
+            "owner rep file, " +
             own_rep_file +
             ", not found; build it.")
-        print("NOTE: This should be a one-time operation w/ data saved on disk.")
+        print("This should be a one-time operation w/ data saved on disk.")
         owner_reputation_df = gd2_group_data(all_ans_df)
         owner_reputation_df.to_csv(own_rep_file)
     return owner_reputation_df
@@ -1011,7 +1016,7 @@ if __name__ == '__main__':
 
     if opt_ns.quit:
         print('Quit the program and don\'t show menu.')
-        log_msg = cf.log_file + ' - Quit by user request; Finish logging for ' + \
+        log_msg = cf.log_file + ' - Quit, user req; Finish logging for ' + \
             os.path.basename(__file__) + '\n'
         cf.logger.warning(log_msg)
         raise SystemExit()
