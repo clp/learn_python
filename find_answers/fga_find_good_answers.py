@@ -156,11 +156,14 @@ import config as cf
 import nltk_ex25 as nl
 import sga_show_good_answers as sga
 
-#TBD,Wed2018_0110_18:16  Move write funcs out of here.
+# TBD,Wed2018_0110_18:16  Move write funcs out of here.
 import util.write as wr
 
 
-cf.logger.info(cf.log_file + ' - Start logging for ' + os.path.basename(__file__))
+cf.logger.info(
+    cf.log_file +
+    ' - Start logging for ' +
+    os.path.basename(__file__))
 
 
 DATADIR = 'data/'
@@ -260,7 +263,7 @@ def main(popular_qa_df):
             log_msg = 'fga.main(): Missing data, qa_with_keyword_df is empty.'
             print(log_msg)
             cf.logger.warning(log_msg)
-            return  #TBD. What debug data to print here?
+            return  # TBD. What debug data to print here?
 
         outfile = DATADIR + 'qa_with_keyword.csv'
         qa_with_keyword_df[columns_l].to_csv(
@@ -270,11 +273,19 @@ def main(popular_qa_df):
     wr.write_full_df_to_csv_file(popular_qa_df, DATADIR, 'popular_qa.csv')
 
     columns_l = []
-    wr.write_full_df_to_html_file(popular_qa_df, DATADIR, 'popular_qa.html', columns_l)
+    wr.write_full_df_to_html_file(
+        popular_qa_df,
+        DATADIR,
+        'popular_qa.html',
+        columns_l)
 
     # Save the Q&A title & body data as HTML.
     columns_l = ['Id', 'Title', 'Body']
-    wr.write_full_df_to_html_file(popular_qa_df, DATADIR, 'popular_qa_title_body.html', columns_l)
+    wr.write_full_df_to_html_file(
+        popular_qa_df,
+        DATADIR,
+        'popular_qa_title_body.html',
+        columns_l)
 
 
 def check_install():
@@ -289,7 +300,9 @@ def check_install():
         raise SystemExit()
 
     if not os.path.isfile(INDIR + FILEA3):
-        print("ERR, Did not find this input file; re-install the fga s/w: [", INDIR + FILEA3 + "]")
+        print(
+            "ERR, Did not find this input file; re-install the fga s/w: [",
+            INDIR + FILEA3 + "]")
         raise SystemExit()
 
 
@@ -299,7 +312,9 @@ def init():
 
     # Initialize settings for pandas.
     pd.set_option('display.width', 0)  # 0=no limit, for debug
-    pd.set_option('display.max_colwidth', MAX_COL_WID)  # -1=no limit, for debug
+    pd.set_option(
+        'display.max_colwidth',
+        MAX_COL_WID)  # -1=no limit, for debug
 
     # Don't show commas in large numbers.
     # Show OwnerUserId w/o '.0' suffix.
@@ -309,7 +324,7 @@ def init():
 def config_data():
     """Configure path and file names for i/o data.
     """
-    #D Uncomment the wanted i/p files.
+    # D Uncomment the wanted i/p files.
     # a_fname = 'Answers.csv'
     # q_fname = 'Questions.csv'
 
@@ -368,7 +383,7 @@ def find_popular_ques(aa_df, a_fname):
     return popular_ids
 
 
-#TBD, Refactor the two group_data() funcs.
+# TBD, Refactor the two group_data() funcs.
     # Thu2017_0907_23:30 , Should lo_score*df be returned for use elsewhere?
     # It is printed to file, maybe to log.
     # Is it needed to find good answers?
@@ -380,7 +395,8 @@ def gd2_group_data(aa_df):
     Group by OwnerUserId, and sort by mean score for answers only
     for each owner (question scores are not counted).
     """
-    #D print('#D gd2: owner_grouped_df: Group by owner and sort by mean score for each owner.')
+    # D print('#D gd2: owner_grouped_df: Group by owner and sort by mean score
+    # for each owner.')
     owner_grouped_df = aa_df.groupby('OwnerUserId')
     owner_grouped_df = owner_grouped_df[[
         'Score']].mean().sort_values(['Score'])
@@ -411,7 +427,8 @@ def group_data(aa_df):
     then mark the low score  answers for evaluation.
     Low score is any score below lo_score_limit.
     """
-    #D print('group_data(): Group by owner and sort by mean score for each owner.')
+    # D print('group_data(): Group by owner and sort by mean score for each
+    # owner.')
     owner_grouped_df = aa_df.groupby('OwnerUserId')
     owner_grouped_df = owner_grouped_df[[
         'Score']].mean().sort_values(['Score'])
@@ -508,17 +525,22 @@ def find_pop_and_top_ques_ids(ques_ids_from_top_own_l, popular_ids_a):
 
     Return the list of question id's in ques_ids_pop_and_top_l.
     """
-    #D Notes on settings used below:
+    # D Notes on settings used below:
     # For q6 & a6 data: set(ques_ids_from_top_own_l[:500]).intersection(set(popular_ids_a[:500])))
-    # For q3 & a3 data: set(ques_ids_from_top_own_l[:40]).intersection(set(popular_ids_a[:10])))
+    # For q3 & a3 data:
+    # set(ques_ids_from_top_own_l[:40]).intersection(set(popular_ids_a[:10])))
     ques_ids_pop_and_top_l = list(
         set(ques_ids_from_top_own_l[:900]).intersection(set(popular_ids_a[:900])))
-    log_msg = 'find_pop_and_top_ques_ids(): len(ques_ids_pop_and_top_l) : ' + str(len(ques_ids_pop_and_top_l))
+    log_msg = 'find_pop_and_top_ques_ids(): len(ques_ids_pop_and_top_l) : ' + \
+        str(len(ques_ids_pop_and_top_l))
     cf.logger.info(log_msg)
-    log_msg = "find_pop_and_top_ques_ids(): ques_ids_pop_and_top_l, top-N parent id\'s to examine: " + str(ques_ids_pop_and_top_l[0:10])
+    log_msg = "find_pop_and_top_ques_ids(): ques_ids_pop_and_top_l, top-N parent id\'s to examine: " + \
+        str(ques_ids_pop_and_top_l[0:10])
     cf.logger.info(log_msg)
     if opt_ns.verbose:
-        print('ques_ids_pop_and_top_l, parent id\'s to examine: ', ques_ids_pop_and_top_l[:])
+        print(
+            'ques_ids_pop_and_top_l, parent id\'s to examine: ',
+            ques_ids_pop_and_top_l[:])
     return ques_ids_pop_and_top_l
 
 
@@ -542,12 +564,15 @@ def combine_related_q_and_a(ques_ids_pop_and_top_l, all_ques_df, aa_df):
                 print("#D combine_related_q_and_a():progress count: ", i)
         qm_df = ques_match_df[ques_match_df['Id'] == qid]
         am_df = ans_match_df[ans_match_df['ParentId'] == qid]
-        qagroup_from_pop_top_ques_df = pd.concat([qm_df, am_df]).reset_index(drop=True)
+        qagroup_from_pop_top_ques_df = pd.concat(
+            [qm_df, am_df]).reset_index(drop=True)
         #
         # Change NaN values to zero, and the field type from float64 to int64,
         # to help with search functionality.
-        qagroup_from_pop_top_ques_df['ParentId'] = qagroup_from_pop_top_ques_df['ParentId'].fillna(0).astype(int)
-        qagroup_from_pop_top_ques_df['OwnerUserId'] = qagroup_from_pop_top_ques_df['OwnerUserId'].fillna(0).astype(int)
+        qagroup_from_pop_top_ques_df['ParentId'] = qagroup_from_pop_top_ques_df['ParentId'].fillna(
+            0).astype(int)
+        qagroup_from_pop_top_ques_df['OwnerUserId'] = qagroup_from_pop_top_ques_df['OwnerUserId'].fillna(
+            0).astype(int)
         #
         if qagroup_from_pop_top_ques_df.empty:
             # Skip this qid, it does not match what we seek.
@@ -596,7 +621,9 @@ def analyze_text(qagroup_from_pop_top_ques_df):
 
     cf.logger.info("NLP Step 2. Process the words of each input line.")
     if opt_ns.veryverbose:
-        print('#D analyze_text(): qagroup_from_pop_top_ques_df: ', qagroup_from_pop_top_ques_df)
+        print(
+            '#D analyze_text(): qagroup_from_pop_top_ques_df: ',
+            qagroup_from_pop_top_ques_df)
     clean_ans_bodies_l = nl.clean_raw_data(qagroup_from_pop_top_ques_df)
     if not clean_ans_bodies_l:
         print('analyze_text(), No text to analyze; exit now.')
@@ -708,17 +735,20 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df, opt_ns):
         # drm: Draw Reputation matrix, mean, answers only; scatter.
         elif user_cmd.lower() == 'drm':
             user_cmd = ''
-            owner_reputation_df = check_owner_reputation(all_ans_df, owner_reputation_df)
+            owner_reputation_df = check_owner_reputation(
+                all_ans_df, owner_reputation_df)
             #
             if owner_reputation_df.empty:
                 print("WARN: owner reputation dataframe empty or not found.")
             else:
                 print("NOTE: Drawing the owner reputation scatter matrix plot.")
-                draw_scatter_matrix_plot(owner_reputation_df[['MeanScore', 'OwnerUserId']])
+                draw_scatter_matrix_plot(
+                    owner_reputation_df[['MeanScore', 'OwnerUserId']])
         # dsm: Draw q&a statistics matrix
         elif user_cmd.lower() == 'dsm':
             user_cmd = ''
-            owner_reputation_df = check_owner_reputation(all_ans_df, owner_reputation_df)
+            owner_reputation_df = check_owner_reputation(
+                all_ans_df, owner_reputation_df)
             #
             qa_stats_df = build_stats(popular_qa_df, owner_reputation_df)
             #
@@ -726,7 +756,8 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df, opt_ns):
                 print("WARN: qa_stats_df empty or not found.")
             else:
                 print("NOTE: Drawing the qa_stats_df scatter matrix plot.")
-                draw_scatter_matrix_plot(qa_stats_df[['Score', 'BodyLength', 'OwnerRep', 'HSTCount']])
+                draw_scatter_matrix_plot(
+                    qa_stats_df[['Score', 'BodyLength', 'OwnerRep', 'HSTCount']])
         # lek: Look for exact keywords in the Q&A df; now case sensitive.
         elif user_cmd.lower() == 'lek':
             user_cmd = 'lek'  # Force menu to always repeat the lek prompt.
@@ -740,10 +771,18 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df, opt_ns):
                 search_term + '\n'
             cf.logger.warning(log_msg)
             #
-            columns_l = ['Id', 'ParentId', 'Title', 'Body', 'HSTCount', 'HiScoreTerms', 'Score']
+            columns_l = [
+                'Id',
+                'ParentId',
+                'Title',
+                'Body',
+                'HSTCount',
+                'HiScoreTerms',
+                'Score']
             q_a_group_with_keyword_df = pd.DataFrame()  # Initlz at each call
             #
-            #TBD Chg popular_qa_df to a df w/ more records, for dbg & initial use.
+            # TBD Chg popular_qa_df to a df w/ more records, for dbg & initial
+            # use.
             q_a_group_with_keyword_df = sga.select_keyword_recs(
                 search_term, popular_qa_df, columns_l, opt_ns, DATADIR)
         else:
@@ -782,20 +821,30 @@ def build_stats(qa_df, or_df):
     for index, row in qa_df.iterrows():
         ouid = row['OwnerUserId']
         try:
-            owner_rep = round(or_df.loc[or_df['OwnerUserId'] == ouid, 'MeanScore'].iloc[0])
+            owner_rep = round(
+                or_df.loc[or_df['OwnerUserId'] == ouid, 'MeanScore'].iloc[0])
             # Add new column to df.
             qa_stats_df.loc[index, 'OwnerRep'] = owner_rep
         except IndexError:
             # TBD, Some answers in the data file were made by Owners
             # who are not yet in the reputation df.
-            print("NOTE: build_stats(): Did not find ouid in owner reputation dataframe; index,ouid: ", index, ouid)
+            print(
+                "NOTE: build_stats(): Did not find ouid in owner reputation dataframe; index,ouid: ",
+                index,
+                ouid)
             print("NOTE: build_stats():data from the problem row in qa_df:\n", row)
             print()
 
         # Save length of body text of each answer.
         qa_stats_df.loc[index, 'BodyLength'] = len(row['Body'])
 
-    qa_stats_df = qa_stats_df[['Id', 'ParentId', 'OwnerUserId', 'Score', 'BodyLength', 'OwnerRep', 'HSTCount']]
+    qa_stats_df = qa_stats_df[['Id',
+                               'ParentId',
+                               'OwnerUserId',
+                               'Score',
+                               'BodyLength',
+                               'OwnerRep',
+                               'HSTCount']]
 
     stats_fname = DATADIR + 'qa_stats_by_dsm.csv'
     wr.save_prior_file('', stats_fname)
@@ -816,7 +865,7 @@ def check_owner_reputation(all_ans_df, owner_reputation_df):
     calculation need not be done every time this program runs.
     """
     own_rep_file = DATADIR + 'owner_reputation.csv'
-    #TBD Must chk i/p file & replace owner_rep*.csv if
+    # TBD Must chk i/p file & replace owner_rep*.csv if
     #  a different file was used.  OR, just build this file from Answers.csv
     #  which should have all answers & produce good reputation data.
 
@@ -832,7 +881,10 @@ def check_owner_reputation(all_ans_df, owner_reputation_df):
             error_bad_lines=False)
         return owner_reputation_df
     else:
-        print("NOTE: owner rep file, " + own_rep_file + ", not found; build it.")
+        print(
+            "NOTE: owner rep file, " +
+            own_rep_file +
+            ", not found; build it.")
         print("NOTE: This should be a one-time operation w/ data saved on disk.")
         owner_reputation_df = gd2_group_data(all_ans_df)
         owner_reputation_df.to_csv(own_rep_file)
@@ -845,10 +897,11 @@ def draw_histogram_plot(plot_df):
     fig, ax = plt.subplots(1, 1)
     ax.get_xaxis().set_visible(True)
     plot_df = plot_df[['Score']]
-    #TBD These custom sized bins are used for debugging; change later.
+    # TBD These custom sized bins are used for debugging; change later.
     # histo_bins = [-10, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
     #               13, 14, 15, 16, 17, 18, 19, 20, 25, 30, 35, 40, 45, 50]
-    histo_bins = [-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+    histo_bins = [-10, -9, -8, -7, -6, -5, -4, -3, -
+                  2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
     plot_df.plot.hist(ax=ax, figsize=(6, 6), bins=histo_bins)
     plt.show(block=False)
 
@@ -878,7 +931,7 @@ def draw_scatter_matrix_plot(plot_df):
     print('NOTE: Please wait for plot, 60 sec or more.')
 
     axs = scatter_matrix(plot_df, alpha=0.2, diagonal='hist')
-    #TBD Failed. Logarithm scale, Good to show outliers. Cannot show Score=0?
+    # TBD Failed. Logarithm scale, Good to show outliers. Cannot show Score=0?
     # plt.xscale('log')
 
     plt.show(block=False)
@@ -927,7 +980,7 @@ def get_parser():
         '--search',
         help='Search the Q & A Collection for this term',
         type=str
-        )
+    )
 
     parser.add_argument(
         '-q',
@@ -970,4 +1023,3 @@ if __name__ == '__main__':
     log_msg = cf.log_file + ' - Finish logging for ' + \
         os.path.basename(__file__) + '\n'
     cf.logger.warning(log_msg)
-
