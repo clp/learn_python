@@ -658,7 +658,7 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df, opt_ns):
     dh: draw default histogram plot of current data
     dm: draw scatter matrix plot of current data
     h, ?: show help text, the menu
-    lek: look for exact keyword in questions and answers
+    lek: look for exact keywords in questions and answers
     m: show menu
     q: save data and quit the program
     s: show current item: question or answer
