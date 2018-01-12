@@ -32,10 +32,6 @@ Initialization
     program to process more data, and might find more 'hidden'
     answers that could be valuable.
 
-    Set the value of keyword in response to the prompt.  The i/p
-    data will be searched, and matching records will be shown
-    and saved to disk files.
-
 
 Overview of Program Actions
 
@@ -66,7 +62,7 @@ Overview of Program Actions
     score) and length of the body text of the record.
 
     check_owner_reputation():
-    Provide reputation data from a data frame or a file.  If it
+    Provide reputation data from a dataframe or a file.  If it
     does not exist, call the function to build it.
 
     group_data():
@@ -83,8 +79,8 @@ Other Actions
 
     Several functions write data to disk in csv or html formats.
 
-    One program option is to select records that contain
-    a specific keyword, and save them to a file.
+    One program option is to search for a text string, and to show
+    records that contain it, and to save them to a file.
 
 ----------------------------------------------------------
 
@@ -126,16 +122,6 @@ Output data format of popular_qa.csv o/p file from this program.
     title=""wxWidgets"">wxWidgets</a> (formerly known as wxWindows)
     ..."
 
-
-----------------------------------------------------------
-Plan
-    Find top-scoring owners.
-    Find all answers by top-scoring owners.
-    Find the questions for each of those answers.
-    Find all answers for each of those questions.
-    Build a data frame with each question followed by all its answers.
-    Find the subset of Q's and A's that contain a keyword.
-    Save the subset of data to a csv file.
 ----------------------------------------------------------
 
 
@@ -355,7 +341,7 @@ def config_data():
 
 
 def read_data(ans_file, ques_file):
-    """Read the csv i/p files and store data into pandas data frames.
+    """Read the csv i/p files and store data into pandas dataframes.
     Compute a factor that dictates how progress will be indicated
     during read operations.
     """
@@ -371,7 +357,7 @@ def read_data(ans_file, ques_file):
         error_bad_lines=False)
 
     numlines = len(ans_df)
-    print('Num of answer records in i/p data frame, ans_df: ' + str(numlines))
+    print('Num of answer records in i/p dataframe, ans_df: ' + str(numlines))
     progress_msg_factor = int(round(numlines / 10))
     return ans_df, ques_df, progress_msg_factor, numlines
 
