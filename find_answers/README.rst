@@ -94,15 +94,17 @@ Do not run the module directly.
 See the fga_find_good_answers.py program for an example that
 uses this module.
 
-In fga*py, respond to the prompt with 'lek' (look for exact
-keywords)
+To perform a search,
+start fga_find_good_answers.py,
+and wait for it to prompt for a command.
+Respond to the prompt with 'lek' (look for exact keywords)
 to enter a search term,
 which is then handled by this module.
 
 The fga*py program also has a command-line option
 to enter a search term, eg,
 
-  python fga_find_good_answers.py -s word1 word2
+  python fga_find_good_answers.py -s term1 t2 t3
 
 It returns a dataframe containing the Q's and A's that it found,
 in an order based on the results of the NLP analysis.
@@ -111,9 +113,13 @@ in an order based on the results of the NLP analysis.
 Notes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#. One way to examine the output: open the search_result_full.html
+#. One way to examine the output: open the
+   data/search_result_full.html
    file with a web browser or other tool that renders HTML
    properly.
+
+   If you perform another search,
+   re-load the browser to show the latest output file.
 
 
 
