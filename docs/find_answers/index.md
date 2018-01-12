@@ -37,6 +37,9 @@ See the software for the find_answers project at
 
 * [qa_stats.html](qa_stats.html)
 
+  Numeric data only;
+  it does not include text of Questions or Answers.
+
   A table of each Question followed by its Answers;
   shows ID, Owner, ParentId,
   Score, Body Length, Owner Reputation, and hstCount
@@ -45,6 +48,11 @@ See the software for the find_answers project at
 * [search_result_full.html](search_result_full.html)
 
   Output of the search functionality.
+
+  The subset of the input data that contains only Questions
+  and Answers with the keyword,
+  and their related Q's and A's.
+
   A table of each Question followed by its Answers;
   shows
   hstCount
@@ -65,6 +73,8 @@ See the software for the find_answers project at
 
 * [scatter matrix plot, a3data, pdf](scat_mat_plot_4x4_a3data.pdf)
 * [scatter matrix plot, a3data, png](scat_mat_plot_4x4_a3data.png)
+
+  One plot in two file formats.
 
   A 4x4 matrix of scatter plots (and histograms) of
   Score, Body Length, Owner Reputation, and hstCount data.
