@@ -23,6 +23,10 @@ See the software for the find_answers project at
 
 ## Some output tables and plots.
 
+These sample files were made by processing two small input files
+(q3_992.csv and a3_986.csv) with fga_find_good_answers.py,
+unless otherwise noted.
+
 * [popular_qa.html](popular_qa.html)
 
   Question followed by its Answers; then next Q&A.  
