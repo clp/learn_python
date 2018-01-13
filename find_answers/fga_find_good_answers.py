@@ -143,8 +143,6 @@ from pandas.plotting import scatter_matrix
 import config as cf
 import nltk_ex25 as nl
 import sga_show_good_answers as sga
-
-# TBD,Wed2018_0110_18:16  Move write funcs out of here.
 import util.write as wr
 
 
