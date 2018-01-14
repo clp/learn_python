@@ -311,7 +311,7 @@ def init():
 def config_data():
     """Configure path and file names for i/o data.
     """
-    # D Uncomment the wanted i/p files.
+    # Uncomment the wanted i/p files & hide the others.
     a_fname = 'Answers.csv'
     q_fname = 'Questions.csv'
 
