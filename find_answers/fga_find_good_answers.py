@@ -237,7 +237,8 @@ def main(popular_qa_df):
         combine_related_q_and_a(
             ques_ids_pop_and_top_l, all_ques_df, all_ans_df)
 
-    columns_l = ['Id', 'ParentId', 'Title', 'Body', 'HSTCount', 'Score']
+    #ORG columns_l = ['Id', 'ParentId', 'Title', 'Body', 'HSTCount', 'Score']
+    columns_l = ['HSTCount', 'Score', 'Id', 'ParentId', 'Title', 'Body']
     if keyword:
         qa_with_keyword_df = sga.select_keyword_recs(
             keyword, popular_qa_df, columns_l, opt_ns, DATADIR)
@@ -311,16 +312,16 @@ def config_data():
     """Configure path and file names for i/o data.
     """
     # D Uncomment the wanted i/p files.
-    # a_fname = 'Answers.csv'
-    # q_fname = 'Questions.csv'
+    a_fname = 'Answers.csv'
+    q_fname = 'Questions.csv'
 
     # Smaller data sets, used for debugging.
-    # q_fname = 'q6_999994.csv'
-    # a_fname = 'a6_999999.csv'
+    q_fname = 'q6_999994.csv'
+    a_fname = 'a6_999999.csv'
     # a_fname = 'a5_99998.csv'
     # q_fname = 'q30_99993.csv'
-    a_fname = 'a3_986.csv'
-    q_fname = 'q3_992.csv'
+    # a_fname = 'a3_986.csv'
+    # q_fname = 'q3_992.csv'
     # a_fname = 'a2.csv'
     # q_fname = 'q2.csv'
 
@@ -381,7 +382,7 @@ def gd2_group_data(aa_df):
     Group by OwnerUserId, and sort by mean score for answers only
     for each owner (question scores are not counted).
     """
-    # D print('#D gd2: owner_grouped_df: Group by owner and sort by mean score
+    # print('#D gd2: owner_grouped_df: Group by owner and sort by mean score
     # for each owner.')
     owner_grouped_df = aa_df.groupby('OwnerUserId')
     owner_grouped_df = owner_grouped_df[[
@@ -413,7 +414,7 @@ def group_data(aa_df):
     then mark the low score  answers for evaluation.
     Low score is any score below lo_score_limit.
     """
-    # D print('group_data(): Group by owner and sort by mean score for each
+    # print('group_data(): Group by owner and sort by mean score for each
     # owner.')
     owner_grouped_df = aa_df.groupby('OwnerUserId')
     owner_grouped_df = owner_grouped_df[[
@@ -511,9 +512,11 @@ def find_pop_and_top_ques_ids(ques_ids_from_top_own_l, popular_ids_a):
 
     Return the list of question id's in ques_ids_pop_and_top_l.
     """
-    # D Notes on settings used below:
-    # For q6 & a6 data: set(ques_ids_from_top_own_l[:500]).intersection(
+    # Notes on settings used below:
+    # For q6 & a6 data:
+    # set(ques_ids_from_top_own_l[:500]).intersection(
     # set(popular_ids_a[:500])))
+    #
     # For q3 & a3 data:
     # set(ques_ids_from_top_own_l[:40]).intersection(
     # set(popular_ids_a[:10])))
@@ -545,11 +548,15 @@ def combine_related_q_and_a(ques_ids_pop_and_top_l, all_ques_df, aa_df):
     ques_match_df = all_ques_df[all_ques_df['Id'].isin(ques_ids_pop_and_top_l)]
     ans_match_df = aa_df[aa_df['ParentId'].isin(ques_ids_pop_and_top_l)]
 
+    # Print a blank line before showing Question data from analyze*().
+    if opt_ns.debug:
+        print()
+
     # Build each Q&A group: one Q w/ all its A.'s
     for i, qid in enumerate(ques_ids_pop_and_top_l):
         if opt_ns.verbose:
             if i % 20 == 0:
-                print("#D combine_related_q_and_a():progress count: ", i)
+                print("combine_related_q_and_a():progress count: ", i)
         qm_df = ques_match_df[ques_match_df['Id'] == qid]
         am_df = ans_match_df[ans_match_df['ParentId'] == qid]
         qagroup_from_pop_top_ques_df = pd.concat(
@@ -608,10 +615,12 @@ def analyze_text(qagroup_from_pop_top_ques_df):
     global popular_qa_df
 
     cf.logger.info("NLP Step 2. Process the words of each input line.")
-    if opt_ns.veryverbose:
+    if opt_ns.debug:
         print(
-            '#D analyze_text(): qagroup_from_pop_top_ques_df: ',
-            qagroup_from_pop_top_ques_df)
+            'analyze_text(): Questions in qagroup_from_pop_top_ques_df: Id, Score, Title:')
+        print(
+            #ORG qagroup_from_pop_top_ques_df)
+            qagroup_from_pop_top_ques_df[['Id', 'Score', 'Title']].iloc[0].values)
     clean_ans_bodies_l = nl.clean_raw_data(qagroup_from_pop_top_ques_df)
     if not clean_ans_bodies_l:
         print('analyze_text(), No text to analyze; exit now.')
@@ -760,17 +769,17 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df, opt_ns):
             cf.logger.warning(log_msg)
             #
             columns_l = [
+                'HSTCount',
+                'Score',
                 'Id',
                 'ParentId',
                 'Title',
                 'Body',
-                'HSTCount',
-                'HiScoreTerms',
-                'Score']
+                'HiScoreTerms']
             q_a_group_with_keyword_df = pd.DataFrame()  # Initlz at each call
             #
             # TBD Chg popular_qa_df to a df w/ more records, for dbg & initial
-            # use.
+            # use.  Beware of memory & performance issues.
             q_a_group_with_keyword_df = sga.select_keyword_recs(
                 search_term, popular_qa_df, columns_l, opt_ns, DATADIR)
         else:
@@ -994,7 +1003,7 @@ if __name__ == '__main__':
     if opt_ns.search:
         keyword = opt_ns.search
         print('Search the data for this term: ', keyword)
-        columns_l = ['Id', 'ParentId', 'HSTCount', 'Score', 'Title', 'Body']
+        columns_l = ['HSTCount', 'Score', 'Id', 'ParentId', 'Title', 'Body']
 
     main(popular_qa_df)
 
