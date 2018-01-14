@@ -280,6 +280,11 @@ def select_keyword_recs(keyword, qa_df, columns_l, opt_ns, DATADIR):
     wr.save_prior_file(DATADIR, search_fname)
     qa_keyword_df.to_csv(DATADIR + search_fname)
     #
+    search_fname = 'search_result_all_fields.html'
+    wr.save_prior_file(DATADIR, search_fname)
+    columns_l = ['HSTCount', 'Score', 'Id', 'Title', 'Body', 'CleanBody', 'HiScoreTerms']
+    wr.write_full_df_to_html_file(qa_keyword_df, DATADIR, search_fname, columns_l)
+    #
     search_fname = 'search_result_full.html'
     wr.save_prior_file(DATADIR, search_fname)
     columns_l = ['HSTCount', 'Score', 'Id', 'Title', 'Body']
