@@ -141,6 +141,7 @@ import pandas as pd
 from pandas.plotting import scatter_matrix
 
 import config as cf
+import draw_plots as dr
 import nltk_ex25 as nl
 import sga_show_good_answers as sga
 import util.write as wr
@@ -314,16 +315,16 @@ def config_data():
     """Configure path and file names for i/o data.
     """
     # Uncomment the wanted i/p files & hide the others.
-    a_fname = 'Answers.csv'
-    q_fname = 'Questions.csv'
+    # a_fname = 'Answers.csv'
+    # q_fname = 'Questions.csv'
 
     # Smaller data sets, used for debugging.
     # q_fname = 'q6_999994.csv'
     # a_fname = 'a6_999999.csv'
     # a_fname = 'a5_99998.csv'
     # q_fname = 'q30_99993.csv'
-    # a_fname = 'a3_986.csv'
-    # q_fname = 'q3_992.csv'
+    a_fname = 'a3_986.csv'
+    q_fname = 'q3_992.csv'
     # a_fname = 'a2.csv'
     # q_fname = 'q2.csv'
 
@@ -712,7 +713,7 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df, opt_ns):
                 print("WARN: dataframe empty or not found; try restarting.")
             else:
                 print("Drawing the default plot, with Score and HSTCount.")
-                draw_scatter_plot(
+                dr.draw_scatter_plot(
                     popular_qa_df,
                     'Score',
                     'HSTCount',
@@ -724,14 +725,14 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df, opt_ns):
                 print("WARN: dataframe empty or not found; try restarting.")
             else:
                 print("Drawing the default histogram plot.")
-                draw_histogram_plot(popular_qa_df)
+                dr.draw_histogram_plot(popular_qa_df)
         elif user_cmd.lower() == 'dm':  # Scatter matrix plot
             user_cmd = ''
             if popular_qa_df.empty:
                 print("WARN: dataframe empty or not found; try restarting.")
             else:
                 print("Drawing the default scatter matrix plot.")
-                draw_scatter_matrix_plot(popular_qa_df)
+                dr.draw_scatter_matrix_plot(popular_qa_df)
         # drm: Draw Reputation matrix, mean, answers only; scatter.
         elif user_cmd.lower() == 'drm':
             user_cmd = ''
@@ -742,7 +743,7 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df, opt_ns):
                 print("WARN: owner reputation dataframe empty or not found.")
             else:
                 print("NOTE: Drawing the owner reputation scatter matrix plot.")
-                draw_scatter_matrix_plot(
+                dr.draw_scatter_matrix_plot(
                     owner_reputation_df[['MeanScore', 'OwnerUserId']])
         # dsm: Draw q&a statistics matrix
         elif user_cmd.lower() == 'dsm':
@@ -756,7 +757,7 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df, opt_ns):
                 print("WARN: qa_stats_df empty or not found.")
             else:
                 print("NOTE: Drawing the qa_stats_df scatter matrix plot.")
-                draw_scatter_matrix_plot(
+                dr.draw_scatter_matrix_plot(
                     qa_stats_df[['Score', 'BodyLength', 'OwnerRep', 'HSTCount']])
         # lek: Look for exact keywords in the Q&A df; now case sensitive.
         elif user_cmd.lower() == 'lek':
@@ -890,70 +891,6 @@ def check_owner_reputation(all_ans_df, owner_reputation_df):
         owner_reputation_df = gd2_group_data(all_ans_df)
         owner_reputation_df.to_csv(own_rep_file)
     return owner_reputation_df
-
-
-def draw_histogram_plot(plot_df):
-    """Draw a simple histogram plot using pandas tools.
-    """
-    fig, ax = plt.subplots(1, 1)
-    ax.get_xaxis().set_visible(True)
-    plot_df = plot_df[['Score']]
-    # TBD These custom sized bins are used for debugging; change later.
-    # histo_bins = [-10, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
-    #               13, 14, 15, 16, 17, 18, 19, 20, 25, 30, 35, 40, 45, 50]
-    histo_bins = [-10, -9, -8, -7, -6, -5, -4, -3, -
-                  2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
-    plot_df.plot.hist(ax=ax, figsize=(6, 6), bins=histo_bins)
-    plt.show(block=False)
-
-    # Write data set to a csv file.
-    outfile = DATADIR + 'dh_draw_histogram.csv'
-    plot_df['Score'].to_csv(
-        outfile,
-        header=True,
-        index=None,
-        sep=',',
-        mode='w')
-
-    # Print data used for histogram
-    count, division = np.histogram(plot_df['Score'], bins=histo_bins)
-    print("#D histogram data: count[:5]: ", count[:5])
-    print("#D histogram data: division[:5]: ", division[:5])
-    return
-
-
-def draw_scatter_matrix_plot(plot_df):
-    """Draw a set of scatter plots showing each feature vs
-    every other feature.
-    """
-    cf.logger.info('Summary stats from plot_df.describe(): ')
-    cf.logger.info(plot_df.describe())
-
-    print('NOTE: Please wait for plot, 60 sec or more.')
-
-    axs = scatter_matrix(plot_df, alpha=0.2, diagonal='hist')
-    # TBD Failed. Logarithm scale, Good to show outliers. Cannot show Score=0?
-    # plt.xscale('log')
-
-    plt.show(block=False)
-
-    wdir = DATADIR
-    wfile = 'scat_mat_plot.pdf'
-    wr.save_prior_file(wdir, wfile)
-    plt.savefig(wdir + wfile)
-
-    wfile = 'scat_mat_plot.png'
-    wr.save_prior_file(wdir, wfile)
-    plt.savefig(wdir + wfile)
-    return
-
-
-def draw_scatter_plot(plot_df, xaxis, yaxis, xname, yname):
-    """Draw a simple scatter plot using pandas tools.
-    """
-    ax = plot_df[[yname, xname]].plot.scatter(x=xaxis, y=yaxis, table=False)
-    plt.show(block=False)
-    return
 
 
 def get_parser():
