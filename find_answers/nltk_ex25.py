@@ -346,7 +346,8 @@ def find_hi_score_terms_in_bodies(words_sorted_by_count_l, clean_q_a_bodies_l, n
     cf.logger.info("Terms from hi-score Answers.")
     #TBD, Maybe collect these "count,w" data into a single list,
     #   & write it in one step to the log file.
-    for count, w in words_sorted_by_count_l[-num_hi_score_terms:]:
+    count_lim = min(10, num_hi_score_terms)
+    for count, w in words_sorted_by_count_l[-count_lim:]:
         log_msg = "count, w: " + str(count) + " , " + w
         cf.logger.info(log_msg)
         tmp2_sr = clean_q_a_bodies_df[0].str.contains(w)

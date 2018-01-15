@@ -157,8 +157,10 @@ FILEA3 = 'a3_986.csv'
 INDIR = 'indir/'
 LINE_COUNT = 10
 MAX_COL_WID = 20
-MAX_HI_SCORE_TERMS = 10
-MAX_OWNERS = 20
+MAX_HI_SCORE_TERMS = 100 # 10
+MAX_OWNERS = 100 # 20
+MAX_POPULAR_QUES = 900
+MAX_TOP_OWNERS = 900
 TMP = 'tmp/'
 popular_qa_df = pd.DataFrame()
 
@@ -316,8 +318,8 @@ def config_data():
     q_fname = 'Questions.csv'
 
     # Smaller data sets, used for debugging.
-    q_fname = 'q6_999994.csv'
-    a_fname = 'a6_999999.csv'
+    # q_fname = 'q6_999994.csv'
+    # a_fname = 'a6_999999.csv'
     # a_fname = 'a5_99998.csv'
     # q_fname = 'q30_99993.csv'
     # a_fname = 'a3_986.csv'
@@ -521,7 +523,8 @@ def find_pop_and_top_ques_ids(ques_ids_from_top_own_l, popular_ids_a):
     # set(ques_ids_from_top_own_l[:40]).intersection(
     # set(popular_ids_a[:10])))
     ques_ids_pop_and_top_l = list(
-        set(ques_ids_from_top_own_l[:900]).intersection(set(popular_ids_a[:900])))
+        set(ques_ids_from_top_own_l[:MAX_TOP_OWNERS]).intersection(set(popular_ids_a[:MAX_POPULAR_QUES])))
+        #OK set(ques_ids_from_top_own_l[:900]).intersection(set(popular_ids_a[:900])))
     log_msg = 'find_pop_and_top_ques_ids(): len(ques_ids_pop_and_top_l) : ' + \
         str(len(ques_ids_pop_and_top_l))
     cf.logger.info(log_msg)
