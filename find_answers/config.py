@@ -1,6 +1,7 @@
 import logging 
 
 # Global variables for the project.
+DATADIR = 'data/'
 
 # Configure basic logging.
 # Set logging level to DEBUG, INFO, WARNING, ERROR, CRITICAL
@@ -11,6 +12,7 @@ import logging
 
 # Redirect STDERR or specify a log file:
 log_file = "fl_fga.log"
+
 log_level = logging.INFO
 #TBD log_level = logging.DEBUG
 log_level = logging.DEBUG
