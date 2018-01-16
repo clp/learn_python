@@ -258,18 +258,20 @@ def main(popular_qa_df):
             outfile, header=True, index=None, sep=',', mode='w')
 
     # Save a df to a file for review & debug.
-    wr.write_full_df_to_csv_file(popular_qa_df, 'popular_qa.csv')
+    wr.write_df_to_csv(popular_qa_df, DATADIR, 'popular_qa.csv')
 
     columns_l = []
-    wr.write_full_df_to_html_file(
+    wr.write_df_to_html(
         popular_qa_df,
+        DATADIR,
         'popular_qa.html',
         columns_l)
 
     # Save the Q&A title & body data as HTML.
     columns_l = ['Id', 'Title', 'Body']
-    wr.write_full_df_to_html_file(
+    wr.write_df_to_html(
         popular_qa_df,
+        DATADIR,
         'popular_qa_title_body.html',
         columns_l)
 
@@ -354,6 +356,8 @@ def read_data(ans_file, ques_file):
         warn_bad_lines=False,
         error_bad_lines=False)
 
+    numlines = len(ques_df)
+    print('Num of question records in i/p dataframe, ques_df: ' + str(numlines))
     numlines = len(ans_df)
     print('Num of answer records in i/p dataframe, ans_df: ' + str(numlines))
     progress_msg_factor = int(round(numlines / 10))

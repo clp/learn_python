@@ -295,12 +295,13 @@ def select_keyword_recs(keyword, qa_df, columns_l, opt_ns):
     search_fname = 'search_result_all_fields.html'
     wr.save_prior_file(DATADIR, search_fname)
     columns_l = ['HSTCount', 'Score', 'Id', 'ParentId', 'Title', 'Body', 'CreationDate', 'OwnerUserId', 'CleanBody', 'HiScoreTerms']
-    wr.write_full_df_to_html_file(qa_keyword_df, DATADIR, search_fname, columns_l)
+    wr.write_df_to_html(qa_keyword_df, DATADIR, search_fname, columns_l)
+    print('NOTE: See search output in this file: ' + DATADIR + search_fname)
     #
     search_fname = 'search_result_full.html'
     wr.save_prior_file(DATADIR, search_fname)
     columns_l = ['HSTCount', 'Score', 'Id', 'ParentId', 'Title', 'Body']
-    wr.write_full_df_to_html_file(qa_keyword_df, DATADIR, search_fname, columns_l)
+    wr.write_df_to_html(qa_keyword_df, DATADIR, search_fname, columns_l)
     print('NOTE: See search output in this file: ' + DATADIR + search_fname)
     #
     return  qa_keyword_df

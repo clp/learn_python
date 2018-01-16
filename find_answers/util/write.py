@@ -24,9 +24,11 @@ Reference:
 
 
 Usage:
-    import util/write as wr
-    wr.save_prior_file(wdir, wfile)
-    wr.write_full_df_to_csv_file(popular_qa_df, 'popular_qa.csv')
+
+    In the calling module:
+        import util/write as wr
+        wr.save_prior_file(wdir, wfile)
+        wr.write_df_to_csv(popular_qa_df, 'popular_qa.csv')
 
     pydoc  util/write.py
 
@@ -127,8 +129,7 @@ def save_prior_file(wdir, wfile):
     return
 
 
-#NEW def write_df_to_csv(in_df, wdir, wfile):
-def write_full_df_to_csv_file(in_df, wdir, wfile):
+def write_df_to_csv(in_df, wdir, wfile):
     """Write full contents of all columns of a data frame to a csv file.
     """
     # Used for testing and debugging.
@@ -151,14 +152,14 @@ def replace_line_breaks(in_s):
     return out_s
 
 
-def write_full_df_to_html_file(in_df, wdir, wfile, columns_l):
+def write_df_to_html(in_df, wdir, wfile, columns_l):
     """Write full contents of some columns of a data frame to an html file.
 
     Use the list of columns included in this function
     if caller does not specify any.
     """
     if in_df.empty:
-        print('WARN: write_full*(): Input dataframe empty or not found.')
+        print('WARN: write*html(): Input dataframe empty or not found.')
         return
     pd.set_option('display.max_colwidth', -1)  # -1=no limit, for debug
     outfile = wdir + wfile
