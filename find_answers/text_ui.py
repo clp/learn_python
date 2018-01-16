@@ -88,6 +88,10 @@ def main():
     pass
 
 
+def print_short_record(popular_qa_df, saved_index):
+    print(popular_qa_df[['Id', 'Title', 'Body']].iloc[[saved_index]])
+
+
 def show_menu(popular_qa_df, all_ans_df, opt_ns):
     """Show prompt to user; get and handle their request.
     """
@@ -136,21 +140,21 @@ def show_menu(popular_qa_df, all_ans_df, opt_ns):
             if popular_qa_df.empty:
                 print("WARN: dataframe empty or not found; try restarting.")
             else:
-                print(popular_qa_df[['Id', 'Title', 'Body']].iloc[[saved_index]])
+                print_short_record(popular_qa_df, saved_index)
         elif user_cmd.lower() == 'sn':  # show next item
             user_cmd = ''
             if popular_qa_df.empty:
                 print("WARN: dataframe empty or not found; try restarting.")
             else:
                 saved_index += 1
-                print(popular_qa_df[['Id', 'Title', 'Body']].iloc[[saved_index]])
+                print_short_record(popular_qa_df, saved_index)
         elif user_cmd.lower() == 'sp':  # show prior item
             user_cmd = ''
             if popular_qa_df.empty:
                 print("WARN: dataframe empty or not found; try restarting.")
             else:
                 saved_index -= 1
-                print(popular_qa_df[['Id', 'Title', 'Body']].iloc[[saved_index]])
+                print_short_record(popular_qa_df, saved_index)
         elif user_cmd.lower() == 'd':
             user_cmd = ''
             if popular_qa_df.empty:
