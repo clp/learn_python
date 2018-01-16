@@ -155,8 +155,9 @@ cf.logger.info(
 
 DATADIR = cf.DATADIR
 FILEA3 = 'a3_986.csv'
+FOOTER = cf.FOOTER
+HEADER = cf.HEADER
 INDIR = 'indir/'
-LINE_COUNT = 10
 MAX_COL_WID = cf.MAX_COL_WID
 MAX_HI_SCORE_TERMS = 100 # 10
 MAX_OWNERS = 100 # 20
@@ -165,38 +166,6 @@ MAX_TOP_OWNERS = 900
 #TBR TMP = cf.TMP
 popular_qa_df = pd.DataFrame()
 
-HEADER = cf.HEADER
-
-HX = '''<html>
-    <head>
-        <style type="text/css">
-        table{
-            /* max-width: 850px; */
-            width: 100%;
-        }
-
-
-        th, td {
-            overflow: auto;  /* Use auto to get H scroll bars */
-            text-align: left;
-            /* max-width helps line-wrap in a cell, and most code */
-            /* samples in cells have no H.scroll when width=700px: */
-            max-width: 700px;
-            /* max-width: 50%; Using % breaks line-wrap inside a cell */
-            width: auto;    /* auto is better than using % */
-        }
-
-        pre,img {
-            padding: 0.1em 0.5em 0.3em 0.7em;
-            border-left: 11px solid #ccc;
-            margin: 1.7em 0 1.7em 0.3em;
-            overflow: auto;  /* Use auto to get H scroll bars */
-        }
-        </style>
-    </head>
-    <body>
-'''
-FOOTER = cf.FOOTER
 
 
 def main(popular_qa_df):
