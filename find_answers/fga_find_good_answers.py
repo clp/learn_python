@@ -153,20 +153,21 @@ cf.logger.info(
     os.path.basename(__file__))
 
 
-DATADIR = 'data/'
+DATADIR = cf.DATADIR
 FILEA3 = 'a3_986.csv'
 INDIR = 'indir/'
 LINE_COUNT = 10
-MAX_COL_WID = 20
+MAX_COL_WID = cf.MAX_COL_WID
 MAX_HI_SCORE_TERMS = 100 # 10
 MAX_OWNERS = 100 # 20
 MAX_POPULAR_QUES = 900
 MAX_TOP_OWNERS = 900
-TMP = 'tmp/'
+#TBR TMP = cf.TMP
 popular_qa_df = pd.DataFrame()
 
-HEADER = '''
-<html>
+HEADER = cf.HEADER
+
+HX = '''<html>
     <head>
         <style type="text/css">
         table{
@@ -195,10 +196,7 @@ HEADER = '''
     </head>
     <body>
 '''
-FOOTER = '''
-    </body>
-</html>
-'''
+FOOTER = cf.FOOTER
 
 
 def main(popular_qa_df):

@@ -2,6 +2,44 @@ import logging
 
 # Global variables for the project.
 DATADIR = 'data/'
+MAX_COL_WID = 20
+TMP = 'tmp/'
+
+HEADER = '''
+<html>
+    <head>
+        <style type="text/css">
+        table{
+            /* max-width: 850px; */
+            width: 100%;
+        }
+
+        th, td {
+            overflow: auto;  /* Use auto to get H scroll bars */
+            text-align: left;
+            /* max-width helps line-wrap in a cell, and most code */ 
+            /* samples in cells have no H.scroll when width=700px: */ 
+            max-width: 700px;  
+            /* max-width: 50%; Using % breaks line-wrap inside a cell */
+            width: auto;    /* auto is better than using % */
+        }
+
+        pre,img {
+            padding: 0.1em 0.5em 0.3em 0.7em;
+            border-left: 11px solid #ccc;
+            margin: 1.7em 0 1.7em 0.3em;
+            overflow: auto;  /* Use auto to get H scroll bars */
+        }
+        </style>
+    </head>
+    <body>
+'''
+
+FOOTER = '''
+    </body>
+</html>
+'''
+
 
 # Configure basic logging.
 # Set logging level to DEBUG, INFO, WARNING, ERROR, CRITICAL
