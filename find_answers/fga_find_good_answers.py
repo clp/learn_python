@@ -242,7 +242,7 @@ def main(popular_qa_df):
     columns_l = ['HSTCount', 'Score', 'Id', 'ParentId', 'Title', 'Body']
     if keyword:
         qa_with_keyword_df = sga.select_keyword_recs(
-            keyword, popular_qa_df, columns_l, opt_ns, DATADIR)
+            keyword, popular_qa_df, columns_l, opt_ns)
         #
         log_msg = 'Search for a term: ' + keyword + '\n'
         cf.logger.info(log_msg)
@@ -258,12 +258,11 @@ def main(popular_qa_df):
             outfile, header=True, index=None, sep=',', mode='w')
 
     # Save a df to a file for review & debug.
-    wr.write_full_df_to_csv_file(popular_qa_df, DATADIR, 'popular_qa.csv')
+    wr.write_full_df_to_csv_file(popular_qa_df, 'popular_qa.csv')
 
     columns_l = []
     wr.write_full_df_to_html_file(
         popular_qa_df,
-        DATADIR,
         'popular_qa.html',
         columns_l)
 
@@ -271,7 +270,6 @@ def main(popular_qa_df):
     columns_l = ['Id', 'Title', 'Body']
     wr.write_full_df_to_html_file(
         popular_qa_df,
-        DATADIR,
         'popular_qa_title_body.html',
         columns_l)
 
@@ -783,7 +781,7 @@ def show_menu(qa_df, all_ans_df, owner_reputation_df, opt_ns):
             # TBD Chg popular_qa_df to a df w/ more records, for dbg & initial
             # use.  Beware of memory & performance issues.
             q_a_group_with_keyword_df = sga.select_keyword_recs(
-                search_term, popular_qa_df, columns_l, opt_ns, DATADIR)
+                search_term, popular_qa_df, columns_l, opt_ns)
         else:
             print("Got bad cmd from user: ", user_cmd)
             print(user_menu)

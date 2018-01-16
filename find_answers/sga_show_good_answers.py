@@ -112,12 +112,14 @@ import util.write as wr
 
 cf.logger.info(cf.log_file + ' - Start logging for ' + os.path.basename(__file__))
 
+DATADIR = cf.DATADIR
+
 
 def main():
     pass
 
 
-def select_keyword_recs(keyword, qa_df, columns_l, opt_ns, DATADIR):
+def select_keyword_recs(keyword, qa_df, columns_l, opt_ns):
     """Find the Q's & A's from the filtered dataframe
     that contain the keyword, in Title or Body.
     Use those Id's to find the related* Q's and A's that do not

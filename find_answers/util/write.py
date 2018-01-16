@@ -26,7 +26,7 @@ Reference:
 Usage:
     import util/write as wr
     wr.save_prior_file(wdir, wfile)
-    wr.write_full_df_to_csv_file(popular_qa_df, DATADIR, 'popular_qa.csv')
+    wr.write_full_df_to_csv_file(popular_qa_df, 'popular_qa.csv')
 
     pydoc  util/write.py
 
