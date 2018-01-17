@@ -178,10 +178,8 @@ def main(popular_qa_df):
     all_ans_df, all_ques_df, progress_msg_factor, numlines = \
         read_data(a_infile, q_infile)
 
-    popular_ids = \
+    popular_ids_a = \
         find_popular_ques(all_ans_df, a_fname)
-
-    popular_ids_a = popular_ids.index.values
 
     top_scoring_owners_a, owner_grouped_df = \
         group_data(all_ans_df)
@@ -329,7 +327,8 @@ def find_popular_ques(aa_df, a_fname):
     popular_ids = pd.value_counts(aa_df['ParentId'])
     outfile = DATADIR + "fpq_popular_ids." + a_fname + ".csv"
     popular_ids.to_csv(outfile)
-    return popular_ids
+    popular_ids_a = popular_ids.index.values
+    return popular_ids_a
 
 
 # TBD, Refactor the two group_data() funcs.
