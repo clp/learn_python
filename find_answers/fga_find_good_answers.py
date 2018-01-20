@@ -133,7 +133,7 @@ import pandas as pd
 from pandas.plotting import scatter_matrix
 
 import config as cf
-import draw_plots as dr
+#TBR import draw_plots as dr
 import nltk_ex25 as nl
 import sga_show_good_answers as sga
 import text_ui as tui
@@ -198,6 +198,12 @@ def main(popular_qa_df):
 
     check_for_keyword()
 
+    save_basic_output()
+
+
+def save_basic_output():
+    """Save the dataframe of chosen Q&A groups to csv and html files.
+    """
     wr.write_df_to_csv(popular_qa_df, DATADIR, 'popular_qa.csv')
 
     columns_l = []
@@ -216,6 +222,8 @@ def main(popular_qa_df):
 
 
 def check_for_keyword():
+    """Search for keywords if specified on command line.
+    """
     columns_l = ['HSTCount', 'Score', 'Id', 'ParentId', 'Title', 'Body']
     if keyword:
         qa_with_keyword_df = sga.select_keyword_recs(
