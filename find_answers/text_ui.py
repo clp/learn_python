@@ -77,12 +77,10 @@ import sga_show_good_answers as sga
 import util.write as wr
 
 
-cf.logger.info(
-    cf.log_file +
-    ' - Start logging for ' +
-    os.path.basename(__file__))
-
+CURRENT_FILE = os.path.basename(__file__)
 DATADIR = cf.DATADIR
+
+cf.logger.info(cf.log_file + ' - Start logging for ' + CURRENT_FILE)
 
 def main():
     pass
@@ -129,7 +127,7 @@ def show_menu(popular_qa_df, all_ans_df, opt_ns):
         elif user_cmd.lower() == 'q':
             print("Quit the program.")
             log_msg = cf.log_file + ' - Quit, user req; Finish logging for ' + \
-                os.path.basename(__file__) + '\n'
+                CURRENT_FILE + '\n'
             cf.logger.warning(log_msg)
             raise SystemExit()
         elif user_cmd == '?' or user_cmd == 'h':

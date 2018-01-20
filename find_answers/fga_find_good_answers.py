@@ -133,19 +133,13 @@ import pandas as pd
 from pandas.plotting import scatter_matrix
 
 import config as cf
-#TBR import draw_plots as dr
 import nltk_ex25 as nl
 import sga_show_good_answers as sga
 import text_ui as tui
 import util.write as wr
 
 
-cf.logger.info(
-    cf.log_file +
-    ' - Start logging for ' +
-    os.path.basename(__file__))
-
-
+CURRENT_FILE = os.path.basename(__file__)
 DATADIR = cf.DATADIR
 FILEA3 = 'a3_986.csv'
 INDIR = 'indir/'
@@ -155,8 +149,9 @@ MAX_OWNERS = 100 # 20
 MAX_POPULAR_QUES = 900
 MAX_TOP_OWNERS = 900
 #TBR TMP = cf.TMP
-popular_qa_df = pd.DataFrame()
 
+cf.logger.info( cf.log_file + ' - Start logging for ' + CURRENT_FILE)
+popular_qa_df = pd.DataFrame()
 
 
 def main(popular_qa_df):
@@ -669,12 +664,12 @@ if __name__ == '__main__':
     if opt_ns.quit:
         print('Quit the program and don\'t show menu.')
         log_msg = cf.log_file + ' - Quit, user req; Finish logging for ' + \
-            os.path.basename(__file__) + '\n'
+            CURRENT_FILE + '\n'
         cf.logger.warning(log_msg)
         raise SystemExit()
 
     tui.show_menu(popular_qa_df, all_ans_df, opt_ns)
 
     log_msg = cf.log_file + ' - Finish logging for ' + \
-        os.path.basename(__file__) + '\n'
+        CURRENT_FILE + '\n'
     cf.logger.warning(log_msg)
