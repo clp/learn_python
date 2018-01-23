@@ -530,24 +530,23 @@ def combine_related_q_and_a(ques_ids_pop_and_top_l, all_ques_df, aa_df):
                 print("combine_related_q_and_a():progress count: ", i)
         qm_df = ques_match_df[ques_match_df['Id'] == qid]
         am_df = ans_match_df[ans_match_df['ParentId'] == qid]
-        qagroup_from_pop_top_ques_df = pd.concat(
-            [qm_df, am_df]).reset_index(drop=True)
+        qagroup_poptop_df = pd.concat([qm_df, am_df]).reset_index(drop=True)
         #
         # Change NaN values to zero, and the field type from float64 to int64,
         # to help with search functionality.
-        qagroup_from_pop_top_ques_df['ParentId'] = qagroup_from_pop_top_ques_df['ParentId'].fillna(
-            0).astype(int)
-        qagroup_from_pop_top_ques_df['OwnerUserId'] = qagroup_from_pop_top_ques_df['OwnerUserId'].fillna(
-            0).astype(int)
+        qagroup_poptop_df['ParentId'] = \
+                qagroup_poptop_df['ParentId'].fillna( 0).astype(int)
+        qagroup_poptop_df['OwnerUserId'] = \
+                qagroup_poptop_df['OwnerUserId'].fillna( 0).astype(int)
         #
-        if qagroup_from_pop_top_ques_df.empty:
+        if qagroup_poptop_df.empty:
             # Skip this qid, it does not match what we seek.
             continue
-        cf.logger.info('qagroup_from_pop_top_ques_df.head(1): ')
-        cf.logger.info(qagroup_from_pop_top_ques_df.head(1))
+        cf.logger.info('qagroup_poptop_df.head(1): ')
+        cf.logger.info(qagroup_poptop_df.head(1))
 
         # Analyze data w/ nlp s/w.
-        popular_qa_df = analyze_text(qagroup_from_pop_top_ques_df)
+        popular_qa_df = analyze_text(qagroup_poptop_df)
 
     # End combine_related_q_and_a().
     return popular_qa_df
@@ -569,14 +568,14 @@ def compute_record_selector(numlines):
     return num_selected_recs
 
 
-def analyze_text(qagroup_from_pop_top_ques_df):
+def analyze_text(qagroup_poptop_df):
     """Use a Q&A group of one Q w/ its A's for i/p.
     Process the text data w/ the routines in the nltk module, which use
     natural language tools.
 
     Important variables.
 
-    qagroup_from_pop_top_ques_df:
+    qagroup_poptop_df:
     A dataframe with one Q&A group (ie, one question with its related
     answers), which is selected from all such groups based on being 'pop'
     (popular, questions with several answers) and 'top' (having one
@@ -588,10 +587,10 @@ def analyze_text(qagroup_from_pop_top_ques_df):
     cf.logger.info("NLP Step 2. Process the words of each input line.")
     if opt_ns.debug:
         print(
-            'analyze_text(): Questions in qagroup_from_pop_top_ques_df: Id, Score, Title:')
+            'analyze_text(): Ques in qagroup_poptop_df: Id, Score, Title:')
         print(
-            qagroup_from_pop_top_ques_df[['Id', 'Score', 'Title']].iloc[0].values)
-    clean_ans_bodies_l = nl.clean_raw_data(qagroup_from_pop_top_ques_df)
+            qagroup_poptop_df[['Id', 'Score', 'Title']].iloc[0].values)
+    clean_ans_bodies_l = nl.clean_raw_data(qagroup_poptop_df)
     if not clean_ans_bodies_l:
         print('analyze_text(), No text to analyze; exit now.')
         raise SystemExit()
@@ -604,7 +603,7 @@ def analyze_text(qagroup_from_pop_top_ques_df):
     qa_with_hst_df = nl.find_hi_score_terms_in_bodies(
         words_sorted_by_count_l,
         clean_ans_bodies_l,
-        MAX_HI_SCORE_TERMS, qagroup_from_pop_top_ques_df)
+        MAX_HI_SCORE_TERMS, qagroup_poptop_df)
     popular_qa_df = pd.concat(
         [popular_qa_df, qa_with_hst_df]).reset_index(drop=True)
 

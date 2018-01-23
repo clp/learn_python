@@ -120,7 +120,7 @@ def convert_text_to_words(raw_q_a_s):
     return(" ".join(meaningful_words))
 
 
-def clean_raw_data(qagroup_from_pop_top_ques_df):
+def clean_raw_data(qagroup_poptop_df):
     """Clean and parse the input text.
 
     The input is a dataframe of one question and its related
@@ -146,11 +146,11 @@ def clean_raw_data(qagroup_from_pop_top_ques_df):
     """
 
     # Get the number of bodies based on that column's size
-    num_bodies = qagroup_from_pop_top_ques_df["Body"].size
+    num_bodies = qagroup_poptop_df["Body"].size
     cf.logger.info("clean_raw(): Number of bodies: " + str(num_bodies))
 
     clean_q_a_bodies_l = []
-    qagroup_from_pop_top_ques_df["CleanBody"] = ""
+    qagroup_poptop_df["CleanBody"] = ""
 
     # Build a list that holds the cleaned text from each answer's body field.
     # Use it to find terms that match terms found in hi-score Answers.
@@ -158,15 +158,15 @@ def clean_raw_data(qagroup_from_pop_top_ques_df):
     if progress_msg_factor <= 10:
         progress_msg_factor = 10
     for i in range(0, num_bodies):
-        clean_body_s = convert_text_to_words(qagroup_from_pop_top_ques_df["Body"][i])
+        clean_body_s = convert_text_to_words(qagroup_poptop_df["Body"][i])
         clean_q_a_bodies_l.append(clean_body_s)
         #
         # Add new column to Answers df.
-        qagroup_from_pop_top_ques_df.loc[i, "CleanBody"] = clean_body_s
+        qagroup_poptop_df.loc[i, "CleanBody"] = clean_body_s
         # Print a progress message; default is for every 10% of i/p data handled.
         if((i+1) % progress_msg_factor == 0):
             #D cf.logger.debug("Body %d of %d" % (i+1, num_bodies))
-            #D cf.logger.debug('  Original text: ' + qagroup_from_pop_top_ques_df['Body'][i])
+            #D cf.logger.debug('  Original text: ' + qagroup_poptop_df['Body'][i])
             cf.logger.debug('  clean*(): Partial slice of cleaned text:\n' + clean_body_s[:70])
 
     return clean_q_a_bodies_l
@@ -274,13 +274,13 @@ def sort_vocab(vocab_l, dist_a):
     return words_sorted_by_count_l
 
 
-def sort_q_a_by_score(qagroup_from_pop_top_ques_df):
+def sort_q_a_by_score(qagroup_poptop_df):
     """Return a dataframe of Id's and their Scores, sorted by score.
 
     Use one Q&A group dataframe as input.
     """
 
-    ids_and_scores_df = qagroup_from_pop_top_ques_df.sort_values(['Score'])
+    ids_and_scores_df = qagroup_poptop_df.sort_values(['Score'])
     ids_and_scores_df = ids_and_scores_df[['Id', 'Score']]
 
     cf.logger.info('Lowest scoring Answers:')
@@ -291,7 +291,7 @@ def sort_q_a_by_score(qagroup_from_pop_top_ques_df):
     return ids_and_scores_df
 
 
-def find_hi_score_terms_in_bodies(words_sorted_by_count_l, clean_q_a_bodies_l, num_hi_score_terms, qagroup_from_pop_top_ques_df):
+def find_hi_score_terms_in_bodies(words_sorted_by_count_l, clean_q_a_bodies_l, num_hi_score_terms, qagroup_poptop_df):
     """Save terms that a record has in common with frequently-seen text.
 
     Important Variables.
@@ -299,13 +299,13 @@ def find_hi_score_terms_in_bodies(words_sorted_by_count_l, clean_q_a_bodies_l, n
     clean_q_a_bodies_df: A dataframe with cleaned text from Q&A
     bodies.
 
-    HiScoreTerms: A column added to qagroup_from_pop_top_ques_df,
+    HiScoreTerms: A column added to qagroup_poptop_df,
     holding terms that might indicate that this is a useful record.
 
-    HSTCount: A column added to qagroup_from_pop_top_ques_df, holding
+    HSTCount: A column added to qagroup_poptop_df, holding
     the total count of the number of high score terms in a record.
 
-    qagroup_from_pop_top_ques_df: a dataframe of one question
+    qagroup_poptop_df: a dataframe of one question
     and its related answers (one Q&A group).  The question is
     both pop (popular) and top: it has several answers, and some
     answers are by owners with high reputation scores.
@@ -340,8 +340,8 @@ def find_hi_score_terms_in_bodies(words_sorted_by_count_l, clean_q_a_bodies_l, n
     # p.1. Separate the terms from each other so it is clear what was found
     #  and what was not found in the A's being checked.
 
-    qagroup_from_pop_top_ques_df["HiScoreTerms"] = ""
-    qagroup_from_pop_top_ques_df["HSTCount"] = 0
+    qagroup_poptop_df["HiScoreTerms"] = ""
+    qagroup_poptop_df["HSTCount"] = 0
 
     cf.logger.info("Terms from hi-score Answers.")
     #TBD, Maybe collect these "count,w" data into a single list,
@@ -354,38 +354,38 @@ def find_hi_score_terms_in_bodies(words_sorted_by_count_l, clean_q_a_bodies_l, n
         for index, row in tmp2_sr.iteritems():
             if row:
                 #TBD, Maybe Change string 'w' to list or tuple for better storage in df?
-                #OK qagroup_from_pop_top_ques_df.loc[index, "HiScoreTerms"] = qagroup_from_pop_top_ques_df.loc[index, "HiScoreTerms"] + w + ' , '
-                qagroup_from_pop_top_ques_df.loc[index, "HiScoreTerms"] += (w + ' , ')
+                #OK qagroup_poptop_df.loc[index, "HiScoreTerms"] = qagroup_poptop_df.loc[index, "HiScoreTerms"] + w + ' , '
+                qagroup_poptop_df.loc[index, "HiScoreTerms"] += (w + ' , ')
                 #TBD, increment hst counter each time one is found.
                 #TBD, How to handle multiple instances of hst? count each occurrence?
                 #TBD, use df func to simply count number of HiScoreTerms in each row?
-                qagroup_from_pop_top_ques_df.loc[index, "HSTCount"] += 1
+                qagroup_poptop_df.loc[index, "HSTCount"] += 1
 
-    #D cf.logger.debug("DBG, qagroup_from_pop_top_ques_df.head():")
-    #D cf.logger.debug(qagroup_from_pop_top_ques_df.head())
+    #D cf.logger.debug("DBG, qagroup_poptop_df.head():")
+    #D cf.logger.debug(qagroup_poptop_df.head())
 
     # Save possible valuable answers to a separate file for review.
     # Replace empty strings in HiScoreTerms cells with NaN,
     # to drop low value answers easily w/ dropna().
-    qagroup_from_pop_top_ques_df['HiScoreTerms'].replace('', np.nan, inplace=True)
+    qagroup_poptop_df['HiScoreTerms'].replace('', np.nan, inplace=True)
     #
     # Save a new df with only rows that have data in the HiScoreTerms column.
     #   TBD, Remove this statement to fix bug that deletes many Q&A of value.
     #   Consider other workarounds if this is a problem.
-    # qagroup_from_pop_top_ques_df = qagroup_from_pop_top_ques_df.dropna(subset=['HiScoreTerms'])
+    # qagroup_poptop_df = qagroup_poptop_df.dropna(subset=['HiScoreTerms'])
 
     #D # Print partial data about interesting answers to check.
     #D print("\nCheck these low score Answers for useful data: ")
-    #D for index,row in qagroup_from_pop_top_ques_df.iterrows():
+    #D for index,row in qagroup_poptop_df.iterrows():
     #D     if np.isnan(row['ParentId']):  # Found a question.
     #D         print('Id, Title: ', row['Id'], row['Title'])
-    #D print(qagroup_from_pop_top_ques_df[['Id', 'Score', 'CreationDate']])
-    #D print(qagroup_from_pop_top_ques_df[['Id', 'HiScoreTerms']])
+    #D print(qagroup_poptop_df[['Id', 'Score', 'CreationDate']])
+    #D print(qagroup_poptop_df[['Id', 'HiScoreTerms']])
 
     # Also write summary data to log.
     cf.logger.info("Check low score Answers for useful data: ")
-    cf.logger.info(qagroup_from_pop_top_ques_df[['Id', 'Score', 'HSTCount', 'CreationDate', 'Title', 'HiScoreTerms']])
-    return qagroup_from_pop_top_ques_df
+    cf.logger.info(qagroup_poptop_df[['Id', 'Score', 'HSTCount', 'CreationDate', 'Title', 'HiScoreTerms']])
+    return qagroup_poptop_df
 
 if __name__ == '__main__':
     main()
