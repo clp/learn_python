@@ -228,9 +228,8 @@ def check_for_keyword():
         cf.logger.info(log_msg)
 
         if qa_with_keyword_df == None or qa_with_keyword_df.empty:
-            log_msg = 'fga.check*keyword(): keyword ' + keyword + ' not found in popular_qa_df.'
-            print(log_msg)
-            cf.logger.warning(log_msg)
+            cf.logger.warning('fga.check*keyword(): keyword [' + \
+                    keyword + '] not found in popular_qa_df.')
             return  # TBD. What debug data to print here?
 
         outfile = DATADIR + 'qa_with_keyword.csv'
@@ -406,27 +405,27 @@ def group_data(aa_df):
         print('top_scoring_owners_a: ', top_scoring_owners_a)
         print()
 
-    owners_df_l = []
+    # Build list of owners w/ rows from the answers df.
+    owners_l = []
     lo_score_limit = opt_ns.lo_score_limit
     for owner in top_scoring_owners_a:
-        # Get a pandas series of booleans for filtering:
+        # Build a pandas series of booleans for filtering.
         answered_by_o2_sr = (aa_df.OwnerUserId == owner)
-        # Get a pandas df with rows for all answers of one user:
+        # Build a pandas df with rows for all answers by one owner.
         answers_df = aa_df[[
             'Id', 'OwnerUserId', 'Score']][answered_by_o2_sr]
 
-        # Get a pandas series of booleans for filtering:
+        # Build filter then df with rows for all low-score answers by one owner.
         lo_score_by_o2_sr = (answers_df.Score < lo_score_limit)
-        # Get a pandas df with rows for all low-score answers of one user:
         lo_score_answers_by_o2_df = answers_df[[
             'Id', 'OwnerUserId', 'Score']][lo_score_by_o2_sr]
-        owners_df_l.append(lo_score_answers_by_o2_df)
+        owners_l.append(lo_score_answers_by_o2_df)
 
     # TBD These are the answers to examine for useful data, even though
     # they have low scores.
     # View these answers and evaluate them manually; and analyze them
     # with other s/w.
-    lo_scores_for_top_owners_df = pd.concat(owners_df_l)
+    lo_scores_for_top_owners_df = pd.concat(owners_l)
     if opt_ns.verbose:
         print('lo_score_limit: ', lo_score_limit)
         print('Length of lo_scores_for_top_owners_df: ',
@@ -447,16 +446,15 @@ def find_ques_ids_from_top_owners(top_scoring_owners_a, aa_df):
     to collect for evaluation.
     Return that list of ParentId's.
     """
-    owners_df_l = []
+    owners_l = []
     for owner in top_scoring_owners_a:
-        # Get a pandas series of booleans for filtering:
+        # Build a filter then df with rows for all answers by one owner.
         answered_by_owner_sr = (aa_df.OwnerUserId == owner)
-        # Get a pandas df with rows for all answers of one user:
         answers_df = aa_df[['Id', 'OwnerUserId',
                             'ParentId', 'Score']][answered_by_owner_sr]
-        owners_df_l.append(answers_df)
+        owners_l.append(answers_df)
 
-    hi_scoring_owners_df = pd.concat(owners_df_l)
+    hi_scoring_owners_df = pd.concat(owners_l)
 
     # Make list of unique ParentId's:
     ques_ids_from_top_own_l = list(set(hi_scoring_owners_df['ParentId']))
@@ -480,25 +478,31 @@ def find_pop_and_top_ques_ids(ques_ids_from_top_own_l, popular_ids_a):
     """
     # Notes on settings used below:
     # For q6 & a6 data:
-    # set(ques_ids_from_top_own_l[:500]).intersection(
-    # set(popular_ids_a[:500])))
+    # MAX_TOP_OWNERS = 500
+    # MAX_POPULAR_QUES = 500
     #
     # For q3 & a3 data:
-    # set(ques_ids_from_top_own_l[:40]).intersection(
-    # set(popular_ids_a[:10])))
+    # MAX_TOP_OWNERS = 40
+    # MAX_POPULAR_QUES = 10
+    # OR
+    # MAX_POPULAR_QUES = 900
+    # MAX_TOP_OWNERS = 900
+    #
     ques_ids_pop_and_top_l = list(
-        set(ques_ids_from_top_own_l[:MAX_TOP_OWNERS]).intersection(set(popular_ids_a[:MAX_POPULAR_QUES])))
-        #OK set(ques_ids_from_top_own_l[:900]).intersection(set(popular_ids_a[:900])))
-    log_msg = 'find_pop_and_top_ques_ids(): len(ques_ids_pop_and_top_l) : ' + \
-        str(len(ques_ids_pop_and_top_l))
-    cf.logger.info(log_msg)
-    log_msg = "find_pop*(): ques_ids_pop_and_top_l, top-N parent id\'s to chk: " + \
-        str(ques_ids_pop_and_top_l[0:10])
-    cf.logger.info(log_msg)
+        set(ques_ids_from_top_own_l[:MAX_TOP_OWNERS]).intersection(
+            set(popular_ids_a[:MAX_POPULAR_QUES])))
+
+    cf.logger.info('find_pop_and_top*(): len(ques_ids_pop_and_top_l): ' + \
+        str(len(ques_ids_pop_and_top_l)))
+
+    cf.logger.info("find_pop_and_top*(): ques_ids_pop_and_top_l, " + \
+        "top-N parent id\'s to chk: " + str(ques_ids_pop_and_top_l[0:5]))
+
     if opt_ns.verbose:
         print(
             'ques_ids_pop_and_top_l, parent id\'s to examine: ',
             ques_ids_pop_and_top_l[:])
+
     return ques_ids_pop_and_top_l
 
 
@@ -663,7 +667,7 @@ if __name__ == '__main__':
 
     if opt_ns.quit:
         print('Quit the program and don\'t show menu.')
-        log_msg = cf.log_file + ' - Quit, user req; Finish logging for ' + \
+        log_msg = cf.log_file + ' - Quit by user req; Finish logging for ' + \
             CURRENT_FILE + '\n'
         cf.logger.warning(log_msg)
         raise SystemExit()

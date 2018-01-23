@@ -158,7 +158,7 @@ def select_keyword_recs(keyword, qa_df, columns_l, opt_ns):
     """
 
     if qa_df.empty:
-        print('sga.select*(): Missing data, qa_df is empty.')
+        print('sga.select*(): Missing input data, qa_df is empty.')
         return
     #
     # Get a pandas series of booleans for filtering:
