@@ -270,13 +270,10 @@ def select_keyword_recs(keyword, qa_df, columns_l, opt_ns, progress_i):
     print("sga: Build o/p df w/ Q's and A's in order, from the list of Id's.")
     print("It will take some time to sort a big data set.\n")
     qa_keyword_df_l = []
-    #ORG for item in qa_id_ord_l:
     for i, iid in enumerate(qa_id_ord_l):
-        
         if opt_ns.verbose:
             if i % progress_i == 0:
                 print("sga:select*():progress count: ", i)
-        
         for index, row in qa_df.iterrows():
             if row['Id'] == iid:
                 qa_keyword_df_l.append(row)
