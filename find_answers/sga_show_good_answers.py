@@ -119,7 +119,7 @@ def main():
     pass
 
 
-def select_keyword_recs(keyword, qa_df, columns_l, opt_ns):
+def select_keyword_recs(keyword, qa_df, columns_l, opt_ns, progress_i):
     """Find the Q's & A's from the filtered dataframe
     that contain the keyword, in Title or Body.
     Use those Id's to find the related* Q's and A's that do not
@@ -159,7 +159,7 @@ def select_keyword_recs(keyword, qa_df, columns_l, opt_ns):
 
     if qa_df.empty:
         print('sga.select*(): Missing input data, qa_df is empty.')
-        return
+        return qa.df
     #
     # Get a pandas series of booleans for filtering:
     # Check Question & Answer, both Title and Body columns.
@@ -173,7 +173,8 @@ def select_keyword_recs(keyword, qa_df, columns_l, opt_ns):
     qak_df = qa_df[columns_l][qa_contains_sr]
     if qak_df.empty:
         print('sga.select*():qak: Search term not found, qak_df is empty.')
-        return
+        # Return empty df, so caller does not fail.
+        return pd.DataFrame()
     #
     # Print summary, 1 line/record:
     print()
@@ -238,23 +239,20 @@ def select_keyword_recs(keyword, qa_df, columns_l, opt_ns):
     #
     ques_ids_ord_l.extend(ques_ids_from_search_l)
     #
-    # Remove duplicate Q.Id's w/o changing the order of the list.
-    #
+    cf.logger.info("Remove duplicate Q.Id's w/o changing the order of the list.")
     qid_ord_l = []
     for i in ques_ids_ord_l:
         if i not in qid_ord_l:
             qid_ord_l.append(i)
     #
     if opt_ns.verbose:
-        print()
-        print('All Questions in order, Q.Id : Q.Title.')
+        print('\nAll Questions in order, Q.Id : Q.Title.')
         for parent_id in qid_ord_l:
             tmp_df = qa_df.loc[qa_df['Id'] == parent_id]
             print(parent_id, ": ", tmp_df['Title'].iloc[0])
         print()
     #
-    # Build list of Q.Id and A.Id in the right order for output.
-    #
+    cf.logger.info("sga: Build list of Q.Id and A.Id in order for output.")
     qa_id_ord_l = []
     for qid in qid_ord_l:
         # Save the Q.Id.
@@ -266,24 +264,34 @@ def select_keyword_recs(keyword, qa_df, columns_l, opt_ns):
         ams_df = ans_match_df.sort_values(['HSTCount', 'Score', 'Id'], ascending=[False, False, True])
         for hstc, score, aid in ams_df[['HSTCount', 'Score', 'Id']].values:
             qa_id_ord_l.append(aid)
+    cf.logger.info("len(ams_df): " + str(len(ams_df)))
     #
-    # Build o/p df w/ Q's and A's in right order, from the list of Id's.
-    #
+    cf.logger.info("sga: Build o/p df w/ Q's and A's in order, from the list of Id's.")
+    print("sga: Build o/p df w/ Q's and A's in order, from the list of Id's.")
+    print("It will take some time to sort a big data set.\n")
     qa_keyword_df_l = []
-    for item in qa_id_ord_l:
+    #ORG for item in qa_id_ord_l:
+    for i, iid in enumerate(qa_id_ord_l):
+        
+        if opt_ns.verbose:
+            if i % progress_i == 0:
+                print("sga:select*():progress count: ", i)
+        
         for index, row in qa_df.iterrows():
-            if row['Id'] == item:
+            if row['Id'] == iid:
                 qa_keyword_df_l.append(row)
                 continue
     qa_keyword_df = pd.DataFrame(qa_keyword_df_l)
+    cf.logger.info("len(qa_keyword_df): " + str(len(qa_keyword_df)))
     #
-    # Print summary about the search o/p df.
-    print()
-    print("qa_keyword_df.describe().\n", qa_keyword_df[['HSTCount', 'Score']].describe())
-    print()
+    cf.logger.info("sga: qa_keyword_df.describe(include = 'all')")
+    qa_keyword_df_describe_s = qa_keyword_df.describe(include = 'all')
+    cf.logger.info(qa_keyword_df_describe_s)
     if opt_ns.verbose:
-        print('qa_keyword_df summary, includes all related Q & A.\n', qa_keyword_df[:], '\n')
-        print('qa_keyword_df.describe(include = "all").\n', qa_keyword_df.describe(include = 'all'))
+        print("sga: qa_keyword_df: summary and df.describe().\n")
+        print('Summary w/ all related Q & A.\n', qa_keyword_df[:], '\n\n')
+        print('qa_keyword_df.describe():\n')
+        print(qa_keyword_df_describe_s)
         print()
     #
     # Write o/p to disk files.
@@ -304,7 +312,7 @@ def select_keyword_recs(keyword, qa_df, columns_l, opt_ns):
     wr.write_df_to_html(qa_keyword_df, DATADIR, search_fname, columns_l)
     print('NOTE: See search output in this file: ' + DATADIR + search_fname)
     #
-    return  qa_keyword_df
+    return qa_keyword_df
 
 
 if __name__ == '__main__':

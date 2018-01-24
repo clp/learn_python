@@ -90,7 +90,7 @@ def print_short_record(popular_qa_df, saved_index):
     print(popular_qa_df[['Id', 'Title', 'Body']].iloc[[saved_index]])
 
 
-def show_menu(popular_qa_df, all_ans_df, opt_ns):
+def show_menu(popular_qa_df, all_ans_df, opt_ns, progress_i):
     """Show prompt to user; get and handle their request.
     """
     user_menu = """    The menu choices:
@@ -231,7 +231,7 @@ def show_menu(popular_qa_df, all_ans_df, opt_ns):
             # TBD Chg popular_qa_df to a df w/ more records, for dbg & initial
             # use.  Beware of memory & performance issues.
             q_a_group_with_keyword_df = sga.select_keyword_recs(
-                search_term, popular_qa_df, columns_l, opt_ns)
+                search_term, popular_qa_df, columns_l, opt_ns, progress_i)
         else:
             print("Got bad cmd from user: ", user_cmd)
             print(user_menu)

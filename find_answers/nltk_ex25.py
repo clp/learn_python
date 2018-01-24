@@ -154,9 +154,7 @@ def clean_raw_data(qagroup_poptop_df):
 
     # Build a list that holds the cleaned text from each answer's body field.
     # Use it to find terms that match terms found in hi-score Answers.
-    progress_msg_factor = int(round(num_bodies / 10))
-    if progress_msg_factor <= 10:
-        progress_msg_factor = 10
+    progress_i = max(10, int(round(num_bodies / 10)))
     for i in range(0, num_bodies):
         clean_body_s = convert_text_to_words(qagroup_poptop_df["Body"][i])
         clean_q_a_bodies_l.append(clean_body_s)
@@ -164,10 +162,10 @@ def clean_raw_data(qagroup_poptop_df):
         # Add new column to Answers df.
         qagroup_poptop_df.loc[i, "CleanBody"] = clean_body_s
         # Print a progress message; default is for every 10% of i/p data handled.
-        if((i+1) % progress_msg_factor == 0):
+        if((i+1) % progress_i == 0):
             #D cf.logger.debug("Body %d of %d" % (i+1, num_bodies))
             #D cf.logger.debug('  Original text: ' + qagroup_poptop_df['Body'][i])
-            cf.logger.debug('  clean*(): Partial slice of cleaned text:\n' + clean_body_s[:70])
+            cf.logger.debug('  [i], clean*(): Partial slice of cleaned text: [' + str(i) + ']\n' + clean_body_s[:70])
 
     return clean_q_a_bodies_l
 

@@ -163,14 +163,14 @@ def main(popular_qa_df):
     them for the next action.
     """
 
-    global all_ans_df
+    global all_ans_df, progress_i
 
     init()
 
     a_fname, a_infile, q_infile = \
         config_data()
 
-    all_ans_df, all_ques_df, progress_msg_factor, numlines = \
+    all_ans_df, all_ques_df, numlines = \
         read_data(a_infile, q_infile)
 
     popular_ids_a = \
@@ -187,11 +187,11 @@ def main(popular_qa_df):
 
     num_selected_recs = compute_record_selector(numlines)
 
-    popular_qa_df = \
+    popular_qa_df, progress_i= \
         combine_related_q_and_a(
             ques_ids_pop_and_top_l, all_ques_df, all_ans_df)
 
-    check_for_keyword()
+    check_for_keyword(progress_i)
 
     save_basic_output()
 
@@ -216,19 +216,19 @@ def save_basic_output():
         columns_l)
 
 
-def check_for_keyword():
+def check_for_keyword(progress_i):
     """Search for keywords if specified on command line.
     """
     columns_l = ['HSTCount', 'Score', 'Id', 'ParentId', 'Title', 'Body']
     if keyword:
         qa_with_keyword_df = sga.select_keyword_recs(
-            keyword, popular_qa_df, columns_l, opt_ns)
+            keyword, popular_qa_df, columns_l, opt_ns, progress_i)
 
         log_msg = 'Search for a term: ' + keyword + '\n'
         cf.logger.info(log_msg)
 
-        if qa_with_keyword_df == None or qa_with_keyword_df.empty:
-            cf.logger.warning('fga.check*keyword(): keyword [' + \
+        if qa_with_keyword_df.empty:
+            cf.logger.warning('fga.check*keyword()...empty: keyword [' + \
                     keyword + '] not found in popular_qa_df.')
             return  # TBD. What debug data to print here?
 
@@ -318,11 +318,12 @@ def read_data(ans_file, ques_file):
         error_bad_lines=False)
 
     numlines = len(ques_df)
-    print('Num of question records in i/p dataframe, ques_df: ' + str(numlines))
+    print('read*(): Num of question records in i/p dataframe, ques_df: ' + str(numlines))
     numlines = len(ans_df)
-    print('Num of answer records in i/p dataframe, ans_df: ' + str(numlines))
-    progress_msg_factor = int(round(numlines / 10))
-    return ans_df, ques_df, progress_msg_factor, numlines
+    print('read*(): Num of answer records in i/p dataframe, ans_df: ' + str(numlines))
+    progress_i = int(round(numlines / 10))
+    print('#D read*(): progress_i based on i/p file: ' + str(progress_i))
+    return ans_df, ques_df, numlines
 
 
 def find_popular_ques(aa_df, a_fname):
@@ -524,9 +525,14 @@ def combine_related_q_and_a(ques_ids_pop_and_top_l, all_ques_df, aa_df):
         print()
 
     # Build each Q&A group: one Q w/ all its A.'s
+    numlines = len(ques_ids_pop_and_top_l)
+    print('#D combine*(): len(ques_ids_pop*l: ' + str(numlines))
+    progress_i = int(round(numlines / 10))
+    print('#D combine*(): progress_i based on pop&top ques: ' + str(progress_i))
+    #TBR print("len(qid): ", len(qid))
     for i, qid in enumerate(ques_ids_pop_and_top_l):
         if opt_ns.verbose:
-            if i % 20 == 0:
+            if i % progress_i == 0:
                 print("combine_related_q_and_a():progress count: ", i)
         qm_df = ques_match_df[ques_match_df['Id'] == qid]
         am_df = ans_match_df[ans_match_df['ParentId'] == qid]
@@ -549,7 +555,7 @@ def combine_related_q_and_a(ques_ids_pop_and_top_l, all_ques_df, aa_df):
         popular_qa_df = analyze_text(qagroup_poptop_df)
 
     # End combine_related_q_and_a().
-    return popular_qa_df
+    return popular_qa_df, progress_i
 
 
 def compute_record_selector(numlines):
@@ -671,7 +677,7 @@ if __name__ == '__main__':
         cf.logger.warning(log_msg)
         raise SystemExit()
 
-    tui.show_menu(popular_qa_df, all_ans_df, opt_ns)
+    tui.show_menu(popular_qa_df, all_ans_df, opt_ns, progress_i)
 
     log_msg = cf.log_file + ' - Finish logging for ' + \
         CURRENT_FILE + '\n'
