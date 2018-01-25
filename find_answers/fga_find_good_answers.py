@@ -536,6 +536,9 @@ def combine_related_q_and_a(ques_ids_pop_and_top_l, all_ques_df, aa_df):
         qm_df = ques_match_df[ques_match_df['Id'] == qid]
         am_df = ans_match_df[ans_match_df['ParentId'] == qid]
         qagroup_poptop_df = pd.concat([qm_df, am_df]).reset_index(drop=True)
+        if qagroup_poptop_df.empty:
+            # Skip this qid, it does not match what we seek.
+            continue
         #
         # Change NaN values to zero, and the field type from float64 to int64,
         # to help with search functionality.
@@ -544,9 +547,6 @@ def combine_related_q_and_a(ques_ids_pop_and_top_l, all_ques_df, aa_df):
         qagroup_poptop_df['OwnerUserId'] = \
                 qagroup_poptop_df['OwnerUserId'].fillna( 0).astype(int)
         #
-        if qagroup_poptop_df.empty:
-            # Skip this qid, it does not match what we seek.
-            continue
         cf.logger.info('qagroup_poptop_df.head(1): ')
         cf.logger.info(qagroup_poptop_df.head(1))
 
@@ -566,9 +566,8 @@ def compute_record_selector(numlines):
     # TBD, use Default 0.01 in production? Move to global scope?
     SELECTOR_RATIO = 0.10
     num_selected_recs = max(5, int(numlines * SELECTOR_RATIO))
-    log_msg = ("  SELECTOR_RATIO,  number of selected recs: " +
-               str(SELECTOR_RATIO) + ", " + str(num_selected_recs))
-    cf.logger.info(log_msg)
+    cf.logger.info("  SELECTOR_RATIO &  number of selected recs: " +
+            str(SELECTOR_RATIO) + " & " + str(num_selected_recs))
 
     return num_selected_recs
 
