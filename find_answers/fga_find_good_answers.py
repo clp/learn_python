@@ -221,10 +221,10 @@ def check_for_keyword(progress_i):
     """
     columns_l = ['HSTCount', 'Score', 'Id', 'ParentId', 'Title', 'Body']
     if keyword:
+        cf.logger.info('Search for a term: ' + keyword + '\n')
+
         qa_with_keyword_df = sga.select_keyword_recs(
             keyword, popular_qa_df, columns_l, opt_ns, progress_i)
-
-        cf.logger.info('Search for a term: ' + keyword + '\n')
 
         if qa_with_keyword_df.empty:
             cf.logger.warning('fga.check*keyword(): keyword [' + \
@@ -660,7 +660,6 @@ if __name__ == '__main__':
     if opt_ns.search:
         keyword = opt_ns.search
         print('Search the data for this term: ', keyword)
-        columns_l = ['HSTCount', 'Score', 'Id', 'ParentId', 'Title', 'Body']
 
     main(popular_qa_df)
 
