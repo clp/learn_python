@@ -529,7 +529,6 @@ def combine_related_q_and_a(ques_ids_pop_and_top_l, all_ques_df, aa_df):
     print('#D combine*(): len(ques_ids_pop*l: ' + str(numlines))
     progress_i = int(round(numlines / 10))
     print('#D combine*(): progress_i based on pop&top ques: ' + str(progress_i))
-    #TBR print("len(qid): ", len(qid))
     for i, qid in enumerate(ques_ids_pop_and_top_l):
         if opt_ns.verbose:
             if i % progress_i == 0:
