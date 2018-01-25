@@ -224,11 +224,10 @@ def check_for_keyword(progress_i):
         qa_with_keyword_df = sga.select_keyword_recs(
             keyword, popular_qa_df, columns_l, opt_ns, progress_i)
 
-        log_msg = 'Search for a term: ' + keyword + '\n'
-        cf.logger.info(log_msg)
+        cf.logger.info('Search for a term: ' + keyword + '\n')
 
         if qa_with_keyword_df.empty:
-            cf.logger.warning('fga.check*keyword()...empty: keyword [' + \
+            cf.logger.warning('fga.check*keyword(): keyword [' + \
                     keyword + '] not found in popular_qa_df.')
             return  # TBD. What debug data to print here?
 
@@ -566,7 +565,7 @@ def compute_record_selector(numlines):
     # TBD, use Default 0.01 in production? Move to global scope?
     SELECTOR_RATIO = 0.10
     num_selected_recs = max(5, int(numlines * SELECTOR_RATIO))
-    cf.logger.info("  SELECTOR_RATIO &  number of selected recs: " +
+    cf.logger.info("  SELECTOR_RATIO & number of selected recs: " +
             str(SELECTOR_RATIO) + " & " + str(num_selected_recs))
 
     return num_selected_recs
@@ -590,10 +589,8 @@ def analyze_text(qagroup_poptop_df):
 
     cf.logger.info("NLP Step 2. Process the words of each input line.")
     if opt_ns.debug:
-        print(
-            'analyze_text(): Ques in qagroup_poptop_df: Id, Score, Title:')
-        print(
-            qagroup_poptop_df[['Id', 'Score', 'Title']].iloc[0].values)
+        print('analyze*(): Ques in qagroup_poptop_df: Id, Score, Title:')
+        print(qagroup_poptop_df[['Id', 'Score', 'Title']].iloc[0].values)
     clean_ans_bodies_l = nl.clean_raw_data(qagroup_poptop_df)
     if not clean_ans_bodies_l:
         print('analyze_text(), No text to analyze; exit now.')
@@ -648,7 +645,6 @@ def get_parser():
         action='store_true')
 
     parser.add_argument('-v', '--verbose', action='store_true')
-    parser.add_argument('-vv', '--veryverbose', action='store_true')
     return parser
 
 
@@ -670,13 +666,11 @@ if __name__ == '__main__':
 
     if opt_ns.quit:
         print('Quit the program and don\'t show menu.')
-        log_msg = cf.log_file + ' - Quit by user req; Finish logging for ' + \
-            CURRENT_FILE + '\n'
-        cf.logger.warning(log_msg)
+        cf.logger.warning(cf.log_file + \
+                ' - Quit by user; Finish logging for ' + CURRENT_FILE + '\n')
         raise SystemExit()
 
     tui.show_menu(popular_qa_df, all_ans_df, opt_ns, progress_i)
 
-    log_msg = cf.log_file + ' - Finish logging for ' + \
-        CURRENT_FILE + '\n'
-    cf.logger.warning(log_msg)
+    cf.logger.warning(
+            cf.log_file + ' - Finish logging for ' +  CURRENT_FILE + '\n')

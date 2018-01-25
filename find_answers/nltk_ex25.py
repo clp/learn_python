@@ -165,7 +165,8 @@ def clean_raw_data(qagroup_poptop_df):
         if((i+1) % progress_i == 0):
             #D cf.logger.debug("Body %d of %d" % (i+1, num_bodies))
             #D cf.logger.debug('  Original text: ' + qagroup_poptop_df['Body'][i])
-            cf.logger.debug('  [i], clean*(): Partial slice of cleaned text: [' + str(i) + ']\n' + clean_body_s[:70])
+            cf.logger.debug('  [i], clean*(): Slice of cleaned text: [' +
+                    str(i) + ']\n' + clean_body_s[:70])
 
     return clean_q_a_bodies_l
 
