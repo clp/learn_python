@@ -78,7 +78,7 @@ in a pandas dataframe.
 
 
 ==> popular_qa.csv <==
-    RecId,"Body",CreationDate,Id,OwnerUserId,ParentId,Score,
+    LineNum,"Body",CreationDate,Id,OwnerUserId,ParentId,Score,
     Title,CleanBody,"HiScoreTerms",HSTCount
 
     0,"<p>I haven't ...",2008-08-03T18:27:09Z,773,207,0,256,
