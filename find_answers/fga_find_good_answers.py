@@ -320,8 +320,6 @@ def read_data(ans_file, ques_file):
     print('read*(): Num of question records in i/p dataframe, ques_df: ' + str(numlines))
     numlines = len(ans_df)
     print('read*(): Num of answer records in i/p dataframe, ans_df: ' + str(numlines))
-    progress_i = int(round(numlines / 10))
-    print('#D read*(): progress_i based on i/p file: ' + str(progress_i))
     return ans_df, ques_df, numlines
 
 
