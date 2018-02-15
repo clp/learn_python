@@ -221,7 +221,8 @@ def check_for_keyword(progress_i):
     """
     columns_l = ['HSTCount', 'Score', 'Id', 'ParentId', 'Title', 'Body']
     if keyword:
-        cf.logger.info('Search for a term: ' + keyword + '\n')
+        cf.logger.info('fga.check*keyword(): Search for a term: ' + \
+                keyword + '\n')
 
         qa_with_keyword_df = sga.select_keyword_recs(
             keyword, popular_qa_df, columns_l, opt_ns, progress_i)
@@ -361,7 +362,7 @@ def gd2_group_data(aa_df):
         print('gd2: len(owner_grouped_df): num of unique OwnerUserId values: ' +
               str(len(owner_grouped_df)))
         print()
-    cf.logger.info('gd2_group_data(): Show owners with highest MeanScores.')
+    cf.logger.info('fga.gd2_group_data(): Show owners with highest MeanScores.')
     cf.logger.info(owner_grouped_df.tail(MAX_OWNERS))
 
     return owner_grouped_df
@@ -393,7 +394,7 @@ def group_data(aa_df):
         print('len(owner_grouped_df): num of unique OwnerUserId values: ' +
               str(len(owner_grouped_df)))
         print()
-    cf.logger.info('group_data(): Show owners with highest MeanScores.')
+    cf.logger.info('fga.group_data(): Show owners with highest MeanScores.')
     cf.logger.info(owner_grouped_df.tail(MAX_OWNERS))
 
     # Take slice of owners w/ highest mean scores; convert to int.
@@ -432,7 +433,7 @@ def group_data(aa_df):
     outfile = DATADIR + 'lo_scores_for_top_owners.csv'
     lo_scores_for_top_owners_df.to_csv(
         outfile, header=True, index=None, sep=',', mode='w')
-    cf.logger.info('group_data(): lo_scores_for_top_owners_df: ')
+    cf.logger.info('fga.group_data(): lo_scores_for_top_owners_df: ')
     cf.logger.info(lo_scores_for_top_owners_df)
 
     return top_scoring_owners_a, owner_grouped_df
@@ -490,10 +491,10 @@ def find_pop_and_top_ques_ids(ques_ids_from_top_own_l, popular_ids_a):
         set(ques_ids_from_top_own_l[:MAX_TOP_OWNERS]).intersection(
             set(popular_ids_a[:MAX_POPULAR_QUES])))
 
-    cf.logger.info('find_pop_and_top*(): len(ques_ids_pop_and_top_l): ' + \
+    cf.logger.info('fga.find_pop_and_top*(): len(ques_ids_pop_and_top_l): ' + \
         str(len(ques_ids_pop_and_top_l)))
 
-    cf.logger.info("find_pop_and_top*(): ques_ids_pop_and_top_l, " + \
+    cf.logger.info("fga.find_pop_and_top*(): ques_ids_pop_and_top_l, " + \
         "top-N parent id\'s to chk: " + str(ques_ids_pop_and_top_l[0:5]))
 
     if opt_ns.verbose:
@@ -544,7 +545,7 @@ def combine_related_q_and_a(ques_ids_pop_and_top_l, all_ques_df, aa_df):
         qagroup_poptop_df['OwnerUserId'] = \
                 qagroup_poptop_df['OwnerUserId'].fillna( 0).astype(int)
         #
-        cf.logger.info('qagroup_poptop_df.head(1): ')
+        cf.logger.info('fga.combine*(): qagroup_poptop_df.head(1): ')
         cf.logger.info(qagroup_poptop_df.head(1))
 
         # Analyze data w/ nlp s/w.
@@ -563,7 +564,7 @@ def compute_record_selector(numlines):
     # TBD, use Default 0.01 in production? Move to global scope?
     SELECTOR_RATIO = 0.10
     num_selected_recs = max(5, int(numlines * SELECTOR_RATIO))
-    cf.logger.info("  SELECTOR_RATIO & number of selected recs: " +
+    cf.logger.info("fga.compute_rec*(): SELECTOR_RATIO & number of selected recs: " +
             str(SELECTOR_RATIO) + " & " + str(num_selected_recs))
 
     return num_selected_recs
@@ -585,7 +586,7 @@ def analyze_text(qagroup_poptop_df):
     """
     global popular_qa_df
 
-    cf.logger.info("NLP Step 2. Process the words of each input line.")
+    cf.logger.info("fga.ana*(): NLP Step 2. Process the words of each input line.")
     if opt_ns.debug:
         print('analyze*(): Ques in qagroup_poptop_df: Id, Score, Title:')
         print(qagroup_poptop_df[['Id', 'Score', 'Title']].iloc[0].values)
@@ -594,11 +595,11 @@ def analyze_text(qagroup_poptop_df):
         print('analyze_text(), No text to analyze; exit now.')
         raise SystemExit()
 
-    cf.logger.info("NLP Step 3. Build a bag of words and their counts.")
+    cf.logger.info("fga.ana*(): NLP Step 3. Build a bag of words and their counts.")
     (vocab_l, dist_a) = nl.make_bag_of_words(clean_ans_bodies_l)
     words_sorted_by_count_l = nl.sort_vocab(vocab_l, dist_a)
 
-    cf.logger.info("NLP Step 7. Search lo-score A's for hi-score text.")
+    cf.logger.info("fga.ana*(): NLP Step 7. Search lo-score A's for hi-score text.")
     qa_with_hst_df = nl.find_hi_score_terms_in_bodies(
         words_sorted_by_count_l,
         clean_ans_bodies_l,
