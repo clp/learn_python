@@ -225,13 +225,21 @@ def show_menu(popular_qa_df, all_ans_df, opt_ns, progress_i):
                 'ParentId',
                 'Title',
                 'Body',
-                'HiScoreTerms']
+                ]
+                #TBD 'HiScoreTerms']
             q_a_group_with_keyword_df = pd.DataFrame()  # Initlz at each call
             #
             # TBD Chg popular_qa_df to a df w/ more records, for dbg & initial
             # use.  Beware of memory & performance issues.
             q_a_group_with_keyword_df = sga.select_keyword_recs(
                 search_term, popular_qa_df, columns_l, opt_ns, progress_i)
+
+            # Save to disk file.
+            wr.write_part_df_to_csv(
+                q_a_group_with_keyword_df, DATADIR,
+                'qa_with_keyword.csv', columns_l, True, None)
+
+
         else:
             print("Got bad cmd from user: ", user_cmd)
             print(user_menu)
