@@ -236,6 +236,10 @@ def check_for_keyword(progress_i):
             qa_with_keyword_df, DATADIR,
             'qa_with_keyword.csv', columns_l, True, None)
 
+        wr.write_part_df_to_csv(
+            qa_with_keyword_df, DATADIR,
+            'qa_withkey_id.csv', ['Id'], True, None)
+
 
 def check_install():
     """Check that some required directories and files exist.

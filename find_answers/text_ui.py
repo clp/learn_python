@@ -239,6 +239,11 @@ def show_menu(popular_qa_df, all_ans_df, opt_ns, progress_i):
                 q_a_group_with_keyword_df, DATADIR,
                 'qa_with_keyword.csv', columns_l, True, None)
 
+            # Save only Id to disk file.
+            wr.write_part_df_to_csv(
+                q_a_group_with_keyword_df, DATADIR,
+                'qa_withkey_id.csv', ['Id'], True, None)
+
 
         else:
             print("Got bad cmd from user: ", user_cmd)
