@@ -141,6 +141,20 @@ def write_df_to_csv(in_df, wdir, wfile):
     return
 
 
+
+def write_part_df_to_csv(in_df, wdir, wfile, columns_l, hdr, indx):
+    """Write full contents of some columns of a data frame to a csv file.
+    """
+    # TBD Used for testing and debugging.
+    pd.set_option('display.max_colwidth', -1)  # -1=no limit, for debug
+    save_prior_file(wdir, wfile)
+    outfile = wdir + wfile
+    in_df[columns_l].to_csv(
+        outfile, header=hdr, index=indx, sep=',', mode='w')
+    pd.set_option('display.max_colwidth', MAX_COL_WID)  # -1=no limit, for debug
+    return
+
+
 def replace_line_breaks(in_s):
     """Replace escaped line break chars so text inside HTML
     pre-blocks and code-blocks (inside HTML table cells)

@@ -232,9 +232,14 @@ def check_for_keyword(progress_i):
                     keyword + '] not found in popular_qa_df.')
             return  # TBD. What debug data to print here?
 
-        outfile = DATADIR + 'qa_with_keyword.csv'
-        qa_with_keyword_df[columns_l].to_csv(
-            outfile, header=True, index=None, sep=',', mode='w')
+        #ORG outfile = DATADIR + 'qa_with_keyword.csv'
+        #ORG qa_with_keyword_df[columns_l].to_csv(
+            #ORG outfile, header=True, index=None, sep=',', mode='w')
+        fname = 'qa_with_keyword.csv'
+        wr.write_part_df_to_csv(
+            #TBD? qa_with_keyword_df[columns_l],
+            qa_with_keyword_df,
+            DATADIR, fname, columns_l, True, None)
 
 
 def check_install():
