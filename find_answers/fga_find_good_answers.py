@@ -232,12 +232,17 @@ def check_for_keyword(progress_i):
                     keyword + '] not found in popular_qa_df.')
             return  # TBD. What debug data to print here?
 
-        wr.write_part_df_to_csv(
-            qa_with_keyword_df, DATADIR,
-            'qa_with_keyword.csv', columns_l, True, None)
+        #D # Write all columns of df to disk file.
+        #D wr.write_part_df_to_csv(
+            #D qa_with_keyword_df, DATADIR,
+            #D 'qa_with_keyword.csv', columns_l, True, None)
 
+        # Write only the Id column of df to disk, sorted by Id.
+        # Sort it to match the ref file, so out-of-order data
+        # does not cause test to fail.
+        id_df = qa_with_keyword_df[['Id']].sort_values(['Id'])
         wr.write_part_df_to_csv(
-            qa_with_keyword_df, DATADIR,
+            id_df, DATADIR,
             'qa_withkey_id.csv', ['Id'], True, None)
 
 
