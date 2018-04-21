@@ -239,11 +239,6 @@ def show_menu(popular_qa_df, all_ans_df, opt_ns, progress_i):
                 #D q_a_group_with_keyword_df, DATADIR,
                 #D 'qa_with_keyword.csv', columns_l, True, None)
 
-            #TBR # Save only Id column to disk file, unsorted.
-            #TBR wr.write_part_df_to_csv(
-                #TBR q_a_group_with_keyword_df, DATADIR,
-                #TBR 'qa_withkey_id.csv', ['Id'], True, None)
-
             # Write only the Id column of df to disk, sorted by Id.
             # Sort it to match the ref file, so out-of-order data
             # does not cause test to fail.
