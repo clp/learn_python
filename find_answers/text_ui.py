@@ -227,28 +227,28 @@ def show_menu(popular_qa_df, all_ans_df, opt_ns, progress_i):
                 'Body',
                 ]
                 #TBD 'HiScoreTerms']
-            q_a_group_with_keyword_df = pd.DataFrame()  # Initlz at each call
+            qa_group_with_keyword_df = pd.DataFrame()  # Initlz at each call
             #
             # TBD Chg popular_qa_df to a df w/ more records, for dbg & initial
             # use.  Beware of memory & performance issues.
-            q_a_group_with_keyword_df = sga.select_keyword_recs(
+            qa_group_with_keyword_df = sga.select_keyword_recs(
                 search_term, popular_qa_df, columns_l, opt_ns, progress_i)
 
             # Search term not found; show search prompt.
-            if q_a_group_with_keyword_df.empty:
+            if qa_group_with_keyword_df.empty:
                 user_cmd = 'lek'
                 print()
                 continue
 
             #D # Save six columns to disk file.
             #D wr.write_part_df_to_csv(
-                #D q_a_group_with_keyword_df, DATADIR,
+                #D qa_group_with_keyword_df, DATADIR,
                 #D 'qa_with_keyword.csv', columns_l, True, None)
 
             # Write only the Id column of df to disk, sorted by Id.
             # Sort it to match the ref file, so out-of-order data
             # does not cause test to fail.
-            id_df = q_a_group_with_keyword_df[['Id']].sort_values(['Id'])
+            id_df = qa_group_with_keyword_df[['Id']].sort_values(['Id'])
             wr.write_part_df_to_csv(
                 id_df, DATADIR,
                 'qa_withkey_id.csv', ['Id'], True, None)

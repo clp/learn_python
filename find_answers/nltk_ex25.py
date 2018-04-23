@@ -79,7 +79,7 @@ def main():
     nltk.download('stopwords')
 
 
-def convert_text_to_words(raw_q_a_s):
+def convert_text_to_words(raw_qa_s):
     """Convert and filter the i/p text string into a string of words.
 
     Convert a raw stackoverflow question or answer
@@ -95,10 +95,10 @@ def convert_text_to_words(raw_q_a_s):
     """
 
     # 1. Remove HTML
-    q_a_text = BeautifulSoup(raw_q_a_s, "lxml").get_text()
+    qa_text = BeautifulSoup(raw_qa_s, "lxml").get_text()
 
     # 2. Remove non-letters
-    letters_only = re.sub("[^a-zA-Z]", " ", q_a_text)
+    letters_only = re.sub("[^a-zA-Z]", " ", qa_text)
 
     # 3. Convert to lower case, split into individual words
     words = letters_only.lower().split()
@@ -149,7 +149,7 @@ def clean_raw_data(qagroup_poptop_df):
     num_bodies = qagroup_poptop_df["Body"].size
     cf.logger.info("clean_raw(): Number of bodies: " + str(num_bodies))
 
-    clean_q_a_bodies_l = []
+    clean_qa_bodies_l = []
     qagroup_poptop_df["CleanBody"] = ""
 
     # Build a list that holds the cleaned text from each answer's body field.
@@ -157,7 +157,7 @@ def clean_raw_data(qagroup_poptop_df):
     progress_i = max(10, int(round(num_bodies / 10)))
     for i in range(0, num_bodies):
         clean_body_s = convert_text_to_words(qagroup_poptop_df["Body"][i])
-        clean_q_a_bodies_l.append(clean_body_s)
+        clean_qa_bodies_l.append(clean_body_s)
         #
         # Add new column to Answers df.
         qagroup_poptop_df.loc[i, "CleanBody"] = clean_body_s
@@ -168,10 +168,10 @@ def clean_raw_data(qagroup_poptop_df):
             cf.logger.debug('  [i], clean*(): Slice of cleaned text: [' +
                     str(i) + ']\n' + clean_body_s[:70])
 
-    return clean_q_a_bodies_l
+    return clean_qa_bodies_l
 
 
-def make_bag_of_words(clean_q_a_bodies_l):
+def make_bag_of_words(clean_qa_bodies_l):
     """Extract numerical features from input text data.
     Later steps can use those features with machine learning
     algorithms to analyze the data further.
@@ -231,7 +231,7 @@ def make_bag_of_words(clean_q_a_bodies_l):
     # into feature vectors. The input to fit_transform should be a list of
     # strings.
 
-    train_data_features = vectorizer.fit_transform(clean_q_a_bodies_l)
+    train_data_features = vectorizer.fit_transform(clean_qa_bodies_l)
 
     # Numpy arrays are easy to work with, so convert the result to an
     # array
@@ -273,7 +273,7 @@ def sort_vocab(vocab_l, dist_a):
     return words_sorted_by_count_l
 
 
-def sort_q_a_by_score(qagroup_poptop_df):
+def sort_qa_by_score(qagroup_poptop_df):
     """Return a dataframe of Id's and their Scores, sorted by score.
 
     Use one Q&A group dataframe as input.
@@ -290,12 +290,12 @@ def sort_q_a_by_score(qagroup_poptop_df):
     return ids_and_scores_df
 
 
-def find_hi_score_terms_in_bodies(words_sorted_by_count_l, clean_q_a_bodies_l, num_hi_score_terms, qagroup_poptop_df):
+def find_hi_score_terms_in_bodies(words_sorted_by_count_l, clean_qa_bodies_l, num_hi_score_terms, qagroup_poptop_df):
     """Save terms that a record has in common with frequently-seen text.
 
     Important Variables.
 
-    clean_q_a_bodies_df: A dataframe with cleaned text from Q&A
+    clean_qa_bodies_df: A dataframe with cleaned text from Q&A
     bodies.
 
     HiScoreTerms: A column added to qagroup_poptop_df,
@@ -329,11 +329,11 @@ def find_hi_score_terms_in_bodies(words_sorted_by_count_l, clean_q_a_bodies_l, n
     Return the updated Q&A group dataframe for further investigation.
     """
 
-    clean_q_a_bodies_df = pd.DataFrame(clean_q_a_bodies_l)
-    cf.logger.debug("clean_q_a_bodies_l, top:")
-    cf.logger.debug(clean_q_a_bodies_l[:1])
-    cf.logger.debug("clean_q_a_bodies_l, bottom:")
-    cf.logger.debug(clean_q_a_bodies_l[-1:])
+    clean_qa_bodies_df = pd.DataFrame(clean_qa_bodies_l)
+    cf.logger.debug("clean_qa_bodies_l, top:")
+    cf.logger.debug(clean_qa_bodies_l[:1])
+    cf.logger.debug("clean_qa_bodies_l, bottom:")
+    cf.logger.debug(clean_qa_bodies_l[-1:])
 
     #TBF
     # p.1. Separate the terms from each other so it is clear what was found
@@ -349,7 +349,7 @@ def find_hi_score_terms_in_bodies(words_sorted_by_count_l, clean_q_a_bodies_l, n
     for count, w in words_sorted_by_count_l[-count_lim:]:
         log_msg = "count, w: " + str(count) + " , " + w
         cf.logger.info(log_msg)
-        tmp2_sr = clean_q_a_bodies_df[0].str.contains(w)
+        tmp2_sr = clean_qa_bodies_df[0].str.contains(w)
         for index, row in tmp2_sr.iteritems():
             if row:
                 #TBD, Maybe Change string 'w' to list or tuple for better storage in df?
