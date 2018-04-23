@@ -124,7 +124,7 @@ def save_prior_file(wdir, wfile):
     # Save all backups to tmp/ dir.
     dst_filename = os.path.join(TMP, os.path.basename(outfile))
     shutil.move(outfile, dst_filename)
-    cf.logger.info('WARN: Moved old file to tmp storage; save it manually if needed: ' +
+    cf.logger.info('WARN: Moved old file to tmp/ & it will be overwritten next; save it if needed: ' +
         TMP + wfile + '\n')
     return
 
