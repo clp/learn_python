@@ -313,11 +313,8 @@ def config_data():
     return a_fname, a_infile, q_infile
 
 
-#ORG def read_data(infile):
 def read_df_in_csv_file(infile):
-    """Read the csv i/p file and store data into pandas dataframes.
-    Compute a factor that dictates how progress will be indicated
-    during read operations.
+    """Read a csv file and return its data into a pandas dataframes.
     """
     out_df = pd.read_csv(
         infile,
@@ -325,8 +322,6 @@ def read_df_in_csv_file(infile):
         warn_bad_lines=False,
         error_bad_lines=False)
 
-    #TBR numlines = len(ques_df)
-    #TBR print('read*(): Num of question records in i/p dataframe, ques_df: ' + str(numlines))
     numlines = len(out_df)
     print('read*(): Num of records in i/p dataframe: ' + str(numlines))
     return out_df, numlines

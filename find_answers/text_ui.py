@@ -234,7 +234,8 @@ def show_menu(popular_qa_df, all_ans_df, opt_ns, progress_i):
             q_a_group_with_keyword_df = sga.select_keyword_recs(
                 search_term, popular_qa_df, columns_l, opt_ns, progress_i)
 
-            if q_a_group_with_keyword_df.empty:  # Return to search menu.
+            # Search term not found; show search prompt.
+            if q_a_group_with_keyword_df.empty:
                 user_cmd = 'lek'
                 print()
                 continue
