@@ -170,8 +170,11 @@ def main(popular_qa_df):
     a_fname, a_infile, q_infile = \
         config_data()
 
-    all_ans_df, all_ques_df, numlines = \
-        read_data(a_infile, q_infile)
+    all_ques_df, numlines = \
+        read_df_in_csv_file(q_infile)
+
+    all_ans_df, numlines = \
+        read_df_in_csv_file(a_infile)
 
     popular_ids_a = \
         find_popular_ques(all_ans_df, a_fname)
@@ -310,27 +313,23 @@ def config_data():
     return a_fname, a_infile, q_infile
 
 
-def read_data(ans_file, ques_file):
-    """Read the csv i/p files and store data into pandas dataframes.
+#ORG def read_data(infile):
+def read_df_in_csv_file(infile):
+    """Read the csv i/p file and store data into pandas dataframes.
     Compute a factor that dictates how progress will be indicated
     during read operations.
     """
-    ans_df = pd.read_csv(
-        ans_file,
-        encoding='latin-1',
-        warn_bad_lines=False,
-        error_bad_lines=False)
-    ques_df = pd.read_csv(
-        ques_file,
+    out_df = pd.read_csv(
+        infile,
         encoding='latin-1',
         warn_bad_lines=False,
         error_bad_lines=False)
 
-    numlines = len(ques_df)
-    print('read*(): Num of question records in i/p dataframe, ques_df: ' + str(numlines))
-    numlines = len(ans_df)
-    print('read*(): Num of answer records in i/p dataframe, ans_df: ' + str(numlines))
-    return ans_df, ques_df, numlines
+    #TBR numlines = len(ques_df)
+    #TBR print('read*(): Num of question records in i/p dataframe, ques_df: ' + str(numlines))
+    numlines = len(out_df)
+    print('read*(): Num of records in i/p dataframe: ' + str(numlines))
+    return out_df, numlines
 
 
 def find_popular_ques(aa_df, a_fname):
