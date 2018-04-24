@@ -272,6 +272,8 @@ def build_stats(qa_df, or_df):
     """Build a table of statistical data about the data, for
     analysis and plotting.
 
+    or_df: owner reputation dataframe.
+
     Plan:
     Loop on all records in qa_df:
         Read record from qa_df.
