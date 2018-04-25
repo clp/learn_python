@@ -189,8 +189,6 @@ def main(popular_qa_df):
     ques_ids_pop_and_top_l = \
         find_pop_and_top_ques_ids(ques_ids_from_top_own_l, popular_ids_a)
 
-    #TBR num_selected_recs = compute_record_selector(numlines)
-
     popular_qa_df = \
         combine_related_q_and_a(
             ques_ids_pop_and_top_l, all_ques_df, all_ans_df)
@@ -560,21 +558,6 @@ def combine_related_q_and_a(ques_ids_pop_and_top_l, all_ques_df, aa_df):
 
     # End combine_related_q_and_a().
     return popular_qa_df 
-
-
-def compute_record_selector(numlines):
-    """Compute the number of records to use for computation and display.
-
-    Return that integer.
-    """
-
-    # TBD, use Default 0.01 in production? Move to global scope?
-    SELECTOR_RATIO = 0.10
-    num_selected_recs = max(5, int(numlines * SELECTOR_RATIO))
-    cf.logger.info("fga.compute_rec*(): SELECTOR_RATIO & number of selected recs: " +
-            str(SELECTOR_RATIO) + " & " + str(num_selected_recs))
-
-    return num_selected_recs
 
 
 def analyze_text(qagroup_poptop_df):
