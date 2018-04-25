@@ -163,7 +163,7 @@ def main(popular_qa_df):
     them for the next action.
     """
 
-    global all_ans_df, progress_i
+    global all_ans_df
 
     init()
 
@@ -190,11 +190,11 @@ def main(popular_qa_df):
 
     num_selected_recs = compute_record_selector(numlines)
 
-    popular_qa_df, progress_i= \
+    popular_qa_df = \
         combine_related_q_and_a(
             ques_ids_pop_and_top_l, all_ques_df, all_ans_df)
 
-    check_for_keyword(progress_i)
+    check_for_keyword()
 
     save_basic_output()
 
@@ -219,7 +219,7 @@ def save_basic_output():
         columns_l)
 
 
-def check_for_keyword(progress_i):
+def check_for_keyword():
     """Search for keywords if specified on command line.
     """
     columns_l = ['HSTCount', 'Score', 'Id', 'ParentId', 'Title', 'Body']
@@ -228,7 +228,7 @@ def check_for_keyword(progress_i):
                 keyword + '\n')
 
         qa_with_keyword_df = sga.select_keyword_recs(
-            keyword, popular_qa_df, columns_l, opt_ns, progress_i)
+            keyword, popular_qa_df, columns_l, opt_ns)
 
         if qa_with_keyword_df.empty:
             cf.logger.warning('fga.check*keyword(): keyword [' + \
@@ -290,12 +290,12 @@ def config_data():
     # q_fname = 'Questions.csv'
 
     # Smaller data sets, used for debugging.
-    # q_fname = 'q6_999994.csv'
-    # a_fname = 'a6_999999.csv'
+    q_fname = 'q6_999994.csv'
+    a_fname = 'a6_999999.csv'
     # a_fname = 'a5_99998.csv'
     # q_fname = 'q30_99993.csv'
-    a_fname = 'a3_986.csv'
-    q_fname = 'q3_992.csv'
+    #TBD a_fname = 'a3_986.csv'
+    #TBD q_fname = 'q3_992.csv'
     # a_fname = 'a2.csv'
     # q_fname = 'q2.csv'
 
@@ -555,7 +555,7 @@ def combine_related_q_and_a(ques_ids_pop_and_top_l, all_ques_df, aa_df):
         popular_qa_df = analyze_text(qagroup_poptop_df)
 
     # End combine_related_q_and_a().
-    return popular_qa_df, progress_i
+    return popular_qa_df 
 
 
 def compute_record_selector(numlines):
@@ -671,7 +671,7 @@ if __name__ == '__main__':
                 ' - Quit by user; Finish logging for ' + CURRENT_FILE + '\n')
         raise SystemExit()
 
-    tui.show_menu(popular_qa_df, all_ans_df, opt_ns, progress_i)
+    tui.show_menu(popular_qa_df, all_ans_df, opt_ns)
 
     cf.logger.warning(
             cf.log_file + ' - Finish logging for ' +  CURRENT_FILE + '\n')

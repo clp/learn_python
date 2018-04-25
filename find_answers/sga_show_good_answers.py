@@ -119,7 +119,7 @@ def main():
     pass
 
 
-def select_keyword_recs(keyword, qa_df, columns_l, opt_ns, progress_i):
+def select_keyword_recs(keyword, qa_df, columns_l, opt_ns):
     """Find the Q's & A's from the filtered dataframe
     that contain the keyword, in Title or Body.
     Use those Id's to find the related* Q's and A's that do not
@@ -268,7 +268,13 @@ def select_keyword_recs(keyword, qa_df, columns_l, opt_ns, progress_i):
     #
     cf.logger.info("sga: Build o/p df w/ Q's and A's in order, from the list of Id's.")
     print("sga: Build o/p df w/ Q's and A's in order, from the list of Id's.")
-    print("It will take some time to sort a big data set.\n")
+    #
+    # Prepare to show progress.
+    numlines = len(qa_id_ord_l)
+    print('#D sga:sel*key*(): len(qa_id_ord_l: ' + str(numlines))
+    progress_i = int(round(numlines / 10))
+    print('#D sga:sel*key*(): progress_i based on q&a list: ' + str(progress_i))
+    #
     qa_keyword_df_l = []
     for i, iid in enumerate(qa_id_ord_l):
         if opt_ns.verbose:
