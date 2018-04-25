@@ -271,15 +271,13 @@ def select_keyword_recs(keyword, qa_df, columns_l, opt_ns):
     #
     # Prepare to show progress.
     numlines = len(qa_id_ord_l)
-    print('#D sga:sel*key*(): len(qa_id_ord_l: ' + str(numlines))
     progress_i = int(round(numlines / 10))
-    print('#D sga:sel*key*(): progress_i based on q&a list: ' + str(progress_i))
     #
     qa_keyword_df_l = []
     for i, iid in enumerate(qa_id_ord_l):
         if opt_ns.verbose:
             if i % progress_i == 0:
-                print("sga:select*():progress count: ", i)
+                print("sga:select*():progress count {} of total {}.".format(i, numlines))
         for index, row in qa_df.iterrows():
             if row['Id'] == iid:
                 qa_keyword_df_l.append(row)

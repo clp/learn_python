@@ -188,7 +188,7 @@ def main(popular_qa_df):
     ques_ids_pop_and_top_l = \
         find_pop_and_top_ques_ids(ques_ids_from_top_own_l, popular_ids_a)
 
-    num_selected_recs = compute_record_selector(numlines)
+    #TBR num_selected_recs = compute_record_selector(numlines)
 
     popular_qa_df = \
         combine_related_q_and_a(
@@ -294,8 +294,8 @@ def config_data():
     a_fname = 'a6_999999.csv'
     # a_fname = 'a5_99998.csv'
     # q_fname = 'q30_99993.csv'
-    #TBD a_fname = 'a3_986.csv'
-    #TBD q_fname = 'q3_992.csv'
+    a_fname = 'a3_986.csv'
+    q_fname = 'q3_992.csv'
     # a_fname = 'a2.csv'
     # q_fname = 'q2.csv'
 
@@ -527,13 +527,14 @@ def combine_related_q_and_a(ques_ids_pop_and_top_l, all_ques_df, aa_df):
 
     # Build each Q&A group: one Q w/ all its A.'s
     numlines = len(ques_ids_pop_and_top_l)
-    print('#D combine*(): len(ques_ids_pop*l: ' + str(numlines))
+    #D print('#D combine*(): len(ques_ids_pop*l): ' + str(numlines))
     progress_i = int(round(numlines / 10))
-    print('#D combine*(): progress_i based on pop&top ques: ' + str(progress_i))
+    #D print('#D combine*(): progress_i based on pop&top ques: ' + str(progress_i))
     for i, qid in enumerate(ques_ids_pop_and_top_l):
         if opt_ns.verbose:
             if i % progress_i == 0:
-                print("combine_related_q_and_a():progress count: ", i)
+                print("fga:combine_related_q*a(): progress count {} of total {}.".format(i, numlines))
+                #TBR print("sga:select*():progress count {} of total {}.".format(i, numlines))
         qm_df = ques_match_df[ques_match_df['Id'] == qid]
         am_df = ans_match_df[ans_match_df['ParentId'] == qid]
         qagroup_poptop_df = pd.concat([qm_df, am_df]).reset_index(drop=True)
