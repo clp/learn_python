@@ -198,56 +198,6 @@ def main(popular_qa_df):
     save_basic_output()
 
 
-def save_basic_output():
-    """Save the dataframe of chosen Q&A groups to csv and html files.
-    """
-    wr.write_df_to_csv(popular_qa_df, DATADIR, 'popular_qa.csv')
-
-    columns_l = []
-    wr.write_df_to_html(
-        popular_qa_df,
-        DATADIR,
-        'popular_qa.html',
-        columns_l)
-
-    columns_l = ['Id', 'Title', 'Body']
-    wr.write_df_to_html(
-        popular_qa_df,
-        DATADIR,
-        'popular_qa_title_body.html',
-        columns_l)
-
-
-def check_for_keyword():
-    """Search for keywords if specified on command line.
-    """
-    columns_l = ['HSTCount', 'Score', 'Id', 'ParentId', 'Title', 'Body']
-    if keyword:
-        cf.logger.info('fga.check*keyword(): Search for a term: ' + \
-                keyword + '\n')
-
-        qa_with_keyword_df = sga.select_keyword_recs(
-            keyword, popular_qa_df, columns_l, opt_ns)
-
-        if qa_with_keyword_df.empty:
-            cf.logger.warning('fga.check*keyword(): keyword [' + \
-                    keyword + '] not found in popular_qa_df.')
-            return  # TBD. What debug data to print here?
-
-        #D # Write all columns of df to disk file.
-        #D wr.write_part_df_to_csv(
-            #D qa_with_keyword_df, DATADIR,
-            #D 'qa_with_keyword.csv', columns_l, True, None)
-
-        # Write only the Id column of df to disk, sorted by Id.
-        # Sort it to match the ref file, so out-of-order data
-        # does not cause test to fail.
-        id_df = qa_with_keyword_df[['Id']].sort_values(['Id'])
-        wr.write_part_df_to_csv(
-            id_df, DATADIR,
-            'qa_withkey_id.csv', ['Id'], True, None)
-
-
 def check_install():
     """Check that some required directories and files exist.
     """
@@ -598,6 +548,56 @@ def analyze_text(qagroup_poptop_df):
         [popular_qa_df, qa_with_hst_df]).reset_index(drop=True)
 
     return popular_qa_df
+
+
+def check_for_keyword():
+    """Search for keywords if specified on command line.
+    """
+    columns_l = ['HSTCount', 'Score', 'Id', 'ParentId', 'Title', 'Body']
+    if keyword:
+        cf.logger.info('fga.check*keyword(): Search for a term: ' + \
+                keyword + '\n')
+
+        qa_with_keyword_df = sga.select_keyword_recs(
+            keyword, popular_qa_df, columns_l, opt_ns)
+
+        if qa_with_keyword_df.empty:
+            cf.logger.warning('fga.check*keyword(): keyword [' + \
+                    keyword + '] not found in popular_qa_df.')
+            return  # TBD. What debug data to print here?
+
+        #D # Write all columns of df to disk file.
+        #D wr.write_part_df_to_csv(
+            #D qa_with_keyword_df, DATADIR,
+            #D 'qa_with_keyword.csv', columns_l, True, None)
+
+        # Write only the Id column of df to disk, sorted by Id.
+        # Sort it to match the ref file, so out-of-order data
+        # does not cause test to fail.
+        id_df = qa_with_keyword_df[['Id']].sort_values(['Id'])
+        wr.write_part_df_to_csv(
+            id_df, DATADIR,
+            'qa_withkey_id.csv', ['Id'], True, None)
+
+
+def save_basic_output():
+    """Save the dataframe of chosen Q&A groups to csv and html files.
+    """
+    wr.write_df_to_csv(popular_qa_df, DATADIR, 'popular_qa.csv')
+
+    columns_l = []
+    wr.write_df_to_html(
+        popular_qa_df,
+        DATADIR,
+        'popular_qa.html',
+        columns_l)
+
+    columns_l = ['Id', 'Title', 'Body']
+    wr.write_df_to_html(
+        popular_qa_df,
+        DATADIR,
+        'popular_qa_title_body.html',
+        columns_l)
 
 
 def get_parser():
