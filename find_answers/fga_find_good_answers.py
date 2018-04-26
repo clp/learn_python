@@ -293,8 +293,8 @@ def config_data():
     a_fname = 'a6_999999.csv'
     # a_fname = 'a5_99998.csv'
     # q_fname = 'q30_99993.csv'
-    #TBD a_fname = 'a3_986.csv'
-    #TBD q_fname = 'q3_992.csv'
+    a_fname = 'a3_986.csv'
+    q_fname = 'q3_992.csv'
     # a_fname = 'a2.csv'
     # q_fname = 'q2.csv'
 
