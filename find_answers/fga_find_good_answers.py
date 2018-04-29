@@ -600,6 +600,42 @@ def save_basic_output():
         columns_l)
 
 
+    # Write o/p to file in one column: q.title, q.body, a1, a2, ...
+    out_l = list()
+    prefix_s = 'Id, Score, HSTCount, CreDate: ' 
+    columns_l = ['Id', 'Score', 'HSTCount', 'CreationDate']
+    for index, row in popular_qa_df.iterrows():
+        if not pd.isnull(row['Title']):
+            # Found a question.
+            columns_s = ', '.join(str(row[x]) for x in columns_l)
+            columns_s = prefix_s + columns_s 
+            out_l.append('###')
+            out_l.append('Question:')
+            out_l.append(columns_s)
+            out_l.append(row['Title'])
+            #D out_l.append(row['Body'][:99])
+            out_l.append(row['Body'])
+        else:
+            # Found an answer.
+            columns_s = ', '.join(str(row[x]) for x in columns_l)
+            columns_s = prefix_s + columns_s 
+            out_l.append('Answer:')
+            out_l.append(columns_s)
+            #D out_l.append(row['Body'][:99])
+            out_l.append(row['Body'])
+
+    # Convert list to df & make html file from it.
+    # User can open that file in a web browser to see data.
+    qa_title_body_df = pd.DataFrame(out_l)
+    columns_l = [0]
+    wr.write_df_to_html(
+        qa_title_body_df,
+        DATADIR,
+        'qa_title_body.html',
+        columns_l
+        )
+
+
 def get_parser():
     """Create parser to specify cmd line options for this program.
     """
