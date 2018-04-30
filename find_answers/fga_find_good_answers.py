@@ -171,10 +171,10 @@ def main(popular_qa_df):
     a_fname, a_infile, q_infile = \
         config_data()
 
-    all_ques_df, numlines = \
+    all_ques_df = \
         read_df_in_csv_file(q_infile)
 
-    all_ans_df, numlines = \
+    all_ans_df = \
         read_df_in_csv_file(a_infile)
 
     popular_ids_a = \
@@ -271,9 +271,8 @@ def read_df_in_csv_file(infile):
         warn_bad_lines=False,
         error_bad_lines=False)
 
-    numlines = len(out_df)
-    print('read*(): Num of records in i/p dataframe: ' + str(numlines))
-    return out_df, numlines
+    print('read*(): Num of records in i/p dataframe: ' + str(len(out_df)))
+    return out_df
 
 
 def find_popular_ques(aa_df, a_fname):
