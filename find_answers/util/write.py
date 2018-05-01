@@ -81,6 +81,7 @@ import os
 import pandas as pd
 
 import config as cf
+import nltk_ex25 as nl
 
 
 cf.logger.info(cf.log_file + ' - Start logging for ' + os.path.basename(__file__))
@@ -166,6 +167,19 @@ def replace_line_breaks(in_s):
     return out_s
 
 
+def replace_line_breaks_for_otl(in_s):
+    """TBD, fix comment:
+    Replace escaped line break chars so text inside HTML
+    pre-blocks and code-blocks (inside HTML table cells)
+    is rendered properly.
+    """
+    out_s = in_s.replace('\\r\\n', '\n    ')
+    out_s = out_s.replace('\\n\\n', '\n    ')
+    out_s = out_s.replace('\\n', '\n    ')
+
+    return out_s
+
+
 def write_df_to_html(in_df, wdir, wfile, columns_l):
     """Write full contents of some columns of a data frame to an html file.
 
@@ -205,6 +219,43 @@ def write_df_to_html(in_df, wdir, wfile, columns_l):
         f.write(HEADER)
         f.write(in_s)
         f.write(FOOTER)
+
+    pd.set_option('display.max_colwidth', MAX_COL_WID)  # -1=no limit, for debug
+    return
+
+
+def write_df_to_otl(in_df, wdir, wfile, columns_l):
+    """Write full contents of some columns of a data frame to an otl file.
+
+    Open this file w/ Vim + VimOutliner for easy overview of all questions,
+    and quick navigation.
+
+    Use the list of columns included in this function
+    if caller does not specify any.
+    """
+    if in_df.empty:
+        print('WARN: write*otl(): Input dataframe empty or not found.')
+        return
+    pd.set_option('display.max_colwidth', -1)  # -1=no limit, for debug
+    outfile = wdir + wfile
+    save_prior_file(wdir, wfile)
+    #
+    # Save o/p to a string and do not specify an output file in
+    # calling to_string().
+    # Use 'index=False' to prevent showing index in column 1.
+    in_s = in_df[columns_l].to_string(index=False)
+
+    # Clean the newlines in the string
+    # so each line has proper indent.
+    #TBD.Mon2018_0430_17:32  Customize for otl format.
+    in_s = nl.strip_html(in_s, "lxml")
+    in_s = replace_line_breaks_for_otl(in_s)
+
+    with open(outfile, 'w') as f:
+        cf.logger.info('NOTE: Writing data to otl outfile: ' + outfile)
+        #ORG f.write(HEADER)
+        f.write(in_s)
+        #ORG f.write(FOOTER)
 
     pd.set_option('display.max_colwidth', MAX_COL_WID)  # -1=no limit, for debug
     return

@@ -79,6 +79,14 @@ def main():
     nltk.download('stopwords')
 
 
+def strip_html(raw_qa_s, lxml):
+    """Remove html tags from the i/p string.
+    """
+
+    qa_text = BeautifulSoup(raw_qa_s, lxml).get_text()
+    return qa_text 
+
+
 def convert_text_to_words(raw_qa_s):
     """Convert and filter the i/p text string into a string of words.
 
@@ -95,7 +103,9 @@ def convert_text_to_words(raw_qa_s):
     """
 
     # 1. Remove HTML
-    qa_text = BeautifulSoup(raw_qa_s, "lxml").get_text()
+    qa_text = strip_html(raw_qa_s, "lxml")
+    ###
+
 
     # 2. Remove non-letters
     letters_only = re.sub("[^a-zA-Z]", " ", qa_text)
