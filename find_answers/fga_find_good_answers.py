@@ -131,6 +131,7 @@ import numpy as np
 import os
 import pandas as pd
 from pandas.plotting import scatter_matrix
+import re
 import time
 
 import config as cf
@@ -644,18 +645,68 @@ def save_basic_output():
             # Found a question.
             columns_s = ', '.join(str(row[x]) for x in columns_l)
             columns_s = prefix_s + columns_s 
-            out_l.append('Question:')
-            out_l.append('    ' + columns_s)
-            out_l.append(row['Title'])
-            body = '    ' + row['Body']  # Works OK; '\t' failed.
+            out_l.append('Question: ' + row['Title'])
+            #ORG out_l.append('    ' + columns_s)
+            out_l.append('    ' + 'Q.Body: ' + columns_s)
+            #
+            #TBD,Tue2018_0501_12:38  How to prepend 8-spaces to each line of a.body?
+            body = ' '*8
+            body2 = ''
+            for char in row['Body']:
+                if char == '\n':
+                    #POK body += ' '*8 
+                    body += '\n' + ' '*4 
+                else:
+                    body += char
+            #TBD,Wed2018_0502_21:11  Process each line in the body, not entire body!
+            lines = list()
+            lines = body.split('\n')
+            for line in lines:
+                if re.match(r'^\s*$', line):
+                    # Ignore empty line.
+                    pass
+                else:
+                    body2 += line + '\n'
+            print('#D body2: ')
+            print(body2)
+            print('#D end of body2.')
+            print()
+            
+            #
+            out_l.append(body2)
+            #TBD,Tue2018_0501_13:19. Replace empty lines w/ 'current_indent' * '#'.
+            # To make VO open entire body text w/ one cmd; blank lines prevent that.
+            #
+            #
+            """
+            # if line matches '^(\s*)$': line = indent*' ' + '#'
+            print('#D body: ')
+            print(body)
+            print('#D end of body.')
+            #TBD.use.search.   m = re.match(r"^(\s*)$", body)
+            m = re.search(r"font", body)
+            print('#D-before.if,  m.group(0): ',)
+            print(m)
+            if m:
+                print('m: ', end="")
+                print(m)
+                print('#D m.group(0): ',)
+                print(m.group(0))
+                m = re.search(r"font", body)
+                #TBD m.group(0) += '#'
+                # Repeat until end of body text.
+
+            #ORG body = '    ' + '    ' + row['Body']  # Works OK; '\t' failed.
             out_l.append(body)
+            """
         else:
             # Found an answer.
             columns_s = ', '.join(str(row[x]) for x in columns_l)
             columns_s = prefix_s + columns_s 
-            out_l.append('    ' + 'Answer:')
-            out_l.append('    ' + '    ' + columns_s)
+            out_l.append('    ' + 'Answer: ' + columns_s)
             #D out_l.append('    ' + row['Body'][:99])
+            #
+            #TBD,Tue2018_0501_12:38  How to prepend 8-spaces to each line of a.body?
             out_l.append('    ' + row['Body'])
 
     # Convert list to df & make otl file from it.

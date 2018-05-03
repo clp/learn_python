@@ -243,13 +243,23 @@ def write_df_to_otl(in_df, wdir, wfile, columns_l):
     # Save o/p to a string and do not specify an output file in
     # calling to_string().
     # Use 'index=False' to prevent showing index in column 1.
-    in_s = in_df[columns_l].to_string(index=False)
+    in_s = in_df[columns_l].to_string(header=False, index=False)
+    
+    #TBD.Mon2018_0430_22:24 , How to rstrip() each 'line' of in_s?
+    #TBD.Mon2018_0430_22:24 , How to rstrip() each 'line' of in_s?
+    #TBD.Mon2018_0430_22:24 , How to rstrip() each 'line' of in_s?
+    #TBD.Mon2018_0430_22:24 , How to rstrip() each 'line' of in_s?
+        # Is this the right place to do it, where the long lines originate?
+        # Does in_df have the long lines?  Chk w/ debugger.> NO.
+        # Long lines appear in in_s after to_string() operation.
+
 
     # Clean the newlines in the string
     # so each line has proper indent.
     #TBD.Mon2018_0430_17:32  Customize for otl format.
     in_s = nl.strip_html(in_s, "lxml")
     in_s = replace_line_breaks_for_otl(in_s)
+    #TBR in_s.rstrip()
 
     with open(outfile, 'w') as f:
         cf.logger.info('NOTE: Writing data to otl outfile: ' + outfile)
