@@ -79,6 +79,7 @@ Requirements
 
 import os
 import pandas as pd
+import re
 
 import config as cf
 import nltk_ex25 as nl
@@ -173,6 +174,7 @@ def replace_line_breaks_for_otl(in_s):
     pre-blocks and code-blocks (inside HTML table cells)
     is rendered properly.
     """
+    #TBD.Thu2018_0503_16:33, maybe add '$' to only replace patterns at end of line, not inside?
     out_s = in_s.replace('\\r\\n', '\n    ')
     out_s = out_s.replace('\\n\\n', '\n    ')
     out_s = out_s.replace('\\n', '\n    ')
@@ -244,22 +246,15 @@ def write_df_to_otl(in_df, wdir, wfile, columns_l):
     # calling to_string().
     # Use 'index=False' to prevent showing index in column 1.
     in_s = in_df[columns_l].to_string(header=False, index=False)
-    
-    #TBD.Mon2018_0430_22:24 , How to rstrip() each 'line' of in_s?
-    #TBD.Mon2018_0430_22:24 , How to rstrip() each 'line' of in_s?
-    #TBD.Mon2018_0430_22:24 , How to rstrip() each 'line' of in_s?
-    #TBD.Mon2018_0430_22:24 , How to rstrip() each 'line' of in_s?
-        # Is this the right place to do it, where the long lines originate?
-        # Does in_df have the long lines?  Chk w/ debugger.> NO.
-        # Long lines appear in in_s after to_string() operation.
 
-
-    # Clean the newlines in the string
-    # so each line has proper indent.
-    #TBD.Mon2018_0430_17:32  Customize for otl format.
+    # Clean the newlines in the string so each line has proper indent.
     in_s = nl.strip_html(in_s, "lxml")
     in_s = replace_line_breaks_for_otl(in_s)
-    #TBR in_s.rstrip()
+    #
+    # Delete long strings of spaces at end of each line.
+    # Replace blank spaces at end of each line w/ only the newline char.
+    # Do this for all matching patterns in the string in one cmd.
+    in_s = re.sub('  +\n', '\n', in_s)
 
     with open(outfile, 'w') as f:
         cf.logger.info('NOTE: Writing data to otl outfile: ' + outfile)

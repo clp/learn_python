@@ -645,8 +645,7 @@ def save_basic_output():
             # Found a question.
             columns_s = ', '.join(str(row[x]) for x in columns_l)
             columns_s = prefix_s + columns_s 
-            #TBD.Wed2018_0502_23:36 , rstrip() doesn't clean the trailing spaces.
-            out_l.append(('Question: ' + row['Title']).strip())
+            out_l.append('Question: ' + row['Title'])
             out_l.append('    ' + 'Q.Body: ' + columns_s)
             #
             body = ''
