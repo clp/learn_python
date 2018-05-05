@@ -246,6 +246,7 @@ def write_df_to_otl(in_df, wdir, wfile, columns_l):
     # calling to_string().
     # Use 'index=False' to prevent showing index in column 1.
     in_s = in_df[columns_l].to_string(header=False, index=False)
+    #D print('#D-write, len in_s: ', len(in_s) )
 
     # Clean the newlines in the string so each line has proper indent.
     in_s = nl.strip_html(in_s, "lxml")
@@ -255,6 +256,7 @@ def write_df_to_otl(in_df, wdir, wfile, columns_l):
     # Replace blank spaces at end of each line w/ only the newline char.
     # Do this for all matching patterns in the string in one cmd.
     in_s = re.sub('  +\n', '\n', in_s)
+    #D print('#D-write, len in_s: ', len(in_s) )
 
     with open(outfile, 'w') as f:
         cf.logger.info('NOTE: Writing data to otl outfile: ' + outfile)

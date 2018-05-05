@@ -248,6 +248,9 @@ def config_data():
     q_fname = 'q3_992.csv'
     # a_fname = 'a2.csv'
     # q_fname = 'q2.csv'
+    # q_fname = 'q25.csv'
+    # a_fname = 'a26.csv'
+    # q_fname = 'q26.csv'
 
     a_infile = INDIR + a_fname
     q_infile = INDIR + q_fname
@@ -258,7 +261,7 @@ def config_data():
         print("  Chk src, fga:config_data() for correct a_fname and q_fname.")
         raise SystemExit()
 
-    print('Input files, q & a:\n' + q_infile + '\n' + a_infile)
+    #D print('Input files, q & a:\n' + q_infile + '\n' + a_infile)
 
     return a_fname, a_infile, q_infile
 
@@ -272,6 +275,7 @@ def read_df_in_csv_file(infile):
         warn_bad_lines=False,
         error_bad_lines=False)
 
+    print('read*(): infile: ' + infile)
     print('read*(): Num of records in i/p dataframe: ' + str(len(out_df)))
     return out_df
 
@@ -366,7 +370,7 @@ def group_data(aa_df):
         answers_df = aa_df[[
             'Id', 'OwnerUserId', 'Score']][answered_by_o2_sr]
 
-        # Build filter then df with rows for all low-score answers by one owner.
+        # Build filter and df with rows for all low-score answers by one owner.
         lo_score_by_o2_sr = (answers_df.Score < lo_score_limit)
         lo_score_answers_by_o2_df = answers_df[[
             'Id', 'OwnerUserId', 'Score']][lo_score_by_o2_sr]
@@ -399,7 +403,7 @@ def find_ques_ids_from_top_owners(top_scoring_owners_a, aa_df):
     """
     owners_l = []
     for owner in top_scoring_owners_a:
-        # Build a filter then df with rows for all answers by one owner.
+        # Build a filter and df with rows for all answers by one owner.
         answered_by_owner_sr = (aa_df.OwnerUserId == owner)
         answers_df = aa_df[['Id', 'OwnerUserId',
                             'ParentId', 'Score']][answered_by_owner_sr]
@@ -451,7 +455,7 @@ def find_pop_and_top_ques_ids(ques_ids_from_top_own_l, popular_ids_a):
 
     if opt_ns.verbose:
         print(
-            'ques_ids_pop_and_top_l, parent id\'s to examine: ',
+            'ques_ids_pop_and_top_l, parent id\'s to chk: ',
             ques_ids_pop_and_top_l[:])
 
     return ques_ids_pop_and_top_l
@@ -476,7 +480,10 @@ def combine_related_q_and_a(ques_ids_pop_and_top_l, all_ques_df, aa_df):
     #
     # Prepare to show progress.
     numlines = len(ques_ids_pop_and_top_l)
-    progress_i = int(round(numlines / 10))
+    if numlines < 11:
+        progress_i = 1
+    else:
+        progress_i = int(round(numlines / 10))
     prior_time = time.time()
     # Build each Q&A group: one Q w/ all its A.'s
     for i, qid in enumerate(ques_ids_pop_and_top_l):
@@ -551,7 +558,7 @@ def analyze_text(qagroup_poptop_df):
 
 
 def check_for_keyword():
-    """Search for keywords if specified on command line.
+    """Search for keywords specified on command line.
     """
     columns_l = ['HSTCount', 'Score', 'Id', 'ParentId', 'Title', 'Body']
     if keyword:
@@ -687,7 +694,8 @@ def save_basic_output():
             out_l.append(body)
 
     # Convert list to df & make otl file from it.
-    # User can open that file in a web browser to see data.
+    # User can open that file in editor (Vim w/ VimOutliner) to see data.
+    #TBR qa_title_body_df = pd.DataFrame()
     qa_title_body_df = pd.DataFrame(out_l)
     columns_l = [0]
     wr.write_df_to_otl(

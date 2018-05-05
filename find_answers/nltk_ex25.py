@@ -164,7 +164,10 @@ def clean_raw_data(qagroup_poptop_df):
 
     # Build a list that holds the cleaned text from each answer's body field.
     # Use it to find terms that match terms found in hi-score Answers.
-    progress_i = max(10, int(round(num_bodies / 10)))
+    if num_bodies < 11:
+        progress_i = 1
+    else:
+        progress_i = max(10, int(round(num_bodies / 10)))
     for i in range(0, num_bodies):
         clean_body_s = convert_text_to_words(qagroup_poptop_df["Body"][i])
         clean_qa_bodies_l.append(clean_body_s)
