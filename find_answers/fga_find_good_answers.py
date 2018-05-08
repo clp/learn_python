@@ -645,7 +645,7 @@ def save_basic_output():
         )
 
 
-    # Write o/p to otl file in one column: q.title, q.body, a1, a2, ...
+    # Write o/p in outline format to otl file: q.title, q.body, a1, a2, ...
     out_l = list()
     prefix_s = 'Id, Score, HSTCount, CreDate: ' 
     columns_l = ['Id', 'Score', 'HSTCount', 'CreationDate']
@@ -697,7 +697,6 @@ def save_basic_output():
 
     # Convert list to df & make otl file from it.
     # User can open that file in editor (Vim w/ VimOutliner) to see data.
-    #TBR qa_title_body_df = pd.DataFrame()
     qa_title_body_df = pd.DataFrame(out_l)
     columns_l = [0]
     wr.write_df_to_otl(
