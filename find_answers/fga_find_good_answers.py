@@ -194,9 +194,10 @@ def main(popular_qa_df):
         combine_related_q_and_a(
             ques_ids_pop_and_top_l, all_ques_df, all_ans_df)
 
-    check_for_keyword()
+    qa_with_keyword_df = \
+        search_for_keyword()
 
-    save_basic_output()
+    save_basic_output(qa_with_keyword_df )
 
 
 def check_install():
@@ -559,19 +560,25 @@ def analyze_text(qagroup_poptop_df):
     return popular_qa_df
 
 
-def check_for_keyword():
+def search_for_keyword():
     """Search for keywords specified on command line.
+
+    Save ID's of Q & A that have keyword, or that are related to those
+    records, to a file.
+
+    Return the dataframe that has the Q & A with keyword & related Q & A.
     """
     columns_l = ['HSTCount', 'Score', 'Id', 'ParentId', 'Title', 'Body']
+    qa_with_keyword_df = pd.DataFrame()
     if keyword:
-        cf.logger.info('fga.check*keyword(): Search for a term: ' + \
+        cf.logger.info('fga.search*keyword(): Search for a term: ' + \
                 keyword + '\n')
 
         qa_with_keyword_df = sga.select_keyword_recs(
             keyword, popular_qa_df, columns_l, opt_ns)
 
         if qa_with_keyword_df.empty:
-            cf.logger.warning('fga.check*keyword(): keyword [' + \
+            cf.logger.warning('fga.search*keyword(): keyword [' + \
                     keyword + '] not found in popular_qa_df.')
             return  # TBD. What debug data to print here?
 
@@ -587,9 +594,9 @@ def check_for_keyword():
         wr.write_part_df_to_csv(
             id_df, DATADIR,
             'qa_withkey_id.csv', ['Id'], True, None)
+    return qa_with_keyword_df 
 
-
-def save_basic_output():
+def save_basic_output(qa_with_keyword_df ):
     """Save the dataframe of chosen Q&A groups to csv and html files.
     """
     wr.write_df_to_csv(popular_qa_df, DATADIR, 'popular_qa.csv')
@@ -646,10 +653,18 @@ def save_basic_output():
 
 
     # Write o/p in outline format to otl file: q.title, q.body, a1, a2, ...
+    if qa_with_keyword_df.empty:
+    #F if not qa_with_keyword_df:
+    #F if qa_with_keyword_df == None:
+        cf.logger.warning('fga.save*out(): keyword [' + \
+                keyword + '] not found in qa_with_keyword_df.')
+        print('Keyword not found in qa_with_keyword_df.')
+        return  # TBD. What debug data to print here?
+
     out_l = list()
     prefix_s = 'Id, Score, HSTCount, CreDate: ' 
     columns_l = ['Id', 'Score', 'HSTCount', 'CreationDate']
-    for index, row in popular_qa_df.iterrows():
+    for index, row in qa_with_keyword_df.iterrows():
         if not pd.isnull(row['Title']):
             # Found a question.
             columns_s = ', '.join(str(row[x]) for x in columns_l)
