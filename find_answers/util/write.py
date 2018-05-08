@@ -174,11 +174,10 @@ def replace_line_breaks_for_otl(in_s):
     pre-blocks and code-blocks (inside HTML table cells)
     is rendered properly.
     """
-    #TBD.Thu2018_0503_16:33, maybe add '$' to only replace patterns at end of line, not inside?
-    out_s = in_s.replace('\\r\\n', '\n    ')
-    out_s = out_s.replace('\\n\\n', '\n    ')
-    out_s = out_s.replace('\\n', '\n    ')
-
+    out_s = in_s.replace(r'\r\n', r'\r\n    ')
+    out_s = out_s.replace(r'\n\n', r'\n    ')
+    out_s = out_s.replace(r'\n', '\n    ')
+    #D print('#D-replace_lb_otl out_s: ', out_s[:100])
     return out_s
 
 
@@ -246,7 +245,7 @@ def write_df_to_otl(in_df, wdir, wfile, columns_l):
     # calling to_string().
     # Use 'index=False' to prevent showing index in column 1.
     in_s = in_df[columns_l].to_string(header=False, index=False)
-    #D print('#D-write, len in_s: ', len(in_s) )
+    print('#D-write, len in_s: ', len(in_s) )
 
     # Clean the newlines in the string so each line has proper indent.
     in_s = nl.strip_html(in_s, "lxml")
@@ -256,7 +255,13 @@ def write_df_to_otl(in_df, wdir, wfile, columns_l):
     # Replace blank spaces at end of each line w/ only the newline char.
     # Do this for all matching patterns in the string in one cmd.
     in_s = re.sub('  +\n', '\n', in_s)
-    #D print('#D-write, len in_s: ', len(in_s) )
+    print('#D-write, len in_s: ', len(in_s) )
+    #D print('#D-write, in_s: ', in_s[:599] )
+    #
+    # Replace empty lines w/ INDENT+##
+    in_s = re.sub(r'\n\s*\n', r'\n        ##\n', in_s)
+    print('#D-write, len in_s: ', len(in_s) )
+    #D print('#D-write, in_s: ', in_s[:599] )
 
     with open(outfile, 'w') as f:
         cf.logger.info('NOTE: Writing data to otl outfile: ' + outfile)

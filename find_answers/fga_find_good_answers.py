@@ -251,6 +251,8 @@ def config_data():
     # q_fname = 'q25.csv'
     # a_fname = 'a26.csv'
     # q_fname = 'q26.csv'
+    # a_fname = 'a1_5430_q5419.csv'
+    # q_fname = 'q1_5419.csv'
 
     a_infile = INDIR + a_fname
     q_infile = INDIR + q_fname
