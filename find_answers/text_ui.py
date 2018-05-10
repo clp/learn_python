@@ -76,7 +76,6 @@ import draw_plots as dr
 import search_for_keyword as sfk
 import sga_show_good_answers as sga
 import util.write as wr
-import util.write as wr
 
 
 CURRENT_FILE = os.path.basename(__file__)
