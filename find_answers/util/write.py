@@ -134,6 +134,9 @@ def save_prior_file(wdir, wfile):
 def write_df_to_csv(in_df, wdir, wfile):
     """Write full contents of all columns of a data frame to a csv file.
     """
+    if in_df.empty:
+        print('WARN: write*csv(): Missing or empty dataframe for wfile: ', wfile)
+        return
     # Used for testing and debugging.
     pd.set_option('display.max_colwidth', -1)  # -1=no limit, for debug
     save_prior_file(wdir, wfile)
@@ -147,6 +150,9 @@ def write_df_to_csv(in_df, wdir, wfile):
 def write_part_df_to_csv(in_df, wdir, wfile, columns_l, hdr, indx):
     """Write full contents of some columns of a data frame to a csv file.
     """
+    if in_df.empty:
+        print('WARN: write*csv(): Missing or empty dataframe for wfile: ', wfile)
+        return
     # TBD Used for testing and debugging.
     pd.set_option('display.max_colwidth', -1)  # -1=no limit, for debug
     save_prior_file(wdir, wfile)
@@ -188,7 +194,7 @@ def write_df_to_html(in_df, wdir, wfile, columns_l):
     if caller does not specify any.
     """
     if in_df.empty:
-        print('WARN: write*html(): Input dataframe empty or not found.')
+        print('WARN: write*html(): Missing or empty dataframe for wfile: ', wfile)
         return
     pd.set_option('display.max_colwidth', -1)  # -1=no limit, for debug
     outfile = wdir + wfile

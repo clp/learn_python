@@ -73,7 +73,9 @@ import pandas as pd
 
 import config as cf
 import draw_plots as dr
+import search_for_keyword as sfk
 import sga_show_good_answers as sga
+import util.write as wr
 import util.write as wr
 
 
@@ -207,6 +209,11 @@ def show_menu(popular_qa_df, all_ans_df, opt_ns):
                     qa_stats_df[['Score', 'BodyLength', 'OwnerRep', 'HSTCount']])
         # lek: Look for exact keywords in the Q&A df; now case sensitive.
         elif user_cmd.lower() == 'lek':
+            print('#D lek is temp disabled, Thu2018_0510_14:46 ; use lk to look for keyword.')
+            return
+            ###
+            ###
+            ###
             user_cmd = 'lek'  # Force menu to always repeat the lek prompt.
             search_prompt = "\nType a search term; or press Enter for main menu: "
             search_term = input(search_prompt)
@@ -253,6 +260,35 @@ def show_menu(popular_qa_df, all_ans_df, opt_ns):
                 id_df, DATADIR,
                 'qa_withkey_id.csv', ['Id'], True, None)
 
+
+        #TBD,Thu2018_0510_13:09  
+        # Modify lek code
+        # lk: Look for exact keywords in the Q&A df; now case sensitive.
+        elif user_cmd.lower() == 'lk':
+            user_cmd = 'lk'  # Force menu to always repeat the lk prompt.
+            search_prompt = "\nType a search term; or press Enter for main menu: "
+            search_term = input(search_prompt)
+            if search_term == "":  # Return to main menu and ask for a cmd.
+                user_cmd = 'm'
+                continue
+            print("User entered this search_term: ", search_term)
+            log_msg = cf.log_file + ' - Search term entered by user: ' + \
+                search_term + '\n'
+            cf.logger.warning(log_msg)
+            #
+            columns_l = []
+            # TBD Chg popular_qa_df to a df w/ more records, for dbg & initial
+            # use.  Beware of memory & performance issues.
+            qa_with_keyword_df = sfk.search_for_keyword(search_term, opt_ns, popular_qa_df, columns_l)
+            #
+            # Search term not found; show search prompt.
+            if qa_with_keyword_df.empty:
+                user_cmd = 'lk'
+                print()
+                continue
+
+            # Write o/p files to disk, based on search keyword.
+            #TBR? fga.save_basic_output(popular_qa_df, qa_group_with_keyword_df)
 
         else:
             print("Got bad cmd from user: ", user_cmd)

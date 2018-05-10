@@ -136,6 +136,7 @@ import time
 
 import config as cf
 import nltk_ex25 as nl
+import search_for_keyword as sfk
 import sga_show_good_answers as sga
 import text_ui as tui
 import util.write as wr
@@ -194,12 +195,13 @@ def main(popular_qa_df):
         combine_related_q_and_a(
             ques_ids_pop_and_top_l, all_ques_df, all_ans_df)
 
+    columns_l = []
     qa_with_keyword_df = pd.DataFrame()
     if keyword:
         qa_with_keyword_df = \
-            search_for_keyword()
+            sfk.search_for_keyword(keyword, opt_ns, popular_qa_df, columns_l)
 
-    save_basic_output(qa_with_keyword_df)
+    save_basic_output(popular_qa_df, qa_with_keyword_df)
 
 
 def check_install():
@@ -254,8 +256,8 @@ def config_data():
     # q_fname = 'q25.csv'
     # a_fname = 'a26.csv'
     # q_fname = 'q26.csv'
-    a_fname = 'a1_5430_q5419.csv'
-    q_fname = 'q1_5419.csv'
+    # a_fname = 'a1_5430_q5419.csv'
+    # q_fname = 'q1_5419.csv'
 
     a_infile = INDIR + a_fname
     q_infile = INDIR + q_fname
@@ -562,43 +564,7 @@ def analyze_text(qagroup_poptop_df):
     return popular_qa_df
 
 
-def search_for_keyword():
-    """Search for keywords specified on command line.
-
-    Save ID's of Q & A that have keyword, or that are related to those
-    records, to a file.
-
-    Return the dataframe that has the Q & A with keyword & related Q & A.
-    """
-    columns_l = ['HSTCount', 'Score', 'Id', 'ParentId', 'Title', 'Body']
-    #TBD.Wed2018_0509_14:44  Maybe rm 'if k*', if it is in main().
-    if keyword:
-        cf.logger.info('fga.search*keyword(): Search for a term: ' + \
-                keyword + '\n')
-
-        qa_with_keyword_df = sga.select_keyword_recs(
-            keyword, popular_qa_df, columns_l, opt_ns)
-
-        if qa_with_keyword_df.empty:
-            cf.logger.warning('fga.search*keyword(): keyword [' + \
-                    keyword + '] not found in popular_qa_df.')
-            return  # TBD. What debug data to print here?
-
-        #D # Write all columns of df to disk file.
-        #D wr.write_part_df_to_csv(
-            #D qa_with_keyword_df, DATADIR,
-            #D 'qa_with_keyword.csv', columns_l, True, None)
-
-        # Write only the Id column of df to disk, sorted by Id.
-        # Sort it to match the ref file, so out-of-order data
-        # does not cause test to fail.
-        id_df = qa_with_keyword_df[['Id']].sort_values(['Id'])
-        wr.write_part_df_to_csv(
-            id_df, DATADIR,
-            'qa_withkey_id.csv', ['Id'], True, None)
-    return qa_with_keyword_df 
-
-def save_basic_output(qa_with_keyword_df):
+def save_basic_output(popular_qa_df, qa_with_keyword_df):
     """Save the dataframe of chosen Q&A groups to csv and html files.
     """
     wr.write_df_to_csv(popular_qa_df, DATADIR, 'popular_qa.csv')
