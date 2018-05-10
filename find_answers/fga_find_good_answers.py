@@ -194,10 +194,12 @@ def main(popular_qa_df):
         combine_related_q_and_a(
             ques_ids_pop_and_top_l, all_ques_df, all_ans_df)
 
-    qa_with_keyword_df = \
-        search_for_keyword()
+    qa_with_keyword_df = pd.DataFrame()
+    if keyword:
+        qa_with_keyword_df = \
+            search_for_keyword()
 
-    save_basic_output(qa_with_keyword_df )
+    save_basic_output(qa_with_keyword_df)
 
 
 def check_install():
@@ -252,8 +254,8 @@ def config_data():
     # q_fname = 'q25.csv'
     # a_fname = 'a26.csv'
     # q_fname = 'q26.csv'
-    # a_fname = 'a1_5430_q5419.csv'
-    # q_fname = 'q1_5419.csv'
+    a_fname = 'a1_5430_q5419.csv'
+    q_fname = 'q1_5419.csv'
 
     a_infile = INDIR + a_fname
     q_infile = INDIR + q_fname
@@ -569,7 +571,7 @@ def search_for_keyword():
     Return the dataframe that has the Q & A with keyword & related Q & A.
     """
     columns_l = ['HSTCount', 'Score', 'Id', 'ParentId', 'Title', 'Body']
-    qa_with_keyword_df = pd.DataFrame()
+    #TBD.Wed2018_0509_14:44  Maybe rm 'if k*', if it is in main().
     if keyword:
         cf.logger.info('fga.search*keyword(): Search for a term: ' + \
                 keyword + '\n')
@@ -596,7 +598,7 @@ def search_for_keyword():
             'qa_withkey_id.csv', ['Id'], True, None)
     return qa_with_keyword_df 
 
-def save_basic_output(qa_with_keyword_df ):
+def save_basic_output(qa_with_keyword_df):
     """Save the dataframe of chosen Q&A groups to csv and html files.
     """
     wr.write_df_to_csv(popular_qa_df, DATADIR, 'popular_qa.csv')
@@ -653,12 +655,19 @@ def save_basic_output(qa_with_keyword_df ):
 
 
     # Write o/p in outline format to otl file: q.title, q.body, a1, a2, ...
+    try:
+        if not qa_with_keyword_df:
+            # The df is a None obj.
+            cf.logger.warning('fga.save*out(): ' + \
+                    'qa_with_keyword_df is a None object.')
+            return
+    except ValueError:
+        # The df is not a None obj.
+        pass
     if qa_with_keyword_df.empty:
-    #F if not qa_with_keyword_df:
-    #F if qa_with_keyword_df == None:
-        cf.logger.warning('fga.save*out(): keyword [' + \
-                keyword + '] not found in qa_with_keyword_df.')
-        print('Keyword not found in qa_with_keyword_df.')
+        print('#D Keyword not found in qa_with_keyword_df.')
+        cf.logger.warning('fga.save*out(): ' + \
+                'qa_with_keyword_df is empty.')
         return  # TBD. What debug data to print here?
 
     out_l = list()
@@ -674,15 +683,13 @@ def save_basic_output(qa_with_keyword_df ):
             #
             body = ''
             # Process each line in the body.
-            #TBD,Wed2018_0502_22:37 , Shows line1 of q.body at col5 & other lines at col9.
-                # Keep it as a feature?
+            # O/p has line1 of q.body at col5 & other lines indented at col9.
             lines = list()
             lines = row['Body'].split('\n')
             for line in lines:
-                #OK if not re.match(r'^\s*$', line):
                 if line.rstrip():
                     # Found line that is not empty.
-                    body +=  ' '*4 + line + '\n'  #TBD.1, do these 4spaces make empty lines?
+                    body +=  ' '*4 + line + '\n'
             #D print('#D q.body: ')
             #D print(body)
             #D print('#D end of q.body.')
@@ -702,7 +709,7 @@ def save_basic_output(qa_with_keyword_df ):
             for line in lines:
                 if line.rstrip():
                     # Found line that is not empty.
-                    body +=  ' '*4 + line + '\n'  #TBD.1, do these 4spaces make empty lines?
+                    body +=  ' '*4 + line + '\n'
             #D print('#D a.body: ')
             #D print(body)
             #D print('#D end of a.body.')
@@ -766,7 +773,8 @@ if __name__ == '__main__':
     parser = get_parser()
     opt_ns = parser.parse_args()
 
-    keyword = False  # Init before reading CLI argument.
+    #ORG keyword = False  # Init before reading CLI argument.
+    keyword = ''  # Init before reading CLI argument.
 
     if opt_ns.search:
         keyword = opt_ns.search
