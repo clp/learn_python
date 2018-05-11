@@ -90,6 +90,21 @@ def save_basic_output(popular_qa_df, qa_with_keyword_df):
 
 
     # Write search o/p to html file in one column: q.title, q.body, a1, a2, ...
+    try:
+        if not qa_with_keyword_df:
+            # The df is a None obj.
+            cf.logger.warning('save_basic_output(): ' + \
+                    'qa_with_keyword_df is a None object.')
+            return
+    except ValueError:
+        # The df is not a None obj.
+        pass
+    if qa_with_keyword_df.empty:
+        print('#D qa_with_keyword_df is empty.')
+        cf.logger.warning('save_basic_output(): ' + \
+                'qa_with_keyword_df is empty.')
+        return  # TBD. What debug data to print here?
+
     out_l = list()
     prefix_s = 'Id, Score, HSTCount, CreDate: ' 
     columns_l = ['Id', 'Score', 'HSTCount', 'CreationDate']
@@ -129,7 +144,7 @@ def save_basic_output(popular_qa_df, qa_with_keyword_df):
     try:
         if not qa_with_keyword_df:
             # The df is a None obj.
-            cf.logger.warning('save_output(): ' + \
+            cf.logger.warning('save_basic_output(): ' + \
                     'qa_with_keyword_df is a None object.')
             return
     except ValueError:
@@ -137,7 +152,7 @@ def save_basic_output(popular_qa_df, qa_with_keyword_df):
         pass
     if qa_with_keyword_df.empty:
         print('#D qa_with_keyword_df is empty.')
-        cf.logger.warning('save_output(): ' + \
+        cf.logger.warning('save_basic_output(): ' + \
                 'qa_with_keyword_df is empty.')
         return  # TBD. What debug data to print here?
 
