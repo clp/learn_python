@@ -91,6 +91,7 @@ def search_for_keyword(keyword, opt_ns, popular_qa_df, columns_l):
                 keyword + '] not found in popular_qa_df.')
         return qa_with_keyword_df  # TBD. What debug data to print here?
 
+    """
     #D # Write all columns of df to disk file.
     #D wr.write_part_df_to_csv(
         #D qa_with_keyword_df, DATADIR,
@@ -103,6 +104,7 @@ def search_for_keyword(keyword, opt_ns, popular_qa_df, columns_l):
     wr.write_part_df_to_csv(
         id_df, DATADIR,
         'qa_withkey_id.csv', ['Id'], True, None)
+    """
     return qa_with_keyword_df 
 
 
