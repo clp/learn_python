@@ -90,6 +90,7 @@ def save_basic_output(popular_qa_df, qa_with_keyword_df):
 
 
     # Write search o/p to html file in one column: q.title, q.body, a1, a2, ...
+    """
     try:
         if not qa_with_keyword_df:
             # The df is a None obj.
@@ -99,8 +100,9 @@ def save_basic_output(popular_qa_df, qa_with_keyword_df):
     except ValueError:
         # The df is not a None obj.
         pass
+    """
     if qa_with_keyword_df.empty:
-        print('#D qa_with_keyword_df is empty.')
+        print('#D save_basic*()-html: qa_with_keyword_df is empty.')
         cf.logger.warning('save_basic_output(): ' + \
                 'qa_with_keyword_df is empty.')
         return  # TBD. What debug data to print here?
@@ -141,6 +143,7 @@ def save_basic_output(popular_qa_df, qa_with_keyword_df):
 
 
     # Write search o/p in outline format to otl file: q.title, q.body, a1, a2, ...
+    """
     try:
         if not qa_with_keyword_df:
             # The df is a None obj.
@@ -150,8 +153,9 @@ def save_basic_output(popular_qa_df, qa_with_keyword_df):
     except ValueError:
         # The df is not a None obj.
         pass
+    """
     if qa_with_keyword_df.empty:
-        print('#D qa_with_keyword_df is empty.')
+        print('#D save_basic*()-otl: qa_with_keyword_df is empty.')
         cf.logger.warning('save_basic_output(): ' + \
                 'qa_with_keyword_df is empty.')
         return  # TBD. What debug data to print here?

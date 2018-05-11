@@ -282,6 +282,7 @@ def show_menu(popular_qa_df, all_ans_df, opt_ns):
             qa_with_keyword_df = sfk.search_for_keyword(search_term, opt_ns, popular_qa_df, columns_l)
             #
             # If search term not found, show search prompt.
+            """
             try:
                 if not qa_with_keyword_df:
                     # The df is a None obj.
@@ -293,8 +294,9 @@ def show_menu(popular_qa_df, all_ans_df, opt_ns):
             except ValueError:
                 # The df is not a None obj.
                 pass
+            """
             if qa_with_keyword_df.empty:
-                print('#D qa_with_keyword_df is empty.')
+                print('#D show_menu(): qa_with_keyword_df is empty.')
                 cf.logger.warning('show_menu(): ' + \
                         'qa_with_keyword_df is empty.')
                 user_cmd = 'lk'
