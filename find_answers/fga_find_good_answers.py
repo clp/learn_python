@@ -136,6 +136,7 @@ import time
 
 import config as cf
 import nltk_ex25 as nl
+import save_output as sav
 import search_for_keyword as sfk
 import sga_show_good_answers as sga
 import text_ui as tui
@@ -201,7 +202,7 @@ def main(popular_qa_df):
         qa_with_keyword_df = \
             sfk.search_for_keyword(keyword, opt_ns, popular_qa_df, columns_l)
 
-    save_basic_output(popular_qa_df, qa_with_keyword_df)
+    sav.save_basic_output(popular_qa_df, qa_with_keyword_df)
 
 
 def check_install():
@@ -563,136 +564,6 @@ def analyze_text(qagroup_poptop_df):
 
     return popular_qa_df
 
-
-def save_basic_output(popular_qa_df, qa_with_keyword_df):
-    """Save the dataframe of chosen Q&A groups to csv and html files.
-    """
-    wr.write_df_to_csv(popular_qa_df, DATADIR, 'popular_qa.csv')
-
-    columns_l = []
-    wr.write_df_to_html(
-        popular_qa_df,
-        DATADIR,
-        'popular_qa.html',
-        columns_l)
-
-    columns_l = ['Id', 'Title', 'Body']
-    wr.write_df_to_html(
-        popular_qa_df,
-        DATADIR,
-        'popular_qa_title_body.html',
-        columns_l)
-
-
-    # Write o/p to html file in one column: q.title, q.body, a1, a2, ...
-    out_l = list()
-    prefix_s = 'Id, Score, HSTCount, CreDate: ' 
-    columns_l = ['Id', 'Score', 'HSTCount', 'CreationDate']
-    for index, row in popular_qa_df.iterrows():
-        if not pd.isnull(row['Title']):
-            # Found a question.
-            columns_s = ', '.join(str(row[x]) for x in columns_l)
-            columns_s = prefix_s + columns_s 
-            out_l.append('###')
-            out_l.append('Question:')
-            out_l.append(columns_s)
-            out_l.append(row['Title'])
-            #D out_l.append(row['Body'][:99])
-            out_l.append(row['Body'])
-        else:
-            # Found an answer.
-            columns_s = ', '.join(str(row[x]) for x in columns_l)
-            columns_s = prefix_s + columns_s 
-            out_l.append('Answer:')
-            out_l.append(columns_s)
-            #D out_l.append(row['Body'][:99])
-            out_l.append(row['Body'])
-
-    # Convert list to df & make html file from it.
-    # User can open that file in a web browser to see data.
-    qa_title_body_df = pd.DataFrame(out_l)
-    columns_l = [0]
-    wr.write_df_to_html(
-        qa_title_body_df,
-        DATADIR,
-        'qa_title_body.html',
-        columns_l
-        )
-
-
-    # Write o/p in outline format to otl file: q.title, q.body, a1, a2, ...
-    try:
-        if not qa_with_keyword_df:
-            # The df is a None obj.
-            cf.logger.warning('fga.save*out(): ' + \
-                    'qa_with_keyword_df is a None object.')
-            return
-    except ValueError:
-        # The df is not a None obj.
-        pass
-    if qa_with_keyword_df.empty:
-        print('#D Keyword not found in qa_with_keyword_df.')
-        cf.logger.warning('fga.save*out(): ' + \
-                'qa_with_keyword_df is empty.')
-        return  # TBD. What debug data to print here?
-
-    out_l = list()
-    prefix_s = 'Id, Score, HSTCount, CreDate: ' 
-    columns_l = ['Id', 'Score', 'HSTCount', 'CreationDate']
-    for index, row in qa_with_keyword_df.iterrows():
-        if not pd.isnull(row['Title']):
-            # Found a question.
-            columns_s = ', '.join(str(row[x]) for x in columns_l)
-            columns_s = prefix_s + columns_s 
-            out_l.append('Question: ' + row['Title'])
-            out_l.append('    ' + 'Q.Body: ' + columns_s)
-            #
-            body = ''
-            # Process each line in the body.
-            # O/p has line1 of q.body at col5 & other lines indented at col9.
-            lines = list()
-            lines = row['Body'].split('\n')
-            for line in lines:
-                if line.rstrip():
-                    # Found line that is not empty.
-                    body +=  ' '*4 + line + '\n'
-            #D print('#D q.body: ')
-            #D print(body)
-            #D print('#D end of q.body.')
-            #D print()
-            #
-            out_l.append(body)
-        else:
-            # Found an answer.
-            columns_s = ', '.join(str(row[x]) for x in columns_l)
-            columns_s = prefix_s + columns_s 
-            out_l.append('    ' + 'Answer: ' + columns_s)
-            #
-            body = ''
-            # Process each line in the body.
-            lines = list()
-            lines = row['Body'].split('\n')
-            for line in lines:
-                if line.rstrip():
-                    # Found line that is not empty.
-                    body +=  ' '*4 + line + '\n'
-            #D print('#D a.body: ')
-            #D print(body)
-            #D print('#D end of a.body.')
-            #D print()
-            #
-            out_l.append(body)
-
-    # Convert list to df & make otl file from it.
-    # User can open that file in editor (Vim w/ VimOutliner) to see data.
-    qa_title_body_df = pd.DataFrame(out_l)
-    columns_l = [0]
-    wr.write_df_to_otl(
-        qa_title_body_df,
-        DATADIR,
-        'qa_title_body.otl',
-        columns_l
-        )
 
 
 def get_parser():
