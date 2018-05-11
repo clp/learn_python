@@ -78,8 +78,9 @@ def search_for_keyword(keyword, opt_ns, popular_qa_df, columns_l):
 
     Return the dataframe that has the Q & A with keyword & related Q & A.
     """
-    #TBD,Thu2018_0510_15:05 , add 'if ...' to use columns_l from arg list if provided.
-    columns_l = ['HSTCount', 'Score', 'Id', 'ParentId', 'Title', 'Body']
+    # Specify default output columns to use.
+    if not columns_l:
+        columns_l = ['HSTCount', 'Score', 'Id', 'ParentId', 'Title', 'Body']
     cf.logger.info('sfk.search*keyword(): Search for a term: ' + \
             keyword + '\n')
 
