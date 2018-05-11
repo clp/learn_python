@@ -240,64 +240,7 @@ def show_menu(popular_qa_df, all_ans_df, opt_ns):
                 print('#D show_menu(): qa_with_keyword_df is empty.')
                 cf.logger.warning('show_menu(): ' + \
                         'qa_with_keyword_df is empty.')
-                user_cmd = 'lk'
-                print()
-                continue
-
-            # Write o/p files to disk, based on search keyword.
-            sav.save_basic_output(popular_qa_df, qa_with_keyword_df)
-
-            """
-            qa_with_keyword_df = sga.select_keyword_recs(
-                search_term, popular_qa_df, columns_l, opt_ns)
-
-            # Search term not found; show search prompt.
-            if qa_with_keyword_df.empty:
                 user_cmd = 'lek'
-                print()
-                continue
-
-            #D # Save six columns to disk file.
-            #D wr.write_part_df_to_csv(
-                #D qa_with_keyword_df, DATADIR,
-                #D 'qa_with_keyword.csv', columns_l, True, None)
-
-            # Write only the Id column of df to disk, sorted by Id.
-            # Sort it to match the ref file, so out-of-order data
-            # does not cause test to fail.
-            id_df = qa_with_keyword_df[['Id']].sort_values(['Id'])
-            wr.write_part_df_to_csv(
-                id_df, DATADIR,
-                'qa_withkey_id.csv', ['Id'], True, None)
-            """
-
-
-        #TBD,Thu2018_0510_13:09  
-        # Modify lek code
-        # lk: Look for exact keywords in the Q&A df; now case sensitive.
-        elif user_cmd.lower() == 'lk':
-            user_cmd = 'lk'  # Force menu to always repeat the lk prompt.
-            search_prompt = "\nType a search term; or press Enter for main menu: "
-            search_term = input(search_prompt)
-            if search_term == "":  # Return to main menu and ask for a cmd.
-                user_cmd = 'm'
-                continue
-            print("User entered this search_term: ", search_term)
-            log_msg = cf.log_file + ' - Search term entered by user: ' + \
-                search_term + '\n'
-            cf.logger.warning(log_msg)
-            #
-            columns_l = []
-            # TBD Chg popular_qa_df to a df w/ more records, for dbg & initial
-            # use.  Beware of memory & performance issues.
-            qa_with_keyword_df = sfk.search_for_keyword(search_term, opt_ns, popular_qa_df, columns_l)
-            #
-            # If search term not found, show search prompt.
-            if qa_with_keyword_df.empty:
-                print('#D show_menu(): qa_with_keyword_df is empty.')
-                cf.logger.warning('show_menu(): ' + \
-                        'qa_with_keyword_df is empty.')
-                user_cmd = 'lk'
                 print()
                 continue
 
