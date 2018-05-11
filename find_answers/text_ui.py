@@ -73,6 +73,7 @@ import pandas as pd
 
 import config as cf
 import draw_plots as dr
+import save_output as sav
 import search_for_keyword as sfk
 import sga_show_good_answers as sga
 import util.write as wr
@@ -233,28 +234,28 @@ def show_menu(popular_qa_df, all_ans_df, opt_ns):
                 'Body',
                 ]
                 #TBD 'HiScoreTerms']
-            qa_group_with_keyword_df = pd.DataFrame()  # Initlz at each call
+            qa_with_keyword_df = pd.DataFrame()  # Initlz at each call
             #
             # TBD Chg popular_qa_df to a df w/ more records, for dbg & initial
             # use.  Beware of memory & performance issues.
-            qa_group_with_keyword_df = sga.select_keyword_recs(
+            qa_with_keyword_df = sga.select_keyword_recs(
                 search_term, popular_qa_df, columns_l, opt_ns)
 
             # Search term not found; show search prompt.
-            if qa_group_with_keyword_df.empty:
+            if qa_with_keyword_df.empty:
                 user_cmd = 'lek'
                 print()
                 continue
 
             #D # Save six columns to disk file.
             #D wr.write_part_df_to_csv(
-                #D qa_group_with_keyword_df, DATADIR,
+                #D qa_with_keyword_df, DATADIR,
                 #D 'qa_with_keyword.csv', columns_l, True, None)
 
             # Write only the Id column of df to disk, sorted by Id.
             # Sort it to match the ref file, so out-of-order data
             # does not cause test to fail.
-            id_df = qa_group_with_keyword_df[['Id']].sort_values(['Id'])
+            id_df = qa_with_keyword_df[['Id']].sort_values(['Id'])
             wr.write_part_df_to_csv(
                 id_df, DATADIR,
                 'qa_withkey_id.csv', ['Id'], True, None)
@@ -280,14 +281,28 @@ def show_menu(popular_qa_df, all_ans_df, opt_ns):
             # use.  Beware of memory & performance issues.
             qa_with_keyword_df = sfk.search_for_keyword(search_term, opt_ns, popular_qa_df, columns_l)
             #
-            # Search term not found; show search prompt.
+            # If search term not found, show search prompt.
+            try:
+                if not qa_with_keyword_df:
+                    # The df is a None obj.
+                    cf.logger.warning('show_menu(): ' + \
+                            'qa_with_keyword_df is a None object.')
+                    user_cmd = 'lk'
+                    print()
+                    continue
+            except ValueError:
+                # The df is not a None obj.
+                pass
             if qa_with_keyword_df.empty:
+                print('#D qa_with_keyword_df is empty.')
+                cf.logger.warning('show_menu(): ' + \
+                        'qa_with_keyword_df is empty.')
                 user_cmd = 'lk'
                 print()
                 continue
 
             # Write o/p files to disk, based on search keyword.
-            #TBR? fga.save_basic_output(popular_qa_df, qa_group_with_keyword_df)
+            sav.save_basic_output(popular_qa_df, qa_with_keyword_df)
 
         else:
             print("Got bad cmd from user: ", user_cmd)
