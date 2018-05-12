@@ -301,7 +301,7 @@ def find_popular_ques(aa_df, a_fname):
     return popular_ids_a
 
 
-# TBD, Refactor the two find_top_owners() funcs.
+# TBD, Refactor the find_top_owners() func.
     # Thu2017_0907_23:30 , Should lo_score*df be returned for use elsewhere?
     # It is printed to file, maybe to log.
     # Is it needed to find good answers?
@@ -309,8 +309,8 @@ def find_popular_ques(aa_df, a_fname):
     # Has copied lines from find_top_owners().
     # Does not have lo_score* vars & code.
 def find_top_owners(aa_df, owner_reputation_df):
-    """Group the contents of the answers dataframe by a specific column.
-    Group by OwnerUserId, and sort by mean score for answers only
+    """Use df grouped by OwnerUserId, and sorted by
+    mean score for answers only
     for each owner (question scores are not counted).
     Make a numpy array of owners w/ highest mean scores.
 
