@@ -329,26 +329,26 @@ def gd2_group_data(aa_df, opt_ns):
     Group by OwnerUserId, and sort by mean score for answers only
     for each owner (question scores are not counted).
     """
-    # print('#D gd2: owner_grouped_df: Group by owner and sort by mean score
+    # print('#D gd2: owner_reputation_df: Group by owner and sort by mean score
     # for each owner.')
-    owner_grouped_df = aa_df.groupby('OwnerUserId')
-    owner_grouped_df = owner_grouped_df[[
+    owner_reputation_df = aa_df.groupby('OwnerUserId')
+    owner_reputation_df = owner_reputation_df[[
         'Score']].mean().sort_values(['Score'])
 
     # Copy index column into owner column; Change index column to integer
-    owner_grouped_df['OwnerUserId'] = owner_grouped_df.index
-    owner_grouped_df.reset_index(drop=True, inplace=True)
-    owner_grouped_df.rename(columns={'Score': 'MeanScore'}, inplace=True)
+    owner_reputation_df['OwnerUserId'] = owner_reputation_df.index
+    owner_reputation_df.reset_index(drop=True, inplace=True)
+    owner_reputation_df.rename(columns={'Score': 'MeanScore'}, inplace=True)
 
     if opt_ns.verbose:
         print()
-        print('gd2: len(owner_grouped_df): num of unique OwnerUserId values: ' +
-              str(len(owner_grouped_df)))
+        print('gd2: len(owner_reputation_df): num of unique OwnerUserId values: ' +
+              str(len(owner_reputation_df)))
         print()
     cf.logger.info('fga.gd2_group_data(): Show owners with highest MeanScores.')
-    cf.logger.info(owner_grouped_df.tail(MAX_OWNERS))
+    cf.logger.info(owner_reputation_df.tail(MAX_OWNERS))
 
-    return owner_grouped_df
+    return owner_reputation_df
 
 
 def check_owner_reputation(all_ans_df, owner_reputation_df, opt_ns):

@@ -183,11 +183,11 @@ def main(popular_qa_df):
     popular_ids_a = \
         find_popular_ques(all_ans_df, a_fname)
 
-    owner_grouped_df = \
+    owner_reputation_df = \
         tui.gd2_group_data(all_ans_df, opt_ns)
 
-    top_scoring_owners_a, owner_grouped_df = \
-        group_data(all_ans_df, owner_grouped_df)
+    top_scoring_owners_a = \
+        group_data(all_ans_df, owner_reputation_df)
 
     ques_ids_from_top_own_l = \
         find_ques_ids_from_top_owners(top_scoring_owners_a, all_ans_df)
@@ -308,34 +308,7 @@ def find_popular_ques(aa_df, a_fname):
     # Also chk find_ques_ids_from_top_owners() ;  common code.
     # Has copied lines from group_data().
     # Does not have lo_score* vars & code.
-def gd2_group_data(aa_df):
-    """Group the contents of the answers dataframe by a specific column.
-    Group by OwnerUserId, and sort by mean score for answers only
-    for each owner (question scores are not counted).
-    """
-    # print('#D gd2: owner_grouped_df: Group by owner and sort by mean score
-    # for each owner.')
-    owner_grouped_df = aa_df.groupby('OwnerUserId')
-    owner_grouped_df = owner_grouped_df[[
-        'Score']].mean().sort_values(['Score'])
-
-    # Copy index column into owner column; Change index column to integer
-    owner_grouped_df['OwnerUserId'] = owner_grouped_df.index
-    owner_grouped_df.reset_index(drop=True, inplace=True)
-    owner_grouped_df.rename(columns={'Score': 'MeanScore'}, inplace=True)
-
-    if opt_ns.verbose:
-        print()
-        print('gd2: len(owner_grouped_df): num of unique OwnerUserId values: ' +
-              str(len(owner_grouped_df)))
-        print()
-    cf.logger.info('fga.gd2_group_data(): Show owners with highest MeanScores.')
-    cf.logger.info(owner_grouped_df.tail(MAX_OWNERS))
-
-    return owner_grouped_df
-
-
-def group_data(aa_df, owner_grouped_df):
+def group_data(aa_df, owner_reputation_df):
     """Group the contents of the answers dataframe by a specific column.
     Group by OwnerUserId, and sort by mean score for answers only
     for each owner (question scores are not counted).
@@ -347,7 +320,7 @@ def group_data(aa_df, owner_grouped_df):
     """
 
     # Take slice of owners w/ highest mean scores; convert to int.
-    owners_a = owner_grouped_df['OwnerUserId'].values
+    owners_a = owner_reputation_df['OwnerUserId'].values
     top_scoring_owners_a = np.vectorize(np.int)(owners_a[-MAX_OWNERS:])
     if opt_ns.verbose:
         print('top_scoring_owners_a: ', top_scoring_owners_a)
@@ -385,7 +358,7 @@ def group_data(aa_df, owner_grouped_df):
     cf.logger.info('fga.group_data(): lo_scores_for_top_owners_df: ')
     cf.logger.info(lo_scores_for_top_owners_df)
 
-    return top_scoring_owners_a, owner_grouped_df
+    return top_scoring_owners_a
 
 
 def find_ques_ids_from_top_owners(top_scoring_owners_a, aa_df):
