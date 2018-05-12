@@ -56,7 +56,7 @@ Overview of Program Actions
 
     Some actions use the following functions.
 
-    group_data():
+    find_top_owners():
     Group the data by owner, and sort by mean score.
 
     analyze_text():
@@ -187,7 +187,7 @@ def main(popular_qa_df):
         tui.group_owners(all_ans_df, opt_ns)
 
     top_scoring_owners_a = \
-        group_data(all_ans_df, owner_reputation_df)
+        find_top_owners(all_ans_df, owner_reputation_df)
 
     ques_ids_from_top_own_l = \
         find_ques_ids_from_top_owners(top_scoring_owners_a, all_ans_df)
@@ -301,14 +301,14 @@ def find_popular_ques(aa_df, a_fname):
     return popular_ids_a
 
 
-# TBD, Refactor the two group_data() funcs.
+# TBD, Refactor the two find_top_owners() funcs.
     # Thu2017_0907_23:30 , Should lo_score*df be returned for use elsewhere?
     # It is printed to file, maybe to log.
     # Is it needed to find good answers?
     # Also chk find_ques_ids_from_top_owners() ;  common code.
-    # Has copied lines from group_data().
+    # Has copied lines from find_top_owners().
     # Does not have lo_score* vars & code.
-def group_data(aa_df, owner_reputation_df):
+def find_top_owners(aa_df, owner_reputation_df):
     """Group the contents of the answers dataframe by a specific column.
     Group by OwnerUserId, and sort by mean score for answers only
     for each owner (question scores are not counted).
@@ -355,7 +355,7 @@ def group_data(aa_df, owner_reputation_df):
     outfile = DATADIR + 'lo_scores_for_top_owners.csv'
     lo_scores_for_top_owners_df.to_csv(
         outfile, header=True, index=None, sep=',', mode='w')
-    cf.logger.info('fga.group_data(): lo_scores_for_top_owners_df: ')
+    cf.logger.info('fga.find_top_owners(): lo_scores_for_top_owners_df: ')
     cf.logger.info(lo_scores_for_top_owners_df)
 
     return top_scoring_owners_a
