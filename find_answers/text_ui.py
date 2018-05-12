@@ -81,6 +81,8 @@ import util.write as wr
 
 CURRENT_FILE = os.path.basename(__file__)
 DATADIR = cf.DATADIR
+MAX_OWNERS = cf.MAX_OWNERS
+
 
 cf.logger.info(cf.log_file + ' - Start logging for ' + CURRENT_FILE)
 
@@ -185,7 +187,7 @@ def show_menu(popular_qa_df, all_ans_df, opt_ns):
         elif user_cmd.lower() == 'drm':
             user_cmd = ''
             owner_reputation_df = check_owner_reputation(
-                all_ans_df, owner_reputation_df)
+                all_ans_df, owner_reputation_df, opt_ns)
             #
             if owner_reputation_df.empty:
                 print("WARN: owner reputation dataframe empty or not found.")
@@ -197,7 +199,7 @@ def show_menu(popular_qa_df, all_ans_df, opt_ns):
         elif user_cmd.lower() == 'dsm':
             user_cmd = ''
             owner_reputation_df = check_owner_reputation(
-                all_ans_df, owner_reputation_df)
+                all_ans_df, owner_reputation_df, opt_ns)
             #
             qa_stats_df = build_stats(popular_qa_df, owner_reputation_df)
             #
@@ -293,7 +295,7 @@ def build_stats(qa_df, or_df):
             # TBD, Some answers in the data file were made by Owners
             # who are not yet in the reputation df.
             print(
-                "build_stats(): ouid not in owner reputation dataframe;",
+                "WARN: build_stats(): ouid not in owner reputation dataframe;",
                 " index,ouid: ",
                 index,
                 ouid)
@@ -322,7 +324,34 @@ def build_stats(qa_df, or_df):
     return qa_stats_df
 
 
-def check_owner_reputation(all_ans_df, owner_reputation_df):
+def gd2_group_data(aa_df, opt_ns):
+    """Group the contents of the answers dataframe by a specific column.
+    Group by OwnerUserId, and sort by mean score for answers only
+    for each owner (question scores are not counted).
+    """
+    # print('#D gd2: owner_grouped_df: Group by owner and sort by mean score
+    # for each owner.')
+    owner_grouped_df = aa_df.groupby('OwnerUserId')
+    owner_grouped_df = owner_grouped_df[[
+        'Score']].mean().sort_values(['Score'])
+
+    # Copy index column into owner column; Change index column to integer
+    owner_grouped_df['OwnerUserId'] = owner_grouped_df.index
+    owner_grouped_df.reset_index(drop=True, inplace=True)
+    owner_grouped_df.rename(columns={'Score': 'MeanScore'}, inplace=True)
+
+    if opt_ns.verbose:
+        print()
+        print('gd2: len(owner_grouped_df): num of unique OwnerUserId values: ' +
+              str(len(owner_grouped_df)))
+        print()
+    cf.logger.info('fga.gd2_group_data(): Show owners with highest MeanScores.')
+    cf.logger.info(owner_grouped_df.tail(MAX_OWNERS))
+
+    return owner_grouped_df
+
+
+def check_owner_reputation(all_ans_df, owner_reputation_df, opt_ns):
     """Check for dataframe with reputation of each OwnerUserId.
     If not found, then calculate reputation of each OwnerUserId
     in the i/p data, based on Score of all answers they provided.
@@ -350,8 +379,8 @@ def check_owner_reputation(all_ans_df, owner_reputation_df):
             "owner rep file, " +
             own_rep_file +
             ", not found; build it.")
-        print("This should be a one-time operation w/ data saved on disk.")
-        owner_reputation_df = gd2_group_data(all_ans_df)
+        print("  This should be a one-time operation w/ data saved on disk.")
+        owner_reputation_df = gd2_group_data(all_ans_df, opt_ns)
         owner_reputation_df.to_csv(own_rep_file)
     return owner_reputation_df
 

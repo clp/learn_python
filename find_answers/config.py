@@ -3,6 +3,7 @@ import logging
 # Global variables for the project.
 DATADIR = 'data/'
 MAX_COL_WID = 20
+MAX_OWNERS = 100 # 20
 TMP = 'tmp/'
 
 HEADER = '''

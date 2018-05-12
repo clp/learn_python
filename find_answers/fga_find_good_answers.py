@@ -149,7 +149,7 @@ FILEA3 = 'a3_986.csv'
 INDIR = 'indir/'
 MAX_COL_WID = cf.MAX_COL_WID
 MAX_HI_SCORE_TERMS = 100 # 10
-MAX_OWNERS = 100 # 20
+MAX_OWNERS = cf.MAX_OWNERS
 MAX_POPULAR_QUES = 900
 MAX_TOP_OWNERS = 900
 #TBR TMP = cf.TMP
@@ -183,8 +183,11 @@ def main(popular_qa_df):
     popular_ids_a = \
         find_popular_ques(all_ans_df, a_fname)
 
+    owner_grouped_df = \
+        tui.gd2_group_data(all_ans_df, opt_ns)
+
     top_scoring_owners_a, owner_grouped_df = \
-        group_data(all_ans_df)
+        group_data(all_ans_df, owner_grouped_df)
 
     ques_ids_from_top_own_l = \
         find_ques_ids_from_top_owners(top_scoring_owners_a, all_ans_df)
@@ -332,7 +335,7 @@ def gd2_group_data(aa_df):
     return owner_grouped_df
 
 
-def group_data(aa_df):
+def group_data(aa_df, owner_grouped_df):
     """Group the contents of the answers dataframe by a specific column.
     Group by OwnerUserId, and sort by mean score for answers only
     for each owner (question scores are not counted).
@@ -342,24 +345,6 @@ def group_data(aa_df):
     then mark the low score  answers for evaluation.
     Low score is any score below lo_score_limit.
     """
-    # print('group_data(): Group by owner and sort by mean score for each
-    # owner.')
-    owner_grouped_df = aa_df.groupby('OwnerUserId')
-    owner_grouped_df = owner_grouped_df[[
-        'Score']].mean().sort_values(['Score'])
-
-    # Copy index column into owner column; Change index column to integer
-    owner_grouped_df['OwnerUserId'] = owner_grouped_df.index
-    owner_grouped_df.reset_index(drop=True, inplace=True)
-    owner_grouped_df.rename(columns={'Score': 'MeanScore'}, inplace=True)
-
-    if opt_ns.verbose:
-        print()
-        print('len(owner_grouped_df): num of unique OwnerUserId values: ' +
-              str(len(owner_grouped_df)))
-        print()
-    cf.logger.info('fga.group_data(): Show owners with highest MeanScores.')
-    cf.logger.info(owner_grouped_df.tail(MAX_OWNERS))
 
     # Take slice of owners w/ highest mean scores; convert to int.
     owners_a = owner_grouped_df['OwnerUserId'].values
