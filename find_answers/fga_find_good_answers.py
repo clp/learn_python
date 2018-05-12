@@ -184,7 +184,7 @@ def main(popular_qa_df):
         find_popular_ques(all_ans_df, a_fname)
 
     owner_reputation_df = \
-        tui.gd2_group_data(all_ans_df, opt_ns)
+        tui.group_owners(all_ans_df, opt_ns)
 
     top_scoring_owners_a = \
         group_data(all_ans_df, owner_reputation_df)
