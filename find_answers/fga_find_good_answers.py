@@ -67,11 +67,14 @@ Overview of Program Actions
 Other Actions
 
     Several functions draw specific plots, using matplotlib tools.
+    TBD, Moved to draw_plots.py.
 
     Several functions write data to disk in csv or html formats.
+    TBD, Moved to save_output.py and util/write.py.
 
     One program option is to search for a text string, and to show
     records that contain it, and to save them to a file.
+    TBD, Moved to search_for_keyword.py and sga_show_good_answers.py.
 
 ----------------------------------------------------------
 
@@ -124,9 +127,9 @@ Requirements
 """
 
 import argparse
-import matplotlib.pyplot as plt
-import matplotlib
-matplotlib.style.use('ggplot')
+#TBR import matplotlib.pyplot as plt
+#TBR import matplotlib
+#TBR matplotlib.style.use('ggplot')
 import numpy as np
 import os
 import pandas as pd
@@ -521,7 +524,6 @@ def analyze_text(qagroup_poptop_df):
         [popular_qa_df, qa_with_hst_df]).reset_index(drop=True)
 
     return popular_qa_df
-
 
 
 def get_parser():
