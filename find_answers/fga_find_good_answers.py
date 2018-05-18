@@ -127,9 +127,6 @@ Requirements
 """
 
 import argparse
-#TBR import matplotlib.pyplot as plt
-#TBR import matplotlib
-#TBR matplotlib.style.use('ggplot')
 import numpy as np
 import os
 import pandas as pd
@@ -155,7 +152,6 @@ MAX_HI_SCORE_TERMS = 100 # 10
 MAX_OWNERS = cf.MAX_OWNERS
 MAX_POPULAR_QUES = 900
 MAX_TOP_OWNERS = 900
-#TBR TMP = cf.TMP
 
 cf.logger.info( cf.log_file + ' - Start logging for ' + CURRENT_FILE)
 popular_qa_df = pd.DataFrame()

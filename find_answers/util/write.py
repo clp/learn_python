@@ -179,6 +179,8 @@ def replace_line_breaks_for_otl(in_s):
     Replace escaped line break chars so text inside HTML
     pre-blocks and code-blocks (inside HTML table cells)
     is rendered properly.
+
+    Add indentation after a newline for the OTL output.
     """
     out_s = in_s.replace(r'\r\n', r'\r\n    ')
     out_s = out_s.replace(r'\n\n', r'\n    ')
@@ -234,11 +236,11 @@ def write_df_to_html(in_df, wdir, wfile, columns_l):
 def write_df_to_otl(in_df, wdir, wfile, columns_l):
     """Write full contents of some columns of a data frame to an otl file.
 
-    Open this file w/ Vim + VimOutliner for easy overview of all questions,
+    Open that file w/ Vim + VimOutliner for easy overview of all questions,
     and quick navigation.
 
-    Use the list of columns included in this function
-    if caller does not specify any.
+    Use the list of columns specified in this function
+    if caller does not specify such a list.
     """
     if in_df.empty:
         print('WARN: write*otl(): Input dataframe empty or not found.')
@@ -271,9 +273,7 @@ def write_df_to_otl(in_df, wdir, wfile, columns_l):
 
     with open(outfile, 'w') as f:
         cf.logger.info('NOTE: Writing data to otl outfile: ' + outfile)
-        #ORG f.write(HEADER)
         f.write(in_s)
-        #ORG f.write(FOOTER)
 
     pd.set_option('display.max_colwidth', MAX_COL_WID)  # -1=no limit, for debug
     return
