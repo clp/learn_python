@@ -250,7 +250,7 @@ def select_keyword_recs(keyword, qa_df, columns_l, opt_ns):
             qid_ord_l.append(i)
     #
     if opt_ns.verbose:
-        print('\nAll Questions in order, Q.Id : Q.Title.')
+        print('\nAll Questions in order (Answer:hstc,score,id), Q.Id : Q.Title.')
         for parent_id in qid_ord_l:
             tmp_df = qa_df.loc[qa_df['Id'] == parent_id]
             print(parent_id, ": ", tmp_df['Title'].iloc[0])
