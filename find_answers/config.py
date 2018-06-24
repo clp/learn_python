@@ -1,4 +1,29 @@
 import logging 
+"""config.py
+
+Configuration data and code for the project.
+
+Initialization
+
+    DATADIR specifies the dir holding i/p data.
+
+    MAX_COL_WID specifies the maximum column width
+    for showing data on the screen.  Using a larger
+    width can make debugging easier.  Note that column
+    width is different from display width, which includes
+    all columns.
+
+    MAX_OWNERS specifies the maximum number of owners
+    to use to select data for further analysis.
+    It affects how much o/p data is saved to a file.
+
+    TMP specifies the dir holding temporary data.
+
+
+"""
+
+
+
 
 # Global variables for the project.
 DATADIR = 'data/'

@@ -11,6 +11,7 @@ Find answers in stackoverflow data that might be good,
 but 'hidden' because they have low scores.
 Look for such answers from contributors who have high scores
 based on their other questions & answers.
+Use Natural Language Processing, NLP, tools and techniques for text analysis.
 Save the o/p to a file for further evaluation & processing.
 
 Usage:
@@ -21,9 +22,8 @@ Usage:
 
 Initialization
 
-    Set the value of global constant MAX_OWNERS near the top
-    of the file; default is 10.  It determines how much o/p data
-    will be saved.
+    Set the value of global constant MAX_OWNERS in config.py.
+    It affects how much o/p data to save.
 
     Set the value of global constant MAX_HI_SCORE_TERMS
     near the top of the file.
@@ -277,7 +277,7 @@ def config_data():
 
 
 def read_df_in_csv_file(infile):
-    """Read a csv file and return its data into a pandas dataframes.
+    """Read a csv file and return its data in a pandas dataframes.
     """
     out_df = pd.read_csv(
         infile,
@@ -484,8 +484,7 @@ def combine_related_q_and_a(ques_ids_pop_and_top_l, all_ques_df, aa_df):
 
 def analyze_text(qagroup_poptop_df):
     """Use a Q&A group of one Q w/ its A's for i/p.
-    Process the text data w/ the routines in the nltk module, which use
-    natural language tools.
+    Process the text data w/ NLP routines, in the nltk module or others.
 
     Important variables.
 
