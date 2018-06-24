@@ -1,4 +1,3 @@
-import logging 
 """config.py
 
 Configuration data and code for the project.
@@ -22,8 +21,7 @@ Initialization
 
 """
 
-
-
+import logging 
 
 # Global variables for the project.
 DATADIR = 'data/'
