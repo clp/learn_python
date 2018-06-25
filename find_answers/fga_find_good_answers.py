@@ -60,8 +60,8 @@ Overview of Program Actions
     Group the data by owner, and sort by mean score.
 
     analyze_text():
-    Call functions in the nltk module to analyze the text data and
-    to provide data that might reveal good but 'hidden' answers.
+    Call functions in the module w/ NLP routines to analyze the text
+    data and to provide data that might reveal good but 'hidden' answers.
 
 
 Other Actions
@@ -445,10 +445,7 @@ def combine_related_q_and_a(ques_ids_pop_and_top_l, all_ques_df, aa_df):
     #
     # Prepare to show progress.
     numlines = len(ques_ids_pop_and_top_l)
-    if numlines < 11:
-        progress_i = 1
-    else:
-        progress_i = int(round(numlines / 10))
+    progress_i = cf.calc_progress(numlines)
     prior_time = time.time()
     # Build each Q&A group: one Q w/ all its A.'s
     for i, qid in enumerate(ques_ids_pop_and_top_l):

@@ -275,10 +275,7 @@ def select_keyword_recs(keyword, qa_df, columns_l, opt_ns):
     #
     # Prepare to show progress.
     numlines = len(qa_id_ord_l)
-    if numlines < 11:
-        progress_i = 1
-    else:
-        progress_i = int(round(numlines / 10))
+    progress_i = cf.calc_progress(numlines)
     prior_time = time.time()
     #
     qa_keyword_df_l = []
