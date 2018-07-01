@@ -168,7 +168,8 @@ def replace_line_breaks(in_s):
     pre-blocks and code-blocks (inside HTML table cells)
     is rendered properly.
     """
-    out_s = in_s.replace('\\r\\n', '\n')
+    out_s = in_s
+    out_s = out_s.replace('\\r\\n', '\n')
     out_s = out_s.replace('\\n\\n', '\n')
     out_s = out_s.replace('\\n', '\n')
     return out_s
@@ -182,10 +183,14 @@ def replace_line_breaks_for_otl(in_s):
 
     Add indentation after a newline for the OTL output.
     """
-    out_s = in_s.replace(r'\r\n', r'\r\n    ')
-    out_s = out_s.replace(r'\n\n', r'\n    ')
+
+    out_s = in_s
+    out_s = out_s.replace(r'\r\n', '\n')
+    out_s = out_s.replace(r'\n\n', '\n')
     out_s = out_s.replace(r'\n', '\n    ')
-    #D print('#D-replace_lb_otl out_s: ', out_s[:100])
+    #D print('#D-replace_lb_otl in_s: ', in_s[:999])
+    #D print()
+    #D print('#D-replace_lb_otl out_s: ', out_s[:999])
     return out_s
 
 
@@ -220,13 +225,13 @@ def write_df_to_html(in_df, wdir, wfile, columns_l):
 
     # Clean the newlines in the string
     # so the HTML inside each table cell renders properly.
-    in_s = replace_line_breaks(in_s)
+    out_s = replace_line_breaks(in_s)
 
     # Concatenate css w/ html file to format the o/p.
     with open(outfile, 'w') as f:
         cf.logger.info('NOTE: Writing data to html outfile: ' + outfile)
         f.write(HEADER)
-        f.write(in_s)
+        f.write(out_s)
         f.write(FOOTER)
 
     pd.set_option('display.max_colwidth', MAX_COL_WID)  # -1=no limit, for debug
@@ -239,7 +244,7 @@ def write_df_to_otl(in_df, wdir, wfile, columns_l):
     Open that file w/ Vim + VimOutliner for easy overview of all questions,
     and quick navigation.
 
-    Use the list of columns specified in this function
+    TBD, Use the list of columns specified in this function
     if caller does not specify such a list.
     """
     if in_df.empty:
@@ -253,27 +258,38 @@ def write_df_to_otl(in_df, wdir, wfile, columns_l):
     # calling to_string().
     # Use 'index=False' to prevent showing index in column 1.
     in_s = in_df[columns_l].to_string(header=False, index=False)
-    print('#D-write, len in_s: ', len(in_s) )
+    print('#D-write1, len in_s: ', len(in_s) )
 
-    # Clean the newlines in the string so each line has proper indent.
-    in_s = nl.strip_html(in_s, "lxml")
-    in_s = replace_line_breaks_for_otl(in_s)
+    #D #TBD,Sat2018_0630_14:58 Debug, 
+    #D import pdb
+    #D pdb.set_trace()
+    #D print()
+    #D print('#D-write_otl in_s: ', in_s[:999])
+
     #
     # Delete long strings of spaces at end of each line.
     # Replace blank spaces at end of each line w/ only the newline char.
     # Do this for all matching patterns in the string in one cmd.
-    in_s = re.sub('  +\n', '\n', in_s)
-    print('#D-write, len in_s: ', len(in_s) )
-    #D print('#D-write, in_s: ', in_s[:599] )
+    out_s = in_s
+    out_s = re.sub('  +\n', '\n', out_s)
+
+    # Clean the newlines in the string so each line has proper indent.
+    out_s = nl.strip_html(out_s, "lxml")
+    out_s = replace_line_breaks_for_otl(out_s)
+    #
+    print('#D-write2, len out_s: ', len(out_s) )
+    #D print('#D-write3, out_s: ', out_s[:599] )
     #
     # Replace empty lines w/ INDENT+##
-    in_s = re.sub(r'\n\s*\n', r'\n        ##\n', in_s)
-    print('#D-write, len in_s: ', len(in_s) )
-    #D print('#D-write, in_s: ', in_s[:599] )
+    out_s = re.sub(r'\n\s*\n', r'\n        ##\n', out_s)
+    print('#D-write4, len out_s: ', len(out_s) )
+
+    #D print()
+    #D print('#D-write_otl out_s: ', out_s[:999])
 
     with open(outfile, 'w') as f:
         cf.logger.info('NOTE: Writing data to otl outfile: ' + outfile)
-        f.write(in_s)
+        f.write(out_s)
 
     pd.set_option('display.max_colwidth', MAX_COL_WID)  # -1=no limit, for debug
     return
