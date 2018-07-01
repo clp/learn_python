@@ -85,7 +85,7 @@ def search_for_keyword(keyword, opt_ns, popular_qa_df, columns_l):
             keyword + '\n')
 
     qa_with_keyword_df = sga.select_keyword_recs(
-        keyword, popular_qa_df, columns_l, opt_ns)
+        keyword, opt_ns, popular_qa_df, columns_l)
 
     if qa_with_keyword_df.empty:
         cf.logger.warning('sfk.search*keyword(): keyword [' + \
