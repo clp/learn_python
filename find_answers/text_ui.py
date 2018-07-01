@@ -74,7 +74,6 @@ import pandas as pd
 import config as cf
 import draw_plots as dr
 import save_output as sav
-import search_for_keyword as sfk
 import sga_show_good_answers as sga
 import util.write as wr
 
@@ -235,7 +234,7 @@ def show_menu(popular_qa_df, all_ans_df, opt_ns):
             #
             # TBD Chg popular_qa_df to a df w/ more records, for dbg & initial
             # use.  Beware of memory & performance issues.
-            qa_with_keyword_df = sfk.search_for_keyword(search_term, opt_ns, popular_qa_df, columns_l)
+            qa_with_keyword_df = sga.select_keyword_recs(search_term, opt_ns, popular_qa_df, columns_l)
             #
             # If search term not found, show search prompt.
             if qa_with_keyword_df.empty:

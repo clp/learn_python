@@ -74,7 +74,7 @@ Other Actions
 
     One program option is to search for a text string, and to show
     records that contain it, and to save them to a file.
-    TBD, Moved to search_for_keyword.py and sga_show_good_answers.py.
+    TBD, Moved to sga_show_good_answers.py.
 
 ----------------------------------------------------------
 
@@ -137,7 +137,6 @@ import time
 import config as cf
 import nltk_ex25 as nl
 import save_output as sav
-import search_for_keyword as sfk
 import sga_show_good_answers as sga
 import text_ui as tui
 import util.write as wr
@@ -202,7 +201,7 @@ def main(popular_qa_df):
     qa_with_keyword_df = pd.DataFrame()
     if keyword:
         qa_with_keyword_df = \
-            sfk.search_for_keyword(keyword, opt_ns, popular_qa_df, columns_l)
+            sga.select_keyword_recs(keyword, opt_ns, popular_qa_df, columns_l)
 
     sav.save_basic_output(popular_qa_df, qa_with_keyword_df)
 
