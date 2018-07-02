@@ -161,6 +161,8 @@ def select_keyword_recs(keyword, opt_ns, qa_df, columns_l):
     if qa_df.empty:
         print('sga.select*(): Missing input data, qa_df is empty.')
         return qa.df
+    cf.logger.info('sga.select*(): Search for a term: ' + \
+            keyword + '\n')
     #
     # Get a pandas series of booleans for filtering:
     # Check Question & Answer, both Title and Body columns.
@@ -177,8 +179,9 @@ def select_keyword_recs(keyword, opt_ns, qa_df, columns_l):
     if qak_df.empty:
         print('sga.select*():qak: Search term not found, qak_df is empty.')
         # Return empty df, so caller does not fail.
-        #TBD, return qak_df?
-        return pd.DataFrame()
+        cf.logger.warning('sga.select*(): keyword [' + \
+                keyword + '] not found in popular_qa_df.')
+        return qak_df  # TBD. What debug data to print here?
     #
     # Print summary, 1 line/record:
     print()
@@ -323,6 +326,13 @@ def select_keyword_recs(keyword, opt_ns, qa_df, columns_l):
     wr.write_df_to_html(qa_keyword_df, DATADIR, search_fname, columns_l)
     print('NOTE: See search output in this file: ' + DATADIR + search_fname)
     #
+
+    # This code should not run; empty df detected earlier.
+    if qa_keyword_df.empty:
+        cf.logger.warning('sga.select*(): keyword [' + \
+                keyword + '] not found in popular_qa_df.')
+        return qa_keyword_df  # TBD. What debug data to print here?
+
     return qa_keyword_df
 
 
