@@ -274,10 +274,11 @@ def write_df_to_otl(in_df, wdir, wfile, columns_l):
     out_s = in_s
     out_s = re.sub('  +\n', '\n', out_s)
 
-    # Clean the newlines in the string so each line has proper indent.
     # Convert html line breaks to newlines before stripping html.
     out_s = re.sub(r'<br>', '\n    ', out_s)
     out_s = re.sub(r'<br/>', '\n    ', out_s)
+
+    # Clean the newlines in the string so each line has proper indent.
     out_s = nl.strip_html(out_s, "lxml")
     out_s = replace_line_breaks_for_otl(out_s)
     #
