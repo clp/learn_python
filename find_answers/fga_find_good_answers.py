@@ -139,7 +139,6 @@ import nltk_ex25 as nl
 import save_output as sav
 import sga_show_good_answers as sga
 import text_ui as tui
-import util.write as wr
 
 
 CURRENT_FILE = os.path.basename(__file__)
