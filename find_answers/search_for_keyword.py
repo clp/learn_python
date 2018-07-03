@@ -6,6 +6,10 @@
 #
 """search_for_keyword.py
 
+OBSOLETE, Mon2018_0702, Replaced by sga_show_good_answers.py.
+OBSOLETE, Mon2018_0702, Replaced by sga_show_good_answers.py.
+OBSOLETE, Mon2018_0702, Replaced by sga_show_good_answers.py.
+
 
 A module that searches the i/p data for one or more terms.
 
@@ -54,6 +58,10 @@ Overview of Program Actions:
 Requirements
     Python 3, tested with v 3.6.1.
     pytest for tests, tested with v 3.0.7.
+
+OBSOLETE, Mon2018_0702, Replaced by sga_show_good_answers.py.
+OBSOLETE, Mon2018_0702, Replaced by sga_show_good_answers.py.
+OBSOLETE, Mon2018_0702, Replaced by sga_show_good_answers.py.
 
 """
 
