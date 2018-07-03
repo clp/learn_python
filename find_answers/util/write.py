@@ -185,8 +185,9 @@ def replace_line_breaks_for_otl(in_s):
     """
 
     out_s = in_s
-    out_s = out_s.replace(r'\r\n', '\n')
-    out_s = out_s.replace(r'\n\n', '\n')
+    out_s = out_s.replace(r'\r\n', '\n')  # Pattern seen in a3*.csv.
+    out_s = out_s.replace(r'\n\n', '\n')  # Pattern seen in a3*.csv.
+    out_s = out_s.replace(r'\n\r', '\n')  # Pattern not seen.
     out_s = out_s.replace(r'\n', '\n    ')
     #D print('#D-replace_lb_otl in_s: ', in_s[:999])
     #D print()
@@ -274,6 +275,9 @@ def write_df_to_otl(in_df, wdir, wfile, columns_l):
     out_s = re.sub('  +\n', '\n', out_s)
 
     # Clean the newlines in the string so each line has proper indent.
+    # Convert html line breaks to newlines before stripping html.
+    out_s = re.sub(r'<br>', '\n    ', out_s)
+    out_s = re.sub(r'<br/>', '\n    ', out_s)
     out_s = nl.strip_html(out_s, "lxml")
     out_s = replace_line_breaks_for_otl(out_s)
     #
