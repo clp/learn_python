@@ -83,6 +83,7 @@ import re
 
 import config as cf
 import nltk_ex25 as nl
+import util.misc as ut
 
 
 cf.logger.info(cf.log_file + ' - Start logging for ' + os.path.basename(__file__))
@@ -279,7 +280,7 @@ def write_df_to_otl(in_df, wdir, wfile, columns_l):
     out_s = re.sub(r'<br/>', '\n    ', out_s)
 
     # Clean the newlines in the string so each line has proper indent.
-    out_s = nl.strip_html(out_s, "lxml")
+    out_s = ut.strip_html(out_s, "lxml")
     out_s = replace_line_breaks_for_otl(out_s)
     #
     print('#D-write2, len out_s: ', len(out_s) )
