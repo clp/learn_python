@@ -58,12 +58,11 @@ from six.moves import range
 import os
 import csv
 
-import config as cf
-#TBD import logging
-
 import re
 import nltk
 from nltk.corpus import stopwords
+
+import config as cf
 import util.misc as ut
 
 
