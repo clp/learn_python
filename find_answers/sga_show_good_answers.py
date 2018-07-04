@@ -322,8 +322,6 @@ def select_keyword_recs(keyword, opt_ns, qa_df, columns_l):
     #
     search_fname = 'search_result_full.html'
     wr.save_prior_file(DATADIR, search_fname)
-    #TBR if not columns_l:
-        #TBR columns_l = ['HSTCount', 'Score', 'Id', 'ParentId', 'Title', 'Body']
     wr.write_df_to_html(qa_keyword_df, DATADIR, search_fname, columns_l)
     print('NOTE: See search output in this file: ' + DATADIR + search_fname)
     #

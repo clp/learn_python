@@ -61,7 +61,6 @@ import csv
 import config as cf
 #TBD import logging
 
-from bs4 import BeautifulSoup
 import re
 import nltk
 from nltk.corpus import stopwords
