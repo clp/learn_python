@@ -108,6 +108,7 @@ import pandas as pd
 import time
 
 import config as cf
+import util.misc as ut
 import util.write as wr
 
 
@@ -278,7 +279,7 @@ def select_keyword_recs(keyword, opt_ns, qa_df, columns_l):
     #
     # Prepare to show progress.
     numlines = len(qa_id_ord_l)
-    progress_i = cf.calc_progress(numlines)
+    progress_i = ut.calc_progress(numlines)
     prior_time = time.time()
     #
     qa_keyword_df_l = []

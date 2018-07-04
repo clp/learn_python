@@ -139,6 +139,7 @@ import nltk_ex25 as nl
 import save_output as sav
 import sga_show_good_answers as sga
 import text_ui as tui
+import util.misc as ut
 
 
 CURRENT_FILE = os.path.basename(__file__)
@@ -443,7 +444,7 @@ def combine_related_q_and_a(ques_ids_pop_and_top_l, all_ques_df, aa_df):
     #
     # Prepare to show progress.
     numlines = len(ques_ids_pop_and_top_l)
-    progress_i = cf.calc_progress(numlines)
+    progress_i = ut.calc_progress(numlines)
     prior_time = time.time()
     # Build each Q&A group: one Q w/ all its A.'s
     for i, qid in enumerate(ques_ids_pop_and_top_l):

@@ -65,6 +65,7 @@ from bs4 import BeautifulSoup
 import re
 import nltk
 from nltk.corpus import stopwords
+import util.misc as ut
 
 
 def main():
@@ -164,7 +165,7 @@ def clean_raw_data(qagroup_poptop_df):
 
     # Build a list that holds the cleaned text from each answer's body field.
     # Use it to find terms that match terms found in hi-score Answers.
-    progress_i = cf.calc_progress(num_bodies)
+    progress_i = ut.calc_progress(num_bodies)
     for i in range(0, num_bodies):
         clean_body_s = convert_text_to_words(qagroup_poptop_df["Body"][i])
         clean_qa_bodies_l.append(clean_body_s)
@@ -175,7 +176,7 @@ def clean_raw_data(qagroup_poptop_df):
         if((i+1) % progress_i == 0):
             #D cf.logger.debug("Body %d of %d" % (i+1, num_bodies))
             #D cf.logger.debug('  Original text: ' + qagroup_poptop_df['Body'][i])
-            cf.logger.debug('  TBD-version0624a [i], clean*(): Slice of cleaned text: [' +
+            cf.logger.debug('  [i], clean*(): Slice of cleaned text: [' +
                     str(i) + ']\n' + clean_body_s[:70])
 
     return clean_qa_bodies_l
