@@ -132,6 +132,24 @@ def save_prior_file(wdir, wfile):
     return
 
 
+def write_text(text, wdir, wfile):
+    """Write to a text file.
+    Append each entry to existing file by default.
+    
+    TBD, For production, change write mode from append to write, & enable save_prior_file().
+    """
+    if not text:
+        print('WARN: write_text(): Missing or empty text for wfile: ', wfile)
+        return
+    #TBD  save_prior_file(wdir, wfile)  # Include this to save one entry per file.
+    outfile = wdir + wfile
+    with open(outfile, 'a') as f:
+        cf.logger.info('NOTE: Writing data to text outfile: ' + outfile)
+        f.write(text)
+    return
+
+
+
 def write_df_to_csv(in_df, wdir, wfile):
     """Write full contents of all columns of a data frame to a csv file.
     """

@@ -310,6 +310,11 @@ def select_keyword_recs(keyword, opt_ns, qa_df, columns_l):
     #
     # Write o/p to disk files.
     #
+    # Save search keyword to a separate text file.
+    search_fname = 'metadata.txt'
+    key_s = 'search keyword: ' + keyword + '\n'
+    wr.write_text(key_s, DATADIR, search_fname)
+    #
     search_fname = 'search_result_full.csv'
     wr.save_prior_file(DATADIR, search_fname)
     qa_keyword_df.to_csv(DATADIR + search_fname)
