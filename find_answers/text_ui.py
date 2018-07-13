@@ -304,21 +304,19 @@ def build_stats(qa_df, or_df):
         # Save length of body text of each answer.
         qa_stats_df.loc[index, 'BodyLength'] = len(row['Body'])
 
-    qa_stats_df = qa_stats_df[['Id',
-                               'ParentId',
-                               'OwnerUserId',
-                               'Score',
-                               'BodyLength',
-                               'OwnerRep',
-                               'HSTCount']]
+    columns_l = ['Id',
+                 'ParentId',
+                 'OwnerUserId',
+                 'Score',
+                 'BodyLength',
+                 'OwnerRep',
+                 'HSTCount']
 
-    stats_fname = DATADIR + 'qa_stats_by_dsm.csv'
-    wr.save_prior_file('', stats_fname)
-    qa_stats_df.to_csv(stats_fname)
+    qa_stats_df = qa_stats_df[columns_l]
 
-    stats_fname = DATADIR + 'qa_stats_by_dsm.html'
-    wr.save_prior_file('', stats_fname)
-    qa_stats_df.to_html(stats_fname)
+    wr.write_df_to_csv(qa_stats_df, DATADIR, 'qa_stats_by_dsm.csv')
+
+    wr.write_df_to_html(qa_stats_df, DATADIR, 'qa_stats_by_dsm.html', columns_l)
 
     return qa_stats_df
 
