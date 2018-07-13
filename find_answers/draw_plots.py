@@ -125,14 +125,13 @@ def draw_scatter_matrix_plot(plot_df):
 
     plt.show(block=False)
 
-    wdir = DATADIR
     wfile = 'scat_mat_plot.pdf'
-    wr.save_prior_file(wdir, wfile)
-    plt.savefig(wdir + wfile)
+    wr.save_prior_file(DATADIR, wfile)
+    plt.savefig(DATADIR + wfile)
 
     wfile = 'scat_mat_plot.png'
-    wr.save_prior_file(wdir, wfile)
-    plt.savefig(wdir + wfile)
+    wr.save_prior_file(DATADIR, wfile)
+    plt.savefig(DATADIR + wfile)
     return
 
 
