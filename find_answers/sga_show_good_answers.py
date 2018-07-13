@@ -316,17 +316,14 @@ def select_keyword_recs(keyword, opt_ns, qa_df, columns_l):
     wr.write_text(key_s, DATADIR, search_fname)
     #
     search_fname = 'search_result_full.csv'
-    wr.save_prior_file(DATADIR, search_fname)
-    qa_keyword_df.to_csv(DATADIR + search_fname)
+    wr.write_df_to_csv(qa_keyword_df, DATADIR, search_fname)
     #
     search_fname = 'search_result_all_fields.html'
-    wr.save_prior_file(DATADIR, search_fname)
     columns_all_l = ['HSTCount', 'Score', 'Id', 'ParentId', 'Title', 'Body', 'CreationDate', 'OwnerUserId', 'CleanBody', 'HiScoreTerms']
     wr.write_df_to_html(qa_keyword_df, DATADIR, search_fname, columns_all_l)
     print('NOTE: See search output in this file: ' + DATADIR + search_fname)
     #
     search_fname = 'search_result_full.html'
-    wr.save_prior_file(DATADIR, search_fname)
     wr.write_df_to_html(qa_keyword_df, DATADIR, search_fname, columns_l)
     print('NOTE: See search output in this file: ' + DATADIR + search_fname)
     #
