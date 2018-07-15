@@ -195,10 +195,9 @@ def replace_line_breaks(in_s):
 
 
 def replace_line_breaks_for_otl(in_s):
-    """TBD, fix comment:
-    Replace escaped line break chars so text inside HTML
-    pre-blocks and code-blocks (inside HTML table cells)
-    is rendered properly.
+    """Modify escaped line break chars to include trailing
+    spaces to indent the next line, to format text
+    as an outline.
 
     Add indentation after a newline for the OTL output.
     """
@@ -217,8 +216,8 @@ def replace_line_breaks_for_otl(in_s):
 def write_df_to_html(in_df, wdir, wfile, columns_l):
     """Write full contents of some columns of a data frame to an html file.
 
-    Use the list of columns included in this function
-    if caller does not specify any.
+    Use the list of columns specified in this function
+    if caller does not specify such a list.
     """
     if in_df.empty:
         print('WARN: write*html(): Missing or empty dataframe for wfile: ', wfile)
@@ -264,7 +263,7 @@ def write_df_to_otl(in_df, wdir, wfile, columns_l):
     Open that file w/ Vim + VimOutliner for easy overview of all questions,
     and quick navigation.
 
-    TBD, Use the list of columns specified in this function
+    Use the list of columns specified in this function
     if caller does not specify such a list.
     """
     if in_df.empty:
@@ -273,6 +272,17 @@ def write_df_to_otl(in_df, wdir, wfile, columns_l):
     pd.set_option('display.max_colwidth', -1)  # -1=no limit, for debug
     outfile = wdir + wfile
     save_prior_file(wdir, wfile)
+    # Specify default output columns to use.
+    if not columns_l:
+        columns_l = ['Id',
+                     'Title',
+                     'Body',
+                     'Score',
+                     'HSTCount',
+                     'HiScoreTerms',
+                     'OwnerUserId',
+                     'ParentId']
+
     #
     # Save o/p to a string and do not specify an output file in
     # calling to_string().
@@ -280,7 +290,7 @@ def write_df_to_otl(in_df, wdir, wfile, columns_l):
     in_s = in_df[columns_l].to_string(header=False, index=False)
     print('#D-write1, len in_s: ', len(in_s) )
 
-    #D #TBD,Sat2018_0630_14:58 Debug, 
+    #D #TBD, Debug, 
     #D import pdb
     #D pdb.set_trace()
     #D print()
