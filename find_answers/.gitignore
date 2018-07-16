@@ -5,6 +5,7 @@ sav/*
 old/*
 notes/*
 refmisc/*
+experiment/*
 *.png
 *.html
 *.tgz
