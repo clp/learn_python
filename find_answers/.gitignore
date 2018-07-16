@@ -3,6 +3,8 @@ outdir/*
 tmpdir/*
 sav/*
 old/*
+notes/*
+refmisc/*
 *.png
 *.html
 *.tgz
