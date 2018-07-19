@@ -290,7 +290,7 @@ def select_keyword_recs(keyword, opt_ns, qa_df, columns_l):
                 prior_time = time.time()
                 print("sga:select*():progress count {} of total {} in {} seconds."
                         .format(i, numlines, lap_time))
-                
+
         for index, row in qa_df.iterrows():
             if row['Id'] == iid:
                 qa_keyword_df_l.append(row)
