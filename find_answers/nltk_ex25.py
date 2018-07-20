@@ -34,7 +34,7 @@ Usage:
     See fga_find_good_answers.py for an example that uses
     the functions in this module.
 
-    Set the value of num_hi_score_terms in the calling program.
+    Set the value of MAX_HI_SCORE_TERMS in the calling program.
     It determines how many hi-score terms are used to search
     for matching terms in low-score answers.  A bigger number
     will cause the program to run longer, and might find more
@@ -291,7 +291,7 @@ def sort_qa_by_score(qagroup_poptop_df):
     return ids_and_scores_df
 
 
-def find_hi_score_terms_in_bodies(words_sorted_by_count_l, clean_qa_bodies_l, num_hi_score_terms, qagroup_poptop_df):
+def find_hi_score_terms_in_bodies(words_sorted_by_count_l, clean_qa_bodies_l, MAX_HI_SCORE_TERMS, qagroup_poptop_df):
     """Save terms that a record has in common with frequently-seen text.
 
     Important Variables.
@@ -346,7 +346,7 @@ def find_hi_score_terms_in_bodies(words_sorted_by_count_l, clean_qa_bodies_l, nu
     cf.logger.info("Terms from hi-score Answers.")
     #TBD, Maybe collect these "count,w" data into a single list,
     #   & write it in one step to the log file.
-    count_lim = min(10, num_hi_score_terms)
+    count_lim = min(10, MAX_HI_SCORE_TERMS)
     for count, w in words_sorted_by_count_l[-count_lim:]:
         log_msg = "count, w: " + str(count) + " , " + w
         cf.logger.info(log_msg)
