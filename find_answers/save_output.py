@@ -28,7 +28,7 @@ Usage:
 
     In the calling module:
         import save_output as sav
-        sav.save_basic_output(popular_qa_df, qa_with_keyword_df)
+        sav.save_basic_output(popular_qa_df)
 
     pydoc save_output
 
@@ -68,7 +68,7 @@ DATADIR = cf.DATADIR
 cf.logger.info(cf.log_file + ' - Start logging for ' + CURRENT_FILE)
 
 
-def save_basic_output(popular_qa_df, qa_with_keyword_df):
+def save_basic_output(popular_qa_df):
     """Save the dataframe with chosen Q&A groups to csv and html
     and otl (outline format) files.
     """
@@ -88,6 +88,7 @@ def save_basic_output(popular_qa_df, qa_with_keyword_df):
         'popular_qa_title_body.html',
         columns_l)
     return
+
 
 def save_search_output(qa_with_keyword_df):
     """Save the dataframe with Q&A groups that contain the search keyword

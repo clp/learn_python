@@ -195,7 +195,8 @@ def main(popular_qa_df):
         qa_with_keyword_df = \
             sga.select_keyword_recs(keyword, opt_ns, popular_qa_df, columns_l)
 
-    sav.save_basic_output(popular_qa_df, qa_with_keyword_df)
+    sav.save_basic_output(popular_qa_df)
+    sav.save_search_output(qa_with_keyword_df)
 
 
 def check_install():
