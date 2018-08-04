@@ -102,13 +102,13 @@ def save_search_output(qa_with_keyword_df):
     to csv and html and otl (outline format) files.
     """
 
-    # Write search o/p to html file in one column: q.title, q.body, a1, a2, ...
     if qa_with_keyword_df.empty:
         print('#D save_search*()-html: qa_with_keyword_df is empty.')
         cf.logger.warning('save_search_output(): ' + \
                 'qa_with_keyword_df is empty.')
         return qa_with_keyword_df # TBD. What debug data to print here?
 
+    # Save search o/p to html file in one column: q.title, q.body, a1, a2, ...
     out_l = list()
     prefix_s = 'Id, Score, HSTCount, CreDate: ' 
     columns_l = ['Id', 'Score', 'HSTCount', 'CreationDate']
@@ -144,7 +144,7 @@ def save_search_output(qa_with_keyword_df):
         )
 
 
-    # Write search o/p in outline format to otl file: q.title, q.body, a1, a2, ...
+    # Save search o/p in outline format to otl file: q.title, q.body, a1, a2, ...
     out_l = list()
     prefix_s = 'Id, Score, HSTCount, CreDate: ' 
     columns_l = ['Id', 'Score', 'HSTCount', 'CreationDate']
@@ -192,7 +192,7 @@ def save_search_output(qa_with_keyword_df):
             #
             out_l.append(body)
 
-    # Convert list to df & make otl file from it.
+    # Convert list to df & write df to an otl file.
     # User can open that file in editor (Vim w/ VimOutliner) to see data.
     qa_title_body_df = pd.DataFrame(out_l)
     columns_l = [0]
@@ -204,12 +204,12 @@ def save_search_output(qa_with_keyword_df):
         )
 
 
-    #D # Write all columns of df to disk file.
+    #D # Save all columns of df to disk file.
     #D wr.write_part_df_to_csv(
         #D qa_with_keyword_df, DATADIR,
         #D 'qa_with_keyword.csv', columns_l, True, None)
 
-    # Write only the Id column of df to disk, sorted by Id.
+    # Save only the Id column of df to disk, sorted by Id.
     # Sort it to match the ref file, so out-of-order data
     # does not cause test to fail.
     id_df = qa_with_keyword_df[['Id']].sort_values(['Id'])
@@ -231,8 +231,7 @@ def save_full_search_output(qa_with_keyword_df, keyword):
                 'qa_with_keyword_df is empty.')
         return qa_with_keyword_df # TBD. What debug data to print here?
 
-    #
-    # Write o/p to disk files.
+    # Save o/p to disk files.
     #
     # Save search keyword to a separate text file.
     search_fname = 'metadata.txt'
