@@ -217,3 +217,37 @@ def save_search_output(qa_with_keyword_df):
         'qa_withkey_id.csv', ['Id'], True, None)
     return
 
+
+def save_full_search_output(qa_keyword_df, keyword):
+    """Save the dataframe with Q&A groups that contain the search keyword
+    to csv and html files.  Include all records in the full o/p files;
+    and include either some or all of the available fields.
+    """
+
+    #
+    # Write o/p to disk files.
+    #
+    # Save search keyword to a separate text file.
+    search_fname = 'metadata.txt'
+    key_s = 'search keyword: ' + keyword + '\n'
+    wr.write_text(key_s, DATADIR, search_fname)
+    #
+    search_fname = 'search_result_full_all_fields.csv'
+    wr.write_df_to_csv(qa_keyword_df, DATADIR, search_fname)
+    #
+    search_fname = 'search_result_full_all_fields.html'
+    columns_all_l = ['HSTCount', 'Score', 'Id', 'ParentId', 'Title', 'Body', 'CreationDate', 'OwnerUserId', 'CleanBody', 'HiScoreTerms']
+    wr.write_df_to_html(qa_keyword_df, DATADIR, search_fname, columns_all_l)
+    print('NOTE: See search output in this file: ' + DATADIR + search_fname)
+    #
+    search_fname = 'search_result_full.html'
+    columns_l = ['HSTCount', 'Score', 'Id', 'ParentId', 'Title', 'Body']
+    wr.write_df_to_html(qa_keyword_df, DATADIR, search_fname, columns_l)
+    print('NOTE: See search output in this file: ' + DATADIR + search_fname)
+    #
+
+    return qa_keyword_df
+
+    
+
+

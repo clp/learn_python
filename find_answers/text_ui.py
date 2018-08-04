@@ -246,8 +246,9 @@ def show_menu(popular_qa_df, all_ans_df, opt_ns):
                 continue
 
             # Write o/p files to disk, based on search keyword.
-            sav.save_basic_output(popular_qa_df)  # TBD,Sat2018_0804_11:17  Is this needed here?
+            sav.save_basic_output(popular_qa_df)  # TBR?
             sav.save_search_output(qa_with_keyword_df)
+            sav.save_full_search_output(qa_with_keyword_df, search_term)
 
         else:
             print("Got bad cmd from user: ", user_cmd)

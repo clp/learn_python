@@ -109,7 +109,6 @@ import time
 
 import config as cf
 import util.misc as ut
-import util.write as wr
 
 
 cf.logger.info(cf.log_file + ' - Start logging for ' + os.path.basename(__file__))
@@ -307,33 +306,6 @@ def select_keyword_recs(keyword, opt_ns, qa_df, columns_l):
         print('qa_keyword_df.describe():\n')
         print(qa_keyword_df_describe_s)
         print()
-    #
-    # Write o/p to disk files.
-    #
-    # Save search keyword to a separate text file.
-    search_fname = 'metadata.txt'
-    key_s = 'search keyword: ' + keyword + '\n'
-    wr.write_text(key_s, DATADIR, search_fname)
-    #
-    search_fname = 'search_result_full.csv'
-    wr.write_df_to_csv(qa_keyword_df, DATADIR, search_fname)
-    #
-    search_fname = 'search_result_all_fields.html'
-    columns_all_l = ['HSTCount', 'Score', 'Id', 'ParentId', 'Title', 'Body', 'CreationDate', 'OwnerUserId', 'CleanBody', 'HiScoreTerms']
-    wr.write_df_to_html(qa_keyword_df, DATADIR, search_fname, columns_all_l)
-    print('NOTE: See search output in this file: ' + DATADIR + search_fname)
-    #
-    search_fname = 'search_result_full.html'
-    wr.write_df_to_html(qa_keyword_df, DATADIR, search_fname, columns_l)
-    print('NOTE: See search output in this file: ' + DATADIR + search_fname)
-    #
-
-    # This code should not run; empty df detected earlier.
-    if qa_keyword_df.empty:
-        cf.logger.warning('sga.select*(): keyword [' + \
-                keyword + '] not found in popular_qa_df.')
-        return qa_keyword_df  # TBD. What debug data to print here?
-
     return qa_keyword_df
 
 
