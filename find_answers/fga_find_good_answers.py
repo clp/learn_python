@@ -66,15 +66,7 @@ Overview of Program Actions
 
 Other Actions
 
-    Several functions draw specific plots, using matplotlib tools.
-    TBD, Moved to draw_plots.py.
-
-    Several functions write data to disk in csv or html formats.
-    TBD, Moved to save_output.py and util/write.py.
-
-    One program option is to search for a text string, and to show
-    records that contain it, and to save them to a file.
-    TBD, Moved to sga_show_good_answers.py.
+    TBD.
 
 ----------------------------------------------------------
 
