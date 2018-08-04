@@ -72,6 +72,13 @@ def save_basic_output(popular_qa_df):
     """Save the dataframe with chosen Q&A groups to csv and html
     and otl (outline format) files.
     """
+
+    if popular_qa_df.empty:
+        print('#D save_basic*()-html: popular_qa_df is empty.')
+        cf.logger.warning('save_basic_output(): ' + \
+                'popular_qa_df is empty.')
+        return popular_qa_df # TBD. What debug data to print here?
+
     wr.write_df_to_csv(popular_qa_df, DATADIR, 'popular_qa.csv')
 
     columns_l = []
@@ -97,8 +104,8 @@ def save_search_output(qa_with_keyword_df):
 
     # Write search o/p to html file in one column: q.title, q.body, a1, a2, ...
     if qa_with_keyword_df.empty:
-        print('#D save_basic*()-html: qa_with_keyword_df is empty.')
-        cf.logger.warning('save_basic_output(): ' + \
+        print('#D save_search*()-html: qa_with_keyword_df is empty.')
+        cf.logger.warning('save_search_output(): ' + \
                 'qa_with_keyword_df is empty.')
         return qa_with_keyword_df # TBD. What debug data to print here?
 
@@ -138,12 +145,6 @@ def save_search_output(qa_with_keyword_df):
 
 
     # Write search o/p in outline format to otl file: q.title, q.body, a1, a2, ...
-    if qa_with_keyword_df.empty:
-        print('#D save_basic*()-otl: qa_with_keyword_df is empty.')
-        cf.logger.warning('save_basic_output(): ' + \
-                'qa_with_keyword_df is empty.')
-        return qa_with_keyword_df # TBD. What debug data to print here?
-
     out_l = list()
     prefix_s = 'Id, Score, HSTCount, CreDate: ' 
     columns_l = ['Id', 'Score', 'HSTCount', 'CreationDate']
@@ -224,6 +225,12 @@ def save_full_search_output(qa_with_keyword_df, keyword):
     and include either some or all of the available fields.
     """
 
+    if qa_with_keyword_df.empty:
+        print('#D save_full_search*()-otl: qa_with_keyword_df is empty.')
+        cf.logger.warning('save_full_search_output(): ' + \
+                'qa_with_keyword_df is empty.')
+        return qa_with_keyword_df # TBD. What debug data to print here?
+
     #
     # Write o/p to disk files.
     #
@@ -246,8 +253,5 @@ def save_full_search_output(qa_with_keyword_df, keyword):
     print('NOTE: See search output in this file: ' + DATADIR + search_fname)
     #
 
-    return qa_with_keyword_df
-
-    
-
+    return
 
