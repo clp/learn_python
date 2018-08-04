@@ -87,7 +87,12 @@ def save_basic_output(popular_qa_df, qa_with_keyword_df):
         DATADIR,
         'popular_qa_title_body.html',
         columns_l)
+    return
 
+def save_search_output(qa_with_keyword_df):
+    """Save the dataframe with Q&A groups that contain the search keyword
+    to csv and html and otl (outline format) files.
+    """
 
     # Write search o/p to html file in one column: q.title, q.body, a1, a2, ...
     if qa_with_keyword_df.empty:
