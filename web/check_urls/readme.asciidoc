@@ -1,0 +1,11 @@
+// A collection of test URLs, asciidoc format.
+
+http://freenode.net/[Freenode]
+* http://www.python.org/[Python] 3.5 or newer (3.6 recommended)
+* http://qt.io/[Qt] 5.7.1 or newer 
+* http://www.riverbankcomputing.com/software/pyqt/intro[PyQt] 
+* https://pypi.python.org/pypi/setuptools/[pkg_resources/setuptools]
+* pre, https://pypi.python.org/pypi/colorama/[colorama] post
+* http://asciidoc.org/[asciidoc] ,post
+https://github.com/mozilla/pdf.js/[pdf.js] 
+http://www.apache.org/licenses/LICENSE-2.0.html[here].
