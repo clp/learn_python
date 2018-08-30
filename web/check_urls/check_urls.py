@@ -24,7 +24,7 @@ import sys
 import urllib.request
 import urllib.error
 
-infile = '/tmp/readme.asciidoc'
+infile = '/tmp/test_data.asciidoc'
 wait = 3  # Timeout for web query.
 
 def check_urls(infile, wait):
